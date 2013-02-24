@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{08972D1A-D674-4CC1-BF56-FDB04E5FE730}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VVVV.DX11.Nodes</RootNamespace>
+    <AssemblyName>VVVV.DX11.Nodes</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <NoWarn>
+    </NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Deploy\Debug\x64\packs\DX11\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Deploy\Debug\x86\packs\DX11\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Release|x64'">
+    <OutputPath>..\..\Deploy\Release\x64\packs\DX11\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <NoWarn>
+    </NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Release|x86'">
+    <OutputPath>..\..\Deploy\Release\x86\packs\DX11\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <NoWarn>
+    </NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>..\..\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="SlimDX">
+      <HintPath>..\..\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="PluginInterfaces">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Hosting">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Hosting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Core">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IOleStuff.cs" />
+    <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />
+    <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
+    <Compile Include="Nodes\Buffers\ReadBackBufferNode.cs" />
+    <Compile Include="Nodes\Buffers\ReadBackRawBufferNode.cs" />
+    <Compile Include="Nodes\Devices\DX11RenderContextNode.cs" />
+    <Compile Include="Nodes\Generics\ConsNodes.cs" />
+    <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
+    <Compile Include="Nodes\Geometry\BoundingBoxGeometryNode.cs" />
+    <Compile Include="Nodes\Geometry\DX11DefaultDrawerNode.cs" />
+    <Compile Include="Nodes\Geometry\GenericInstancerNode.cs" />
+    <Compile Include="Nodes\Geometry\GeometryBufferJoinNode.cs" />
+    <Compile Include="Nodes\Geometry\GeometryTopologyNode.cs" />
+    <Compile Include="Nodes\Geometry\IndexedGeometryBufferJoinNode.cs" />
+    <Compile Include="Nodes\Geometry\IndexedInstancedDrawerNode.cs" />
+    <Compile Include="Nodes\Geometry\IndexIndirectDrawerNode.cs" />
+    <Compile Include="Nodes\Geometry\InputElementJoinNode.cs" />
+    <Compile Include="Nodes\Geometry\NullIndirectDrawer.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11DispatcherNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11NullDrawerNode.cs" />
+    <Compile Include="Nodes\Geometry\SetBoundingBoxGeometryNode.cs" />
+    <Compile Include="Nodes\Geometry\VertexIndirectDrawerNode.cs" />
+    <Compile Include="Nodes\Geometry\VertexInstancedDrawerNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerGeometryNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerGroupNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerSemanticsNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerStateNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerValidatorNode.cs" />
+    <Compile Include="Nodes\Layers\Space\DX11LayerSpaceNode.cs" />
+    <Compile Include="Nodes\Layers\Space\WithinLayerNodes.cs" />
+    <Compile Include="Nodes\Queries\AbstractQueryNode.cs" />
+    <Compile Include="Nodes\Queries\OcclusionQueryNode.cs" />
+    <Compile Include="Nodes\Queries\PipelineStatisticsQueryNode.cs" />
+    <Compile Include="Nodes\Queries\StreamOutQueryNode.cs" />
+    <Compile Include="Nodes\Queries\TimeStampQueryNode.cs" />
+    <Compile Include="Nodes\Renderers\Buffers\DX11BufferRenderer.cs" />
+    <Compile Include="Nodes\Renderers\DX11PreviewNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11MRTRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11RendererNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Nodes\Renderers\Graphics\DX11RendererNode_ctrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Nodes\Renderers\Graphics\DX11RendererNode_ctrl.Designer.cs">
+      <DependentUpon>DX11RendererNode_ctrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Nodes\Renderers\Graphics\DX11TempTargetRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11VolumeRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\Touch\DecodeTouchData.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\Touch\Structs.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\Touch\TouchConstats.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11BlendStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11DepthStencilStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11RasterizerStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11SamplerStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\BaseDX11RenderStateSimple.cs" />
+    <Compile Include="Nodes\RenderStates\BlendPresetNode.cs" />
+    <Compile Include="Nodes\RenderStates\DepthStencilPresetNode.cs" />
+    <Compile Include="Nodes\RenderStates\RasterizerPresetNode.cs" />
+    <Compile Include="Nodes\Semantics\DX11CustomSemanticNode.cs" />
+    <Compile Include="Nodes\Semantics\DX11RenderSemanticNode.cs" />
+    <Compile Include="Nodes\Textures\1D\DynamicTexture1DNode.cs" />
+    <Compile Include="Nodes\Textures\2D\DynamicTexture2DColorNode.cs" />
+    <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
+    <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
+    <Compile Include="Nodes\Textures\2D\WriterTexture2dNode.cs" />
+    <Compile Include="Nodes\Textures\3D\InfoTexture3dNode.cs" />
+    <Compile Include="Nodes\Textures\3D\WriterTexture3dNode.cs" />
+    <Compile Include="Nodes\Textures\FileTextureBaseNode.cs" />
+    <Compile Include="Nodes\Textures\FileTextureNodes.cs" />
+    <Compile Include="Nodes\Utils\CameraFrustrumNode.cs" />
+    <Compile Include="Nodes\Validators\FrustrumTestNode.cs" />
+    <Compile Include="Nodes\Validators\SelectValidatorNode.cs" />
+    <Compile Include="Nodes\Validators\SliceValidatorNode.cs" />
+    <Compile Include="Nodes\Validators\SliceValidatorSpreadedNode.cs" />
+    <Compile Include="Nodes\Validators\SpreadValidatorNode.cs" />
+    <Compile Include="Nodes\ViewPorts\DX11ViewPortNode.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
+      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
+      <Project>{71C0786D-2640-4E39-AA7B-83602F36F3A3}</Project>
+      <Name>VVVV.DX11.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
+      <Project>{C6EE17BB-1F48-44EA-8131-D299BC57748C}</Project>
+      <Name>VVVV.DX11.Lib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Nodes\Renderers\Graphics\DX11RendererNode.resx">
+      <DependentUpon>DX11RendererNode.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
