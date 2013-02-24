@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Runtime.InteropServices;
+
+using VVVV.PluginInterfaces.V1;
+using VVVV.PluginInterfaces.V2;
+
+using SlimDX.Direct3D11;
+using SlimDX;
+
+using FeralTic.DX11.Resources;
+using FeralTic.DX11;
+
+namespace VVVV.DX11.Nodes
+{
+    [PluginInfo(Name = "Quad", Category = "DX11.Geometry", Version = "", Author = "vux")]
+    public class DX11QuadNode : DX11BasePrimitiveNode
+    {
+        [Input("Size",DefaultValues= new double[] { 1,1})]
+        protected IDiffSpread<Vector2> FSize;
+
+        protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
+        {
+            return context.Primitives.QuadNormals(this.FSize[slice]);
+        }
+
+        protected override bool Invalidate()
+        {
+            return this.FSize.IsChanged;
+        }
+
+    }
+}
