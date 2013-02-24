@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FeralTic", "FeralTic", "{5F0D7AF2-A20D-44E4-9E22-953026C1DCE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{7B394D34-C5BF-49D8-83E2-A1DE8C102480}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nodes", "Nodes", "{34741DBE-D233-4D94-BDD9-1469F48C2F16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeralTic", "..\FeralTic\Core\FeralTic.csproj", "{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.DX11.Core", "Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj", "{71C0786D-2640-4E39-AA7B-83602F36F3A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Debug|x64.ActiveCfg = Debug|x64
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Debug|x64.Build.0 = Debug|x64
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Debug|x86.ActiveCfg = Debug|x86
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Debug|x86.Build.0 = Debug|x86
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Release|x64.ActiveCfg = Release|x64
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Release|x64.Build.0 = Release|x64
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Release|x86.ActiveCfg = Release|x86
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}.Release|x86.Build.0 = Release|x86
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3}.Debug|x64.ActiveCfg = Debug|x64
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3}.Debug|x64.Build.0 = Debug|x64
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3}.Debug|x86.ActiveCfg = Debug|x86
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3}.Debug|x86.Build.0 = Debug|x86
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3}.Release|x64.ActiveCfg = Release|x86
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9EAD0F44-E6AA-4363-BE4D-D944C1D35044} = {5F0D7AF2-A20D-44E4-9E22-953026C1DCE4}
+		{71C0786D-2640-4E39-AA7B-83602F36F3A3} = {7B394D34-C5BF-49D8-83E2-A1DE8C102480}
+	EndGlobalSection
+EndGlobal
