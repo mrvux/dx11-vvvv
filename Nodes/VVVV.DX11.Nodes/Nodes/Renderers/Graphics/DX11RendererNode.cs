@@ -248,6 +248,9 @@ namespace VVVV.DX11.Nodes
 
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
+
+        [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<Control> FOutCtrl;
         #endregion
 
         #region Fields
@@ -274,6 +277,7 @@ namespace VVVV.DX11.Nodes
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
+            this.FOutCtrl[0] = this;
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             if (this.FOutBackBuffer[0] == null)
             {

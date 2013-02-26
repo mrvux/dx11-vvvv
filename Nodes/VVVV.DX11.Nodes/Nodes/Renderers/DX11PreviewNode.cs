@@ -30,6 +30,9 @@ namespace VVVV.DX11.Nodes.Renderers
          [Input("Enabled",DefaultValue=1)]
          protected ISpread<bool> FEnabled;
 
+         [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+         protected ISpread<Control> FOutCtrl;
+
          DX11Resource<DX11SwapChain> swapchain = new DX11Resource<DX11SwapChain>();
 
          private bool resized;
@@ -187,7 +190,7 @@ namespace VVVV.DX11.Nodes.Renderers
 
          public void Evaluate(int SpreadMax)
          {
-             
+             this.FOutCtrl[0] = this.ctrl;
          }
     }
 }
