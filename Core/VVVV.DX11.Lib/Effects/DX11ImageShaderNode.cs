@@ -81,10 +81,10 @@ namespace VVVV.DX11.Nodes.Layers
         private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
         private bool shaderupdated;
 
-        //private DX11ResourcePoolEntry<DX11RenderTarget2D> lasttarget;
         private int spmax = 0;
 
         private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
+        private DX11RenderTarget2D persistedframe;
 
         #region Default Input Pins
         [Input("Texture In")]
@@ -252,9 +252,6 @@ namespace VVVV.DX11.Nodes.Layers
                 this.shaderupdated = false;
             }
 
-
-            //var quad = context.Primitives.FullScreenQuad;
-
             context.RenderStateStack.Push(new DX11RenderState());
 
             this.OnBeginQuery(context);
@@ -262,31 +259,16 @@ namespace VVVV.DX11.Nodes.Layers
 
             //Clear shader stages
             shaderdata.ResetShaderStages(ctx);
-
             context.Primitives.ApplyFullTriVS();
             
-
-            /*context.Primitives.PasstroughVS.GetTechniqueByIndex(0).GetPassByIndex(0).Apply(ctx);
-            context.Primitives.FullScreenQuad.Bind(context.Primitives.QuadLayout);*/
-
-
-            //Unlock last target, not needed anymore
-            /*if (lasttarget != null)
-            {
-                lasttarget.UnLock();
-            }*/
-
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> rt in this.lastframetargets)
             {
                 rt.UnLock();
             }
-
-
+            
             DX11ObjectRenderSettings or = new DX11ObjectRenderSettings();
 
             int wi, he;
-
-            
 
             for (int i = 0; i < this.spmax; i++)
             {
@@ -332,10 +314,10 @@ namespace VVVV.DX11.Nodes.Layers
                     //Bind Initial (once only is ok)
                     this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "INITIAL", initial);
 
-                    /*if (previoustarget != null)
+                    if (this.persistedframe != null)
                     {
-                        this.BindSemanticSRV(shaderdata.ShaderInstance.Effect, "LASTFRAME", previoustarget.SRV);
-                    }*/
+                        this.BindSemanticSRV(shaderdata.ShaderInstance.Effect, "LASTFRAME", persistedframe.SRV);
+                    }
 
                     //Go trough all passes
                     EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
@@ -381,7 +363,9 @@ namespace VVVV.DX11.Nodes.Layers
                             w = Math.Max(w, 1);
                         }
 
-                        if (fmt == Format.B8G8R8A8_UNorm) { fmt = Format.R8G8B8A8_UNorm; } //Fix in case coming from vlc
+                        //Check format support for render target, and default to rgb8 if not
+                        if (!context.IsSupported(FormatSupport.RenderTarget, fmt)) { fmt = Format.R8G8B8A8_UNorm; }
+                        
 
                         DX11ResourcePoolEntry<DX11RenderTarget2D> elem = context.ResourcePool.LockRenderTarget(w, h, fmt, new SampleDescription(1, 0), mips, 0);
                         locktargets.Add(elem);
@@ -395,8 +379,6 @@ namespace VVVV.DX11.Nodes.Layers
 
                         //Apply settings (note that textures swap is handled later)
                         this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, or, i);
-
-
 
                         Viewport vp = new Viewport();
                         vp.Width = rt.Width;
@@ -417,7 +399,6 @@ namespace VVVV.DX11.Nodes.Layers
                         {
                             ctx.ComputeShader.Set(null);
                             context.Primitives.FullScreenTriangle.Draw();
-                            //context.Primitives.FullScreenQuad.Draw();
                         }
 
                         //Generate mips if applicable
@@ -440,6 +421,8 @@ namespace VVVV.DX11.Nodes.Layers
 
                     //Keep lock on last rt, since don't want it overidden
                     lasttmp.Lock();
+
+                    //this.lastframetargets.
                     //this.lasttarget = lasttmp;
 
                     this.lastframetargets.Add(lasttmp);

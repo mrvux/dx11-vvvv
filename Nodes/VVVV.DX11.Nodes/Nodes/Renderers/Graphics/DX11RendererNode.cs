@@ -162,6 +162,8 @@ namespace VVVV.DX11.Nodes
 
         protected IHDEHost hde;
 
+
+
         [Import()]
         protected IPluginHost2 host2;
 
@@ -213,7 +215,7 @@ namespace VVVV.DX11.Nodes
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
 
-        [Input("Transformation Index", DefaultValue=1,Visibility=PinVisibility.OnlyInspector, Order=22)]
+        [Input("Transformation Index", DefaultValue=-1,Visibility=PinVisibility.OnlyInspector, Order=22)]
         protected IDiffSpread<int> FInTI;
         string oldbbformat = "";
         #endregion
@@ -308,6 +310,25 @@ namespace VVVV.DX11.Nodes
                 this.FInvalidateSwapChain = true;
             }
 
+            if (this.FInFullScreen.IsChanged)
+            {
+                string path;
+                this.FHost.GetNodePath(false, out path);
+                INode2 n2 = hde.GetNodeFromPath(path);
+
+                if (n2.Window.IsVisible)
+                {
+                    if (this.FInFullScreen[0])
+                    {
+                        hde.SetComponentMode(n2, ComponentMode.Fullscreen);
+                    }
+                    else
+                    {
+                        hde.SetComponentMode(n2, ComponentMode.InAWindow);
+                    }
+                }
+            }
+
             /*if (this.FInFullScreen.IsChanged)
             {
                 if (this.FInFullScreen[0])
@@ -395,7 +416,7 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
             
-if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
+            if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
 
             if (this.rendereddevices.Contains(context)) { return; }
 
