@@ -169,7 +169,9 @@
     <Compile Include="Nodes\Geometry\Primitives\DX11RoundRectNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11SphereNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11TetrahedronNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11TorusNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11OctahedronNode.cs" />
     <Compile Include="Nodes\Geometry\SetBoundingBoxGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\VertexInstancedDrawerNode.cs" />
