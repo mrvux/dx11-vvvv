@@ -300,7 +300,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 DX11VertexGeometry vg = (DX11VertexGeometry)this.FIn[0][context].ShallowCopy();
 
                                 int vsize = customlayout ? size : vg.VertexSize;
-                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(device, vsize, vg.VerticesCount);
+                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, vg.VerticesCount);
                                 if (customlayout) { vg.VertexSize = vsize; }
                                 vg.VertexBuffer = vbo;
 
@@ -318,7 +318,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 }
 
                                 int vsize = customlayout ? size : vg.VertexSize;
-                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(device, vsize, maxv);
+                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, maxv);
                                 vg.VertexBuffer = vbo;
                                 vg.AssignDrawer(new DX11VertexAutoDrawer());
                                 if (customlayout) { vg.VertexSize = vsize; }
@@ -338,7 +338,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 DX11IndexedGeometry ig = (DX11IndexedGeometry)this.FIn[0][context].ShallowCopy();
 
                                 int vsize = customlayout ? size : ig.VertexSize;
-                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(device, vsize, ig.VerticesCount);
+                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, ig.VerticesCount);
                                 ig.VertexBuffer = vbo;
                                 if (customlayout) { ig.VertexSize = vsize; }
                                 this.clone = ig;
@@ -356,7 +356,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 }
 
                                 int vsize = customlayout ? size : ig.VertexSize;
-                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(device, vsize, maxv);
+                                Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, maxv);
 
                                 //Copy a new Vertex buffer with stream out
                                 DX11VertexGeometry vg = new DX11VertexGeometry(context);
@@ -382,7 +382,7 @@ namespace VVVV.DX11.Nodes.Layers
                         {
                             DX11NullGeometry ng = (DX11NullGeometry)this.FIn[0][context];
 
-                            Buffer vbo = BufferHelper.CreateStreamOutBuffer(device, size, this.FInMaxElements[0]);
+                            Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, size, this.FInMaxElements[0]);
 
                             //Copy a new Vertex buffer with stream out
                             DX11VertexGeometry vg = new DX11VertexGeometry(context);
@@ -407,7 +407,7 @@ namespace VVVV.DX11.Nodes.Layers
                         {
                             DX11IndexOnlyGeometry ng = (DX11IndexOnlyGeometry)this.FIn[0][context];
 
-                            Buffer vbo = BufferHelper.CreateStreamOutBuffer(device, size, this.FInMaxElements[0]);
+                            Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, size, this.FInMaxElements[0]);
 
                             //Copy a new Vertex buffer with stream out
                             DX11VertexGeometry vg = new DX11VertexGeometry(context);
@@ -433,11 +433,16 @@ namespace VVVV.DX11.Nodes.Layers
                             this.FOutBuffer[0][context].SRV.Dispose();
                         }
 
-                        this.FOutBuffer[0][context] = new DX11RawBuffer(context, this.buffer);
+                        if (context.ComputeShaderSupport)
+                        {
+                            this.FOutBuffer[0][context] = new DX11RawBuffer(context, this.buffer);
+                        }
+                        else
+                        {
+                            this.FOutBuffer[0][context] = null;
+                        }
 
                     }
-
-                    
 
                     ctx.StreamOutput.SetTargets(new StreamOutputBufferBinding(this.buffer, 0));
                     shaderdata.SetInputAssembler(ctx, this.FIn[0][context], 0);
