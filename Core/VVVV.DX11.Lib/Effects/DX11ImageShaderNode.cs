@@ -364,7 +364,13 @@ namespace VVVV.DX11.Nodes.Layers
                         }
 
                         //Check format support for render target, and default to rgb8 if not
-                        if (!context.IsSupported(FormatSupport.RenderTarget, fmt)) { fmt = Format.R8G8B8A8_UNorm; }
+                        if (!context.IsSupported(FormatSupport.RenderTarget, fmt)) 
+                        { 
+                            fmt = Format.R8G8B8A8_UNorm; 
+                        }
+
+                        //Since device is not capable of telling us BGR not supported
+                        if (fmt == Format.B8G8R8A8_UNorm) { fmt = Format.R8G8B8A8_UNorm; }
                         
 
                         DX11ResourcePoolEntry<DX11RenderTarget2D> elem = context.ResourcePool.LockRenderTarget(w, h, fmt, new SampleDescription(1, 0), mips, 0);
