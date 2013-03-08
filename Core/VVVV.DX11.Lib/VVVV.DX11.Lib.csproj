@@ -133,6 +133,7 @@
     <Compile Include="BaseNodes\ConsNonNilNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\DX11BaseVertexPrimitiveNode.cs" />
     <Compile Include="BaseNodes\DX11ResourceConsNode.cs">
       <SubType>Code</SubType>
     </Compile>

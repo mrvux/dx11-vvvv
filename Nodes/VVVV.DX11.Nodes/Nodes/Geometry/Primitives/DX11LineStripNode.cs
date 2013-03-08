@@ -12,7 +12,7 @@ using SlimDX;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "LineStrip", Category = "DX11.Geometry", Version = "", Author = "vux")]
+    [PluginInfo(Name = "LineStrip", Category = "DX11.Geometry", Version = "3d", Author = "vux")]
     public class DX11LineStripNode : DX11BaseVertexPrimitiveNode
     {
         [Input("Vertices", DefaultValue = 0.0)]
@@ -23,7 +23,7 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11VertexGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.LineStrip(this.FVerts[slice].ToList(),this.FLoop[slice]);
+            return context.Primitives.LineStrip3d(this.FVerts[slice].ToList(),this.FLoop[slice]);
         }
 
         protected override bool Invalidate()

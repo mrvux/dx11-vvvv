@@ -155,7 +155,6 @@
     <Compile Include="Nodes\Geometry\Primitives\DX112dPolygonNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11AbstractMeshNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11BasePrimitiveNode.cs" />
-    <Compile Include="Nodes\Geometry\Primitives\DX11BaseVertexPrimitiveNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11BezierPatchNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11BezierPatchNode3d.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11BoxNode.cs" />

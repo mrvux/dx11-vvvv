@@ -10,7 +10,6 @@ using SlimDX.Direct3D11;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
-
 namespace VVVV.DX11.Nodes
 {
     public abstract class DX11BaseVertexPrimitiveNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
