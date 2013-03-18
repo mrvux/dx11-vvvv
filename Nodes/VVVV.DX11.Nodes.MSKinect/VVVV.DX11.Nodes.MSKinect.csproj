@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CAE46B4A-CB79-4E39-B318-BF76A2CB256F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VVVV.DX11.Nodes</RootNamespace>
+    <AssemblyName>VVVV.DX11.Nodes.MSKinect</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <NoWarn>
+    </NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Deploy\Debug\x64\packs\DX11\nodes\plugins\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Deploy\Debug\x86\packs\DX11\nodes\plugins\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Release|x64'">
+    <OutputPath>..\..\Deploy\Release\x64\packs\DX11\nodes\plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <NoWarn>
+    </NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Release|x86'">
+    <OutputPath>..\..\Deploy\Release\x86\packs\DX11\nodes\plugins\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <NoWarn>
+    </NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Kinect, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Kinect.Toolkit">
+      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.FaceTracking">
+      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.FaceTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.Fusion">
+      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.Fusion.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.Interaction">
+      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.Interaction.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>..\..\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="SlimDX">
+      <HintPath>..\..\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="PluginInterfaces">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Hosting">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Hosting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Core">
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Gesture.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\GestureController.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\GestureEnumTypes.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\GestureEventArgs.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\IRelativeGestureSegment.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\JoinedHandsSegment.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\Menu\MenuSegments.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeLeft\SwipeLeftSegment1.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeLeft\SwipeLeftSegment2.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeLeft\SwipeLeftSegment3.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeRight\SwipeRightSegment1.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeRight\SwipeRightSegment2.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeRight\SwipeRightSegment3.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\WaveLeftSegments.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\WaveRightSegments.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\ZoomSegments.cs" />
+    <Compile Include="Lib\KinectRuntime.cs" />
+    <Compile Include="Nodes\KinectBaseTextureNode.cs" />
+    <Compile Include="Nodes\KinectColorTextureNode.cs" />
+    <Compile Include="Nodes\KinectDepthTextureNode.cs" />
+    <Compile Include="Nodes\KinectFaceDataNode.cs" />
+    <Compile Include="Nodes\KinectFaceMeshNode.cs" />
+    <Compile Include="Nodes\KinectFaceNode.cs" />
+    <Compile Include="Nodes\KinectPlayerTextureNode.cs" />
+    <Compile Include="Nodes\KinectRuntimeNode.cs" />
+    <Compile Include="Nodes\KinectSkelectionGestureNode.cs" />
+    <Compile Include="Nodes\KinectSkeletonIndicesNode.cs" />
+    <Compile Include="Nodes\KinectSkeletonNode.cs" />
+    <Compile Include="Nodes\KinectSmoothSettingsNode.cs" />
+    <Compile Include="Nodes\KinectWorldTextureNode.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Lib\Fizbin.Kinect.Gestures\Fizbin.Kinect.Gestures.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
+      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
+      <Project>{71C0786D-2640-4E39-AA7B-83602F36F3A3}</Project>
+      <Name>VVVV.DX11.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
