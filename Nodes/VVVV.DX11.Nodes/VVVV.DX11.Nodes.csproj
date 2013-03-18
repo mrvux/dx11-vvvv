@@ -220,7 +220,6 @@
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DColorNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
     <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
-    <Compile Include="Nodes\Textures\2D\VideoInNode.cs" />
     <Compile Include="Nodes\Textures\2D\WriterTexture2dNode.cs" />
     <Compile Include="Nodes\Textures\3D\InfoTexture3dNode.cs" />
     <Compile Include="Nodes\Textures\3D\WriterTexture3dNode.cs" />

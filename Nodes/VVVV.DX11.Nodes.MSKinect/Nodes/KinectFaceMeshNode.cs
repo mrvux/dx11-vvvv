@@ -176,7 +176,7 @@ namespace VVVV.DX11.Nodes.MSKinect
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
-                this.FOutput[i].Dispose();
+                if (this.FOutput[i] != null) { this.FOutput[i].Dispose(); }
             }
         }
     }
