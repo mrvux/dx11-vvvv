@@ -175,7 +175,6 @@
   <ItemGroup>
     <Compile Include="AssimpAnimationNode.cs" />
     <Compile Include="AssimpAnimationTreeBufferNode.cs" />
-    <Compile Include="AssimpBoneWrapper.cs" />
     <Compile Include="AssimpCameraTransformNode.cs" />
     <Compile Include="AssimpChannelAnimNode.cs" />
     <Compile Include="AssimpChannelsNode.cs" />

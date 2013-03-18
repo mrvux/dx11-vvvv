@@ -124,6 +124,9 @@
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.Hosting.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="VideoInputSharp">
+      <HintPath>..\..\Dependencies\x86\VideoInputSharp.dll</HintPath>
+    </Reference>
     <Reference Include="VVVV.Utils">
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.Utils.dll</HintPath>
       <Private>False</Private>
@@ -217,6 +220,7 @@
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DColorNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
     <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
+    <Compile Include="Nodes\Textures\2D\VideoInNode.cs" />
     <Compile Include="Nodes\Textures\2D\WriterTexture2dNode.cs" />
     <Compile Include="Nodes\Textures\3D\InfoTexture3dNode.cs" />
     <Compile Include="Nodes\Textures\3D\WriterTexture3dNode.cs" />
