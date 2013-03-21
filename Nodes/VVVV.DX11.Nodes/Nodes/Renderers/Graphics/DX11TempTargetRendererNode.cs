@@ -97,7 +97,8 @@ namespace VVVV.DX11
 
             TexInfo ti = this.rtm.GetRenderTarget(context);
 
-            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context))
+            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged
+                || this.FInAAQuality.IsChanged)
             {
                 this.width = ti.w;
                 this.height = ti.h;
@@ -120,7 +121,7 @@ namespace VVVV.DX11
                 if (aacount > 1)
                 {
                     DX11RenderTarget2D temptarget = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount,aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
-                    DX11RenderTarget2D temptargetresolve = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount, aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
+                    DX11RenderTarget2D temptargetresolve = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(1, 0), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
 
                     targets[context] = temptarget;
                     targetresolve[context] = temptargetresolve;
