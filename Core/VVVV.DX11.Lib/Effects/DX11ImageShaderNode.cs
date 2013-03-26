@@ -90,6 +90,9 @@ namespace VVVV.DX11.Nodes.Layers
         [Input("Texture In")]
         protected Pin<DX11Resource<DX11Texture2D>> FIn;
 
+        [Input("Use Default Size", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInUseDefaultSize;
+
         [Input("Default Size",DefaultValues= new double[] {256,256 },Visibility= PinVisibility.OnlyInspector)]
         protected ISpread<Vector2> FInSize;
 
@@ -277,7 +280,7 @@ namespace VVVV.DX11.Nodes.Layers
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
 
                     DX11Texture2D initial;
-                    if (this.FIn.PluginIO.IsConnected)
+                    if (this.FIn.PluginIO.IsConnected || this.FInUseDefaultSize[0] == false)
                     {
                         initial = this.FIn[i][context];
                         wi = initial.Width;
