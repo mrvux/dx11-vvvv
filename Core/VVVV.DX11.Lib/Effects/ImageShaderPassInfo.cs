@@ -103,7 +103,5 @@ namespace VVVV.DX11.Lib.Effects
                 this.Reference = b ? eImageScaleReference.Initial : eImageScaleReference.Previous;
             }
         }
-
-
     }
 }

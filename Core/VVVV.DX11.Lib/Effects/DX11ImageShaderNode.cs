@@ -280,11 +280,20 @@ namespace VVVV.DX11.Nodes.Layers
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
 
                     DX11Texture2D initial;
-                    if (this.FIn.PluginIO.IsConnected || this.FInUseDefaultSize[0] == false)
+                    if (this.FIn.PluginIO.IsConnected)
                     {
-                        initial = this.FIn[i][context];
-                        wi = initial.Width;
-                        he = initial.Height;
+                        if (this.FInUseDefaultSize[0])
+                        {
+                            initial = context.DefaultTextures.WhiteTexture;
+                            wi = (int)this.FInSize[0].X;
+                            he = (int)this.FInSize[0].Y;
+                        }
+                        else
+                        {
+                            initial = this.FIn[i][context];
+                            wi = initial.Width;
+                            he = initial.Height;
+                        }
                     }
                     else
                     {
