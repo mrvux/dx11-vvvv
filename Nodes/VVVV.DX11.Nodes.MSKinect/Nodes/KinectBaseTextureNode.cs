@@ -33,6 +33,8 @@ namespace VVVV.DX11.Nodes.MSKinect
         private bool FInvalidateConnect = false;
         protected bool FInvalidate = true;
 
+        protected bool Resized = false;
+
         protected KinectRuntime runtime;
 
         protected object m_lock = new object();
@@ -103,6 +105,14 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 this.FTextureOutput[0][context] = new DX11DynamicTexture2D(context, this.Width, this.Height, this.Format);
             }
+
+            if (this.Resized)
+            {
+                this.FTextureOutput[0].Dispose(context);
+                this.FTextureOutput[0][context] = new DX11DynamicTexture2D(context, this.Width, this.Height, this.Format);
+                this.Resized = false;
+            }
+
 
             if (this.FInvalidate)
             {

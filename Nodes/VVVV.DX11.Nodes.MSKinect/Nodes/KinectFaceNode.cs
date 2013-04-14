@@ -110,8 +110,8 @@ namespace VVVV.MSKinect.Nodes
                     else
                     {
                         this.FOutOK[cnt] = false;
-                        this.FOutPosition[cnt] = new Vector3(sft.frame.Translation.X, sft.frame.Translation.Y, sft.frame.Translation.Z);
-                        this.FOutRotation[cnt] = new Vector3(sft.frame.Rotation.X, sft.frame.Rotation.Y, sft.frame.Rotation.Z) * INVTWOPI;
+                        this.FOutPosition[cnt] = Vector3.Zero;
+                        this.FOutRotation[cnt] = Vector3.Zero;
                     }
                     cnt++;
                 }
@@ -179,7 +179,7 @@ namespace VVVV.MSKinect.Nodes
                     SkeletonFaceTracker skeletonFaceTracker;
                     if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker))
                     {
-                        skeletonFaceTracker.OnFrameReady(this.runtime.Runtime, ColorImageFormat.RgbResolution640x480Fps30, colorImage, DepthImageFormat.Resolution320x240Fps30, depthImage, skeleton);
+                        skeletonFaceTracker.OnFrameReady(this.runtime.Runtime, ColorImageFormat.RgbResolution640x480Fps30, colorImage, DepthImageFormat.Resolution640x480Fps30, depthImage, skeleton);
                         skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
                     }
                 }

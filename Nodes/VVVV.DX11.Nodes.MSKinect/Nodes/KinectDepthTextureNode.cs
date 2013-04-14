@@ -29,8 +29,8 @@ namespace VVVV.DX11.Nodes.MSKinect
         [ImportingConstructor()]
         public KinectDepthTextureNode(IPluginHost host)
         {
-            this.depthpixels = new DepthImagePixel[320 * 240];
-            this.rawdepth = new short[320 * 240];
+            this.depthpixels = new DepthImagePixel[640 * 480];
+            this.rawdepth = new short[640 * 480];
         }
 
         private void DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
@@ -44,7 +44,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 lock (m_lock)
                 {
                     frame.CopyDepthImagePixelDataTo(this.depthpixels);
-                    for (int i16 = 0; i16 < 320 * 240; i16++)
+                    for (int i16 = 0; i16 < 640 * 480; i16++)
                     {
                         this.rawdepth[i16] = this.depthpixels[i16].Depth;
                     }
@@ -58,12 +58,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override int Width
         {
-            get { return 320; }
+            get { return 640; }
         }
 
         protected override int Height
         {
-            get { return 240; }
+            get { return 480; }
         }
 
         protected override SlimDX.DXGI.Format Format

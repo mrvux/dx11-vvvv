@@ -23,16 +23,44 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         private float[] world0;
         private float[] world1;
-        private bool m_blocked = false;
         private DepthImagePixel[] depthpixels;
         private SkeletonPoint[] skelpoints;
+        private DepthImageFormat currentformat = DepthImageFormat.Resolution320x240Fps30;
+        private int width;
+        private int height;
+
 
         public KinectWorldTextureNode()
         {
-            this.world0 = new float[320 * 240 * 4];
-            this.world1 = new float[320 * 240 * 4];
-            this.skelpoints = new SkeletonPoint[320 * 240];
-            this.depthpixels = new DepthImagePixel[320 * 240];
+            this.RebuildBuffer(DepthImageFormat.Resolution320x240Fps30, true);
+        }
+
+        private void RebuildBuffer(DepthImageFormat format, bool force)
+        {
+            if (format != this.currentformat || force)
+            {
+                this.Resized = true;
+                this.currentformat = format;
+                if (this.currentformat == DepthImageFormat.Resolution320x240Fps30)
+                {
+                    this.world0 = new float[320 * 240 * 4];
+                    this.world1 = new float[320 * 240 * 4];
+                    this.skelpoints = new SkeletonPoint[320 * 240];
+                    this.depthpixels = new DepthImagePixel[320 * 240];
+                    this.width = 320;
+                    this.height = 240;
+                }
+                else if (this.currentformat == DepthImageFormat.Resolution640x480Fps30)
+                {
+                    this.world0 = new float[640 * 480 * 4];
+                    this.world1 = new float[640 * 480 * 4];
+                    this.skelpoints = new SkeletonPoint[640 * 480];
+                    this.depthpixels = new DepthImagePixel[640 * 480];
+                    this.width = 640;
+                    this.height = 480;
+                }
+            }
+
         }
 
         private void DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
@@ -44,6 +72,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 this.FInvalidate = true;
                 if (frame.FrameNumber != this.frameindex)
                 {
+                    this.RebuildBuffer(frame.Format, false);
 
                     this.frameindex = frame.FrameNumber;
                     frame.CopyDepthImagePixelDataTo(this.depthpixels);
@@ -52,9 +81,9 @@ namespace VVVV.DX11.Nodes.MSKinect
                     //DepthImagePixel dp;
                     //dp.
                     this.runtime.Runtime.CoordinateMapper.MapDepthFrameToSkeletonFrame(frame.Format, this.depthpixels, this.skelpoints);
-                    for (int h = 0; h < 240; h++)
+                    for (int h = 0; h < this.height; h++)
                     {
-                        for (int w = 0; w < 320; w++)
+                        for (int w = 0; w < this.width; w++)
                         {
                             //this.runtime.Runtime.CoordinateMapper.
                             //SkeletonPoint sp = frame.MapToSkeletonPoint(w, h);
@@ -87,12 +116,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override int Width
         {
-            get { return 320; }
+            get { return this.width; }
         }
 
         protected override int Height
         {
-            get { return 240; }
+            get { return this.height; }
         }
 
         protected override SlimDX.DXGI.Format Format
@@ -105,7 +134,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             fixed (float* f = &world1[0])
             {
                 IntPtr ptr = new IntPtr(f);
-                texture.WriteData(ptr, 320 * 240 * 4 * 4);
+                texture.WriteData(ptr, this.width * this.height * 4 * 4);
             }
            // texture.WriteData<float>(world1);
         }

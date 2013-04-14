@@ -34,8 +34,8 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         public KinectPlayeTextureNode()
         {
-            this.playerimage = new int[320 * 240];
-            this.rawdepth = new short[320 * 240];
+            this.playerimage = new int[640 * 480];
+            this.rawdepth = new short[640 * 480];
         }
 
         protected override void OnEvaluate()
@@ -59,12 +59,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override int Width
         {
-            get { return 320; }
+            get { return 640; }
         }
 
         protected override int Height
         {
-            get { return 240; }
+            get { return 480; }
         }
 
         protected override SlimDX.DXGI.Format Format
@@ -99,7 +99,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 lock (m_lock)
                 {
                     frame.CopyPixelDataTo(this.rawdepth);
-                    for (int i16 = 0; i16 < 320 * 240; i16++)
+                    for (int i16 = 0; i16 < 640 * 480; i16++)
                     {
                         int player = rawdepth[i16] & DepthImageFrame.PlayerIndexBitmask;
                         this.playerimage[i16] = this.colors[player];
