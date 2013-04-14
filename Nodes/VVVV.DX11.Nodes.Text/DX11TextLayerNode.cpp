@@ -135,6 +135,7 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 
 		//Apply old states back
 		context->RenderStateStack->Apply();
+		context->CleanShaderStages();
 	}
 }
 
