@@ -79,13 +79,14 @@ namespace VVVV.DX11.Factories
         protected override IEnumerable<INodeInfo> LoadNodeInfos(string filename)
         {
             var project = CreateProject(filename);
-            yield return LoadNodeInfoFromEffect(filename, project);
+            if (project != null)
+            	yield return LoadNodeInfoFromEffect(filename, project);
         }
 
         protected override void DoAddFile(string filename)
         {
-            CreateProject(filename);
-            base.DoAddFile(filename);
+        	if (CreateProject(filename) != null)
+            	base.DoAddFile(filename);
         }
 
         protected override void DoRemoveFile(string filename)
@@ -109,20 +110,42 @@ namespace VVVV.DX11.Factories
             FXProject project;
             if (!FProjects.TryGetValue(filename, out project))
             {
-                project = new FXProject(filename, new Uri(filename), FHDEHost.ExePath);
-                if (FSolution.Projects.CanAdd(project))
+            	var isDX11 = true;
+            	//check if this is a dx11 effect in that it does not contain "technique "
+            	using (var sr = new StreamReader(filename))
                 {
-                    FSolution.Projects.Add(project);
-                }
-                else
-                {
-                    // Project was renamed
-                    project = FSolution.Projects[project.Name] as FXProject;
-                }
-
-                project.DoCompileEvent += project_DoCompileEvent;
-
-                FProjects[filename] = project;
+            		string line;
+            		var t9 = "technique ";
+                    
+                    // Parse lines from the file until the end of
+                    // the file is reached.
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                    	if (line.Contains(t9))
+                    	{
+                    		isDX11 = false;
+                    		break;
+                    	}
+                    }
+            	}
+            	
+            	if (isDX11)
+	            {
+	                project = new FXProject(filename, FHDEHost.ExePath);
+	                if (FSolution.Projects.CanAdd(project))
+	                {
+	                    FSolution.Projects.Add(project);
+	                }
+	                else
+	                {
+	                    // Project was renamed
+	                    project = FSolution.Projects[project.Name] as FXProject;
+	                }
+	
+	                project.DoCompileEvent += project_DoCompileEvent;
+	
+	                FProjects[filename] = project;
+            	}
             }
 
             return project;
