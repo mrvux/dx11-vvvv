@@ -347,10 +347,10 @@ namespace VVVV.DX11.Nodes
                 }
             }*/
 
-            MouseButton button = MouseButton.None;
-            if (this.FMouseButtons.x > 0.5) { button |= MouseButton.Left; }
-            if (this.FMouseButtons.y > 0.5) { button |= MouseButton.Middle; }
-            if (this.FMouseButtons.z > 0.5) { button |= (MouseButton)4; }
+            var button = MouseButtons.None;
+            if (this.FMouseButtons.x > 0.5) { button |= MouseButtons.Left; }
+            if (this.FMouseButtons.y > 0.5) { button |= MouseButtons.Middle; }
+            if (this.FMouseButtons.z > 0.5) { button |= (MouseButtons)4; }
 
             this.FOutKState[0] = new KeyboardState(this.FKeys);
             this.FOutMouseState[0] = this.Join(this.FMousePos.x, this.FMousePos.y,
@@ -386,13 +386,13 @@ namespace VVVV.DX11.Nodes
             bool rightButton,
             int mouseWheel)
         {
-            var button = MouseButton.None;
+            var button = MouseButtons.None;
             if (leftButton)
-                button |= MouseButton.Left;
+                button |= MouseButtons.Left;
             if (middleButton)
-                button |= MouseButton.Middle;
+                button |= MouseButtons.Middle;
             if (rightButton)
-                button |= MouseButton.Right;
+                button |= MouseButtons.Right;
             return new MouseState(x, y, button, mouseWheel);
         }
 

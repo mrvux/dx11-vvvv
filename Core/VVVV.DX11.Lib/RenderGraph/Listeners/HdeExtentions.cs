@@ -7,6 +7,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 using VVVV.Hosting.Interfaces;
 using VVVV.Hosting.Factories;
+using VVVV.Hosting.IO;
 
 namespace VVVV
 {

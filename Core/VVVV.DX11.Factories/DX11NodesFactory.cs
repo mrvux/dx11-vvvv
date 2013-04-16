@@ -62,21 +62,14 @@ namespace VVVV.DX11.Factories
             this.displaymanager = new DX11DisplayManager();
             this.devicemanager = new DX11AutoAdapterDeviceManager(this.displaymanager);
 
-           this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
-           this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
-           this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder.Graph,this.logger);
+			this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
+			this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
+			this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder.Graph,this.logger);
 
             DX11GlobalDevice.DeviceManager = this.devicemanager;
             DX11GlobalDevice.RenderManager = this.rendermanager;
 
             this.niFactory = ni;
-            this.niFactory.NodeInfoAdded += this.niFactory_NodeInfoUpdated;
-            this.niFactory.NodeInfoUpdated += this.niFactory_NodeInfoUpdated;
-
-            for (int i = 0; i < this.niFactory.NodeInfos.Length; i++)
-            {
-                this.FilterNode(this.niFactory.NodeInfos[i]);
-            }
 		}
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)
@@ -106,28 +99,6 @@ namespace VVVV.DX11.Factories
             this.rendermanager.Present();
         }
 
-        void niFactory_NodeInfoUpdated(object sender, INodeInfo nodeInfo)
-        {
-            this.FilterNode(nodeInfo);
-        }
-
-        private void FilterNode(INodeInfo nodeInfo)
-        {
-           if ((nodeInfo.Category.StartsWith("EX9")
-                || nodeInfo.Category.StartsWith("DX9")
-                || nodeInfo.Version.StartsWith("EX9")
-                || nodeInfo.Version.StartsWith("DX9")
-                || nodeInfo.Category.StartsWith("GDI")
-                || nodeInfo.Category.StartsWith("SVG")
-                || nodeInfo.Version.StartsWith("GDI")
-                || nodeInfo.Version.StartsWith("SVG"))
-                && nodeInfo.Ignore == false)
-            {
-                nodeInfo.BeginUpdate();
-                nodeInfo.Ignore = true;
-                nodeInfo.CommitUpdate();
-            }
-        }
 
         #region Factory Stuff
         public void AddDir(string dir, bool recursive)

@@ -94,7 +94,7 @@ namespace VVVV.DX11.Factories
                 nodeInfo.AutoEvaluate = false;
                 nodeInfo.Arguments = typeof(T).ToString();
 
-                var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, typeof(T), nodeInfo);
+                var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, FNodeInfoFactory, FDNFactory, typeof(T), nodeInfo);
                 pluginHost.Plugin = pluginContainer;
 
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
