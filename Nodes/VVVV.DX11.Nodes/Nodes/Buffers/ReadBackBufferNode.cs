@@ -54,6 +54,7 @@ namespace VVVV.DX11.Nodes
                 if (b != null)
                 {
 
+
                     DX11StagingStructuredBuffer staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device
                         , b.ElementCount, b.Stride);
 
