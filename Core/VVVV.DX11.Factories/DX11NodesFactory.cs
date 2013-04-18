@@ -113,7 +113,7 @@ namespace VVVV.DX11.Factories
 
         private void FilterNode(INodeInfo nodeInfo)
         {
-           /*if ((nodeInfo.Category.StartsWith("EX9")
+           if ((nodeInfo.Category.StartsWith("EX9")
                 || nodeInfo.Category.StartsWith("DX9")
                 || nodeInfo.Version.StartsWith("EX9")
                 || nodeInfo.Version.StartsWith("DX9")
@@ -126,7 +126,7 @@ namespace VVVV.DX11.Factories
                 nodeInfo.BeginUpdate();
                 nodeInfo.Ignore = true;
                 nodeInfo.CommitUpdate();
-            }*/
+            }
         }
 
         #region Factory Stuff
