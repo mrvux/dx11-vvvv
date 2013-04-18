@@ -127,6 +127,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseNodes\AbstractComputeRenderer.cs" />
     <Compile Include="BaseNodes\AbstractDX11Renderer2DNode.cs">
       <SubType>Code</SubType>
     </Compile>

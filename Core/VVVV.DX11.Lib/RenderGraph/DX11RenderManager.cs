@@ -9,6 +9,7 @@ using VVVV.PluginInterfaces.V1;
 
 using FeralTic.DX11;
 using VVVV.Core.Logging;
+using VVVV.DX11.Lib.RenderGraph.Listeners;
 
 namespace VVVV.DX11.Lib.RenderGraph
 {
@@ -22,11 +23,13 @@ namespace VVVV.DX11.Lib.RenderGraph
 
         private DX11Graph graph;
         private ILogger logger;
+        private IDX11GraphBuilder gb;
 
         private List<IDX11RenderWindow> oldwindows = new List<IDX11RenderWindow>();
 
-        public DX11RenderManager(IDX11RenderContextManager devmanager, DX11Graph graph, ILogger logger)
+        public DX11RenderManager(IDX11RenderContextManager devmanager, IDX11GraphBuilder builder, ILogger logger)
         {
+            this.gb = builder;
             this.RenderGraphs = new Dictionary<DX11RenderContext, DX11DeviceRenderer>();
 
             this.devmanager = devmanager;
@@ -35,7 +38,7 @@ namespace VVVV.DX11.Lib.RenderGraph
             this.allocator = new DX11DeviceAllocator(devmanager);
             this.allocator.RenderContextDisposing += this.RenderContextDisposing;
 
-            this.graph = graph;
+            this.graph = builder.Graph;
             this.logger = logger;
 
             foreach (DX11RenderContext context in this.devmanager.RenderContexts)
@@ -89,6 +92,8 @@ namespace VVVV.DX11.Lib.RenderGraph
 
         public void Render(IDX11ResourceDataRetriever sender, IPluginHost host)
         {
+            this.gb.Flush();
+
             //TODO : Allocate new device after
             if (this.RenderGraphs.Count > 0)
             {

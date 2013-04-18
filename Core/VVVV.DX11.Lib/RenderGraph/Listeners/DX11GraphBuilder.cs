@@ -26,10 +26,17 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         public IPin src;
     }
 
-    public class DX11GraphBuilder<N> : AbstractHdeNodeListener
+    public interface IDX11GraphBuilder
+    {
+        void Flush();
+        DX11Graph Graph { get; }
+    }
+
+    public class DX11GraphBuilder<N> : AbstractHdeNodeListener, IDX11GraphBuilder
     {
         private DX11Graph graph;
 
+        public DX11Graph Graph { get { return this.graph; } }
 
         private List<IPin2> pendingpins = new List<IPin2>();
         private Dictionary<IPin, HdeLink> pendinglinks = new Dictionary<IPin, HdeLink>();
@@ -64,7 +71,6 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
             this.ProcessPendingLinks();
         }
 
-        public DX11Graph Graph { get { return this.graph; } }
 
         protected override bool ProcessAddedNode(INode2 node)
         {

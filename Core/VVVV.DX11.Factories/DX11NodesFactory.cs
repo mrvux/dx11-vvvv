@@ -64,7 +64,7 @@ namespace VVVV.DX11.Factories
 
            this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
            this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
-           this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder.Graph,this.logger);
+           this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder,this.logger);
 
             DX11GlobalDevice.DeviceManager = this.devicemanager;
             DX11GlobalDevice.RenderManager = this.rendermanager;
@@ -113,7 +113,7 @@ namespace VVVV.DX11.Factories
 
         private void FilterNode(INodeInfo nodeInfo)
         {
-           if ((nodeInfo.Category.StartsWith("EX9")
+           /*if ((nodeInfo.Category.StartsWith("EX9")
                 || nodeInfo.Category.StartsWith("DX9")
                 || nodeInfo.Version.StartsWith("EX9")
                 || nodeInfo.Version.StartsWith("DX9")
@@ -126,7 +126,7 @@ namespace VVVV.DX11.Factories
                 nodeInfo.BeginUpdate();
                 nodeInfo.Ignore = true;
                 nodeInfo.CommitUpdate();
-            }
+            }*/
         }
 
         #region Factory Stuff
