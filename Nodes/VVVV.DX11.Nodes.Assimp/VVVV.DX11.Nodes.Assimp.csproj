@@ -169,7 +169,7 @@
     </Reference>
     <Reference Include="AssimpNet">
       <HintPath>..\..\Dependencies\$(Platform)\AssimpNet.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
