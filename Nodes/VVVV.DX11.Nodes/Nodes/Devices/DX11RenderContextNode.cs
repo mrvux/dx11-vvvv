@@ -62,6 +62,9 @@ namespace VVVV.DX11.Nodes
         [Output("Pending Links Count",IsSingle=true)]
         protected ISpread<int> FOutPLCount;
 
+        [Output("Buffer Support")]
+        protected ISpread<bool> FOUCS;
+
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
@@ -99,6 +102,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutThisFrame.SliceCount = ctxlist.Count;
                 this.FOutProcessedCount.SliceCount = ctxlist.Count;
                 this.FOutFeatureLevel.SliceCount = ctxlist.Count;
+                this.FOUCS.SliceCount = ctxlist.Count;
 
                 int i = 0;
                 foreach (DX11RenderContext ctx in ctxlist)
@@ -115,6 +119,7 @@ namespace VVVV.DX11.Nodes
                     this.FOutNodeCount[i] = renderer.Graph.Nodes.Count;
                     this.FOutProcessedCount[i] = renderer.ProcessedNodes;
                     this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
+                    this.FOUCS[i] = ctx.ComputeShaderSupport;
 
                     i++;
                 }
