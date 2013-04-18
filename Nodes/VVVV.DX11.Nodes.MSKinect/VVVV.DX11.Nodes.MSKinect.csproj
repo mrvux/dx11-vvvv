@@ -103,12 +103,7 @@
     <Reference Include="Microsoft.Kinect, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Kinect.Toolkit">
       <HintPath>Dependencies\Microsoft.Kinect.Toolkit.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Kinect.Toolkit.Fusion">
-      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.Fusion.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Kinect.Toolkit.Interaction">
-      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.Interaction.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.ComponentModel.Composition.Codeplex">
       <HintPath>..\..\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
