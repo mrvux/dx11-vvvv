@@ -38,7 +38,7 @@ namespace VVVV.DX11.Nodes
 
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable
+    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow 
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -347,16 +347,10 @@ namespace VVVV.DX11.Nodes
                 }
             }*/
 
-            MouseButton button = MouseButton.None;
-            if (this.FMouseButtons.x > 0.5) { button |= MouseButton.Left; }
-            if (this.FMouseButtons.y > 0.5) { button |= MouseButton.Middle; }
-            if (this.FMouseButtons.z > 0.5) { button |= (MouseButton)4; }
-
             this.FOutKState[0] = new KeyboardState(this.FKeys);
-            this.FOutMouseState[0] = this.Join(this.FMousePos.x, this.FMousePos.y,
-                this.FMouseButtons.x > 0.5, this.FMouseButtons.y > 0.5, this.FMouseButtons.z > 0.5, this.wheel);
+            this.FOutMouseState[0] = MouseState.Create(this.FMousePos.x, this.FMousePos.y, this.FMouseButtons.x > 0.5f, this.FMouseButtons.y > 0.5f, this.FMouseButtons.z> 0.5f, false, false, this.wheel);
             this.FOutBackBufferSize[0] = new Vector2D(this.Width, this.Height);
-
+            
             this.FOutTouchSupport[0] = this.touchsupport;
 
             this.FOutTouchData.SliceCount = this.touches.Count;
@@ -377,25 +371,6 @@ namespace VVVV.DX11.Nodes
             }
         }
         #endregion
-
-        public MouseState Join(
-            double x,
-            double y,
-            bool leftButton,
-            bool middleButton,
-            bool rightButton,
-            int mouseWheel)
-        {
-            var button = MouseButton.None;
-            if (leftButton)
-                button |= MouseButton.Left;
-            if (middleButton)
-                button |= MouseButton.Middle;
-            if (rightButton)
-                button |= MouseButton.Right;
-            return new MouseState(x, y, button, mouseWheel);
-        }
-
 
         #region Dispose
         void IDisposable.Dispose()
@@ -639,5 +614,10 @@ namespace VVVV.DX11.Nodes
             this.ResumeLayout(false);
 
         }*/
+
+        public IntPtr InputWindowHandle
+        {
+            get { return this.Handle; }
+        }
     }
 }

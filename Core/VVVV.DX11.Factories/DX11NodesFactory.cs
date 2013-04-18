@@ -38,7 +38,6 @@ namespace VVVV.DX11.Factories
         private IDX11RenderContextManager devicemanager;
         private DX11RenderManager rendermanager;
 
-        private INodeInfoFactory niFactory;
         private DX11GraphBuilder<IDX11ResourceProvider> graphbuilder;
         private ILogger logger;
 
@@ -68,15 +67,6 @@ namespace VVVV.DX11.Factories
 
             DX11GlobalDevice.DeviceManager = this.devicemanager;
             DX11GlobalDevice.RenderManager = this.rendermanager;
-
-            this.niFactory = ni;
-            this.niFactory.NodeInfoAdded += this.niFactory_NodeInfoUpdated;
-            this.niFactory.NodeInfoUpdated += this.niFactory_NodeInfoUpdated;
-
-            for (int i = 0; i < this.niFactory.NodeInfos.Length; i++)
-            {
-                this.FilterNode(this.niFactory.NodeInfos[i]);
-            }
 		}
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)
@@ -104,29 +94,6 @@ namespace VVVV.DX11.Factories
         void GraphEventService_OnPresent(object sender, EventArgs e)
         {
             this.rendermanager.Present();
-        }
-
-        void niFactory_NodeInfoUpdated(object sender, INodeInfo nodeInfo)
-        {
-            this.FilterNode(nodeInfo);
-        }
-
-        private void FilterNode(INodeInfo nodeInfo)
-        {
-           if ((nodeInfo.Category.StartsWith("EX9")
-                || nodeInfo.Category.StartsWith("DX9")
-                || nodeInfo.Version.StartsWith("EX9")
-                || nodeInfo.Version.StartsWith("DX9")
-                || nodeInfo.Category.StartsWith("GDI")
-                || nodeInfo.Category.StartsWith("SVG")
-                || nodeInfo.Version.StartsWith("GDI")
-                || nodeInfo.Version.StartsWith("SVG"))
-                && nodeInfo.Ignore == false)
-            {
-                nodeInfo.BeginUpdate();
-                nodeInfo.Ignore = true;
-                nodeInfo.CommitUpdate();
-            }
         }
 
         #region Factory Stuff
@@ -180,9 +147,6 @@ namespace VVVV.DX11.Factories
         }
 
         #endregion
-
-
-
 
         public bool GetNodeListAttribute(INodeInfo nodeInfo, out string name, out string value)
         {

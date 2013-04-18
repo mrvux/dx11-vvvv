@@ -13,7 +13,7 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11.Lib.RenderGraph.Pins
 {
-    public class DX11ResourceInputStream<T, R> : BufferedIOStream<T>, IDisposable
+    public class DX11ResourceInputStream<T, R> : MemoryIOStream<T>, IDisposable
         where T : DX11Resource<R>, new()
         where R : IDX11Resource
     {
