@@ -26,25 +26,43 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         private DepthImagePixel[] depthpixels;
 
+        private int width;
+        private int height;
+        private bool first = true;
+        private DepthImageFormat format;
+
         [ImportingConstructor()]
         public KinectDepthTextureNode(IPluginHost host)
         {
-            this.depthpixels = new DepthImagePixel[640 * 480];
-            this.rawdepth = new short[640 * 480];
+
+        }
+
+        private void InitBuffers(DepthImageFrame frame)
+        {
+            this.format = frame.Format;
+            this.width = frame.Width;
+            this.height = frame.Height;
+            this.depthpixels = new DepthImagePixel[frame.Width * frame.Height];
+            this.rawdepth = new short[frame.Width * frame.Height];
         }
 
         private void DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
         {
             DepthImageFrame frame = e.OpenDepthImageFrame();
-
             if (frame != null)
             {
+                if (this.first || frame.Format != this.format)
+                {
+                    this.InitBuffers(frame);
+                    this.DisposeTextures();
+                }
+
                 this.FInvalidate = true;
                 this.frameindex = frame.FrameNumber;
                 lock (m_lock)
                 {
                     frame.CopyDepthImagePixelDataTo(this.depthpixels);
-                    for (int i16 = 0; i16 < 640 * 480; i16++)
+                    for (int i16 = 0; i16 < this.width * this.height; i16++)
                     {
                         this.rawdepth[i16] = this.depthpixels[i16].Depth;
                     }
@@ -58,12 +76,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override int Width
         {
-            get { return 640; }
+            get { return this.width; }
         }
 
         protected override int Height
         {
-            get { return 480; }
+            get { return this.height; }
         }
 
         protected override SlimDX.DXGI.Format Format

@@ -27,7 +27,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
             {
                 Matrix m = pin[slice];
                 //m.M42 = -m.M42;
-                m = Matrix.Translation(-0.5f, -0.5f, -0.5f)  *m * Matrix.Translation(0.5f, 0.5f, 0.5f);
+                m = Matrix.Translation(-0.5f, -0.5f, 0.0f) * m * Matrix.Translation(0.5f, 0.5f, 0.0f);
                 
                 shaderinstance.SetByName(this.Name, m);
             }

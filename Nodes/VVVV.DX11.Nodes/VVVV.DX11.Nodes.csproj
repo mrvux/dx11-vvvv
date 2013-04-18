@@ -191,6 +191,7 @@
     <Compile Include="Nodes\Queries\TimeStampQueryNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\DX11PreviewNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11CubeRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11MRTRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11RendererNode.cs">
       <SubType>UserControl</SubType>
