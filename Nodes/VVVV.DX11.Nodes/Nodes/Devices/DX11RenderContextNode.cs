@@ -16,7 +16,7 @@ using VVVV.DX11.Lib.RenderGraph;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Info", Category = "DX11",Version="Debug", Author = "vux", AutoEvaluate=true)]
+    [PluginInfo(Name = "Info", Category = "DX11",Version="", Author = "vux",Tags= "debug", AutoEvaluate=true)]
     public class DX11RenderContextNode : IPluginEvaluate, IDX11Queryable
     {
         [Input("Refresh",IsBang=true)]
