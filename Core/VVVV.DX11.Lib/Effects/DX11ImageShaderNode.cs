@@ -41,6 +41,8 @@ namespace VVVV.DX11.Nodes.Layers
         public List<EffectResourceVariable> texturecache = new List<EffectResourceVariable>();
         public List<ImageShaderPass> passes = new List<ImageShaderPass>();
 
+        
+
        // System.Collections.Generic.SortedDictionary<int,Vector2>
 
         public void RebuildTextureCache()
@@ -74,6 +76,8 @@ namespace VVVV.DX11.Nodes.Layers
     public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceProvider
     {
         private int tid = 0;
+
+        private RenderTargetView[] nullrtvs = new RenderTargetView[8];
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
 
@@ -268,6 +272,7 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 rt.UnLock();
             }
+            this.lastframetargets.Clear();
             
             DX11ObjectRenderSettings or = new DX11ObjectRenderSettings();
 
@@ -412,11 +417,13 @@ namespace VVVV.DX11.Nodes.Layers
                         if (pi.ComputeData.Enabled)
                         {
                             pi.ComputeData.Dispatch(context, w, h);
+                            context.CleanUpCS();
                         }
                         else
                         {
                             ctx.ComputeShader.Set(null);
                             context.Primitives.FullScreenTriangle.Draw();
+                            ctx.OutputMerger.SetTargets(this.nullrtvs);
                         }
 
                         //Generate mips if applicable
@@ -444,6 +451,7 @@ namespace VVVV.DX11.Nodes.Layers
                     //this.lasttarget = lasttmp;
 
                     this.lastframetargets.Add(lasttmp);
+                    
 
                     //previousrts[context] = lasttmp.Element;
                 }

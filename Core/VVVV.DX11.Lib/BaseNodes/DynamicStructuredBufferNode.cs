@@ -25,7 +25,7 @@ namespace VVVV.DX11.Nodes
 
         private IIOContainer<ISpread<int>> FCount;
 
-        [Input("Data", DefaultValue = 0, AutoValidate = false,Order=5)]
+        [Input("Data", DefaultValue = 0, AutoValidate = true,Order=5)]
         protected ISpread<T> FInData;
 
         [Input("Keep In Memory", DefaultValue = 0,Order=6)]
@@ -102,7 +102,7 @@ namespace VVVV.DX11.Nodes
 
                 if (this.tempbuffer.Length != count)
                 {
-                    this.tempbuffer = new T[count];
+                    Array.Resize<T>(ref this.tempbuffer, count);
                 }
                 this.WriteArray(count);
 

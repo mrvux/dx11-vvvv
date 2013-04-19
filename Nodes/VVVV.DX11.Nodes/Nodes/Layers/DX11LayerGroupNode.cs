@@ -174,7 +174,7 @@ namespace VVVV.DX11.Nodes
                     {
                         this.BeginQuery(context);
                     }
-
+                    
                     foreach (IIOContainer<Pin<DX11Resource<DX11Layer>>> dxpin in this.FLayers)
                     {
                         if (dxpin.IOObject.PluginIO.IsConnected)

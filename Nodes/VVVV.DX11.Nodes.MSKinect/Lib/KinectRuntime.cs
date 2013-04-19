@@ -200,12 +200,11 @@ namespace VVVV.MSKinect.Lib
             return sp;
         }
 
-        public void SetDepthMode(bool enable)
+        public void SetDepthMode(bool enable, bool highres)
         {
             if (enable)
             {
-                //this.Runtime.DepthStream.Enable(DepthImageFormat.Resolution320x240Fps30);
-                this.Runtime.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+                this.Runtime.DepthStream.Enable(highres ? DepthImageFormat.Resolution640x480Fps30 : DepthImageFormat.Resolution320x240Fps30);
                 this.Runtime.DepthFrameReady += this.Runtime_DepthFrameReady;
             }
             else

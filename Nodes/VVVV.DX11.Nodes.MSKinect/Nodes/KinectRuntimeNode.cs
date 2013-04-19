@@ -30,6 +30,9 @@ namespace VVVV.MSKinect.Nodes
         [Input("Enable Depth", IsSingle = true)]
         IDiffSpread<bool> FInDepthMode;
 
+        [Input("High Res Depth", IsSingle = true)]
+        IDiffSpread<bool> FInDeptRes;
+
         [Input("Depth Range", IsSingle = true)]
         IDiffSpread<DepthRange> FInDepthRange;
 
@@ -104,9 +107,9 @@ namespace VVVV.MSKinect.Nodes
                     reset = true;
                 }
 
-                if (this.FInDepthMode.IsChanged || reset)
+                if (this.FInDepthMode.IsChanged || reset || this.FInDeptRes.IsChanged)
                 {
-                    this.runtime.SetDepthMode(this.FInDepthMode[0]);
+                    this.runtime.SetDepthMode(this.FInDepthMode[0], this.FInDeptRes[0]);
                 }
 
 

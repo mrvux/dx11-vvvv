@@ -82,6 +82,8 @@ namespace VVVV.DX11.Nodes.Layers
         protected Pin<DX11Resource<IDX11RenderSemantic>> FInResSemantics;
         #endregion
 
+        private bool first = true;
+
         #region Output Pins
 
         [Output("Geometry Out", IsSingle=true)]
@@ -165,7 +167,6 @@ namespace VVVV.DX11.Nodes.Layers
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
-            
             this.spmax = this.CalculateSpreadMax();
 
             if (this.FOut[0] == null)
@@ -204,6 +205,7 @@ namespace VVVV.DX11.Nodes.Layers
             this.FOut.Stream.IsChanged = true;
             this.FOutBuffer.Stream.IsChanged = true;
         }
+
         #endregion
 
         #region Calculate Spread Max
@@ -226,6 +228,11 @@ namespace VVVV.DX11.Nodes.Layers
         #region Update
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.CalculateSpreadMax() == 0)
+            {
+                return;
+            }
+
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
@@ -248,10 +255,6 @@ namespace VVVV.DX11.Nodes.Layers
                 //Clear shader stages (important here)
                 shaderdata.ResetShaderStages(ctx);
 
-                this.OnBeginQuery(context);
-
-               
-
                 if (this.FIn.IsChanged || this.FInTechnique.IsChanged || shaderdata.LayoutValid.Count == 0)
                 {
                     shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
@@ -260,6 +263,8 @@ namespace VVVV.DX11.Nodes.Layers
 
                 if (shaderdata.IsLayoutValid(0) && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance,this.settings))
                 {
+                    this.OnBeginQuery(context);
+
                     this.settings = new DX11RenderSettings();
                     this.settings.RenderWidth = 1;
                     this.settings.RenderHeight = 1;
@@ -462,7 +467,6 @@ namespace VVVV.DX11.Nodes.Layers
                     ctx.StreamOutput.SetTargets(null);
 
                     this.FOut[0][context] = this.clone;
-                    
 
                     this.OnEndQuery(context);
 

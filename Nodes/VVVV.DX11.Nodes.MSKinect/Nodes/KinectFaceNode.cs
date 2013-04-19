@@ -18,25 +18,22 @@ namespace VVVV.MSKinect.Nodes
     public class KinectFaceNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("Success")]
-        private ISpread<bool> FOutOK;
+        protected ISpread<bool> FOutOK;
 
         [Output("Face Data")]
-        private ISpread<FaceTrackFrame> FOutFrame;
+        protected ISpread<FaceTrackFrame> FOutFrame;
 
         [Output("Position", Order = 10)]
-        private ISpread<Vector3> FOutPosition;
+        protected ISpread<Vector3> FOutPosition;
 
         [Output("Rotation")]
-        private ISpread<Vector3> FOutRotation;
+        protected ISpread<Vector3> FOutRotation;
 
         [Output("Frame Index", IsSingle = true)]
-        private ISpread<int> FOutFrameIndex;
-
-        private int frameindex = -1;
-
+        protected ISpread<int> FOutFrameIndex;
 
 
         private bool FInvalidateConnect = false;
@@ -53,7 +50,9 @@ namespace VVVV.MSKinect.Nodes
 
         private float INVTWOPI = 0.5f / (float)Math.PI;
 
-        //private FaceTrackFrame frm;
+        private bool first = true;
+        private DepthImageFormat olddepth;
+        
 
 
         [ImportingConstructor()]
@@ -117,12 +116,7 @@ namespace VVVV.MSKinect.Nodes
                 }
 
                 this.FOutFrame.AssignFrom(frames);
-
-                //this.FOutOK[0] = this.frm.TrackSuccessful;
-                //this.FOutPosition[0] = new Vector3(frm.Translation.X, frm.Translation.Y, frm.Translation.Z);
             }
-
-            //this.FOutFrameIndex[0] = this.frameindex;
         }
 
         void KinectFaceNode_AllFrameReady(object sender, AllFramesReadyEventArgs e)
@@ -131,11 +125,6 @@ namespace VVVV.MSKinect.Nodes
             DepthImageFrame depthImageFrame = null;
             SkeletonFrame skeletonFrame = null;
 
-            if (face == null)
-            {
-                face = new FaceTracker(this.runtime.Runtime);
-            }
-
             colorImageFrame = e.OpenColorImageFrame();
             depthImageFrame = e.OpenDepthImageFrame();
             skeletonFrame = e.OpenSkeletonFrame();
@@ -143,6 +132,23 @@ namespace VVVV.MSKinect.Nodes
             if (colorImageFrame == null || depthImageFrame == null || skeletonFrame == null)
             {
                 return;
+            }
+
+            if (first)
+            {
+                first = false;
+                this.olddepth = depthImageFrame.Format;
+            }
+            else
+            {
+                if (this.olddepth != depthImageFrame.Format)
+                {
+                    //Need a reset
+                    if (this.depthImage != null) { this.depthImage = null; }
+                    if (this.face != null) { this.face.Dispose(); this.face = null; }
+                    this.trackedSkeletons.Clear();
+                    this.olddepth = depthImageFrame.Format;
+                }
             }
 
             if (this.depthImage == null)
@@ -158,6 +164,11 @@ namespace VVVV.MSKinect.Nodes
             if (this.skeletonData == null || this.skeletonData.Length != skeletonFrame.SkeletonArrayLength)
             {
                 this.skeletonData = new Skeleton[skeletonFrame.SkeletonArrayLength];
+            }
+
+            if (face == null)
+            {
+                face = new FaceTracker(this.runtime.Runtime);
             }
 
             colorImageFrame.CopyPixelDataTo(this.colorImage);
@@ -179,7 +190,7 @@ namespace VVVV.MSKinect.Nodes
                     SkeletonFaceTracker skeletonFaceTracker;
                     if (this.trackedSkeletons.TryGetValue(skeleton.TrackingId, out skeletonFaceTracker))
                     {
-                        skeletonFaceTracker.OnFrameReady(this.runtime.Runtime, ColorImageFormat.RgbResolution640x480Fps30, colorImage, DepthImageFormat.Resolution640x480Fps30, depthImage, skeleton);
+                        skeletonFaceTracker.OnFrameReady(this.runtime.Runtime, colorImageFrame.Format, colorImage, depthImageFrame.Format, depthImage, skeleton);
                         skeletonFaceTracker.LastTrackedFrame = skeletonFrame.FrameNumber;
                     }
                 }
@@ -238,10 +249,6 @@ namespace VVVV.MSKinect.Nodes
 
         private class SkeletonFaceTracker : IDisposable
         {
-            //private static FaceTriangle[] faceTriangles;
-
-            //private EnumIndexableCollection<FeaturePoint, PointF> facePoints;
-
             private FaceTracker faceTracker;
 
             private bool lastFaceTrackSucceeded;
@@ -267,36 +274,6 @@ namespace VVVV.MSKinect.Nodes
                 {
                     return;
                 }
-
-                /*
-                var faceModelPts = new List<Point>();
-                var faceModel = new List<FaceModelTriangle>();
-
-                for (int i = 0; i < this.facePoints.Count; i++)
-                {
-                    faceModelPts.Add(new Point(this.facePoints[i].X + 0.5f, this.facePoints[i].Y + 0.5f));
-                }
-
-                foreach (var t in faceTriangles)
-                {
-                    var triangle = new FaceModelTriangle();
-                    triangle.P1 = faceModelPts[t.First];
-                    triangle.P2 = faceModelPts[t.Second];
-                    triangle.P3 = faceModelPts[t.Third];
-                    faceModel.Add(triangle);
-                }
-
-                var faceModelGroup = new GeometryGroup();
-                for (int i = 0; i < faceModel.Count; i++)
-                {
-                    var faceTriangle = new GeometryGroup();
-                    faceTriangle.Children.Add(new LineGeometry(faceModel[i].P1, faceModel[i].P2));
-                    faceTriangle.Children.Add(new LineGeometry(faceModel[i].P2, faceModel[i].P3));
-                    faceTriangle.Children.Add(new LineGeometry(faceModel[i].P3, faceModel[i].P1));
-                    faceModelGroup.Children.Add(faceTriangle);
-                }
-
-                drawingContext.DrawGeometry(Brushes.LightYellow, new Pen(Brushes.LightYellow, 1.0), faceModelGroup);*/
             }
 
             /// <summary>
@@ -328,18 +305,6 @@ namespace VVVV.MSKinect.Nodes
                 {
                     frame = this.faceTracker.Track(
                         colorImageFormat, colorImage, depthImageFormat, depthImage, skeletonOfInterest).Clone() as FaceTrackFrame;
-
-                    this.lastFaceTrackSucceeded = frame.TrackSuccessful;
-                    if (this.lastFaceTrackSucceeded)
-                    {
-                        /*if (faceTriangles == null)
-                        {
-                            // only need to get this once.  It doesn't change.
-                            faceTriangles = frame.GetTriangles();
-                        }
-
-                        this.facePoints = frame.GetProjected3DShape();*/
-                    }
                 }
             }
 
