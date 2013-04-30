@@ -35,20 +35,17 @@ namespace VVVV.DX11
 
         [Input("Mip Map Levels", Order = 5)]
         protected IDiffSpread<int> FInMipLevel;
-
-        [Input("Resolve", Order = 6)]
-        protected ISpread<bool> FInResolve;
         #endregion
 
         #region Output Pins
         [Output("Buffer Size")]
         protected ISpread<Vector2D> FOutBufferSize;
 
-        [Output("Buffers", IsSingle = true)]
+        [Output("Texture Out", IsSingle = true)]
         protected ISpread<DX11Resource<DX11Texture2D>> FOutBuffers;
 
-        [Output("Resolved Buffer", IsSingle = true)]
-        protected ISpread<DX11Resource<DX11Texture2D>> FOutResolved;
+        [Output("AA Texture Out", IsSingle = true, Visibility=PinVisibility.OnlyInspector)]
+        protected ISpread<DX11Resource<DX11Texture2D>> FOutAABuffers;
 
         #endregion
 
@@ -72,7 +69,7 @@ namespace VVVV.DX11
         protected override void OnEvaluate(int SpreadMax)
         {
             if (this.FOutBuffers[0] == null) { this.FOutBuffers[0] = new DX11Resource<DX11Texture2D>(); }
-            if (this.FOutResolved[0] == null) { this.FOutResolved[0] = new DX11Resource<DX11Texture2D>(); }
+            if (this.FOutAABuffers[0] == null) { this.FOutAABuffers[0] = new DX11Resource<DX11Texture2D>(); }
 
             if (this.FInAASamplesPerPixel.IsChanged
               || this.FInDoMipMaps.IsChanged
@@ -124,8 +121,8 @@ namespace VVVV.DX11
                     targets[context] = temptarget;
                     targetresolve[context] = temptargetresolve;
 
-                    this.FOutBuffers[0][context] = temptarget;
-                    this.FOutResolved[0][context] = temptargetresolve;
+                    this.FOutBuffers[0][context] = temptargetresolve;
+                    this.FOutAABuffers[0][context] = temptarget;
                 }
                 else
                 {
@@ -134,7 +131,7 @@ namespace VVVV.DX11
                     targets[context] = temptarget;
   
                     this.FOutBuffers[0][context] = temptarget;
-                    this.FOutResolved[0][context] = temptarget;
+                    this.FOutAABuffers[0][context] = temptarget;
                 }
 
 
@@ -185,7 +182,7 @@ namespace VVVV.DX11
         #region After Render
         protected override void AfterRender(DX11GraphicsRenderer renderer, DX11RenderContext context)
         {
-            if (this.FInResolve[0] && this.sd.Count > 1)
+            if (this.sd.Count > 1)
             {
                 context.CurrentDeviceContext.ResolveSubresource(targets[context].Resource, 0, targetresolve[context].Resource,
                     0, targets[context].Format);
