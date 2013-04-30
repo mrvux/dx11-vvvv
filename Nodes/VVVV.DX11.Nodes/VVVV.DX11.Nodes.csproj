@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
     <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Nodes\Geometry\SetBoundingBoxGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\VertexInstancedDrawerNode.cs" />
+    <Compile Include="Nodes\Layers\Basic\QuadNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerGeometryNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerGroupNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSemanticsNode.cs" />
