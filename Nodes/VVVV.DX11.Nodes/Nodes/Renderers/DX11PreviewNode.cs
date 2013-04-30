@@ -102,6 +102,7 @@ namespace VVVV.DX11.Nodes.Renderers
 
                      context.RenderStateStack.Pop();
                      context.RenderTargetStack.Pop();
+                     context.CleanUpPS();
                  }
              }  
          }
