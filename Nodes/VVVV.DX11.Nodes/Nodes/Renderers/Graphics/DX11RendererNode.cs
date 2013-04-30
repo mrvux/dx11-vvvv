@@ -34,8 +34,6 @@ using VVVV.DX11.Nodes.Renderers.Graphics.Touch;
 
 namespace VVVV.DX11.Nodes
 {
-
-
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
     public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow 
@@ -191,11 +189,11 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 6,DefaultValue=1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
-        [Input("AA Samples per Pixel", DefaultValue = 1,MinValue=1, Order = 7)]
-        protected IDiffSpread<int> FInAASamplesPerPixel;
+        [Input("AA Samples per Pixel", DefaultEnumEntry="1",EnumName="DX11_AASamples")]
+        protected IDiffSpread<EnumEntry> FInAASamplesPerPixel;
 
-        [Input("AA Quality", Order = 8)]
-        protected IDiffSpread<int> FInAAQuality;
+        /*[Input("AA Quality", Order = 8)]
+        protected IDiffSpread<int> FInAAQuality;*/
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
@@ -303,7 +301,7 @@ namespace VVVV.DX11.Nodes
                 this.depthmanager.FormatChanged = false; //Clear flag ok
             }
             
-            if (this.oldbbformat != this.FCfgBackBufferFormat[0].Name || FInAAQuality.IsChanged || FInAASamplesPerPixel.IsChanged)
+            if (this.oldbbformat != this.FCfgBackBufferFormat[0].Name || FInAASamplesPerPixel.IsChanged)
             {
                 this.oldbbformat = this.FCfgBackBufferFormat[0];
                 this.depthmanager.NeedReset = true;
@@ -496,8 +494,9 @@ namespace VVVV.DX11.Nodes
 
             if (this.updateddevices.Contains(context)) { return; }
 
-            var maxSamples = Device.MultisampleCountMaximum;
-            SampleDescription sd = new SampleDescription((int)Math.Min(FInAASamplesPerPixel[0], maxSamples), FInAAQuality[0]);
+            int samplecount = Convert.ToInt32(FInAASamplesPerPixel[0].Name);
+
+            SampleDescription sd = new SampleDescription(samplecount, 0);
 
             if (this.FResized || this.FInvalidateSwapChain || this.FOutBackBuffer[0][context] == null)
             {

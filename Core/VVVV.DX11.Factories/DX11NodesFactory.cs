@@ -67,7 +67,15 @@ namespace VVVV.DX11.Factories
 
             DX11GlobalDevice.DeviceManager = this.devicemanager;
             DX11GlobalDevice.RenderManager = this.rendermanager;
+
+            this.BuildAAEnum();
 		}
+
+        private void BuildAAEnum()
+        {
+            string[] aa = new string[] { "1", "2", "4", "8", "16", "32" };
+            this.hdehost.UpdateEnum("DX11_AASamples", "1", aa);
+        }
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)
         {

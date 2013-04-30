@@ -79,7 +79,6 @@ namespace VVVV.DX11
 
             if (this.FInTextureSize.IsChanged || this.FInTargetCount.IsChanged
                 || this.FInFormat.IsChanged 
-                || this.FInAAQuality.IsChanged
                 || this.FInAASamplesPerPixel.IsChanged
                 || this.FInDoMipMaps.IsChanged
                 || this.FInMipLevel.IsChanged)
@@ -101,8 +100,8 @@ namespace VVVV.DX11
                 this.width = Convert.ToInt32(this.FInTextureSize[0].x);
                 this.height = Convert.ToInt32(this.FInTextureSize[0].y);
                 this.buffercount = this.FInTargetCount[0];
-                this.sd.Count = this.FInAASamplesPerPixel[0];
-                this.sd.Quality = this.FInAAQuality[0];
+                this.sd.Count = Convert.ToInt32(this.FInAASamplesPerPixel[0].Name);
+                this.sd.Quality = 0;
                 this.genmipmap = this.FInDoMipMaps[0];
                 this.mipmaplevel = Math.Max(FInMipLevel[0], 0);
 
