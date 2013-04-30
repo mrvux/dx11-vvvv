@@ -132,7 +132,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
       <Name>FeralTic %28FeralTic\FeralTic%29</Name>
       <Private>False</Private>

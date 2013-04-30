@@ -1,0 +1,3 @@
+[submodule "FeralTic"]
+	path = FeralTic
+	url = git@github.com:mrvux/FeralTic.git
