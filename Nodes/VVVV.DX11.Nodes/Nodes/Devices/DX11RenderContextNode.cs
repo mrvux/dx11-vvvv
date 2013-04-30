@@ -22,6 +22,9 @@ namespace VVVV.DX11.Nodes
         [Input("Refresh",IsBang=true)]
         protected ISpread<bool> FInRefresh;
 
+        [Input("Clear Unlocked",IsBang=true)]
+        protected ISpread<bool> FInClearU;
+
         [Input("Clear Cache", IsBang = true)]
         protected ISpread<bool> FInClear;
 
@@ -87,6 +90,14 @@ namespace VVVV.DX11.Nodes
                 foreach (DX11RenderContext ctx in DX11GlobalDevice.DeviceManager.RenderContexts)
                 {
                     ctx.ResourcePool.Dispose();
+                }
+            }
+
+            if (this.FInClearU[0])
+            {
+                foreach (DX11RenderContext ctx in DX11GlobalDevice.DeviceManager.RenderContexts)
+                {
+                    ctx.ResourcePool.ClearUnlocked();
                 }
             }
 
