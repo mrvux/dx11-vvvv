@@ -42,6 +42,7 @@ namespace VVVV.DX11.Nodes
 
         private bool FInvalidate;
         private bool FFirst = true;
+        private int spreadmax;
 
         protected bool ffixed = false;
 
@@ -49,25 +50,29 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.FOutput.SliceCount = 1;
+            this.spreadmax = SpreadMax;
+            this.FOutput.SliceCount = SpreadMax;
             this.FValid.SliceCount = SpreadMax;
             this.FInvalidate = false;
 
-            if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicStructuredBuffer<T>>(); }
-
-            if (this.FApply[0] || this.FFirst)
+            if (this.spreadmax > 0)
             {
+                if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicStructuredBuffer<T>>(); }
 
-                if (this.ffixed)
+                if (this.FApply[0] || this.FFirst)
                 {
-                    this.FCount.IOObject.Sync();
+
+                    if (this.ffixed)
+                    {
+                        this.FCount.IOObject.Sync();
+                    }
+
+                    this.FInData.Sync();
+
+                    this.FInvalidate = true;
+                    this.FFirst = false;
+                    this.FOutput.Stream.IsChanged = true;
                 }
-
-                this.FInData.Sync();
-
-                this.FInvalidate = true;
-                this.FFirst = false;
-                this.FOutput.Stream.IsChanged = true;
             }
         }
 
