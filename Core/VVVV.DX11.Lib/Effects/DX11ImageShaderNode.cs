@@ -124,7 +124,9 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
                 this.varmanager.RebuildTextureCache();
-                this.varmanager.RebuildPassCache(0);
+
+                this.varmanager.RebuildPassCache(tid);
+               //this.varmanager.RebuildPassCache(0);
             }
 
             //Only set technique if new, otherwise do it on update/evaluate

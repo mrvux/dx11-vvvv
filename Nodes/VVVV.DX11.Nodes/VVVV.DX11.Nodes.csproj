@@ -182,7 +182,6 @@
     <Compile Include="Nodes\Layers\DX11LayerSemanticsNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerStateNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerValidatorNode.cs" />
-    <Compile Include="Nodes\Layers\Space\DX11LayerSpaceNode.cs" />
     <Compile Include="Nodes\Layers\Space\WithinLayerNodes.cs" />
     <Compile Include="Nodes\Queries\AbstractQueryNode.cs" />
     <Compile Include="Nodes\Queries\OcclusionQueryNode.cs" />
