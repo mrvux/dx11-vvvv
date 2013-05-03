@@ -55,7 +55,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Pins
 
         public void Dispose()
         {
-            Console.WriteLine("Test");
+
         }
     }
 }

@@ -220,6 +220,7 @@
     <Compile Include="Nodes\Textures\1D\DynamicTexture1DNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DColorNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
+    <Compile Include="Nodes\Textures\2D\FrameDelayTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\FromPointerTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\ToSharedTextureNode.cs" />
