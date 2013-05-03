@@ -314,15 +314,18 @@ namespace VVVV.DX11.Nodes
                 this.FHost.GetNodePath(false, out path);
                 INode2 n2 = hde.GetNodeFromPath(path);
 
-                if (n2.Window.IsVisible)
+                if (n2.Window != null)
                 {
-                    if (this.FInFullScreen[0])
+                    if (n2.Window.IsVisible)
                     {
-                        hde.SetComponentMode(n2, ComponentMode.Fullscreen);
-                    }
-                    else
-                    {
-                        hde.SetComponentMode(n2, ComponentMode.InAWindow);
+                        if (this.FInFullScreen[0])
+                        {
+                            hde.SetComponentMode(n2, ComponentMode.Fullscreen);
+                        }
+                        else
+                        {
+                            hde.SetComponentMode(n2, ComponentMode.InAWindow);
+                        }
                     }
                 }
             }
