@@ -147,6 +147,8 @@
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
     <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\BoundingBoxGeometryNode.cs" />
+    <Compile Include="Nodes\Geometry\InputElementSplitNode.cs" />
+    <Compile Include="Nodes\Geometry\LayoutGeometryGetNode.cs" />
     <Compile Include="Nodes\Geometry\DX11DefaultDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\GenericInstancerNode.cs" />
     <Compile Include="Nodes\Geometry\GeometryBufferJoinNode.cs" />
