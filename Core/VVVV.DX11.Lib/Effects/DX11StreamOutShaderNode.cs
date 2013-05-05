@@ -297,7 +297,7 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         if (this.buffer != null) { this.buffer.Dispose(); }
 
-                        bool customlayout = this.FInLayout.PluginIO.IsConnected;
+                        bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
                         InputElement[] elems = null;
                         int size = 0;
 
