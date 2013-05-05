@@ -15,7 +15,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes.Geometry
 {
-    [PluginInfo(Name = "InputElement", Category = "DX11.Geometry", Version = "", Author = "vux")]
+    [PluginInfo(Name = "InputElement", Category = "DX11.Geometry", Version = "Join", Author = "vux")]
     public class InputElementJoinNode : IPluginEvaluate
     {
         IPluginHost FHost;
