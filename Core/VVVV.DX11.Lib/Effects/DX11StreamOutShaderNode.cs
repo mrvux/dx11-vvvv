@@ -48,11 +48,15 @@ namespace VVVV.DX11.Nodes.Layers
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
 
-        private DX11ImageShaderVariableManager varmanager;
+        private DX11ShaderVariableManager varmanager;
         private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
 
         private DX11RenderSettings settings = new DX11RenderSettings();
         private bool shaderupdated;
+        //private EffectTechnique lasttechnique;
+
+        private int autosize;
+        private InputElement[] autolayout;
 
         private int spmax = 0;
 
@@ -68,6 +72,9 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Input("As Auto", Order = 10003, IsSingle = true)]
         protected IDiffSpread<bool> FInAsAuto;
+
+        [Input("Auto Layout", Order = 10005, CheckIfChanged = true)]
+        protected IDiffSpread<bool> FInAutoLayout;
 
         [Input("Max Elements", Order = 10004, IsSingle = true)]
         protected IDiffSpread<int> FInMaxElements;
@@ -109,8 +116,6 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
-                this.varmanager.RebuildTextureCache();
-                this.varmanager.RebuildPassCache(0);
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -198,6 +203,8 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.FInTechnique.IsChanged)
             {
                 tid = this.FInTechnique[0].Index;
+
+                
                 //this.varmanager.RebuildPassCache(tid);
             }
 
@@ -255,6 +262,7 @@ namespace VVVV.DX11.Nodes.Layers
                 //Clear shader stages (important here)
                 shaderdata.ResetShaderStages(ctx);
 
+
                 if (this.FIn.IsChanged || this.FInTechnique.IsChanged || shaderdata.LayoutValid.Count == 0)
                 {
                     shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
@@ -285,16 +293,24 @@ namespace VVVV.DX11.Nodes.Layers
 
                     this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
-                    if (this.clone == null || this.FIn.IsChanged || this.FInAsAuto.IsChanged || this.FInMaxElements.IsChanged || this.FInLayout.IsChanged)
+                    if (this.clone == null || this.FIn.IsChanged || this.FInAsAuto.IsChanged || this.FInMaxElements.IsChanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
                     {
                         if (this.buffer != null) { this.buffer.Dispose(); }
 
-                        bool customlayout = this.FInLayout.PluginIO.IsConnected;
+                        bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
                         InputElement[] elems = null;
                         int size = 0;
-                        if (customlayout)
+
+                        if (this.FInAutoLayout[0])
                         {
-                            elems = this.BindInputLayout(out size);
+                            elems = this.FShader.DefaultEffect.GetTechniqueByIndex(tid).GetPassByIndex(0).GetStreamOutputLayout(out size);
+                        }
+                        else
+                        {
+                            if (customlayout)
+                            {
+                                elems = this.BindInputLayout(out size);
+                            }
                         }
 
                         #region Vertex Geom
@@ -521,7 +537,7 @@ namespace VVVV.DX11.Nodes.Layers
                     //Set deault, can do better here
                     inputlayout[i] = new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0);
                 }
-                vertexsize += FormatHelper.FormatSizes[inputlayout[i].Format];
+                vertexsize += FormatHelper.Instance.GetSize(inputlayout[i].Format);
             }
             InputLayoutFactory.AutoIndex(inputlayout);
 

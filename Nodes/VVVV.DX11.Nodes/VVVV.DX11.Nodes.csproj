@@ -137,6 +137,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
     <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
@@ -146,6 +147,8 @@
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
     <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\BoundingBoxGeometryNode.cs" />
+    <Compile Include="Nodes\Geometry\InputElementSplitNode.cs" />
+    <Compile Include="Nodes\Geometry\LayoutGeometryGetNode.cs" />
     <Compile Include="Nodes\Geometry\DX11DefaultDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\GenericInstancerNode.cs" />
     <Compile Include="Nodes\Geometry\GeometryBufferJoinNode.cs" />
@@ -177,12 +180,12 @@
     <Compile Include="Nodes\Geometry\SetBoundingBoxGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\VertexInstancedDrawerNode.cs" />
+    <Compile Include="Nodes\Layers\Basic\QuadNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerGeometryNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerGroupNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSemanticsNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerStateNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerValidatorNode.cs" />
-    <Compile Include="Nodes\Layers\Space\DX11LayerSpaceNode.cs" />
     <Compile Include="Nodes\Layers\Space\WithinLayerNodes.cs" />
     <Compile Include="Nodes\Queries\AbstractQueryNode.cs" />
     <Compile Include="Nodes\Queries\OcclusionQueryNode.cs" />
@@ -219,7 +222,10 @@
     <Compile Include="Nodes\Textures\1D\DynamicTexture1DNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DColorNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
+    <Compile Include="Nodes\Textures\2D\FrameDelayTextureNode.cs" />
+    <Compile Include="Nodes\Textures\2D\FromPointerTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
+    <Compile Include="Nodes\Textures\2D\ToSharedTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\WriterTexture2dNode.cs" />
     <Compile Include="Nodes\Textures\3D\InfoTexture3dNode.cs" />
     <Compile Include="Nodes\Textures\3D\WriterTexture3dNode.cs" />
@@ -235,11 +241,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
-      <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
       <Project>{71C0786D-2640-4E39-AA7B-83602F36F3A3}</Project>
       <Name>VVVV.DX11.Core</Name>
@@ -248,6 +249,11 @@
     <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
       <Project>{C6EE17BB-1F48-44EA-8131-D299BC57748C}</Project>
       <Name>VVVV.DX11.Lib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
+      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

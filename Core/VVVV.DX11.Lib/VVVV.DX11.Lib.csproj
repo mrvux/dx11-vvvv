@@ -135,6 +135,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseNodes\DX11BaseVertexPrimitiveNode.cs" />
+    <Compile Include="BaseNodes\DX11LayerSpaceNode.cs" />
     <Compile Include="BaseNodes\DX11ResourceConsNode.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -195,7 +196,6 @@
     <Compile Include="Effects\Registries\WorldRenderVariableRegistry.cs" />
     <Compile Include="Effects\ShaderPinFactory.cs" />
     <Compile Include="Helpers\DeviceFormatHelper.cs" />
-    <Compile Include="Helpers\FormatHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderGraph\DX11DeviceRenderer.cs" />
     <Compile Include="RenderGraph\DX11RenderManager.cs" />
@@ -227,7 +227,7 @@
     <Compile Include="Utils\InputLayoutFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
       <Name>FeralTic %28FeralTic\FeralTic%29</Name>
       <Private>False</Private>

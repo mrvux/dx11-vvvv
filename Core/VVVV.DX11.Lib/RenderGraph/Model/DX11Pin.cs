@@ -20,6 +20,8 @@ namespace VVVV.DX11.RenderGraph.Model
         public IPin HdePin { get; set; }
         public IPluginIO PluginIO { get; set; }
 
+
+
         //VVVV Info
         //public IDX11InternalResourcePin Instance { get; set; }
 

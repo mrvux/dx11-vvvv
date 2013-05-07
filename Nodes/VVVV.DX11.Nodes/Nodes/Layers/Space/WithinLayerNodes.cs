@@ -60,4 +60,15 @@ namespace VVVV.DX11.Nodes
             settings.ViewProjection = settings.View * settings.Projection;
         }
     }
+
+    [PluginInfo(Name = "PixelBillBoard", Category = "DX11.Layer", Version = "")]
+    public class PixelBillBoardNode : AbstractDX11LayerSpaceNode
+    {
+        protected override void UpdateSettings(DX11RenderSettings settings)
+        {
+            settings.View = Matrix.Identity;
+            settings.Projection = Matrix.Scaling(1.0f / (float)settings.RenderWidth, 1.0f / (float)settings.RenderHeight, 1.0f);
+            settings.ViewProjection = settings.Projection;
+        }
+    }
 }

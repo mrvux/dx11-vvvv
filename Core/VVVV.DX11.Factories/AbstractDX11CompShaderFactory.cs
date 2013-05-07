@@ -29,10 +29,13 @@ namespace VVVV.DX11.Factories
         protected IHDEHost FHdeHost;
 
         [Import]
-        protected DotNetPluginFactory FDNFactory;
+        protected DotNetPluginFactory FDotNetFactory;
 
         [Import]
         protected IORegistry FIORegistry;
+
+        /*[Import]
+        protected INodeInfoFactory FNodeInfoFactory;*/
 
         public event PluginCreatedDelegate PluginCreated;
         public event PluginDeletedDelegate PluginDeleted;
@@ -94,7 +97,7 @@ namespace VVVV.DX11.Factories
                 nodeInfo.AutoEvaluate = false;
                 nodeInfo.Arguments = typeof(T).ToString();
 
-                var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, typeof(T), nodeInfo);
+                var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, FNodeInfoFactory, FDotNetFactory, typeof(T), nodeInfo);
                 pluginHost.Plugin = pluginContainer;
 
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;

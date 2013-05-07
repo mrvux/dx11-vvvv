@@ -16,11 +16,14 @@ using VVVV.DX11.Lib.RenderGraph;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "RenderContext", Category = "DX11",Version="Debug", Author = "vux")]
+    [PluginInfo(Name = "Info", Category = "DX11",Version="", Author = "vux",Tags= "debug", AutoEvaluate=true)]
     public class DX11RenderContextNode : IPluginEvaluate, IDX11Queryable
     {
         [Input("Refresh",IsBang=true)]
         protected ISpread<bool> FInRefresh;
+
+        [Input("Clear Unlocked",IsBang=true)]
+        protected ISpread<bool> FInClearU;
 
         [Input("Clear Cache", IsBang = true)]
         protected ISpread<bool> FInClear;
@@ -62,6 +65,9 @@ namespace VVVV.DX11.Nodes
         [Output("Pending Links Count",IsSingle=true)]
         protected ISpread<int> FOutPLCount;
 
+        [Output("Buffer Support")]
+        protected ISpread<bool> FOUCS;
+
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
@@ -87,6 +93,14 @@ namespace VVVV.DX11.Nodes
                 }
             }
 
+            if (this.FInClearU[0])
+            {
+                foreach (DX11RenderContext ctx in DX11GlobalDevice.DeviceManager.RenderContexts)
+                {
+                    ctx.ResourcePool.ClearUnlocked();
+                }
+            }
+
             if (this.FInRefresh[0])
             {
                 List<DX11RenderContext> ctxlist = DX11GlobalDevice.DeviceManager.RenderContexts;
@@ -99,6 +113,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutThisFrame.SliceCount = ctxlist.Count;
                 this.FOutProcessedCount.SliceCount = ctxlist.Count;
                 this.FOutFeatureLevel.SliceCount = ctxlist.Count;
+                this.FOUCS.SliceCount = ctxlist.Count;
 
                 int i = 0;
                 foreach (DX11RenderContext ctx in ctxlist)
@@ -115,6 +130,7 @@ namespace VVVV.DX11.Nodes
                     this.FOutNodeCount[i] = renderer.Graph.Nodes.Count;
                     this.FOutProcessedCount[i] = renderer.ProcessedNodes;
                     this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
+                    this.FOUCS[i] = ctx.ComputeShaderSupport;
 
                     i++;
                 }

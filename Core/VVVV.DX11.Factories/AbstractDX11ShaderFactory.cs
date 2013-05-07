@@ -106,20 +106,42 @@ namespace VVVV.DX11.Factories
             FXProject project;
             if (!FProjects.TryGetValue(filename, out project))
             {
-                project = new FXProject(filename, new Uri(filename), FHDEHost.ExePath);
-                if (FSolution.Projects.CanAdd(project))
+            	var isDX11 = true;
+            	//check if this is a dx11 effect in that it does not contain "technique "
+            	using (var sr = new StreamReader(filename))
                 {
-                    FSolution.Projects.Add(project);
-                }
-                else
-                {
-                    // Project was renamed
-                    project = FSolution.Projects[project.Name] as FXProject;
-                }
-
-                project.DoCompileEvent += project_DoCompileEvent;
-
-                FProjects[filename] = project;
+            		string line;
+            		var t9 = "technique ";
+                    
+                    // Parse lines from the file until the end of
+                    // the file is reached.
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                    	if (line.Contains(t9))
+                    	{
+                    		isDX11 = false;
+                    		break;
+                    	}
+                    }
+            	}
+            	
+            	if (isDX11)
+	            {
+	                project = new FXProject(filename, FHDEHost.ExePath);
+	                if (FSolution.Projects.CanAdd(project))
+	                {
+	                    FSolution.Projects.Add(project);
+	                }
+	                else
+	                {
+	                    // Project was renamed
+	                    project = FSolution.Projects[project.Name] as FXProject;
+	                }
+	
+	                project.DoCompileEvent += project_DoCompileEvent;
+	
+	                FProjects[filename] = project;
+            	}
             }
 
             return project;
@@ -128,7 +150,7 @@ namespace VVVV.DX11.Factories
         void project_DoCompileEvent(object sender, EventArgs e)
         {
             var project = sender as FXProject;
-            var filename = project.Location.LocalPath;
+            var filename = project.LocalPath;
 
             LoadNodeInfoFromEffect(filename, project);
         }
@@ -199,7 +221,7 @@ namespace VVVV.DX11.Factories
             var errorlines = e.Split(new char[1] { '\n' });
             foreach (var line in errorlines)
             {
-                string filePath = project.Location.LocalPath;
+                string filePath = project.LocalPath;
                 string eCoords = string.Empty;
                 int eLine = 0;
                 int eChar = 0;
@@ -234,14 +256,14 @@ namespace VVVV.DX11.Factories
                         // we need to guess here. shader compiler outputs relative paths.
                         // we don't know if the include was "local" or <global>
 
-                        filePath = Path.Combine(project.Location.GetLocalDir(), relativePath);
+                        filePath = Path.Combine(Path.GetDirectoryName(project.LocalPath), relativePath);
                         if (!File.Exists(filePath))
                         {
                             string fileName = Path.GetFileName(relativePath);
 
                             foreach (var reference in project.References)
                             {
-                                var referenceFileName = Path.GetFileName((reference as FXReference).ReferencedDocument.Location.LocalPath);
+                                var referenceFileName = Path.GetFileName((reference as FXReference).ReferencedDocument.LocalPath);
                                 if (referenceFileName.ToLower() == fileName.ToLower())
                                 {
                                     filePath = reference.AssemblyLocation;
@@ -298,8 +320,8 @@ namespace VVVV.DX11.Factories
                 return false;
 
             var project = nodeInfo.UserData as FXProject;
-            if (!project.IsLoaded)
-                project.Load();
+            /*if (!project.IsLoaded)
+                project.Load();*/
 
             //compile shader
             FIncludeHandler.ParentPath = Path.GetDirectoryName(nodeInfo.Filename);
@@ -317,7 +339,7 @@ namespace VVVV.DX11.Factories
                 nodeInfo.AutoEvaluate = false;
                 nodeInfo.Arguments = typeof(T).ToString();
 
-                var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, typeof(T), nodeInfo);
+                var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, FNodeInfoFactory, FDotNetFactory, typeof(T), nodeInfo);
                 pluginHost.Plugin = pluginContainer;
 
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
@@ -378,16 +400,16 @@ namespace VVVV.DX11.Factories
             if (nodeInfo.Type == NodeType.Dynamic)
             {
                 var project = nodeInfo.UserData as FXProject;
-                if (!project.IsLoaded)
-                    project.Load();
+                /*if (!project.IsLoaded)
+                    project.Load();*/
 
                 var projectDir = path;
                 var newProjectName = name + this.FileExtension[0];
                 var newLocation = new Uri(projectDir.ConcatPath(newProjectName));
 
-                project.SaveTo(newLocation);
+                filename = projectDir.ConcatPath(newProjectName);
 
-                filename = newLocation.LocalPath;
+                project.SaveTo(filename);
 
                 return true;
             }
