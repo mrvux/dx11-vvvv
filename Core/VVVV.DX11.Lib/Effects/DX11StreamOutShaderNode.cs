@@ -537,7 +537,7 @@ namespace VVVV.DX11.Nodes.Layers
                     //Set deault, can do better here
                     inputlayout[i] = new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0);
                 }
-                vertexsize += FormatHelper.FormatSizes[inputlayout[i].Format];
+                vertexsize += FormatHelper.Instance.GetSize(inputlayout[i].Format);
             }
             InputLayoutFactory.AutoIndex(inputlayout);
 

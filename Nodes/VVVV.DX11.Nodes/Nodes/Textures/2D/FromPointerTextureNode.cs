@@ -65,7 +65,7 @@ namespace VVVV.DX11.Nodes.Textures
 
                     this.FValid[0] = true;
                 }
-                catch
+                catch (Exception ex)
                 {
                     this.FValid[0] = false;
                 }

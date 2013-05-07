@@ -196,7 +196,6 @@
     <Compile Include="Effects\Registries\WorldRenderVariableRegistry.cs" />
     <Compile Include="Effects\ShaderPinFactory.cs" />
     <Compile Include="Helpers\DeviceFormatHelper.cs" />
-    <Compile Include="Helpers\FormatHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderGraph\DX11DeviceRenderer.cs" />
     <Compile Include="RenderGraph\DX11RenderManager.cs" />

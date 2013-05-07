@@ -12,6 +12,7 @@ using VVVV.DX11.Internals.Helpers;
 using VVVV.Hosting.Pins.Input;
 using VVVV.DX11.Lib.Devices;
 using FeralTic.DX11;
+using FeralTic.DX11.Utils;
 
 namespace VVVV.DX11.Nodes.Geometry
 {
@@ -52,7 +53,7 @@ namespace VVVV.DX11.Nodes.Geometry
                 {
                     Format fmt= (Format)Enum.Parse(typeof(Format), this.FInFormat[i].Name);
                     this.FOutput[i] = InputLayoutFactory.GetInputElement(this.FInLayoutType[i],fmt,0,offset);
-					offset += FormatHelper.FormatSizes[fmt];
+                    offset += FormatHelper.Instance.GetSize(fmt);
                 }
             }
         }
