@@ -19,13 +19,13 @@ Open the `vvvv-dx11.sln` solution with Visual Studio: I installed Microsoft Visu
 
 Set up targets, see screenshots below.
 
-![open-configuration-manager!](https://raw.github.com/mrvux/dx11-vvvv/master/images/OpenConfigurationManager.png)
+![open-configuration-manager!](https://raw.github.com/mrvux/dx11-vvvv/alphatest/images/OpenConfigurationManager.png)
 
-![set-targets!](https://raw.github.com/mrvux/dx11-vvvv/master/images/SetTargets.png)
+![set-targets!](https://raw.github.com/mrvux/dx11-vvvv/alphatest/images/SetTargets.png)
 
 Now, if you hit the Rebuild Solution button and you will gain a brand new lib and packs folders under Deploy/Debug folder.
 
-![rebuild-solution!](https://raw.github.com/mrvux/dx11-vvvv/master/images/RebuildSolution.png)
+![rebuild-solution!](https://raw.github.com/mrvux/dx11-vvvv/alphatest/images/RebuildSolution.png)
 
 Copy the content of vvvv core build under Deploy/Debug (recommended by mrvux if you want to build multiple times) or viceversa, copy lib and packs folders inside your vvvv folder.
 
