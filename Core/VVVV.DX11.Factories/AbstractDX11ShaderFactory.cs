@@ -107,8 +107,10 @@ namespace VVVV.DX11.Factories
             if (!FProjects.TryGetValue(filename, out project))
             {
             	var isDX11 = true;
-            	//check if this is a dx11 effect in that it does not contain "technique "
-            	using (var sr = new StreamReader(filename))
+            	
+                //check if this is a dx11 effect in that it does not contain "technique "
+            	
+                /*using (var sr = new StreamReader(filename))
                 {
             		string line;
             		var t9 = "technique ";
@@ -123,7 +125,7 @@ namespace VVVV.DX11.Factories
                     		break;
                     	}
                     }
-            	}
+            	}*/
             	
             	if (isDX11)
 	            {

@@ -51,8 +51,8 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             this.spreadmax = SpreadMax;
-            this.FOutput.SliceCount = SpreadMax;
-            this.FValid.SliceCount = SpreadMax;
+            this.FOutput.SliceCount = SpreadMax > 0 ? 1 : 0;
+            this.FValid.SliceCount = SpreadMax > 0 ? 1 : 0;
             this.FInvalidate = false;
 
             if (this.spreadmax > 0)
