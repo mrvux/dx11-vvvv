@@ -41,7 +41,7 @@ namespace VVVV.DX11
         [Output("Buffer Size")]
         protected ISpread<Vector2D> FOutBufferSize;
 
-        [Output("Texture Out", IsSingle = true)]
+        [Output("Buffers", IsSingle = true)]
         protected ISpread<DX11Resource<DX11Texture2D>> FOutBuffers;
 
         [Output("AA Texture Out", IsSingle = true, Visibility=PinVisibility.OnlyInspector)]
