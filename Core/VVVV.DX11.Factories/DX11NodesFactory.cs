@@ -59,7 +59,7 @@ namespace VVVV.DX11.Factories
             this.hdehost.MainLoop.OnRender += GraphEventService_OnRender;
 
             this.displaymanager = new DX11DisplayManager();
-            this.devicemanager = new DX11AutoAdapterDeviceManager(this.displaymanager);
+            this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
 
            this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
            this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;

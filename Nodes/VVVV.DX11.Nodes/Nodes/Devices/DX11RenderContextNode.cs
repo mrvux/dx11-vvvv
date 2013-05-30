@@ -12,6 +12,7 @@ using FeralTic.DX11.Queries;
 
 using VVVV.DX11.Lib.Devices;
 using VVVV.DX11.Lib.RenderGraph;
+using SlimDX.Direct3D11;
 
 
 namespace VVVV.DX11.Nodes
@@ -68,6 +69,9 @@ namespace VVVV.DX11.Nodes
         [Output("Buffer Support")]
         protected ISpread<bool> FOUCS;
 
+        [Output("Creation Flags")]
+        protected ISpread<DeviceCreationFlags> FOutFlags;
+
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
@@ -115,6 +119,8 @@ namespace VVVV.DX11.Nodes
                 this.FOutFeatureLevel.SliceCount = ctxlist.Count;
                 this.FOUCS.SliceCount = ctxlist.Count;
 
+                List<DeviceCreationFlags> flags = new List<DeviceCreationFlags>();
+
                 int i = 0;
                 foreach (DX11RenderContext ctx in ctxlist)
                 {
@@ -132,7 +138,22 @@ namespace VVVV.DX11.Nodes
                     this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
                     this.FOUCS[i] = ctx.ComputeShaderSupport;
 
+                    if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.BgraSupport)) { flags.Add(DeviceCreationFlags.BgraSupport);}
+                    if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.Debug)) { flags.Add(DeviceCreationFlags.Debug);}
+                    if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.PreventThreadingOptimizations)) { flags.Add(DeviceCreationFlags.PreventThreadingOptimizations);}
+                    if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.SingleThreaded)) { flags.Add(DeviceCreationFlags.SingleThreaded);}
+
                     i++;
+                }
+
+                if (flags.Count > 0)
+                {
+                    this.FOutFlags.AssignFrom(flags);
+                }
+                else
+                {
+                    this.FOutFlags.SliceCount = 1;
+                    this.FOutFlags[0] = DeviceCreationFlags.None;
                 }
 
                 this.FOutPLCount[0] = DX11GlobalDevice.PendingLinksCount;
