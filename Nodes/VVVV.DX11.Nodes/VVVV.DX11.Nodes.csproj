@@ -167,6 +167,7 @@
     <Compile Include="Nodes\Geometry\Primitives\DX11CylinderNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11DispatcherNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11GridNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11IcoSphereNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11IsocahedronNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11LineStripNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11NullDrawerNode.cs" />

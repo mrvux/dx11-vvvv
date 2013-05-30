@@ -14,6 +14,7 @@ using VVVV.PluginInterfaces.V1;
 using FeralTic.Resources.Geometry;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
@@ -31,7 +32,15 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.Grid(this.FSize[slice], this.FResX[slice], this.FResY[slice]);
+            Grid grid = new Grid()
+            {
+                ResolutionX = this.FResX[slice],
+                ResolutionY = this.FResY[slice],
+                Size = this.FSize[slice]
+            };
+
+            return context.Primitives.Grid(grid);
+
         }
 
         protected override bool Invalidate()

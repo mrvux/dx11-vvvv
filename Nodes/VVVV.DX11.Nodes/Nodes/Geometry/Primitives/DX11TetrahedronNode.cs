@@ -12,6 +12,7 @@ using SlimDX;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
@@ -23,7 +24,10 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.Tetrahedron(new Vector3(1, 1, 1));
+            Tetrahedron settings = new Tetrahedron();
+            settings.Size = new Vector3(1, 1, 1);
+
+            return context.Primitives.Tetrahedron(settings);
         }
 
         protected override bool Invalidate()

@@ -13,6 +13,7 @@ using SlimDX;
 using FeralTic.DX11.Resources;
 using System.Reflection;
 using SlimDX.Direct3D11;
+using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
@@ -90,8 +91,10 @@ namespace VVVV.DX11.Nodes
                 texturevariable = quadshader.Effect.GetVariableBySemantic("INPUTTEXTURE").AsResource();
                 samplervariable = quadshader.Effect.GetVariableBySemantic("SAMPLERSTATE").AsSampler();
 
+                Quad quad = new Quad();
+                quad.Size = new Vector2(1.0f);
 
-                quadgeometry = context.Primitives.QuadNormals(new Vector2(1.0f));
+                quadgeometry = context.Primitives.QuadNormals(quad);
 
                 quadlayouts = new List<InputLayout>();
                 for (int i = 0; i < 4; i++)
