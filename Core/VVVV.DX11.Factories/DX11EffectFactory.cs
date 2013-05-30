@@ -124,9 +124,9 @@ namespace VVVV.DX11.Factories
                                     }
                                 }
 
-                                if (!(hassvpos && hasuv))
+                                if (!(hassvpos && hasuv) && inputcount == 2)
                                 {
-                                    errors.Add(new CompilerError(file, 0, 0, "", "Technique: " + tech.Description.Name + " : Pass : " + pass.Description.Name + " Must have SV_Position AND TEXCOORD0 as input"));
+                                    errors.Add(new CompilerError(file, 0, 0, "", "Technique: " + tech.Description.Name + " : Pass : " + pass.Description.Name + " Must be SV_Position and TEXCOORD0 as input"));
                                 }
                                 
                             }
