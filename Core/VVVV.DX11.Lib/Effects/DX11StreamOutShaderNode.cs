@@ -37,6 +37,7 @@ using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11.Utils;
+using System.CodeDom.Compiler;
 
 
 namespace VVVV.DX11.Nodes.Layers

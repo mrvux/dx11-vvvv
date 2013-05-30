@@ -57,10 +57,16 @@ namespace VVVV.DX11.Factories
         private CompositionContainer FParentContainer;
 
         private readonly Dictionary<IPluginBase, PluginContainer> FPluginContainers;
+
+
         
 
         protected abstract string NodeCategory { get; }
         protected abstract string NodeVersion { get; }
+        protected virtual List<CompilerError> VerifyShader(string file,DX11Effect effect)
+        {
+            return new List<CompilerError>();
+        }
 
         public AbstractDX11ShaderFactory(CompositionContainer parentContainer, string exts)
             : base(exts)
@@ -215,7 +221,7 @@ namespace VVVV.DX11.Factories
             return nodeInfo;
         }
 
-        private void ParseErrors(string e,FXProject project)
+        private void ParseErrors(string e,FXProject project, DX11Effect shader)
         {
             var compilerResults = new CompilerResults(null);
             //now parse errors to CompilerResults
@@ -312,6 +318,12 @@ namespace VVVV.DX11.Factories
                 error.IsWarning = isWarning;
                 compilerResults.Errors.Add(error);
             }
+            
+            //Add some extra error from reflection
+            if (shader.IsCompiled)
+            {
+                compilerResults.Errors.AddRange(this.VerifyShader(project.LocalPath,shader).ToArray());
+            }
 
             project.CompilerResults = compilerResults;
         }
@@ -366,7 +378,7 @@ namespace VVVV.DX11.Factories
             if (string.IsNullOrEmpty(e))
                 e = "";
 
-            this.ParseErrors(e, project);
+            this.ParseErrors(e, project,shader);
 
 
 
