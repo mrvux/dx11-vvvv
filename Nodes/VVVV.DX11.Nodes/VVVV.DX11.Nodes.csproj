@@ -143,6 +143,7 @@
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRawBufferNode.cs" />
+    <Compile Include="Nodes\CopyCounterNode.cs" />
     <Compile Include="Nodes\Devices\DX11RenderContextNode.cs" />
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
     <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
