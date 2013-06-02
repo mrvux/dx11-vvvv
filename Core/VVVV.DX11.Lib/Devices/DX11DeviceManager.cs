@@ -153,7 +153,7 @@ namespace VVVV.DX11.Lib.Devices
                 this.context = new DX11RenderContext(this.flags);
             }
             #else
-                this.context = new DX11RenderContext(this.displaymanager.Factory, screen, this.flags);
+				this.context = new DX11RenderContext(this.flags);
             #endif
 
             this.context = new DX11RenderContext(this.flags);
