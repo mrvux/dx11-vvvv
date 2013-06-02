@@ -115,6 +115,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="SlimDX">
       <HintPath>..\..\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PluginInterfaces">
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
@@ -143,7 +144,7 @@
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRawBufferNode.cs" />
-    <Compile Include="Nodes\CopyCounterNode.cs" />
+    <Compile Include="Nodes\Buffers\CopyCounterNode.cs" />
     <Compile Include="Nodes\Devices\DX11RenderContextNode.cs" />
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
     <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
