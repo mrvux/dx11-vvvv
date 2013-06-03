@@ -123,6 +123,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="SlimDX">
       <HintPath>..\..\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PluginInterfaces">
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
