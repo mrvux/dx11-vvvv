@@ -301,7 +301,10 @@ namespace VVVV.Nodes.VideoPlayer
 
             for (int i = 0; i < this.FTextureOut.SliceCount; i++)
             {
-                this.FTextureOut[i].Dispose();
+                if (this.FTextureOut[i] != null)
+                {
+                    this.FTextureOut[i].Dispose();
+                }
             }
 
 

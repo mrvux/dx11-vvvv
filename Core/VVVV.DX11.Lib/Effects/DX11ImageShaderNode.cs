@@ -299,8 +299,17 @@ namespace VVVV.DX11.Nodes.Layers
                         else
                         {
                             initial = this.FIn[i][context];
-                            wi = initial.Width;
-                            he = initial.Height;
+                            if (initial != null)
+                            {
+                                wi = initial.Width;
+                                he = initial.Height;
+                            }
+                            else
+                            {
+                                initial = context.DefaultTextures.WhiteTexture;
+                                wi = (int)this.FInSize[0].X;
+                                he = (int)this.FInSize[0].Y;
+                            }
                         }
                     }
                     else

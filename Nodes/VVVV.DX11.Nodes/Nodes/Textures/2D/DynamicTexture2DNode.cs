@@ -33,7 +33,7 @@ namespace VVVV.DX11.Nodes
         [Input("Apply", IsBang = true, DefaultValue = 1)]
         protected ISpread<bool> FApply;
 
-        [Output("Texture Out", IsSingle=true)]
+        [Output("Texture Out")]
         protected Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
 
         [Output("Is Valid")]
@@ -43,8 +43,8 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
-            this.FValid.SliceCount = 1;
+            /*if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
+            this.FValid.SliceCount = 1;*/
 
             if (this.FApply[0])
             {
@@ -54,10 +54,29 @@ namespace VVVV.DX11.Nodes
                 this.FInWidth.Sync();
                 this.FInvalidate = true;
             }
+
+            if (this.FInWidth.SliceCount == 0
+                || this.FInHeight.SliceCount == 0
+                || this.FInData.SliceCount == 0
+                || this.FInChannels.SliceCount == 0)
+            {
+                if (this.FTextureOutput.SliceCount == 1)
+                {
+                    if (this.FTextureOutput[0] != null) { this.FTextureOutput[0].Dispose(); }
+                    this.FTextureOutput.SliceCount = 0;
+                }
+            }
+            else
+            {
+                this.FTextureOutput.SliceCount = 1;
+                if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
+            }
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.FTextureOutput.SliceCount == 0) { return; }
+
             if (this.FInvalidate || ! this.FTextureOutput[0].Contains(context))
             {
 
