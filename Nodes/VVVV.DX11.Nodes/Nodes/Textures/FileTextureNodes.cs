@@ -38,6 +38,12 @@ namespace VVVV.DX11.Nodes
         protected override void DoProcess()
         {
             this.Resource = DX11Texture2D.FromFile(this.Context, path);
+            #if DEBUG
+            if (this.Resource.Resource != null)
+            {
+                this.Resource.Resource.DebugName = "FileTextureAsync";
+            }
+            #endif
         }
     }
 
@@ -116,6 +122,10 @@ namespace VVVV.DX11.Nodes
             try
             {
                 result = DX11Texture2D.FromFile(context, path);
+                #if DEBUG
+                result.Resource.DebugName = "FileTexture";
+                #endif
+                
                 return true;
             }
             catch

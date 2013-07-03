@@ -115,6 +115,9 @@ namespace VVVV.DX11.Nodes
                 else
                 {
                     this.FTextureOutput[0][context] = new DX11DynamicTexture2D(context, this.FInWidth[0], this.FInHeight[0], fmt);
+                    #if DEBUG
+                    this.FTextureOutput[0][context].Resource.DebugName = "DynamicTexture";
+                    #endif
                 }
 
                 desc = this.FTextureOutput[0][context].Resource.Description;
@@ -138,6 +141,7 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
         {
+            
             this.FTextureOutput[0].Dispose(context);
         }
 
@@ -145,7 +149,14 @@ namespace VVVV.DX11.Nodes
         #region IDisposable Members
         public void Dispose()
         {
-            this.FTextureOutput[0].Dispose();
+            if (this.FTextureOutput.SliceCount > 0)
+            {
+                if (this.FTextureOutput[0] != null)
+                {
+                    this.FTextureOutput[0].Dispose();
+                }
+            }
+            
         }
         #endregion
     }
