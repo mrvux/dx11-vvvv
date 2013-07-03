@@ -228,6 +228,7 @@
     <Compile Include="Nodes\Textures\2D\FrameDelayTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\FromPointerTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
+    <Compile Include="Nodes\Textures\2D\StencilTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\ToSharedTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\VideoInNode.cs" />
     <Compile Include="Nodes\Textures\2D\WriterTexture2dNode.cs" />
