@@ -327,6 +327,9 @@ namespace VVVV.Nodes.VideoPlayer
                         if (!this.FTextureOut[cnt].Contains(context))
                         {
                             t = new DX11DynamicTexture2D(context, vlc.Width, vlc.Height, SlimDX.DXGI.Format.B8G8R8A8_UNorm);
+                            #if DEBUG
+                            t.Resource.DebugName = "Vlc";
+                            #endif
                             this.FTextureOut[cnt][context] = t;
                         }
                         else
@@ -336,6 +339,9 @@ namespace VVVV.Nodes.VideoPlayer
                             {
                                 this.FTextureOut[cnt].Dispose(context);
                                 DX11DynamicTexture2D t2 = new DX11DynamicTexture2D(context, vlc.Width, vlc.Height, SlimDX.DXGI.Format.B8G8R8A8_UNorm);
+                                #if DEBUG
+                                t2.Resource.DebugName = "Vlc";
+                                #endif
                                 this.FTextureOut[cnt][context] = t2;
                                 t = t2;
                             }
