@@ -125,6 +125,10 @@ namespace VVVV.DX11
                     DX11RenderTarget2D rt = new DX11RenderTarget2D(context, this.width, this.height,
                     this.sd, DeviceFormatHelper.GetFormat(this.FInFormat[i].Name), this.genmipmap, this.mipmaplevel);
 
+                    #if DEBUG
+                    rt.Resource.DebugName = "MRTRenderTexture";
+                    #endif
+
                     this.FOutBuffers[i][context] = rt;
                 }
             }
