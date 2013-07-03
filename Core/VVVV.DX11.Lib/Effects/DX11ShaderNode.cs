@@ -358,7 +358,10 @@ namespace VVVV.DX11.Nodes.Layers
         #region Dispose
         public void Dispose()
         {
-            //if (this.effect != null) { this.effect.Dispose(); }
+            foreach (DX11ShaderData sd in this.deviceshaderdata.Values)
+            {
+                sd.Dispose();
+            }
         }
         #endregion
 

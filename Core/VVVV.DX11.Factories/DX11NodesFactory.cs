@@ -28,7 +28,7 @@ namespace VVVV.DX11.Factories
 	[Export(typeof(IAddonFactory))]
     [Export(typeof(DX11NodesFactory))]
     [ComVisible(false)]
-    public class DX11NodesFactory : IAddonFactory
+    public class DX11NodesFactory : IAddonFactory, IDisposable
 	{
         private IHDEHost hdehost;
 
@@ -49,6 +49,7 @@ namespace VVVV.DX11.Factories
             this.hdehost = hdehost;
             this.ioreg = ioreg;
             this.logger = logger;
+            this.hdehost.RootNode.Removed += new Core.CollectionDelegate<INode2>(RootNode_Removed);
 
             DX11ResourceRegistry reg = new DX11ResourceRegistry();
 
@@ -70,6 +71,13 @@ namespace VVVV.DX11.Factories
 
             this.BuildAAEnum();
 		}
+
+        void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
+        {
+            this.devicemanager.Dispose();
+        }
+
+
 
         private void BuildAAEnum()
         {
@@ -166,6 +174,11 @@ namespace VVVV.DX11.Factories
         public void ParseNodeEntry(System.Xml.XmlReader xmlReader, INodeInfo nodeInfo)
         {
             
+        }
+
+        public void Dispose()
+        {
+            Console.WriteLine("Dispose");
         }
     }
 }

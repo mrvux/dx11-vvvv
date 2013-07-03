@@ -13,7 +13,7 @@ namespace VVVV.DX11.Lib.Devices
 {
     public delegate void RenderContextCreatedDelegate(DX11RenderContext context);
 
-    public interface IDX11RenderContextManager
+    public interface IDX11RenderContextManager : IDisposable
     {
         event RenderContextCreatedDelegate RenderContextCreated;
         DX11RenderContext GetRenderContext(DXGIScreen screen);
@@ -107,6 +107,16 @@ namespace VVVV.DX11.Lib.Devices
             {
                 contexts[key].Dispose();
                 contexts.Remove(key);
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (DX11RenderContext ctx in this.RenderContexts)
+            {
+                ctx.CurrentDeviceContext.ClearState();
+                ctx.CurrentDeviceContext.Flush();
+                ctx.Dispose();
             }
         }
     }
