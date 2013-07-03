@@ -511,6 +511,9 @@ namespace VVVV.DX11.Nodes
                 Format fmt = (Format)Enum.Parse(typeof(Format), this.FCfgBackBufferFormat[0].Name);
 
                 this.FOutBackBuffer[0][context] = new DX11SwapChain(context,this.Handle, fmt, sd);
+                #if DEBUG
+                this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
+                #endif
                 this.depthmanager.NeedReset = true;
             }
 
