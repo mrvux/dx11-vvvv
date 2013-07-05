@@ -55,7 +55,7 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "PixelBillBoard", Category = "DX11.Layer", Version = "")]
     public class PixelBillBoardNode : AbstractDX11LayerSpaceNode
     {
-	    [Input("Transform In", IsSingle = true)] 
+	    [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)] 
 		private ISpread<Matrix> FTransformIn;
         
 		protected override void UpdateSettings(DX11RenderSettings settings)
