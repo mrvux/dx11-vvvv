@@ -9,6 +9,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.Hosting;
 using VVVV.Hosting.Interfaces;
 using VVVV.Hosting.Factories;
+using VVVV.Hosting.IO;
 
 namespace VVVV.DX11.RenderGraph.Model
 {

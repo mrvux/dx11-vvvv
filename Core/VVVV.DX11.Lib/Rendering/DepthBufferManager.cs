@@ -149,6 +149,9 @@ namespace VVVV.DX11.Lib.Rendering
                     }
 
                     ds = new DX11DepthStencil(context, w, h, sd, DeviceFormatHelper.GetFormat(this.depthformatpin.IOObject[0].Name));
+                    #if DEBUG
+                    ds.Resource.DebugName = "DepthStencil";
+                    #endif
                     this.depthoutputpin.IOObject[0][context] = ds;
                 } 
             }

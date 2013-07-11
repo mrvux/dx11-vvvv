@@ -15,7 +15,7 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11.Lib.RenderGraph.Pins
 {
-    public class DX11ResourceOutputStream<T, R> : BufferedIOStream<T>, IDisposable, IGenericIO
+    public class DX11ResourceOutputStream<T, R> : MemoryIOStream<T>, IDisposable, IGenericIO
         where T : DX11Resource<R>, new()
         where R : IDX11Resource
     {
@@ -55,7 +55,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Pins
 
         public void Dispose()
         {
-            Console.WriteLine("Test");
+
         }
     }
 }

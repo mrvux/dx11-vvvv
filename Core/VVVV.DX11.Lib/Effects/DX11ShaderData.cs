@@ -13,6 +13,7 @@ using VVVV.PluginInterfaces.V2;
 using FeralTic.Resources.Geometry;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using SlimDX.D3DCompiler;
 
 
 namespace VVVV.DX11.Lib.Effects
@@ -112,11 +113,52 @@ namespace VVVV.DX11.Lib.Effects
                         this.layoutmsg.Add("OK");
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    this.layouts.Add(null);
-                    this.layoutvalid.Add(false);
-                    this.layoutmsg.Add(ex.Message);
+                    try
+                    {
+                        //Do bit of reflection work to get missing semantic
+                        EffectShaderVariable vs = pass.VertexShaderDescription.Variable;
+                        int inputcount = vs.GetShaderDescription(0).InputParameterCount;
+                        string missingsemantics = "Geometry is missing semantics: ";
+
+                        bool first = true;
+
+                        for (int vip = 0; vip < inputcount; vip++)
+                        {
+                            ShaderParameterDescription sd = vs.GetInputParameterDescription(0, vip);
+
+                            if (sd.SystemType == SystemValueType.Undefined) //Ignore SV semantics
+                            {
+                                bool found = false;
+                                foreach (InputElement e in geoms[i][this.context].InputLayout)
+                                {
+                                    if (sd.SemanticName == e.SemanticName && sd.SemanticIndex == e.SemanticIndex)
+                                    {
+                                        found = true;
+                                    }
+                                }
+
+                                if (!found)
+                                {
+                                    string sem = sd.SemanticIndex == 0 ? "" : sd.SemanticIndex.ToString();
+                                    if (first) { first = false; } else { missingsemantics += " : "; }
+                                    missingsemantics += sd.SemanticName + sem;
+                                }
+                            }
+                        }
+
+                        this.layouts.Add(null);
+                        this.layoutvalid.Add(false);
+                        this.layoutmsg.Add(missingsemantics);
+                    }
+                    catch (Exception ex)
+                    {
+                        //Just in case
+                        this.layouts.Add(null);
+                        this.layoutvalid.Add(false);
+                        this.layoutmsg.Add(ex.Message);
+                    }
                 }
             }
         }

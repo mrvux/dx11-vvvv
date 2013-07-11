@@ -6,6 +6,7 @@ using VVVV.PluginInterfaces.V2;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
@@ -35,8 +36,19 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.Cylinder(this.FInR1[slice], this.FInR2[slice],this.FInCycles[slice], this.FInLength[slice],
-                this.FInResX[slice], this.FInResY[slice], this.FInCaps[slice]);
+            Cylinder cylinder = new Cylinder()
+            {
+                Caps = this.FInCaps[slice],
+                Cycles = this.FInCycles[slice],
+                Length = this.FInLength[slice],
+                Radius1 = this.FInR1[slice],
+                Radius2 = this.FInR2[slice],
+                ResolutionX = this.FInResX[slice],
+                ResolutionY= this.FInResY[slice]
+            };
+
+
+            return context.Primitives.Cylinder(cylinder);
         }
 
         protected override bool Invalidate()

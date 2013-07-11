@@ -30,6 +30,7 @@ using VVVV.Core.Model.FX;
 using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System.CodeDom.Compiler;
 
 
 namespace VVVV.DX11.Nodes.Layers
@@ -124,7 +125,9 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
                 this.varmanager.RebuildTextureCache();
-                this.varmanager.RebuildPassCache(0);
+
+                this.varmanager.RebuildPassCache(tid);
+               //this.varmanager.RebuildPassCache(0);
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -296,8 +299,17 @@ namespace VVVV.DX11.Nodes.Layers
                         else
                         {
                             initial = this.FIn[i][context];
-                            wi = initial.Width;
-                            he = initial.Height;
+                            if (initial != null)
+                            {
+                                wi = initial.Width;
+                                he = initial.Height;
+                            }
+                            else
+                            {
+                                initial = context.DefaultTextures.WhiteTexture;
+                                wi = (int)this.FInSize[0].X;
+                                he = (int)this.FInSize[0].Y;
+                            }
                         }
                     }
                     else
@@ -511,6 +523,10 @@ namespace VVVV.DX11.Nodes.Layers
         #region Dispose
         public void Dispose()
         {
+            foreach (DX11ShaderData sd in this.deviceshaderdata.Values)
+            {
+                sd.Dispose();
+            }
             //if (this.effect != null) { this.effect.Dispose(); }
         }
         #endregion

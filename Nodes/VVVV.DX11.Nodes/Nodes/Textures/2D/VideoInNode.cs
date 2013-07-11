@@ -92,11 +92,26 @@ namespace VVVV.DX11.Nodes
                 byte* brgb = (byte*) this.data.ToPointer();
                 byte* brgba = (byte*)this.rgbadata.ToPointer();
 
+                /*int cnt = 0;
+                int cnta = 0;
+                for (int i = 0; i < this.FInH[0]; i++)
+                {
+                    for (int j = 0; j < this.FInW[0]; j++)
+                    {
+                        brgba[cnta] = brgb[cnt];
+                        brgba[cnta + 1] = brgb[cnt + 1];
+                        brgba[cnta + 2] = brgb[cnt + 2];
+
+                        cnta += 4;
+                        cnt += 3;
+                    }
+                }*/
+
                 for (int i = 0; i < this.pixcount; i++)
                 {
                     brgba[i * 4] = brgb[i * 3];
-                    brgba[i * 4+1] = brgb[i * 3+1];
-                    brgba[i * 4+2] = brgb[i * 3+2];
+                    brgba[i * 4 + 1] = brgb[i * 3 + 1];
+                    brgba[i * 4 + 2] = brgb[i * 3 + 2];
                 }
 
                 this.copyframe = true;
@@ -127,7 +142,7 @@ namespace VVVV.DX11.Nodes
                             this.FTextureOutput[0].Dispose(context);
                         }
 
-                        DX11DynamicTexture2D t = new DX11DynamicTexture2D(context, this.FInW[0], this.FInH[0], SlimDX.DXGI.Format.R8G8B8A8_UNorm);
+                        DX11DynamicTexture2D t = new DX11DynamicTexture2D(context, this.FInW[0], this.FInH[0], SlimDX.DXGI.Format.B8G8R8A8_UNorm);
 
 
                         this.FTextureOutput[0][context] = t;
@@ -140,7 +155,7 @@ namespace VVVV.DX11.Nodes
 
                 if (this.copyframe && this.FTextureOutput[0].Contains(context))
                 {
-                    this.FTextureOutput[0][context].WriteDataStride(this.rgbadata, this.size);
+                    this.FTextureOutput[0][context].WriteData(this.rgbadata, this.size);
                 }
             }
         }

@@ -146,7 +146,7 @@ namespace VVVV.DX11.Lib.RenderGraph
             //Got to all parents recursively (eg: make sure all is updated)
             foreach (DX11InputPin ip in node.InputPins)
             {
-                if (ip.IsConnected)
+                if (ip.IsConnected && (ip.ParentPin.IsFeedBackPin == false))
                 {
                     this.ProcessNode(ip.ParentPin.ParentNode);
                 }

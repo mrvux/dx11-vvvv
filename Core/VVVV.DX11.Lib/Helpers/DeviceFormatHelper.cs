@@ -7,6 +7,7 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
+using FeralTic.DX11.Utils;
 
 
 namespace VVVV.DX11.Internals.Helpers
@@ -44,7 +45,7 @@ namespace VVVV.DX11.Internals.Helpers
 			//Shouldn't happen but just in case
 			if (!this.usageformats.ContainsKey(usage))
 			{
-				this.usageformats.Add(usage, FormatHelper.SupportedFormats(this.device, usage));
+				this.usageformats.Add(usage, FormatHelper.Instance.SupportedFormats(this.device, usage));
 			}
 		}
 
