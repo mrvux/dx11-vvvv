@@ -7,6 +7,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 using VVVV.Hosting.Interfaces;
 using VVVV.Hosting.Factories;
+using VVVV.Hosting.IO;
 
 namespace VVVV
 {
@@ -23,14 +24,24 @@ namespace VVVV
 
                 IInternalPluginHost iip = (IInternalPluginHost)host;
 
-                if (iip.Plugin is PluginContainer)
+                try
                 {
-                    PluginContainer plugin = (PluginContainer)iip.Plugin;
-                    return typeof(T).IsAssignableFrom(plugin.PluginBase.GetType());
+                    if (iip.Plugin is PluginContainer)
+                    {
+                        PluginContainer plugin = (PluginContainer)iip.Plugin;
+                        return typeof(T).IsAssignableFrom(plugin.PluginBase.GetType());
+                    }
+                    else
+                    {
+                        return typeof(T).IsAssignableFrom(iip.Plugin.GetType());
+                    }
                 }
-                else
+                catch
                 {
-                    return typeof(T).IsAssignableFrom(iip.Plugin.GetType());
+                    #if DEBUG
+                    System.Diagnostics.Debug.WriteLine("Error checking node:" + node.NodeInfo.Name);
+                    #endif
+                    return false;
                 }
 
             }

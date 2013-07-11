@@ -6,13 +6,14 @@ using SlimDX.Direct3D11;
 
 using FeralTic.DX11;
 using FeralTic.Utils;
+using VVVV.Core.Logging;
 
 
 namespace VVVV.DX11.Lib.Devices
 {
     public delegate void RenderContextCreatedDelegate(DX11RenderContext context);
 
-    public interface IDX11RenderContextManager
+    public interface IDX11RenderContextManager : IDisposable
     {
         event RenderContextCreatedDelegate RenderContextCreated;
         DX11RenderContext GetRenderContext(DXGIScreen screen);
@@ -28,13 +29,16 @@ namespace VVVV.DX11.Lib.Devices
         protected Dictionary<T, DX11RenderContext> contexts = new Dictionary<T, DX11RenderContext>();
         private DX11DisplayManager displaymanager;
         protected DeviceCreationFlags flags;
+        private ILogger logger;
 
         public event RenderContextCreatedDelegate RenderContextCreated;
 
         public abstract bool Reallocate { get; }
 
-        public AbstractDX11RenderContextManager(DX11DisplayManager displaymanager)
+        public AbstractDX11RenderContextManager(ILogger logger, DX11DisplayManager displaymanager)
         {
+            this.logger = logger;
+
             #if DEBUG
             this.flags = DeviceCreationFlags.Debug;
             #else
@@ -55,12 +59,29 @@ namespace VVVV.DX11.Lib.Devices
 
         public virtual DX11RenderContext GetRenderContext(DXGIScreen screen)
         {
+            this.logger.Log(LogType.Message, "Creating DX11 Render Context");
 
             T key = this.GetDeviceKey(screen);
 
             if (!contexts.ContainsKey(key))
             {
-                DX11RenderContext ctx = new DX11RenderContext(this.displaymanager.Factory, screen, this.flags);
+                DX11RenderContext ctx;
+                #if DEBUG
+                try
+                {
+                    ctx = new DX11RenderContext(this.displaymanager.Factory, screen, this.flags);
+                }
+                catch
+                {
+                    this.logger.Log(LogType.Warning, "Could not create debug device, if you want debug informations make sure DirectX SDK is installed");
+                    this.logger.Log(LogType.Warning, "Creating default DirectX 11 device");
+                    this.flags = DeviceCreationFlags.BgraSupport;
+                    ctx = new DX11RenderContext(this.displaymanager.Factory, screen, this.flags);
+                }
+                #else
+                ctx = new DX11RenderContext(this.displaymanager.Factory, screen, this.flags);
+                #endif
+
                 ctx.Initialize();
 
                 contexts.Add(key, ctx);
@@ -88,12 +109,22 @@ namespace VVVV.DX11.Lib.Devices
                 contexts.Remove(key);
             }
         }
+
+        public void Dispose()
+        {
+            foreach (DX11RenderContext ctx in this.RenderContexts)
+            {
+                ctx.CurrentDeviceContext.ClearState();
+                ctx.CurrentDeviceContext.Flush();
+                ctx.Dispose();
+            }
+        }
     }
 
     public class DX11PerAdapterDeviceManager : AbstractDX11RenderContextManager<int>
     {
 
-        public DX11PerAdapterDeviceManager(DX11DisplayManager displaymanager) : base(displaymanager)
+        public DX11PerAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager) : base(logger, displaymanager)
         { 
         }
 
@@ -116,9 +147,25 @@ namespace VVVV.DX11.Lib.Devices
         private DX11RenderContext context;
 
 
-        public DX11AutoAdapterDeviceManager(DX11DisplayManager displaymanager)
-            : base(displaymanager)
+        public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager)
+            : base(logger ,displaymanager)
         {
+            #if DEBUG
+            try
+            {
+                this.context = new DX11RenderContext(this.flags);
+            }
+            catch
+            {
+                logger.Log(LogType.Warning, "Could not create Debug device, if you want debug informations make sure DirectX SDK is installed");
+                logger.Log(LogType.Warning, "Creating default DirectX 11 device");
+                this.flags = DeviceCreationFlags.BgraSupport;
+                this.context = new DX11RenderContext(this.flags);
+            }
+            #else
+				this.context = new DX11RenderContext(this.flags);
+            #endif
+
             this.context = new DX11RenderContext(this.flags);
             this.context.Initialize();
             this.contexts.Add(0, this.context);
@@ -147,7 +194,7 @@ namespace VVVV.DX11.Lib.Devices
 
     public class DX11PerMonitorDeviceManager : AbstractDX11RenderContextManager<string>
     {
-        public DX11PerMonitorDeviceManager(DX11DisplayManager displaymanager) : base(displaymanager) { }
+        public DX11PerMonitorDeviceManager(ILogger logger, DX11DisplayManager displaymanager) : base(logger,displaymanager) { }
 
         protected override string GetDeviceKey(DXGIScreen screen)
         {

@@ -12,6 +12,7 @@ using SlimDX;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
@@ -23,7 +24,10 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.QuadNormals(this.FSize[slice]);
+            Quad quad = new Quad();
+            quad.Size = this.FSize[slice];
+
+            return context.Primitives.QuadNormals(quad);
         }
 
         protected override bool Invalidate()

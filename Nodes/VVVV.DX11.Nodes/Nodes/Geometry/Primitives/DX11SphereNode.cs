@@ -12,6 +12,7 @@ using SlimDX;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 
 namespace VVVV.DX11.Nodes
@@ -37,7 +38,14 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.Sphere(this.FSize[slice], this.FResX[slice], this.FResY[slice],this.FCyclesX[slice],this.FCyclesY[slice]);
+            Sphere sphere = new Sphere();
+            sphere.CyclesX = this.FCyclesX[slice];
+            sphere.CyclesY = this.FCyclesY[slice];
+            sphere.Radius = this.FSize[slice];
+            sphere.ResX = this.FResX[slice];
+            sphere.ResY = this.FResY[slice];
+
+            return context.Primitives.Sphere(sphere);
         }
 
         protected override bool Invalidate()

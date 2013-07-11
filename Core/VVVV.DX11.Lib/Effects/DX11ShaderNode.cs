@@ -31,6 +31,7 @@ using VVVV.DX11.Lib.Rendering;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System.CodeDom.Compiler;
 
 namespace VVVV.DX11.Nodes.Layers
 {
@@ -89,6 +90,7 @@ namespace VVVV.DX11.Nodes.Layers
 
 
         #region Set the shader instance
+
         public override void SetShader(DX11Effect shader, bool isnew)
         {
             this.FShader = shader;
@@ -356,7 +358,10 @@ namespace VVVV.DX11.Nodes.Layers
         #region Dispose
         public void Dispose()
         {
-            //if (this.effect != null) { this.effect.Dispose(); }
+            foreach (DX11ShaderData sd in this.deviceshaderdata.Values)
+            {
+                sd.Dispose();
+            }
         }
         #endregion
 

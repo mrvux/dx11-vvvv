@@ -13,6 +13,7 @@ using VVVV.DX11.Nodes.Layers;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Queries;
+using System.CodeDom.Compiler;
 
 
 namespace VVVV.DX11.Lib.Effects
@@ -48,6 +49,7 @@ namespace VVVV.DX11.Lib.Effects
         #endregion
 
         #region Virtual and abstract
+
         protected virtual void ImportsSatistieds() { }
         #endregion
 
