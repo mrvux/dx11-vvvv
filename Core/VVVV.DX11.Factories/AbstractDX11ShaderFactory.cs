@@ -39,9 +39,6 @@ namespace VVVV.DX11.Factories
 
         [Import]
         protected DotNetPluginFactory FDotNetFactory;
-        
-        [Import]
-        protected INodeInfoFactory FNodeInfoFactory;
 
         [Import]
         protected IORegistry FIORegistry;
@@ -60,10 +57,16 @@ namespace VVVV.DX11.Factories
         private CompositionContainer FParentContainer;
 
         private readonly Dictionary<IPluginBase, PluginContainer> FPluginContainers;
+
+
         
 
         protected abstract string NodeCategory { get; }
         protected abstract string NodeVersion { get; }
+        protected virtual List<CompilerError> VerifyShader(string file,DX11Effect effect)
+        {
+            return new List<CompilerError>();
+        }
 
         public AbstractDX11ShaderFactory(CompositionContainer parentContainer, string exts)
             : base(exts)
@@ -79,14 +82,13 @@ namespace VVVV.DX11.Factories
         protected override IEnumerable<INodeInfo> LoadNodeInfos(string filename)
         {
             var project = CreateProject(filename);
-            if (project != null)
-            	yield return LoadNodeInfoFromEffect(filename, project);
+            yield return LoadNodeInfoFromEffect(filename, project);
         }
 
         protected override void DoAddFile(string filename)
         {
-        	if (CreateProject(filename) != null)
-            	base.DoAddFile(filename);
+            CreateProject(filename);
+            base.DoAddFile(filename);
         }
 
         protected override void DoRemoveFile(string filename)
@@ -111,8 +113,10 @@ namespace VVVV.DX11.Factories
             if (!FProjects.TryGetValue(filename, out project))
             {
             	var isDX11 = true;
-            	//check if this is a dx11 effect in that it does not contain "technique "
-            	using (var sr = new StreamReader(filename))
+            	
+                //check if this is a dx11 effect in that it does not contain "technique "
+            	
+                /*using (var sr = new StreamReader(filename))
                 {
             		string line;
             		var t9 = "technique ";
@@ -127,7 +131,7 @@ namespace VVVV.DX11.Factories
                     		break;
                     	}
                     }
-            	}
+            	}*/
             	
             	if (isDX11)
 	            {
@@ -217,7 +221,7 @@ namespace VVVV.DX11.Factories
             return nodeInfo;
         }
 
-        private void ParseErrors(string e,FXProject project)
+        private void ParseErrors(string e,FXProject project, DX11Effect shader)
         {
             var compilerResults = new CompilerResults(null);
             //now parse errors to CompilerResults
@@ -314,6 +318,12 @@ namespace VVVV.DX11.Factories
                 error.IsWarning = isWarning;
                 compilerResults.Errors.Add(error);
             }
+            
+            //Add some extra error from reflection
+            if (shader.IsCompiled)
+            {
+                compilerResults.Errors.AddRange(this.VerifyShader(project.LocalPath,shader).ToArray());
+            }
 
             project.CompilerResults = compilerResults;
         }
@@ -324,6 +334,9 @@ namespace VVVV.DX11.Factories
                 return false;
 
             var project = nodeInfo.UserData as FXProject;
+            /*if (!project.IsLoaded)
+                project.Load();*/
+
             //compile shader
             FIncludeHandler.ParentPath = Path.GetDirectoryName(nodeInfo.Filename);
             string code = File.ReadAllText(nodeInfo.Filename);
@@ -365,7 +378,7 @@ namespace VVVV.DX11.Factories
             if (string.IsNullOrEmpty(e))
                 e = "";
 
-            this.ParseErrors(e, project);
+            this.ParseErrors(e, project,shader);
 
 
 
@@ -401,9 +414,13 @@ namespace VVVV.DX11.Factories
             if (nodeInfo.Type == NodeType.Dynamic)
             {
                 var project = nodeInfo.UserData as FXProject;
+                /*if (!project.IsLoaded)
+                    project.Load();*/
 
                 var projectDir = path;
                 var newProjectName = name + this.FileExtension[0];
+                var newLocation = new Uri(projectDir.ConcatPath(newProjectName));
+
                 filename = projectDir.ConcatPath(newProjectName);
 
                 project.SaveTo(filename);

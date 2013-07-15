@@ -42,11 +42,8 @@ namespace VVVV.DX11
         [Input("Background Color", DefaultColor = new double[] { 0, 0, 0, 1 }, Order = 7)]
         protected ISpread<Color4> FInBgColor;
 
-        [Input("AA Samples per Pixel", DefaultValue = 1, MinValue = 1, Order = 7)]
-        protected IDiffSpread<int> FInAASamplesPerPixel;
-
-        [Input("AA Quality", Order = 8)]
-        protected IDiffSpread<int> FInAAQuality;
+        [Input("AA Samples per Pixel", DefaultEnumEntry = "1", EnumName = "DX11_AASamples",Order=8)]
+        protected IDiffSpread<EnumEntry> FInAASamplesPerPixel;
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;

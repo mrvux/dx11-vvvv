@@ -12,6 +12,7 @@ using SlimDX;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 
 namespace VVVV.DX11.Nodes
@@ -47,8 +48,10 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.Torus(this.FResX[slice], this.FResY[slice], this.FSize[slice], this.FThick[slice],
-                this.FPY[slice],this.FPX[slice],this.FPR[slice],this.FCY[slice]);
+            Torus t = new Torus(this.FResX[slice], this.FResY[slice], this.FSize[slice], this.FThick[slice],
+                this.FPY[slice], this.FPX[slice], this.FPR[slice], this.FCY[slice]);
+
+            return context.Primitives.Torus(t);
         }
 
         protected override bool Invalidate()

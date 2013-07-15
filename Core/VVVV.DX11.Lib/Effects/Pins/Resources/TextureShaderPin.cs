@@ -39,7 +39,14 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             try
             {
-                return this.pin[slice][context].SRV;
+                if (this.pin[slice].Contains(context))
+                {
+                    return this.pin[slice][context].SRV;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch
             {

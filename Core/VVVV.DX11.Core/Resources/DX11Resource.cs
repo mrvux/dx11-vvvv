@@ -43,6 +43,7 @@ namespace VVVV.DX11
 
         public bool Contains(DX11RenderContext context)
         {
+            if (this.resources == null) { return false; }
             return this.resources.ContainsKey(context);
         }
 

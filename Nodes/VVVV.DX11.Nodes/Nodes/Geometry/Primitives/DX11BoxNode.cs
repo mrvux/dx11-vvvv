@@ -22,15 +22,11 @@ namespace VVVV.DX11.Nodes
         [Input("Size",DefaultValues= new double[] { 1,1,1})]
         protected IDiffSpread<Vector3> FSize;
 
-        private BoxSettings settings = new BoxSettings();
+        private Box settings = new Box();
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            settings.FaceIndex = false;
             settings.Size = this.FSize[slice];
-            settings.SoftNormals = false;
-            settings.UvMap = eBoxUVMap.Default;
-
             return context.Primitives.Box(settings);
         }
 
