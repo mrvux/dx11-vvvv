@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel.Composition;
-
-using VVVV.PluginInterfaces.V2;
-using VVVV.PluginInterfaces.V1;
-
-using FeralTic.DX11;
+﻿using VVVV.PluginInterfaces.V2;
 
 using SlimDX;
 
@@ -64,10 +55,13 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "PixelBillBoard", Category = "DX11.Layer", Version = "")]
     public class PixelBillBoardNode : AbstractDX11LayerSpaceNode
     {
-        protected override void UpdateSettings(DX11RenderSettings settings)
+	    [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)] 
+		private ISpread<Matrix> FTransformIn;
+        
+		protected override void UpdateSettings(DX11RenderSettings settings)
         {
             settings.View = Matrix.Identity;
-            settings.Projection = Matrix.Scaling(1.0f / (float)settings.RenderWidth, 1.0f / (float)settings.RenderHeight, 1.0f);
+            settings.Projection = Matrix.Scaling(1.0f / settings.RenderWidth, 1.0f / settings.RenderHeight, 1.0f) * FTransformIn[0];
             settings.ViewProjection = settings.Projection;
         }
     }
