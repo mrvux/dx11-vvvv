@@ -49,7 +49,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FInKeep;
 
         [Input("No Mips", Visibility = PinVisibility.Hidden)]
-        protected ISpread<bool> FInNoMips;
+        protected IDiffSpread<bool> FInNoMips;
 
         [Output("Texture Out")]
         protected ISpread<DX11Resource<T>> FTextureOutput;

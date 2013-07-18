@@ -102,7 +102,7 @@ namespace VVVV.DX11.Nodes
                     InputLayout layout;
                     quadshader.SelectTechnique(i);
 
-                    quadgeometry.ValidateLayout(quadshader.GetPass(0), out layout);
+                    bool res = quadgeometry.ValidateLayout(quadshader.GetPass(0), out layout);
                     quadlayouts.Add(layout);
                 }
             }
@@ -176,6 +176,15 @@ namespace VVVV.DX11.Nodes
                 quadshader.SetBySemantic("WORLD", this.FInWorld[i]);
                 quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
 
+                if (this.FInTexture[i].Contains(context))
+                {
+                    texturevariable.SetResource(this.FInTexture[i][context].SRV);
+                }
+                else
+                {
+                    texturevariable.SetResource(null);
+                }
+
                 quadshader.ApplyPass(0);
 
                 quadgeometry.Draw();
@@ -198,16 +207,6 @@ namespace VVVV.DX11.Nodes
             quadgeometry.Bind(quadlayouts[2]);
 
             this.BindBuffers(context);
-
-
-            if (this.FInTexture[0].Contains(context))
-            {
-                texturevariable.SetResource(this.FInTexture[0][context].SRV);
-            }
-            else
-            {
-                texturevariable.SetResource(null);
-            }
 
             quadshader.ApplyPass(0);
 
@@ -314,6 +313,8 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FEnabled[0])
                 {
+                    context.CleanShaderStages();
+
                     quadshader.SetBySemantic("VIEWPROJECTION", settings.ViewProjection);
 
                     if (this.BeginQuery != null)
