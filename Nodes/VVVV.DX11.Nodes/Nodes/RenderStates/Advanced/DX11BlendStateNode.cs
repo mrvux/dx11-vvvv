@@ -64,7 +64,7 @@ namespace VVVV.DX11.Nodes
                     DX11RenderState rs;
                     if (this.FInState.PluginIO.IsConnected)
                     {
-                        rs = this.FInState[i];
+                        rs = this.FInState[i].Clone();
                     }
                     else
                     {
