@@ -73,7 +73,7 @@ namespace VVVV.DX11.Nodes
         {
             this.FInvalidate = false;
 
-            if (this.FInPath.IsChanged || this.FInReload[0])
+            if (this.FInPath.IsChanged || this.FInReload[0] || this.FInNoMips.IsChanged)
             {
                 //Kill old resources
                 for (int i = 0; i < this.FTextureOutput.SliceCount; i++)
