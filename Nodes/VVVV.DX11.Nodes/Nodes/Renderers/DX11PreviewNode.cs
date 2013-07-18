@@ -42,6 +42,8 @@ namespace VVVV.DX11.Nodes.Renderers
              get { return this.Handle; }
          }
 
+         private IntPtr lasthandle = IntPtr.Zero;
+
          [ImportingConstructor()]
          public DX11PreviewNode(IPluginHost host, IIOFactory iofactory)
          {
@@ -70,6 +72,15 @@ namespace VVVV.DX11.Nodes.Renderers
 
          public void Render(DX11RenderContext context)
          {
+             if (this.lasthandle != this.Handle)
+             {
+                 if (this.swapchain != null)
+                 {
+                     if (this.swapchain.Contains(context)) { this.swapchain.Dispose(context); }
+                 }
+                 this.lasthandle = this.Handle;
+             }
+
              if (!this.swapchain.Contains(context))
              {
                  this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1, 0));
@@ -109,6 +120,15 @@ namespace VVVV.DX11.Nodes.Renderers
 
          public void Update(IPluginIO pin, DX11RenderContext context)
          {
+             if (this.lasthandle != this.Handle)
+             {
+                 if (this.swapchain != null) 
+                 {
+                     if (this.swapchain.Contains(context)) { this.swapchain.Dispose(context); }
+                 }
+                 this.lasthandle = this.Handle;
+             }
+
              if (!this.swapchain.Contains(context))
              {
                  this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1,0));

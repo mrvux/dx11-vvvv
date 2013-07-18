@@ -56,7 +56,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\Deploy\Debug\x64\lib\core\</OutputPath>
+    <OutputPath>..\..\Deploy\Debug\x64\packs\DX11\core\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -108,6 +108,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="SlimDX">
       <HintPath>..\..\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PluginInterfaces">
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
