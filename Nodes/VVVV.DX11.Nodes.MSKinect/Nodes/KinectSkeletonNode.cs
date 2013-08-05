@@ -17,7 +17,7 @@ namespace VVVV.MSKinect.Nodes
 	            Version = "Microsoft", 
 	            Author = "vux", 
 	            Tags = "DX11", 
-	            Help = "Returns skeleton data for each tracked user"]
+	            Help = "Returns skeleton data for each tracked user")]
     public class KinectSkeletonNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
