@@ -17,7 +17,12 @@ using Microsoft.Kinect;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "RGB", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "dx11,texture")]
+    [PluginInfo(Name = "RGB", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11, texture",
+	            Help = "Returns an B8G8R8A8_UNorm formatted texture from the Kinects RGB camera")]
     public class KinectColorTextureNode : KinectBaseTextureNode
     {
 
