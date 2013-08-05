@@ -28,7 +28,7 @@ namespace VVVV.DX11.Factories
 	[Export(typeof(IAddonFactory))]
     [Export(typeof(DX11NodesFactory))]
     [ComVisible(false)]
-    public class DX11NodesFactory : IAddonFactory
+    public class DX11NodesFactory : IAddonFactory, IDisposable
 	{
         private IHDEHost hdehost;
 
@@ -38,7 +38,6 @@ namespace VVVV.DX11.Factories
         private IDX11RenderContextManager devicemanager;
         private DX11RenderManager rendermanager;
 
-        private INodeInfoFactory niFactory;
         private DX11GraphBuilder<IDX11ResourceProvider> graphbuilder;
         private ILogger logger;
 
@@ -50,6 +49,7 @@ namespace VVVV.DX11.Factories
             this.hdehost = hdehost;
             this.ioreg = ioreg;
             this.logger = logger;
+            this.hdehost.RootNode.Removed += new Core.CollectionDelegate<INode2>(RootNode_Removed);
 
             DX11ResourceRegistry reg = new DX11ResourceRegistry();
 
@@ -60,7 +60,7 @@ namespace VVVV.DX11.Factories
             this.hdehost.MainLoop.OnRender += GraphEventService_OnRender;
 
             this.displaymanager = new DX11DisplayManager();
-            this.devicemanager = new DX11AutoAdapterDeviceManager(this.displaymanager);
+            this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
 
 			this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
 			this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
@@ -69,8 +69,21 @@ namespace VVVV.DX11.Factories
             DX11GlobalDevice.DeviceManager = this.devicemanager;
             DX11GlobalDevice.RenderManager = this.rendermanager;
 
-            this.niFactory = ni;
+            this.BuildAAEnum();
 		}
+
+        void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
+        {
+            this.devicemanager.Dispose();
+        }
+
+
+
+        private void BuildAAEnum()
+        {
+            string[] aa = new string[] { "1", "2", "4", "8", "16", "32" };
+            this.hdehost.UpdateEnum("DX11_AASamples", "1", aa);
+        }
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)
         {
@@ -98,7 +111,6 @@ namespace VVVV.DX11.Factories
         {
             this.rendermanager.Present();
         }
-
 
         #region Factory Stuff
         public void AddDir(string dir, bool recursive)
@@ -152,9 +164,6 @@ namespace VVVV.DX11.Factories
 
         #endregion
 
-
-
-
         public bool GetNodeListAttribute(INodeInfo nodeInfo, out string name, out string value)
         {
             name = "";
@@ -165,6 +174,11 @@ namespace VVVV.DX11.Factories
         public void ParseNodeEntry(System.Xml.XmlReader xmlReader, INodeInfo nodeInfo)
         {
             
+        }
+
+        public void Dispose()
+        {
+            Console.WriteLine("Dispose");
         }
     }
 }

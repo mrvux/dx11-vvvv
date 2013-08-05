@@ -32,7 +32,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug\</OutputPath>
+    <OutputPath>..\..\Deploy\Debug\x64\packs\DX11\nodes\plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -129,7 +129,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Deploy_Debug\</OutputPath>
+    <OutputPath>..\..\Deploy\Debug\x86\packs\DX11\nodes\plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -150,6 +150,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="SlimDX">
       <HintPath>..\..\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PluginInterfaces">
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
@@ -169,7 +170,7 @@
     </Reference>
     <Reference Include="AssimpNet">
       <HintPath>..\..\Dependencies\$(Platform)\AssimpNet.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -188,14 +189,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
-      <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
       <Project>{71C0786D-2640-4E39-AA7B-83602F36F3A3}</Project>
       <Name>VVVV.DX11.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
+      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

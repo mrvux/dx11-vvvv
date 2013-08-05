@@ -11,6 +11,19 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
+    public static class StateExt
+    {
+        public static DX11RenderState Clone(this DX11RenderState state)
+        {
+            DX11RenderState res = new DX11RenderState();
+            res.Blend = state.Blend;
+            res.DepthStencil = state.DepthStencil;
+            res.Rasterizer = state.Rasterizer;
+            return res;
+        }
+    }
+
+
     public abstract class BaseDX11RenderStateSimple : IPluginEvaluate
     {
         [Input("Render State", CheckIfChanged = true)]
@@ -51,7 +64,7 @@ namespace VVVV.DX11.Nodes
                     DX11RenderState rs;
                     if (this.FInState.PluginIO.IsConnected)
                     {
-                        rs = this.FInState[i];
+                        rs = this.FInState[i].Clone();
                     }
                     else
                     {

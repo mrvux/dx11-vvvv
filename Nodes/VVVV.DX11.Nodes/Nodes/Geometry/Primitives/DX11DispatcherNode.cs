@@ -19,13 +19,13 @@ namespace VVVV.DX11.Nodes.Geometry.Primitives
     [PluginInfo(Name = "Dispatcher", Category = "DX11.Drawer", Version = "", Author = "vux")]
     public class DX11DispatcherNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
-        [Input("Thread X", DefaultValue = 1)]
+        [Input("Thread X", DefaultValue = 1, MinValue=0)]
         protected IDiffSpread<int> FInTX;
 
-        [Input("Thread Y", DefaultValue = 1)]
+        [Input("Thread Y", DefaultValue = 1, MinValue = 0)]
         protected IDiffSpread<int> FInTY;
 
-        [Input("Thread Z", DefaultValue = 1)]
+        [Input("Thread Z", DefaultValue = 1, MinValue = 0)]
         protected IDiffSpread<int> FInTZ;
 
         [Output("Geometry Out", Order = 5)]
@@ -62,9 +62,9 @@ namespace VVVV.DX11.Nodes.Geometry.Primitives
                     if (this.FOutput[i].Contains(context)) { this.FOutput[i].Dispose(context); }
 
                     DX11NullDispatcher disp = new DX11NullDispatcher();
-                    disp.X = this.FInTX[i];
-                    disp.Y = this.FInTY[i];
-                    disp.Z = this.FInTZ[i];
+                    disp.X = Math.Max(this.FInTX[i], 0);
+                    disp.Y = Math.Max(this.FInTY[i], 0);
+                    disp.Z = Math.Max(this.FInTZ[i], 0);
 
                     DX11NullGeometry geom = new DX11NullGeometry(context, disp);
 

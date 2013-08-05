@@ -13,6 +13,7 @@ using SlimDX;
 using FeralTic.Resources.Geometry;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
@@ -36,7 +37,16 @@ namespace VVVV.DX11.Nodes
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.Segment(this.FInPhase[slice], this.FInCycles[slice], this.FInInner[slice], this.FInRes[slice], this.FInFlat[slice]);
+            Segment segment = new Segment()
+            {
+                Cycles = this.FInCycles[slice],
+                Flat = this.FInFlat[slice],
+                InnerRadius = this.FInInner[slice],
+                Phase = this.FInPhase[slice],
+                Resolution = this.FInRes[slice]
+            };
+
+            return context.Primitives.Segment(segment);
         }
 
         protected override bool Invalidate()

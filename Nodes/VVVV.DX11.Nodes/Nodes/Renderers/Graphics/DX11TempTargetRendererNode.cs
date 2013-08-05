@@ -35,9 +35,6 @@ namespace VVVV.DX11
 
         [Input("Mip Map Levels", Order = 5)]
         protected IDiffSpread<int> FInMipLevel;
-
-        [Input("Resolve", Order = 6)]
-        protected ISpread<bool> FInResolve;
         #endregion
 
         #region Output Pins
@@ -47,8 +44,8 @@ namespace VVVV.DX11
         [Output("Buffers", IsSingle = true)]
         protected ISpread<DX11Resource<DX11Texture2D>> FOutBuffers;
 
-        [Output("Resolved Buffer", IsSingle = true)]
-        protected ISpread<DX11Resource<DX11Texture2D>> FOutResolved;
+        [Output("AA Texture Out", IsSingle = true, Visibility=PinVisibility.OnlyInspector)]
+        protected ISpread<DX11Resource<DX11Texture2D>> FOutAABuffers;
 
         #endregion
 
@@ -72,15 +69,14 @@ namespace VVVV.DX11
         protected override void OnEvaluate(int SpreadMax)
         {
             if (this.FOutBuffers[0] == null) { this.FOutBuffers[0] = new DX11Resource<DX11Texture2D>(); }
-            if (this.FOutResolved[0] == null) { this.FOutResolved[0] = new DX11Resource<DX11Texture2D>(); }
+            if (this.FOutAABuffers[0] == null) { this.FOutAABuffers[0] = new DX11Resource<DX11Texture2D>(); }
 
-            if (this.FInAAQuality.IsChanged
-              || this.FInAASamplesPerPixel.IsChanged
+            if (this.FInAASamplesPerPixel.IsChanged
               || this.FInDoMipMaps.IsChanged
               || this.FInMipLevel.IsChanged)
             {
-                this.sd.Count = this.FInAASamplesPerPixel[0];
-                this.sd.Quality = this.FInAAQuality[0];
+                this.sd.Count = Convert.ToInt32(this.FInAASamplesPerPixel[0].Name);
+                this.sd.Quality = 0;
                 this.genmipmap = this.FInDoMipMaps[0];
                 this.mipmaplevel = Math.Max(FInMipLevel[0], 0);
                 this.depthmanager.NeedReset = true;
@@ -97,8 +93,7 @@ namespace VVVV.DX11
 
             TexInfo ti = this.rtm.GetRenderTarget(context);
 
-            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged
-                || this.FInAAQuality.IsChanged)
+            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged)
             {
                 this.width = ti.w;
                 this.height = ti.h;
@@ -115,8 +110,8 @@ namespace VVVV.DX11
                     context.ResourcePool.Unlock(targetresolve[context]);
                 }
 
-                int aacount = this.FInAASamplesPerPixel[0];
-                int aaquality = this.FInAAQuality[0];
+                int aacount = Convert.ToInt32(this.FInAASamplesPerPixel[0].Name);
+                int aaquality = 0;
 
                 if (aacount > 1)
                 {
@@ -126,8 +121,8 @@ namespace VVVV.DX11
                     targets[context] = temptarget;
                     targetresolve[context] = temptargetresolve;
 
-                    this.FOutBuffers[0][context] = temptarget;
-                    this.FOutResolved[0][context] = temptargetresolve;
+                    this.FOutBuffers[0][context] = temptargetresolve;
+                    this.FOutAABuffers[0][context] = temptarget;
                 }
                 else
                 {
@@ -136,7 +131,7 @@ namespace VVVV.DX11
                     targets[context] = temptarget;
   
                     this.FOutBuffers[0][context] = temptarget;
-                    this.FOutResolved[0][context] = temptarget;
+                    this.FOutAABuffers[0][context] = temptarget;
                 }
 
 
@@ -187,7 +182,7 @@ namespace VVVV.DX11
         #region After Render
         protected override void AfterRender(DX11GraphicsRenderer renderer, DX11RenderContext context)
         {
-            if (this.FInResolve[0] && this.sd.Count > 1)
+            if (this.sd.Count > 1)
             {
                 context.CurrentDeviceContext.ResolveSubresource(targets[context].Resource, 0, targetresolve[context].Resource,
                     0, targets[context].Format);

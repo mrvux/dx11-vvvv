@@ -15,6 +15,7 @@ using FeralTic.DX11.Resources;
 using SlimDX.DXGI;
 using VVVV.DX11.Internals.Helpers;
 using VVVV.DX11.Internals;
+using FeralTic.DX11.Utils;
 
 namespace VVVV.DX11.Nodes
 {
@@ -97,7 +98,7 @@ namespace VVVV.DX11.Nodes
                         //Set deault, can do better here
                         this.inputlayout[i] = new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0);
                     }
-                    this.vertexsize += FormatHelper.FormatSizes[this.inputlayout[i].Format];
+                    this.vertexsize += FormatHelper.Instance.GetSize(this.inputlayout[i].Format);
                 }
                 InputLayoutFactory.AutoIndex(this.inputlayout);
              

@@ -17,7 +17,7 @@ namespace VVVV.DX11.Nodes.Renderers
 {
      [PluginInfo(Name = "Preview", Category = "DX11.Texture", Author = "vux", AutoEvaluate = true,
         InitialWindowHeight = 300, InitialWindowWidth = 400, InitialBoxWidth = 400, InitialBoxHeight = 300, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface
+    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface, IUserInputWindow
     {
          private Control ctrl;
 
@@ -36,6 +36,13 @@ namespace VVVV.DX11.Nodes.Renderers
          DX11Resource<DX11SwapChain> swapchain = new DX11Resource<DX11SwapChain>();
 
          private bool resized;
+
+         public IntPtr InputWindowHandle
+         {
+             get { return this.Handle; }
+         }
+
+         private IntPtr lasthandle = IntPtr.Zero;
 
          [ImportingConstructor()]
          public DX11PreviewNode(IPluginHost host, IIOFactory iofactory)
@@ -65,6 +72,15 @@ namespace VVVV.DX11.Nodes.Renderers
 
          public void Render(DX11RenderContext context)
          {
+             if (this.lasthandle != this.Handle)
+             {
+                 if (this.swapchain != null)
+                 {
+                     if (this.swapchain.Contains(context)) { this.swapchain.Dispose(context); }
+                 }
+                 this.lasthandle = this.Handle;
+             }
+
              if (!this.swapchain.Contains(context))
              {
                  this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1, 0));
@@ -97,12 +113,22 @@ namespace VVVV.DX11.Nodes.Renderers
 
                      context.RenderStateStack.Pop();
                      context.RenderTargetStack.Pop();
+                     context.CleanUpPS();
                  }
              }  
          }
 
          public void Update(IPluginIO pin, DX11RenderContext context)
          {
+             if (this.lasthandle != this.Handle)
+             {
+                 if (this.swapchain != null) 
+                 {
+                     if (this.swapchain.Contains(context)) { this.swapchain.Dispose(context); }
+                 }
+                 this.lasthandle = this.Handle;
+             }
+
              if (!this.swapchain.Contains(context))
              {
                  this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1,0));
