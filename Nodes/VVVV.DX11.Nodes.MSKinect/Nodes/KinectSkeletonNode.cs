@@ -12,7 +12,12 @@ using Quaternion = SlimDX.Quaternion;
 
 namespace VVVV.MSKinect.Nodes
 {
-    [PluginInfo(Name = "Skeleton", Category = "Kinect", Version = "Microsoft", Author = "vux")]
+    [PluginInfo(Name = "Skeleton", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11", 
+	            Help = "Returns skeleton data for each tracked user")]
     public class KinectSkeletonNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]

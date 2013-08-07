@@ -62,8 +62,8 @@ namespace VVVV.DX11.Factories
             this.displaymanager = new DX11DisplayManager();
             this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
 
-           this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
-           this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
+			this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
+			this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
            this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder,this.logger);
 
             DX11GlobalDevice.DeviceManager = this.devicemanager;

@@ -17,7 +17,12 @@ using Microsoft.Kinect;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "RGB", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "dx11,texture")]
+    [PluginInfo(Name = "RGB", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11, texture",
+	            Help = "Returns an B8G8R8A8_UNorm formatted texture from the Kinects RGB camera")]
     public class KinectColorTextureNode : KinectBaseTextureNode
     {
 
@@ -70,7 +75,7 @@ namespace VVVV.DX11.Nodes.MSKinect
         {
             get 
             {
-                return this.oldformat == ColorImageFormat.RgbResolution640x480Fps30 ? SlimDX.DXGI.Format.B8G8R8A8_UNorm
+                return this.oldformat == ColorImageFormat.RgbResolution640x480Fps30 ? SlimDX.DXGI.Format.B8G8R8X8_UNorm
                     : SlimDX.DXGI.Format.R16_UNorm;
             }
         }
