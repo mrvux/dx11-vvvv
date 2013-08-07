@@ -143,7 +143,9 @@ namespace VVVV.Nodes.VideoPlayer
 
                 if (needreset)
                 {
-                    if (File.Exists(path))
+                	Uri uriResult;
+                	var isURL = Uri.TryCreate(path, UriKind.Absolute, out uriResult);
+                    if (File.Exists(path) || isURL)
                     {
                         if (add)
                         {
