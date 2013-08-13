@@ -89,9 +89,11 @@ namespace VVVV.DX11.Nodes.Layers
         private int spmax = 0;
 
         private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
-        private DX11RenderTarget2D persistedframe;
-
+ 
         #region Default Input Pins
+        [Input("Depth In",Visibility=PinVisibility.OnlyInspector)]
+        protected Pin<DX11Resource<DX11DepthStencil>> FDepthIn;
+
         [Input("Texture In")]
         protected Pin<DX11Resource<DX11Texture2D>> FIn;
 
@@ -343,10 +345,10 @@ namespace VVVV.DX11.Nodes.Layers
                     //Bind Initial (once only is ok)
                     this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "INITIAL", initial);
 
-                    if (this.persistedframe != null)
+                    /*if (this.persistedframe != null)
                     {
                         this.BindSemanticSRV(shaderdata.ShaderInstance.Effect, "LASTFRAME", persistedframe.SRV);
-                    }
+                    }*/
 
                     //Go trough all passes
                     EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
@@ -405,20 +407,24 @@ namespace VVVV.DX11.Nodes.Layers
                         DX11ResourcePoolEntry<DX11RenderTarget2D> elem = context.ResourcePool.LockRenderTarget(w, h, fmt, new SampleDescription(1, 0), mips, 0);
                         locktargets.Add(elem);
                         DX11RenderTarget2D rt = elem.Element;
-                        ctx.OutputMerger.SetTargets(rt.RTV);
 
+                        if (this.FDepthIn.PluginIO.IsConnected && pi.UseDepth)
+                        {
+
+                        }
+                        else
+                        {
+                            context.RenderTargetStack.Push(elem.Element);
+                        }
+
+                        
                         r.RenderWidth = w;
                         r.RenderHeight = h;
-                        r.BackBuffer = rt;
+                        r.BackBuffer = elem.Element;
                         this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
                         //Apply settings (note that textures swap is handled later)
                         this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, or, i);
-
-                        Viewport vp = new Viewport();
-                        vp.Width = rt.Width;
-                        vp.Height = rt.Height;
-                        ctx.Rasterizer.SetViewports(vp);
 
                         //Bind last render target
                         this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
@@ -445,6 +451,13 @@ namespace VVVV.DX11.Nodes.Layers
 
                         lastrt = rt;
                         lasttmp = elem;
+
+                        context.RenderTargetStack.Pop();
+
+                        if (pi.HasState)
+                        {
+                            context.RenderStateStack.Apply();
+                        }
                     }
 
                     //Set last render target
