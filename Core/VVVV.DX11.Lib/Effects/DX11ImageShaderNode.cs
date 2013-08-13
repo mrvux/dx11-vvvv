@@ -410,14 +410,55 @@ namespace VVVV.DX11.Nodes.Layers
 
                         if (this.FDepthIn.PluginIO.IsConnected && pi.UseDepth)
                         {
-
+                            context.RenderTargetStack.Push(this.FDepthIn[0][context], true, elem.Element);
                         }
                         else
                         {
                             context.RenderTargetStack.Push(elem.Element);
                         }
 
-                        
+                        #region Check for depth/blend preset
+                        bool validdepth = false;
+                        bool validblend = false;
+
+                        DepthStencilStateDescription ds = new DepthStencilStateDescription();
+                        BlendStateDescription bs = new BlendStateDescription();
+
+                        if (pi.DepthPreset != "")
+                        {
+                            try
+                            {
+                                ds = DX11DepthStencilStates.Instance.GetState(pi.DepthPreset);
+                                validdepth = true;
+                            }
+                            catch
+                            {
+                                
+                            }
+                        }
+
+                        if (pi.BlendPreset != "")
+                        {
+                            try
+                            {
+                                bs = DX11BlendStates.Instance.GetState(pi.BlendPreset);
+                                validblend = true;
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                        #endregion
+
+                        if (validdepth || validblend)
+                        {
+                            DX11RenderState state = new DX11RenderState();
+                            if (validdepth) { state.DepthStencil = ds; }
+                            if (validblend) { state.Blend = bs; }
+                            context.RenderStateStack.Push(state);
+                        }
+
                         r.RenderWidth = w;
                         r.RenderHeight = h;
                         r.BackBuffer = elem.Element;
@@ -453,6 +494,11 @@ namespace VVVV.DX11.Nodes.Layers
                         lasttmp = elem;
 
                         context.RenderTargetStack.Pop();
+
+                        if (validblend || validdepth)
+                        {
+                            context.RenderStateStack.Pop();
+                        }
 
                         if (pi.HasState)
                         {
