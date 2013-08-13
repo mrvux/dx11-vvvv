@@ -41,6 +41,12 @@ namespace VVVV.DX11.Lib.RenderGraph
             get { return this.thisframepins.Count; }
         }
 
+        public bool DoNotDestroy
+        {
+            get;
+            set;
+        }
+
         public int ProcessedNodes
         {
             get;
@@ -60,6 +66,7 @@ namespace VVVV.DX11.Lib.RenderGraph
             this.logger = logger;
             this.context = context;
             this.graph = graph;
+            this.DoNotDestroy = false;
 
         }
 
@@ -75,6 +82,11 @@ namespace VVVV.DX11.Lib.RenderGraph
 
             //Clear frame pins
             this.thisframepins.Clear();
+
+            if (this.DoNotDestroy)
+            {
+                this.thisframepins.Clear();
+            }
         }
 
         public void EndFrame()
@@ -103,26 +115,28 @@ namespace VVVV.DX11.Lib.RenderGraph
                 this.ProcessNode(windownode);
             }
 
-            
-            //Call destroy on any pin which has not being used
-            foreach (DX11OutputPin unused in this.lastframepins)
+            if (this.DoNotDestroy == false)
             {
-                //Check here, at end of render the com objects are already dead
-                try
+                //Call destroy on any pin which has not being used
+                foreach (DX11OutputPin unused in this.lastframepins)
                 {
-                    IDX11ResourceProvider provider = unused.ParentNode.Instance<IDX11ResourceProvider>();
-                    provider.Destroy(unused.PluginIO, this.context,false);
+                    //Check here, at end of render the com objects are already dead
+                    try
+                    {
+                        IDX11ResourceProvider provider = unused.ParentNode.Instance<IDX11ResourceProvider>();
+                        provider.Destroy(unused.PluginIO, this.context, false);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.Log(ex);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    this.logger.Log(ex);
-                }
-            }
 
-            //Swap pin buffers for next frame
-            List<DX11OutputPin> temp = this.thisframepins;
-            this.thisframepins = this.lastframepins;
-            this.lastframepins = temp;
+                //Swap pin buffers for next frame
+                List<DX11OutputPin> temp = this.thisframepins;
+                this.thisframepins = this.lastframepins;
+                this.lastframepins = temp;
+            }
         }
         #endregion
 
@@ -171,17 +185,24 @@ namespace VVVV.DX11.Lib.RenderGraph
 
                             if (source.IsAssignable<IDX11MultiResourceProvider>())
                             {
-                                //Mark all output pins as processed
-                                foreach (DX11OutputPin outpin in source.OutputPins)
+                                if (this.DoNotDestroy == false)
                                 {
-                                    this.thisframepins.Add(outpin);
+                                    //Mark all output pins as processed
+                                    foreach (DX11OutputPin outpin in source.OutputPins)
+                                    {
+                                        this.thisframepins.Add(outpin);
+                                    }
                                 }
                             }
                             else
                             {
-                                //Mark output pin as used this frame
-                                this.thisframepins.Add(parent);
+                                if (this.DoNotDestroy == false)
+                                {
+                                    //Mark output pin as used this frame
+                                    this.thisframepins.Add(parent);
+                                }
                             }
+
                         }
                         catch (Exception ex)
                         {
@@ -189,10 +210,13 @@ namespace VVVV.DX11.Lib.RenderGraph
                             //Log 
                         }
 
-                        //Remove from old cache if applicable
-                        if (this.lastframepins.Contains(parent))
+                        if (this.DoNotDestroy == false)
                         {
-                            this.lastframepins.Remove(parent);
+                            //Remove from old cache if applicable
+                            if (this.lastframepins.Contains(parent))
+                            {
+                                this.lastframepins.Remove(parent);
+                            }
                         }
                     }
                 }
