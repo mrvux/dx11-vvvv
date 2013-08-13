@@ -283,12 +283,16 @@ namespace VVVV.DX11.Nodes.Layers
 
             int wi, he;
 
+            bool preserve = false;
+
             for (int i = 0; i < this.spmax; i++)
             {
                 if (this.FInEnabled[i])
                 {
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
+                    
 
+                    #region Manage size
                     DX11Texture2D initial;
                     if (this.FIn.PluginIO.IsConnected)
                     {
@@ -320,6 +324,7 @@ namespace VVVV.DX11.Nodes.Layers
                         wi = (int)this.FInSize[0].X;
                         he = (int)this.FInSize[0].Y;
                     }
+                    #endregion
 
                     DX11RenderSettings r = new DX11RenderSettings();
                     r.RenderWidth = wi;
@@ -344,11 +349,6 @@ namespace VVVV.DX11.Nodes.Layers
 
                     //Bind Initial (once only is ok)
                     this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "INITIAL", initial);
-
-                    /*if (this.persistedframe != null)
-                    {
-                        this.BindSemanticSRV(shaderdata.ShaderInstance.Effect, "LASTFRAME", persistedframe.SRV);
-                    }*/
 
                     //Go trough all passes
                     EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
@@ -469,6 +469,14 @@ namespace VVVV.DX11.Nodes.Layers
 
                         //Bind last render target
                         this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
+
+                        if (this.FDepthIn.PluginIO.IsConnected)
+                        {
+                            if (this.FDepthIn[0].Contains(context))
+                            {
+                                this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "DEPTHTEXTURE", this.FDepthIn[0][context]);
+                            }
+                        }
 
                         //Apply pass and draw quad
                         pass.Apply(ctx);
