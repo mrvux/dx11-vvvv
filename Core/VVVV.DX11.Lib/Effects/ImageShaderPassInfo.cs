@@ -123,6 +123,11 @@ namespace VVVV.DX11.Lib.Effects
         public bool DoScale { get; protected set; }
         public float Scale { get; protected set; }
         public eImageScaleReference Reference { get; protected set; }
+        public bool UseDepth { get; protected set; }
+        public bool HasState { get; protected set; }
+
+        public string BlendPreset { get; protected set; }
+        public string DepthPreset { get; protected set; }
 
         public ImageComputeData ComputeData { get; protected set; }
 
@@ -133,6 +138,10 @@ namespace VVVV.DX11.Lib.Effects
             this.Scale = 1.0f;
             this.DoScale = false;
             this.Reference = eImageScaleReference.Previous;
+            this.BlendPreset = "";
+            this.DepthPreset = "";
+            this.UseDepth = false;
+            this.HasState = false;
 
             this.ComputeData = new ImageComputeData(pd);
 
@@ -163,6 +172,36 @@ namespace VVVV.DX11.Lib.Effects
             {
                 bool b = var.AsScalar().GetFloat() > 0.5f;
                 this.Reference = b ? eImageScaleReference.Initial : eImageScaleReference.Previous;
+            }
+
+            var = pd.GetAnnotationByName("usedepth");
+            if (var.IsValid)
+            {
+                bool b = var.AsScalar().GetFloat() > 0.5f;
+                this.UseDepth = b;
+            }
+
+            var = pd.GetAnnotationByName("hasstate");
+            if (var.IsValid)
+            {
+                bool b = var.AsScalar().GetFloat() > 0.5f;
+                this.HasState = b;
+            }
+
+
+            var = pd.GetAnnotationByName("blendpreset");
+            if (var.IsValid)
+            {
+                string blend = var.AsString().GetString();
+                this.BlendPreset = blend;
+            }
+
+
+            var = pd.GetAnnotationByName("depthpreset");
+            if (var.IsValid)
+            {
+                string depth = var.AsString().GetString();
+                this.DepthPreset = depth;
             }
         }
     }
