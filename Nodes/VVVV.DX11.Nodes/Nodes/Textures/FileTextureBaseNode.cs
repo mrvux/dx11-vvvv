@@ -13,6 +13,7 @@ using VVVV.PluginInterfaces.V2;
 using FeralTic.Resources;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
@@ -60,6 +61,7 @@ namespace VVVV.DX11.Nodes
         //protected static Dictionary<string, T> respool = new Dictionary<string, T>();
 
         private bool FInvalidate;
+        private bool FDestroyed;
 
         protected abstract bool Load(DX11RenderContext context, string path, out T result);
 
@@ -71,8 +73,6 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.FInvalidate = false;
-
             if (this.FInPath.IsChanged || this.FInReload[0] || this.FInNoMips.IsChanged)
             {
                 //Kill old resources
@@ -102,30 +102,42 @@ namespace VVVV.DX11.Nodes
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
-            if (this.FInvalidate || !this.FTextureOutput[0].Data.ContainsKey(context))
+            if (this.FInvalidate || this.FDestroyed)
             {
                 for (int i = 0; i < this.FInPath.SliceCount; i++)
                 {
                     T result;
 
-                    if (this.FInBGLoad[0])
+                    if (File.Exists(this.FInPath[i]))
                     {
-                        FileTextureLoadTask<T> task = this.GetTask(context, this.FInPath[i], i);
-                        task.StatusChanged += new TaskStatusChangedDelegate(task_StatusChanged);
-                        this.tasks.Add(task);
+
+                        if (this.FInBGLoad[0])
+                        {
+
+                            FileTextureLoadTask<T> task = this.GetTask(context, this.FInPath[i], i);
+                            task.StatusChanged += new TaskStatusChangedDelegate(task_StatusChanged);
+                            this.tasks.Add(task);
+                        }
+                        else
+                        {
+
+                            bool res = this.Load(context, this.FInPath[i], out result);
+                            this.FTextureOutput[i][context] = result;
+                            this.FValid[i] = res;
+                        }
                     }
                     else
                     {
-
-                        bool res = this.Load(context, this.FInPath[i], out result);
-                        this.FTextureOutput[i][context] = result;
-                        this.FValid[i] = res;
+                        this.FTextureOutput[i][context] = default(T);
+                        this.FValid[i] = false;
                     }
-
-
                 }
+
+                this.FInvalidate = false;
+                this.FDestroyed = false;
             }
 
+            
         }
 
         void task_StatusChanged(IDX11ScheduledTask task)
@@ -157,6 +169,8 @@ namespace VVVV.DX11.Nodes
                     task.MarkForAbort();
                 }
                 this.tasks.Clear();
+
+                this.FDestroyed = true;
             }
         }
 
