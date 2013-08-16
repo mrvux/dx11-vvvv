@@ -9,7 +9,12 @@ using Microsoft.Kinect;
 
 namespace VVVV.MSKinect.Nodes
 {
-    [PluginInfo(Name = "Kinect", Category = "Devices", Version = "Microsoft", Author = "vux")]
+    [PluginInfo(Name = "Kinect", 
+	            Category = "Devices", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11",
+	            Help = "Provides access to a Kinect through the MSKinect API")]
     public class KinectRuntimeNode : IPluginEvaluate, IDisposable
     {
         [Input("Motor Angle", IsSingle = true, DefaultValue = 0.5)]
