@@ -9,7 +9,11 @@ using VVVV.MSKinect.Lib;
 
 namespace MSKinect.Nodes
 {
-    [PluginInfo(Name = "FaceData", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "")]
+    [PluginInfo(Name = "FaceData", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Help = "Returns detailed 2D and 3D data describing the tracked face")]
     public class KinectFaceFrameDataNode : IPluginEvaluate
     {
 

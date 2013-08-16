@@ -14,7 +14,12 @@ using Microsoft.Kinect.Toolkit.FaceTracking;
 
 namespace VVVV.MSKinect.Nodes
 {
-    [PluginInfo(Name = "Face", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "")]
+    [PluginInfo(Name = "Face", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11",
+	            Help = "Returns general face tracking data")]
     public class KinectFaceNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]

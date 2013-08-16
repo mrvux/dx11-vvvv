@@ -16,7 +16,12 @@ using VVVV.MSKinect.Lib;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "Skeleton", Category = "DX11.Geometry", Version = "Lines", Author = "vux", Tags = "")]
+    [PluginInfo(Name = "Skeleton", 
+	            Category = "DX11.Geometry", 
+	            Version = "Lines", 
+	            Author = "vux", 
+	            Tags = "DX11, kinect",
+	            Help = "Returns a line-based skeleton geometry")]
     public class KinectSkeletonIndicesMeshNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Output("Output", IsSingle = true)]
