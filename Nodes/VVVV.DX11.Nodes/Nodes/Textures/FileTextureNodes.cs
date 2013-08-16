@@ -12,6 +12,7 @@ using VVVV.PluginInterfaces.V2;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
@@ -71,6 +72,7 @@ namespace VVVV.DX11.Nodes
             try
             {
                 result = DX11Texture1D.FromFile(context, path);
+
                 return true;
             }
             catch
@@ -121,7 +123,21 @@ namespace VVVV.DX11.Nodes
         {
             try
             {
-                result = DX11Texture2D.FromFile(context, path);
+                if (Path.GetExtension(path).ToLower() == ".tga")
+                {
+                    result = null;
+                    return false;
+                }
+                else
+                {
+                    ImageLoadInformation info = ImageLoadInformation.FromDefaults();
+                    if (this.FInNoMips[0])
+                    {
+                        info.MipLevels = 1;
+                    }
+                    result = DX11Texture2D.FromFile(context, path, info);
+                }
+                
                 #if DEBUG
                 result.Resource.DebugName = "FileTexture";
                 #endif

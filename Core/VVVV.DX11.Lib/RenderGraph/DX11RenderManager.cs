@@ -64,6 +64,17 @@ namespace VVVV.DX11.Lib.RenderGraph
             this.RenderGraphs.Remove(context);
         }
 
+        public bool DoNotDestroy
+        {
+            set
+            {
+                foreach (DX11RenderContext dev in this.RenderGraphs.Keys)
+                {
+                    this.RenderGraphs[dev].DoNotDestroy = value;
+                }
+            }
+        }
+
         public void Reset()
         {
             

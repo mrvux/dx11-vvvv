@@ -89,9 +89,11 @@ namespace VVVV.DX11.Nodes.Layers
         private int spmax = 0;
 
         private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
-        private DX11RenderTarget2D persistedframe;
-
+ 
         #region Default Input Pins
+        [Input("Depth In",Visibility=PinVisibility.OnlyInspector)]
+        protected Pin<DX11Resource<DX11DepthStencil>> FDepthIn;
+
         [Input("Texture In")]
         protected Pin<DX11Resource<DX11Texture2D>> FIn;
 
@@ -281,12 +283,16 @@ namespace VVVV.DX11.Nodes.Layers
 
             int wi, he;
 
+            bool preserve = false;
+
             for (int i = 0; i < this.spmax; i++)
             {
                 if (this.FInEnabled[i])
                 {
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
+                    
 
+                    #region Manage size
                     DX11Texture2D initial;
                     if (this.FIn.PluginIO.IsConnected)
                     {
@@ -318,6 +324,7 @@ namespace VVVV.DX11.Nodes.Layers
                         wi = (int)this.FInSize[0].X;
                         he = (int)this.FInSize[0].Y;
                     }
+                    #endregion
 
                     DX11RenderSettings r = new DX11RenderSettings();
                     r.RenderWidth = wi;
@@ -342,11 +349,6 @@ namespace VVVV.DX11.Nodes.Layers
 
                     //Bind Initial (once only is ok)
                     this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "INITIAL", initial);
-
-                    if (this.persistedframe != null)
-                    {
-                        this.BindSemanticSRV(shaderdata.ShaderInstance.Effect, "LASTFRAME", persistedframe.SRV);
-                    }
 
                     //Go trough all passes
                     EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
@@ -405,23 +407,81 @@ namespace VVVV.DX11.Nodes.Layers
                         DX11ResourcePoolEntry<DX11RenderTarget2D> elem = context.ResourcePool.LockRenderTarget(w, h, fmt, new SampleDescription(1, 0), mips, 0);
                         locktargets.Add(elem);
                         DX11RenderTarget2D rt = elem.Element;
-                        ctx.OutputMerger.SetTargets(rt.RTV);
+
+                        if (this.FDepthIn.PluginIO.IsConnected && pi.UseDepth)
+                        {
+                            context.RenderTargetStack.Push(this.FDepthIn[0][context], true, elem.Element);
+                        }
+                        else
+                        {
+                            context.RenderTargetStack.Push(elem.Element);
+                        }
+
+                        if (pi.Clear)
+                        {
+                            elem.Element.Clear(new Color4(0, 0, 0, 0));
+                        }
+
+                        #region Check for depth/blend preset
+                        bool validdepth = false;
+                        bool validblend = false;
+
+                        DepthStencilStateDescription ds = new DepthStencilStateDescription();
+                        BlendStateDescription bs = new BlendStateDescription();
+
+                        if (pi.DepthPreset != "")
+                        {
+                            try
+                            {
+                                ds = DX11DepthStencilStates.Instance.GetState(pi.DepthPreset);
+                                validdepth = true;
+                            }
+                            catch
+                            {
+                                
+                            }
+                        }
+
+                        if (pi.BlendPreset != "")
+                        {
+                            try
+                            {
+                                bs = DX11BlendStates.Instance.GetState(pi.BlendPreset);
+                                validblend = true;
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                        #endregion
+
+                        if (validdepth || validblend)
+                        {
+                            DX11RenderState state = new DX11RenderState();
+                            if (validdepth) { state.DepthStencil = ds; }
+                            if (validblend) { state.Blend = bs; }
+                            context.RenderStateStack.Push(state);
+                        }
 
                         r.RenderWidth = w;
                         r.RenderHeight = h;
-                        r.BackBuffer = rt;
+                        r.BackBuffer = elem.Element;
                         this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
                         //Apply settings (note that textures swap is handled later)
                         this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, or, i);
 
-                        Viewport vp = new Viewport();
-                        vp.Width = rt.Width;
-                        vp.Height = rt.Height;
-                        ctx.Rasterizer.SetViewports(vp);
-
                         //Bind last render target
                         this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
+
+                        if (this.FDepthIn.PluginIO.IsConnected)
+                        {
+                            if (this.FDepthIn[0].Contains(context))
+                            {
+                                this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "DEPTHTEXTURE", this.FDepthIn[0][context]);
+                            }
+                        }
 
                         //Apply pass and draw quad
                         pass.Apply(ctx);
@@ -445,6 +505,18 @@ namespace VVVV.DX11.Nodes.Layers
 
                         lastrt = rt;
                         lasttmp = elem;
+
+                        context.RenderTargetStack.Pop();
+
+                        if (validblend || validdepth)
+                        {
+                            context.RenderStateStack.Pop();
+                        }
+
+                        if (pi.HasState)
+                        {
+                            context.RenderStateStack.Apply();
+                        }
                     }
 
                     //Set last render target

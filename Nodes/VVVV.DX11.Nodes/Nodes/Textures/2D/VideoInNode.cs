@@ -8,9 +8,112 @@ using VVVV.PluginInterfaces.V1;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace VVVV.DX11.Nodes
 {
+    public unsafe class VideoInThread
+    {
+        private Thread thr;
+
+        private object m_lock = new object();
+        private bool m_bRunning = false;
+
+        VideoInputSharp.Capture capture;
+
+        private IntPtr rgbbuffer = IntPtr.Zero;
+        private IntPtr buffer0 = IntPtr.Zero;
+        private IntPtr buffer1 = IntPtr.Zero;
+
+        private int width;
+        private int height;
+        private int pixcount;
+        public int size;
+
+        public event EventHandler OnFrameReady;
+
+        public IntPtr frontBuffer { get { return this.buffer1; } }
+
+        public void Start(int w, int h,int fps)
+        {
+            this.capture = new Capture();
+            this.capture.Open(0, w, h, fps);
+
+            this.width = this.capture.GetWidth();
+            this.height = this.capture.GetHeight();
+            this.pixcount = this.width * this.height;
+
+            this.rgbbuffer = Marshal.AllocCoTaskMem(this.width * this.height * 3);
+            this.buffer0 = Marshal.AllocCoTaskMem(this.width * this.height * 4);
+            this.buffer1 = Marshal.AllocCoTaskMem(this.width * this.height * 4);
+            this.size = this.width * this.height * 4;
+
+            if (this.m_bRunning)
+            {
+                return;
+            }
+
+
+
+            this.thr = new Thread(new ThreadStart(this.Run));
+            this.m_bRunning = true;
+            this.thr.Start();
+        }
+
+        public void Stop()
+        {
+            this.m_bRunning = false;
+        }
+
+        public int GetWidth()
+        {
+            return this.width;
+        }
+
+        public int GetHeight()
+        {
+            return this.height;
+        }
+
+        private void Run()
+        {
+            while (this.m_bRunning)
+            {
+                this.capture.GetPixels(this.rgbbuffer);
+
+                
+                byte* brgb = (byte*)this.rgbbuffer.ToPointer();
+                byte* brgba = (byte*)this.buffer0.ToPointer();
+
+                for (int i = 0; i < this.pixcount; i++)
+                {
+                    brgba[i * 4] = brgb[i * 3];
+                    brgba[i * 4 + 1] = brgb[i * 3 + 1];
+                    brgba[i * 4 + 2] = brgb[i * 3 + 2];
+                    brgba[i * 4 + 3] = 255;
+                }
+
+                IntPtr temp = this.buffer0;
+                this.buffer0 = this.buffer1;
+                this.buffer1 = temp;
+
+
+                if (this.OnFrameReady != null)
+                {
+                    this.OnFrameReady(this, new EventArgs());
+                }
+            }
+
+            this.capture.Close();
+
+            Marshal.FreeCoTaskMem(this.buffer0);
+            Marshal.FreeCoTaskMem(this.buffer1);
+            Marshal.FreeCoTaskMem(this.rgbbuffer);
+
+        }
+    }
+
+
     [PluginInfo(Name="VideoIn",Category="DX11.Texture", Version="DShow")]
     public unsafe class VideoInNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
@@ -41,122 +144,67 @@ namespace VVVV.DX11.Nodes
         [Output("Height Out", DefaultValue = 480)]
         ISpread<int> FOutH;
 
-        VideoInputSharp.Capture c;
+        private VideoInThread videoin;
 
-        bool invalidate = true;
-        bool copyframe = false;
-
-        private IntPtr data = IntPtr.Zero;
-        private IntPtr rgbadata = IntPtr.Zero;
-        private long size;
-        private int pixcount;
-
+        bool invalidate = false;
+        bool reset = false;
 
         public void Evaluate(int SpreadMax)
         {
-            this.copyframe = false;
-            if (c == null || this.FInReset[0])
+            if (this.videoin == null || this.FInReset[0])
             {
-                if (c != null)
+                if (this.videoin != null)
                 {
-                    c.Close();
+                    this.videoin.OnFrameReady -= videoin_OnFrameReady;
+                    this.videoin.Stop();
                 }
 
-                if (this.data != IntPtr.Zero)
-                {
-                    Marshal.FreeCoTaskMem(this.data);
-                }
-
-                c = new Capture();
-                c.Open(this.FInDeviceId[0], this.FInFPS[0], this.FInW[0], this.FInH[0]);
-
-                this.size = this.FInW[0] * this.FInH[0] * 4;
-                this.pixcount = this.FInW[0] * this.FInH[0];
-
-
-                this.data = Marshal.AllocCoTaskMem(this.FInW[0] * this.FInH[0] * 3);
-                this.rgbadata = Marshal.AllocCoTaskMem((int)size);
-                this.invalidate = true;
-
+                this.reset = true;
+                this.videoin = new VideoInThread();
+                this.videoin.OnFrameReady += this.videoin_OnFrameReady;
+                this.videoin.Start(this.FInW[0], this.FInH[0],this.FInFPS[0]);
             }
 
             if (this.FTextureOutput[0] == null)
             {
                 this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>();
             }
-
-            if (c != null && this.FInEnabled[0])
-            {
-                this.c.GetPixels(this.data);
-
-                byte* brgb = (byte*) this.data.ToPointer();
-                byte* brgba = (byte*)this.rgbadata.ToPointer();
-
-                /*int cnt = 0;
-                int cnta = 0;
-                for (int i = 0; i < this.FInH[0]; i++)
+               try
                 {
-                    for (int j = 0; j < this.FInW[0]; j++)
-                    {
-                        brgba[cnta] = brgb[cnt];
-                        brgba[cnta + 1] = brgb[cnt + 1];
-                        brgba[cnta + 2] = brgb[cnt + 2];
-
-                        cnta += 4;
-                        cnt += 3;
-                    }
-                }*/
-
-                for (int i = 0; i < this.pixcount; i++)
-                {
-                    brgba[i * 4] = brgb[i * 3];
-                    brgba[i * 4 + 1] = brgb[i * 3 + 1];
-                    brgba[i * 4 + 2] = brgb[i * 3 + 2];
-                }
-
-                this.copyframe = true;
-
-                try
-                {
-                    this.FOutW[0] = c.GetWidth();
-                    this.FOutH[0] = c.GetHeight();
+                    this.FOutW[0] = this.videoin.GetWidth();
+                    this.FOutH[0] = this.videoin.GetHeight();
                 }
                 catch
                 {
 
                 }
-            }
             
+            
+        }
+
+        void videoin_OnFrameReady(object sender, EventArgs e)
+        {
+            this.invalidate = true;
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
-            if (c != null)
+            if (this.reset)
             {
-                if (this.invalidate || !this.FTextureOutput[0].Contains(context))
+                if (this.FTextureOutput[0].Contains(context))
                 {
-                    try
-                    {
-                        if (this.FTextureOutput[0].Contains(context))
-                        {
-                            this.FTextureOutput[0].Dispose(context);
-                        }
-
-                        DX11DynamicTexture2D t = new DX11DynamicTexture2D(context, this.FInW[0], this.FInH[0], SlimDX.DXGI.Format.B8G8R8A8_UNorm);
-
-
-                        this.FTextureOutput[0][context] = t;
-                    }
-                    catch
-                    {
-
-                    }
+                    this.FTextureOutput[0].Dispose(context);
                 }
 
-                if (this.copyframe && this.FTextureOutput[0].Contains(context))
-                {
-                    this.FTextureOutput[0][context].WriteData(this.rgbadata, this.size);
-                }
+                DX11DynamicTexture2D t = new DX11DynamicTexture2D(context, this.videoin.GetWidth(), this.videoin.GetHeight(), SlimDX.DXGI.Format.B8G8R8A8_UNorm);
+                this.FTextureOutput[0][context] = t;
+                this.reset = false;
+            }
+
+            if (this.invalidate)
+            {
+                this.FTextureOutput[0][context].WriteData(this.videoin.frontBuffer, this.videoin.size);
+                this.invalidate = false;
             }
         }
 
@@ -168,9 +216,9 @@ namespace VVVV.DX11.Nodes
         public void Dispose()
         {
             this.FTextureOutput[0].Dispose();
-            if (c != null)
+            if (this.videoin != null)
             {
-                c.Close();
+                this.videoin.Stop();
             }
         }
     }

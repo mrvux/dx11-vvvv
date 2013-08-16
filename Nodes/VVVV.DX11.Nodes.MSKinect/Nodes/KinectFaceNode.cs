@@ -131,6 +131,9 @@ namespace VVVV.MSKinect.Nodes
 
             if (colorImageFrame == null || depthImageFrame == null || skeletonFrame == null)
             {
+                if (colorImageFrame != null) { colorImageFrame.Dispose(); }
+                if (depthImageFrame != null) { depthImageFrame.Dispose(); }
+                if (skeletonFrame != null) { skeletonFrame.Dispose(); }
                 return;
             }
 
@@ -295,7 +298,7 @@ namespace VVVV.MSKinect.Nodes
                     {
                         this.faceTracker = new FaceTracker(kinectSensor);
                     }
-                    catch (InvalidOperationException)
+                    catch (InvalidOperationException ex)
                     {
                         this.faceTracker = null;
                     }

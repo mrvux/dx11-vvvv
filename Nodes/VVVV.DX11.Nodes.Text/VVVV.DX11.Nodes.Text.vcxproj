@@ -91,7 +91,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\work\repositories\directx11\dx11-vvvv\Dependencies\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\repositories\vvvv\dx11-vvvv\Dependencies\x86</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,7 +115,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\work\repositories\directx11\dx11-vvvv\Dependencies\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\repositories\vvvv\dx11-vvvv\Dependencies\x86</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,7 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="SlimDX" />
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9">
+      <HintPath>..\..\Dependencies\x86\SlimDX.dll</HintPath>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition.Codeplex, Version=4.1.2.0, Culture=neutral, PublicKeyToken=13e5ffd4e05db186">
       <HintPath>..\..\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
@@ -144,6 +149,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="VVVV.Core, Version=1.0.4924.26312, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Dependencies\x86\VVVV.Core.dll</HintPath>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </Reference>
     <Reference Include="VVVV.Hosting, Version=1.0.4924.26314, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\Dependencies\x86\VVVV.Hosting.dll</HintPath>
@@ -193,14 +201,6 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\FeralTic\Core\FeralTic.csproj">
-      <Project>{9ead0f44-e6aa-4363-be4d-d944c1d35044}</Project>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
       <Project>{71c0786d-2640-4e39-aa7b-83602f36f3a3}</Project>
       <Private>false</Private>
@@ -211,6 +211,14 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
       <Project>{c6ee17bb-1f48-44ea-8131-d299bc57748c}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9ead0f44-e6aa-4363-be4d-d944c1d35044}</Project>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
