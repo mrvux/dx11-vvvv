@@ -160,6 +160,7 @@
     <Compile Include="Nodes\Geometry\IndexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinNode.cs" />
     <Compile Include="Nodes\Geometry\NullIndirectDrawer.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11QuadCrossNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX112dPolygonNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11AbstractMeshNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11BasePrimitiveNode.cs" />
@@ -197,6 +198,8 @@
     <Compile Include="Nodes\Queries\TimeStampQueryNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\DX11PreviewNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11TextureArrayRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11CubeRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11MRTRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11RendererNode.cs">
       <SubType>UserControl</SubType>
