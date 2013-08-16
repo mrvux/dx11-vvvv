@@ -223,16 +223,16 @@ namespace VVVV.DX11.Nodes
         #endregion
 
         #region Output Pins
-        [Output("Mouse State")]
+        [Output("Mouse State",AllowFeedback=true)]
         protected ISpread<MouseState> FOutMouseState;
 
-        [Output("Keyboard State")]
+        [Output("Keyboard State", AllowFeedback = true)]
         protected ISpread<KeyboardState> FOutKState;
 
         [Output("Touch Supported",IsSingle=true)]
         protected ISpread<bool> FOutTouchSupport;
 
-        [Output("Touch Data")]
+        [Output("Touch Data", AllowFeedback = true)]
         protected ISpread<TouchData> FOutTouchData;
 
         [Output("Actual BackBuffer Size")]
