@@ -126,6 +126,7 @@ namespace VVVV.DX11.Lib.Effects
         public bool UseDepth { get; protected set; }
         public bool HasState { get; protected set; }
         public bool KeepTarget { get; protected set; }
+        public bool Clear { get; protected set; }
 
         public string BlendPreset { get; protected set; }
         public string DepthPreset { get; protected set; }
@@ -144,6 +145,7 @@ namespace VVVV.DX11.Lib.Effects
             this.UseDepth = false;
             this.HasState = false;
             this.KeepTarget = false;
+
 
             this.ComputeData = new ImageComputeData(pd);
 
@@ -174,6 +176,13 @@ namespace VVVV.DX11.Lib.Effects
             {
                 bool b = var.AsScalar().GetFloat() > 0.5f;
                 this.Reference = b ? eImageScaleReference.Initial : eImageScaleReference.Previous;
+            }
+
+            var = pd.GetAnnotationByName("clear");
+            if (var.IsValid)
+            {
+                bool b = var.AsScalar().GetFloat() > 0.5f;
+                this.Clear = b;
             }
 
             var = pd.GetAnnotationByName("usedepth");

@@ -417,6 +417,11 @@ namespace VVVV.DX11.Nodes.Layers
                             context.RenderTargetStack.Push(elem.Element);
                         }
 
+                        if (pi.Clear)
+                        {
+                            elem.Element.Clear(new Color4(0, 0, 0, 0));
+                        }
+
                         #region Check for depth/blend preset
                         bool validdepth = false;
                         bool validblend = false;
