@@ -28,7 +28,12 @@ namespace VVVV.DX11.Nodes.MSKinect
         }
     }
 
-     [PluginInfo(Name = "Face", Category = "DX11.Geometry", Version = "Microsoft", Author = "vux", Tags = "")]
+     [PluginInfo(Name = "Face", 
+                Category = "DX11.Geometry", 
+                Version = "Microsoft", 
+                Author = "vux", 
+                Tags = "DX11",
+                Help = "Returns a geometry representing the tracked face")]
     public class KinectFaceMeshNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Input("Face", CheckIfChanged = true)]

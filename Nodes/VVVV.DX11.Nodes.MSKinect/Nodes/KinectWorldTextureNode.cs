@@ -17,7 +17,12 @@ using Microsoft.Kinect;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "World", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "dx11,texture")]
+    [PluginInfo(Name = "World", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11, texture",
+	            Help = "Returns a texture with world-space coordinates encoded in each pixel")]
     public unsafe class KinectWorldTextureNode : KinectBaseTextureNode
     {
 

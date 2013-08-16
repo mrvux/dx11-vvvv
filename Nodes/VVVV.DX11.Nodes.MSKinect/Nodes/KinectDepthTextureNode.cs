@@ -17,7 +17,12 @@ using Microsoft.Kinect;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "Depth", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "dx11,texture")]
+    [PluginInfo(Name = "Depth", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11, texture",
+	            Help = "Returns a 16bit depthmap from the Kinects depth camera.")]
     public class KinectDepthTextureNode : KinectBaseTextureNode
     {
 

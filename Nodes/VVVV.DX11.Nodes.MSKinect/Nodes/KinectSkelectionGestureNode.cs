@@ -12,7 +12,13 @@ namespace VVVV.DX11.MSKinect.Nodes
 {
     
 
-    [PluginInfo(Name = "Gesture", Category = "Kinect", Version = "Microsoft", Author = "vux",Credits="https://github.com/EvilClosetMonkey/Fizbin.Kinect.Gestures")]
+    [PluginInfo(Name = "Gesture", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Credits="https://github.com/EvilClosetMonkey/Fizbin.Kinect.Gestures", 
+	            Tags = "DX11",
+	            Help = "Returns tracked gesture data")]
     public class KinectSkelectionGestureNode : IPluginEvaluate, IPluginConnections
     {
         private class GestureFrame
