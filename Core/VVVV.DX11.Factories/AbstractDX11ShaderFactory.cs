@@ -113,7 +113,7 @@ namespace VVVV.DX11.Factories
             {
             	var isDX11 = false;
             	
-                //check if this is a dx11 effect in that it does not contain either "technique10 " or "technique11 "
+                //check if this is a dx11 effect in that it does contain either "technique10 " or "technique11 "
                 using (var sr = new StreamReader(filename))
                 {
                 	var code = sr.ReadToEnd();
