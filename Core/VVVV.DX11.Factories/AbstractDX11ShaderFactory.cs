@@ -111,9 +111,9 @@ namespace VVVV.DX11.Factories
             FXProject project;
             if (!FProjects.TryGetValue(filename, out project))
             {
-            	var isDX11 = true;
+            	var isDX11 = false;
             	
-                //check if this is a dx11 effect in that it does not contain "technique "
+                //check if this is a dx11 effect in that it does not contain either "technique10 " or "technique11 "
                 using (var sr = new StreamReader(filename))
                 {
                 	var code = sr.ReadToEnd();
@@ -122,9 +122,9 @@ namespace VVVV.DX11.Factories
                 	//remove comments: from // to lineend
                 	code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
                     
-                    //if the rest of the code contains "technique " this must be a dx9 effect
-					if (code.Contains("technique "))
-                		isDX11 = false;
+                    //if the code contains now contains "technique10 " or "technique11 " this must be a dx11 effect
+					if (code.Contains("technique10 ") || code.Contains("technique11 "))
+                		isDX11 = true;
             	}
             	
             	if (isDX11)
