@@ -5,6 +5,8 @@ using System.ComponentModel.Composition;
 using System.CodeDom.Compiler;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Reflection;
 
 using SlimDX.D3DCompiler;
 
@@ -23,7 +25,7 @@ using VVVV.DX11.Internals.Effects;
 using VVVV.DX11.Nodes.Layers;
 using VVVV.DX11.Lib.Effects;
 using VVVV.DX11.Lib.RenderGraph.Listeners;
-using System.Reflection;
+
 using FeralTic.DX11;
 
 
@@ -57,9 +59,6 @@ namespace VVVV.DX11.Factories
         private CompositionContainer FParentContainer;
 
         private readonly Dictionary<IPluginBase, PluginContainer> FPluginContainers;
-
-
-        
 
         protected abstract string NodeCategory { get; }
         protected abstract string NodeVersion { get; }
@@ -115,23 +114,18 @@ namespace VVVV.DX11.Factories
             	var isDX11 = true;
             	
                 //check if this is a dx11 effect in that it does not contain "technique "
-            	
-                /*using (var sr = new StreamReader(filename))
+                using (var sr = new StreamReader(filename))
                 {
-            		string line;
-            		var t9 = "technique ";
+                	var code = sr.ReadToEnd();
+                	//remove comments: between (* and *)
+                	code = Regex.Replace(code, @"/\*.*?\*/", "", RegexOptions.Singleline);
+                	//remove comments: from // to lineend
+                	code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
                     
-                    // Parse lines from the file until the end of
-                    // the file is reached.
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                    	if (line.Contains(t9))
-                    	{
-                    		isDX11 = false;
-                    		break;
-                    	}
-                    }
-            	}*/
+                    //if the rest of the code contains "technique " this must be a dx9 effect
+					if (code.Contains("technique "))
+                		isDX11 = false;
+            	}
             	
             	if (isDX11)
 	            {
