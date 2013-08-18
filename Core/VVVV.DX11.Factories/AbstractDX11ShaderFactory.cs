@@ -341,10 +341,8 @@ namespace VVVV.DX11.Factories
             FIncludeHandler.ParentPath = Path.GetDirectoryName(nodeInfo.Filename);
             string code = File.ReadAllText(nodeInfo.Filename);
 
+            DX11Effect shader;
 
-
-            var shader = DX11Effect.FromString(code, FIncludeHandler);
-            
             //create or update plugin
             if (pluginHost.Plugin == null)
             {
@@ -359,6 +357,11 @@ namespace VVVV.DX11.Factories
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
 
                 IDX11ShaderNodeWrapper shadernode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
+                shadernode.Source = nodeInfo;
+                shadernode.WantRecompile += new EventHandler(shadernode_WantRecompile);
+
+                shader = DX11Effect.FromString(code, FIncludeHandler,shadernode.Macros);
+
                 shadernode.SetShader(shader, true);
 
                 if (this.PluginCreated != null)
@@ -370,6 +373,7 @@ namespace VVVV.DX11.Factories
             {
                 PluginContainer container = pluginHost.Plugin as PluginContainer;
                 var shaderNode = container.PluginBase as IDX11ShaderNodeWrapper;
+                shader = DX11Effect.FromString(code, FIncludeHandler, shaderNode.Macros);
                 shaderNode.SetShader(shader, false);
             }
 
@@ -389,6 +393,16 @@ namespace VVVV.DX11.Factories
             project.ParameterDescription = f;
 
             return true;
+        }
+
+        void shadernode_WantRecompile(object sender, EventArgs e)
+        {
+            IDX11ShaderNodeWrapper wrp = (IDX11ShaderNodeWrapper)sender;
+            FIncludeHandler.ParentPath = Path.GetDirectoryName(wrp.Source.Filename);
+            string code = File.ReadAllText(wrp.Source.Filename);
+
+            var shader = DX11Effect.FromString(code, FIncludeHandler,wrp.Macros);
+            wrp.SetShader(shader, false);
         }
 
         protected override bool DeleteNode(INodeInfo nodeInfo, IInternalPluginHost host)
