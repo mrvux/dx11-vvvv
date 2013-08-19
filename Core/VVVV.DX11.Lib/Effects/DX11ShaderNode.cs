@@ -257,7 +257,7 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         DX11ObjectGroup group = new DX11ObjectGroup();
                         group.ShaderName = this.Source.Name;
-                        group.Semantics = settings.CustomSemantics;
+                        group.Semantics.AddRange(settings.CustomSemantics);
 
                         if (this.FGeometry.SliceCount == 1)
                         {
@@ -274,7 +274,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 }
                                 group.RenderObjects.Add(o);
 
-                                settings.ObjectCollector.Add(group);
+                                settings.SceneDescriptor.Groups.Add(group);
                             }
                         }
                         else
@@ -293,7 +293,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 }
                             }
 
-                            settings.ObjectCollector.Add(group);
+                            settings.SceneDescriptor.Groups.Add(group);
 
                         }
 

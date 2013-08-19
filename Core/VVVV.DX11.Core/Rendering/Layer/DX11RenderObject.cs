@@ -30,4 +30,22 @@ namespace VVVV.DX11
 
         public List<IDX11RenderSemantic> Semantics { get; set; }
     }
+
+    public class DX11RenderScene
+    {
+        public DX11RenderScene()
+        {
+            this.Groups = new List<DX11ObjectGroup>();
+            this.View = Matrix.Identity;
+            this.Projection = Matrix.Identity;
+        }
+
+        public List<DX11ObjectGroup> Groups { get; set; }
+
+        public Matrix View { get; set; }
+
+        public Matrix Projection { get; set; }
+
+
+    }
 }
