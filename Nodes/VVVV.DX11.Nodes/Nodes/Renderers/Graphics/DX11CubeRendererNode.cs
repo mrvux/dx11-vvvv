@@ -145,7 +145,7 @@ namespace VVVV.DX11.Nodes
             if (!this.FOutCubeTexture[0].Contains(context))
             {
                 this.FOutCubeTexture[0][context] = new DX11CubeRenderTarget(context, this.FInSize[0], this.sd, DeviceFormatHelper.GetFormat(this.FInFormat[0].Name), false, 1);
-                this.FOutCubeDepthTexture[0][context] = new DX11CubeDepthStencil(context, this.FInSize[0], this.sd, Format.D32_Float);
+                this.FOutCubeDepthTexture[0][context] = new DX11CubeDepthStencil(context, this.FInSize[0], this.sd, Format.D24_UNorm_S8_UInt);
             }
 
             this.updateddevices.Add(context);
