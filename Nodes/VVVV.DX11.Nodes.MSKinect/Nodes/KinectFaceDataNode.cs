@@ -13,6 +13,7 @@ namespace MSKinect.Nodes
 	            Category = "Kinect", 
 	            Version = "Microsoft", 
 	            Author = "vux", 
+	            Tags = "DX11",
 	            Help = "Returns detailed 2D and 3D data describing the tracked face")]
     public class KinectFaceFrameDataNode : IPluginEvaluate
     {
