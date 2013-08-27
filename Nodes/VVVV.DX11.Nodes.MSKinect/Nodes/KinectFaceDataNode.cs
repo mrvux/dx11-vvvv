@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VVVV.PluginInterfaces.V2;
-using SlimDX;
+
 using Microsoft.Kinect.Toolkit.FaceTracking;
+using SlimDX;
+
 using VVVV.MSKinect.Lib;
+using VVVV.PluginInterfaces.V2;
+using VVVV.Utils.VMath;
 
 namespace MSKinect.Nodes
 {
@@ -16,7 +19,6 @@ namespace MSKinect.Nodes
 	            Help = "Returns detailed 2D and 3D data describing the tracked face")]
     public class KinectFaceFrameDataNode : IPluginEvaluate
     {
-
         [Input("Face", CheckIfChanged = true)]
         private Pin<FaceTrackFrame> FInFrame;
 
@@ -37,8 +39,6 @@ namespace MSKinect.Nodes
 
         [Output("Indices")]
         private ISpread<int> FOutIndices;
-
-        private float INVTWOPI = 0.5f / (float)Math.PI;
 
         private bool first = true;
 
@@ -66,7 +66,7 @@ namespace MSKinect.Nodes
                         FaceTrackFrame frame = this.FInFrame[cnt];
                         this.FOutOK[cnt] = frame.TrackSuccessful;
                         this.FOutPosition[cnt] = new Vector3(frame.Translation.X, frame.Translation.Y, frame.Translation.Z);
-                        this.FOutRotation[cnt] = new Vector3(frame.Rotation.X, frame.Rotation.Y, frame.Rotation.Z) * INVTWOPI;
+                        this.FOutRotation[cnt] = new Vector3(frame.Rotation.X, frame.Rotation.Y, frame.Rotation.Z) * (float)VMath.DegToCyc;
 
                         EnumIndexableCollection<FeaturePoint, PointF> pp = frame.GetProjected3DShape();
                         EnumIndexableCollection<FeaturePoint, Vector3DF> p = frame.Get3DShape();
