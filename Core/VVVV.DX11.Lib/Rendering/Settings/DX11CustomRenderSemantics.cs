@@ -55,49 +55,61 @@ namespace VVVV.DX11.Lib.Rendering
     public class Texture1dRenderSemantic : DX11RenderSemantic<DX11Texture1D>
     {
         public Texture1dRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "Texture1D"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.SRV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
     }
 
     public class Texture2dRenderSemantic : DX11RenderSemantic<DX11Texture2D>
     {
         public Texture2dRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "Texture2D"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.SRV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
+    }
+
+    public class Texture2dArrayRenderSemantic : DX11RenderSemantic<DX11Texture2D>
+    {
+        public Texture2dArrayRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "Texture2DArray"; }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
+    }
+
+    public class TextureCubeRenderSemantic : DX11RenderSemantic<DX11Texture2D>
+    {
+        public TextureCubeRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "TextureCube"; }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
     }
 
     public class RWTexture2dRenderSemantic : DX11RenderSemantic<IDX11RWResource>
     {
         public RWTexture2dRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "RWTexture2D"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.UAV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.UAV : null); }
     }
 
     public class Texture3dRenderSemantic : DX11RenderSemantic<DX11Texture3D>
     {
         public Texture3dRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "Texture3D"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.SRV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
     }
 
     public class RWTexture3dRenderSemantic : DX11RenderSemantic<IDX11RWResource>
     {
         public RWTexture3dRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "RWTexture3D"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.UAV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.UAV : null); }
     }
 
     public class RWStructuredBufferRenderSemantic : DX11RenderSemantic<IDX11RWResource>
     {
         public RWStructuredBufferRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "RWStructuredBuffer"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.UAV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.UAV : null); }
     }
 
     public class StructuredBufferRenderSemantic : DX11RenderSemantic<IDX11ReadableResource>
     {
         public StructuredBufferRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "StructuredBuffer"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.SRV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
     }
 
     public class RWBufferRenderSemantic : DX11RenderSemantic<IDX11RWResource>
     {
         public RWBufferRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { this.TypeName = "RWByteAddressBuffer"; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data.UAV); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.UAV : null); }
     }
 
     //
