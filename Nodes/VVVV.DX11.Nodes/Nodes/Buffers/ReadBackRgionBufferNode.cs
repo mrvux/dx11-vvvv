@@ -71,9 +71,9 @@ namespace VVVV.DX11.Nodes
 
                     
 
-                    ResourceRegion region = new ResourceRegion(0,0,0,this.FInElementCount[0],0,0);
+                    ResourceRegion region = new ResourceRegion(0,0,0,this.FInElementCount[0]*b.Stride,1,1);
                     /*this.AssignedContext.CurrentDeviceContext.CopySubresourceRegion(b.Buffer, 0, staging.Buffer, 0, */
-                    this.AssignedContext.CurrentDeviceContext.CopySubresourceRegion(b.Buffer, 0, region,staging.Buffer, 0, this.FInElementCount[0] * b.Stride, 0, 0);
+                    this.AssignedContext.CurrentDeviceContext.CopySubresourceRegion(b.Buffer, 0, region,staging.Buffer, 0, 0, 0, 0);
 
                     /*this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);*/
 
