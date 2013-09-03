@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VVVV.PluginInterfaces.V2;
-using VVVV.DX11.Lib.Devices;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using VVVV.PluginInterfaces.V1;
-using FeralTic.DX11.Resources;
-using FeralTic.DX11;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
 
+using FeralTic.DX11;
+using FeralTic.DX11.Resources;
+using SlimDX;
 using SlimDX.DXGI;
+using VVVV.DX11.Lib.Devices;
+using VVVV.PluginInterfaces.V1;
+using VVVV.PluginInterfaces.V2;
+using VVVV.Utils.VColor;
 
 namespace VVVV.DX11.Nodes.Renderers
 {
@@ -26,6 +28,12 @@ namespace VVVV.DX11.Nodes.Renderers
 
          [Input("Index")]
          protected ISpread<int> FIndex;
+         
+         [Input("Show Alpha", IsSingle = true)]
+         protected ISpread<bool> FAlpha;
+         
+         [Input("Background Color", DefaultColor=new double[] { 0.5, 0.5, 0.5, 1 }, IsSingle = true)]
+         protected ISpread<RGBAColor> FInBgColor;
 
          [Input("Enabled",DefaultValue=1)]
          protected ISpread<bool> FEnabled;
@@ -101,11 +109,16 @@ namespace VVVV.DX11.Nodes.Renderers
                  int id = this.FIndex[0];
                  if (this.FIn[id].Contains(context))
                  {
-
                      context.RenderTargetStack.Push(this.swapchain[context]);
-                     context.RenderStateStack.Push(new DX11RenderState());
-
-
+                     var rs = new DX11RenderState();
+                     
+                     if (FAlpha[0])
+                     {
+                     	rs.Blend = DX11BlendStates.Instance.GetState("Blend");
+                     	context.CurrentDeviceContext.ClearRenderTargetView(this.swapchain[context].RTV, FInBgColor[0].Color);
+                     }
+                     context.RenderStateStack.Push(rs);
+                                                   
                      context.Primitives.FullTriVS.GetVariableBySemantic("TEXTURE").AsResource().SetResource(this.FIn[id][context].SRV);
                      context.Primitives.FullScreenTriangle.Bind(null);
                      context.Primitives.ApplyFullTri();
