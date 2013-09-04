@@ -40,7 +40,7 @@ namespace VVVV.DX11.Lib.Devices
             this.logger = logger;
 
             #if DEBUG
-            this.flags = DeviceCreationFlags.Debug;
+            //this.flags = DeviceCreationFlags.Debug;
             #else
             this.flags = DeviceCreationFlags.None;
             #endif

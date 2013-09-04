@@ -167,6 +167,7 @@
     <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\WaveRightSegments.cs" />
     <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\ZoomSegments.cs" />
     <Compile Include="Lib\KinectRuntime.cs" />
+    <Compile Include="Nodes\KinectBaseNode.cs" />
     <Compile Include="Nodes\KinectBaseTextureNode.cs" />
     <Compile Include="Nodes\KinectColorTextureNode.cs" />
     <Compile Include="Nodes\KinectDepthTextureNode.cs" />
@@ -193,6 +194,10 @@
       <Name>FeralTic %28FeralTic\FeralTic%29</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Nodes\FaceTrackData.dll" />
+    <Content Include="Nodes\FaceTrackLib.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

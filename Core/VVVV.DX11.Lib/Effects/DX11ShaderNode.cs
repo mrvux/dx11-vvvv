@@ -315,6 +315,19 @@ namespace VVVV.DX11.Nodes.Layers
                         shaderdata.Update(this.FInTechnique[0].Index, 0, this.FGeometry);
                         this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
+
+                        bool allvalid = true;
+                        for (int i = 0; i < shaderdata.LayoutValid.Count;i++)
+                        {
+                            if (!shaderdata.LayoutValid[i])
+                            {
+                                allvalid = false;
+                            }
+                        }
+
+                        INode n = (INode)this.FHost;
+
+                        n.LastRuntimeError = allvalid ? "" : "Layout error";
                     }
 
                     if (this.stateconnected)

@@ -141,6 +141,7 @@
     <Compile Include="LibVlcWrapper\LibVlcMethods.cs" />
     <Compile Include="LibVlcWrapper\LibVlcStructs.cs" />
     <Compile Include="LibVlcWrapper\MinimalLibVlcVersion.cs" />
+    <Compile Include="Player\VlcBufferPlayer.cs" />
     <Compile Include="Player\VlcPlayer.cs" />
     <Compile Include="Player\VlcPlayStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
