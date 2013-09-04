@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
+using System.ComponentModel.Composition;
+
 using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
-using System.Runtime.InteropServices;
+using VVVV.Utils.VMath;
 using VVVV.MSKinect.Lib;
-using System.ComponentModel.Composition;
+
 using SlimDX.Direct3D9;
 using SlimDX;
 using Microsoft.Kinect;
@@ -14,7 +17,12 @@ using Microsoft.Kinect.Toolkit.FaceTracking;
 
 namespace VVVV.MSKinect.Nodes
 {
-    [PluginInfo(Name = "Face", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "")]
+    [PluginInfo(Name = "Face", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11",
+	            Help = "Returns general face tracking data")]
     public class KinectFaceNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
@@ -41,19 +49,13 @@ namespace VVVV.MSKinect.Nodes
 
         private KinectRuntime runtime;
 
-        private FaceTracker face;
-
         private byte[] colorImage;
         private short[] depthImage;
         private Skeleton[] skeletonData;
         private readonly Dictionary<int, SkeletonFaceTracker> trackedSkeletons = new Dictionary<int, SkeletonFaceTracker>();
 
-        private float INVTWOPI = 0.5f / (float)Math.PI;
-
         private bool first = true;
         private DepthImageFormat olddepth;
-        
-
 
         [ImportingConstructor()]
         public KinectFaceNode(IPluginHost host)
@@ -101,7 +103,7 @@ namespace VVVV.MSKinect.Nodes
                         frames.Add((FaceTrackFrame)sft.frame.Clone());
                         this.FOutOK[cnt] = sft.frame.TrackSuccessful;
                         this.FOutPosition[cnt] = new Vector3(sft.frame.Translation.X, sft.frame.Translation.Y, sft.frame.Translation.Z);
-                        this.FOutRotation[cnt] = new Vector3(sft.frame.Rotation.X, sft.frame.Rotation.Y, sft.frame.Rotation.Z) * INVTWOPI;
+                        this.FOutRotation[cnt] = new Vector3(sft.frame.Rotation.X, sft.frame.Rotation.Y, sft.frame.Rotation.Z) * (float)VMath.DegToCyc;
 
                         EnumIndexableCollection<FeaturePoint, PointF> pp = sft.frame.GetProjected3DShape();
                         EnumIndexableCollection<FeaturePoint, Vector3DF> p = sft.frame.Get3DShape();
@@ -148,7 +150,12 @@ namespace VVVV.MSKinect.Nodes
                 {
                     //Need a reset
                     if (this.depthImage != null) { this.depthImage = null; }
-                    if (this.face != null) { this.face.Dispose(); this.face = null; }
+
+                    foreach (SkeletonFaceTracker sft in this.trackedSkeletons.Values)
+                    {
+                        sft.Dispose();
+                    }
+
                     this.trackedSkeletons.Clear();
                     this.olddepth = depthImageFrame.Format;
                 }
@@ -167,11 +174,6 @@ namespace VVVV.MSKinect.Nodes
             if (this.skeletonData == null || this.skeletonData.Length != skeletonFrame.SkeletonArrayLength)
             {
                 this.skeletonData = new Skeleton[skeletonFrame.SkeletonArrayLength];
-            }
-
-            if (face == null)
-            {
-                face = new FaceTracker(this.runtime.Runtime);
             }
 
             colorImageFrame.CopyPixelDataTo(this.colorImage);

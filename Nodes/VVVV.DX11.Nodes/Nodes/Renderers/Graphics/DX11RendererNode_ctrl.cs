@@ -49,15 +49,6 @@ namespace VVVV.DX11.Nodes
             TouchMove += OnTouchMoveHandler;
 
             this.depthmanager = new DepthBufferManager(host,iofactory);
-
-            ConfigAttribute bbAttr = new ConfigAttribute("Back Buffer Format");
-            bbAttr.IsSingle = true;
-            bbAttr.EnumName = DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.BackBufferCast);
-            bbAttr.DefaultEnumEntry = DX11EnumFormatHelper.NullDeviceFormats.GetAllowedFormats(FormatSupport.BackBufferCast)[0];
-
-
-            this.FCfgBackBufferFormat = iofactory.CreateDiffSpread<EnumEntry>(bbAttr);
-            this.FCfgBackBufferFormat[0] = new EnumEntry(DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.BackBufferCast), 0);
             
         }
 

@@ -5,6 +5,8 @@ using System.ComponentModel.Composition;
 using System.CodeDom.Compiler;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Reflection;
 
 using SlimDX.D3DCompiler;
 
@@ -23,7 +25,7 @@ using VVVV.DX11.Internals.Effects;
 using VVVV.DX11.Nodes.Layers;
 using VVVV.DX11.Lib.Effects;
 using VVVV.DX11.Lib.RenderGraph.Listeners;
-using System.Reflection;
+
 using FeralTic.DX11;
 
 
@@ -57,9 +59,6 @@ namespace VVVV.DX11.Factories
         private CompositionContainer FParentContainer;
 
         private readonly Dictionary<IPluginBase, PluginContainer> FPluginContainers;
-
-
-        
 
         protected abstract string NodeCategory { get; }
         protected abstract string NodeVersion { get; }
@@ -112,26 +111,21 @@ namespace VVVV.DX11.Factories
             FXProject project;
             if (!FProjects.TryGetValue(filename, out project))
             {
-            	var isDX11 = true;
+            	var isDX11 = false;
             	
-                //check if this is a dx11 effect in that it does not contain "technique "
-            	
-                /*using (var sr = new StreamReader(filename))
+                //check if this is a dx11 effect in that it does contain either "technique10 " or "technique11 "
+                using (var sr = new StreamReader(filename))
                 {
-            		string line;
-            		var t9 = "technique ";
+                	var code = sr.ReadToEnd();
+                	//remove comments: between (* and *)
+                	code = Regex.Replace(code, @"/\*.*?\*/", "", RegexOptions.Singleline);
+                	//remove comments: from // to lineend
+                	code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
                     
-                    // Parse lines from the file until the end of
-                    // the file is reached.
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                    	if (line.Contains(t9))
-                    	{
-                    		isDX11 = false;
-                    		break;
-                    	}
-                    }
-            	}*/
+                    //if the code contains now contains "technique10 " or "technique11 " this must be a dx11 effect
+					if (code.Contains("technique10 ") || code.Contains("technique11 "))
+                		isDX11 = true;
+            	}
             	
             	if (isDX11)
 	            {
@@ -341,10 +335,8 @@ namespace VVVV.DX11.Factories
             FIncludeHandler.ParentPath = Path.GetDirectoryName(nodeInfo.Filename);
             string code = File.ReadAllText(nodeInfo.Filename);
 
+            DX11Effect shader;
 
-
-            var shader = DX11Effect.FromString(code, FIncludeHandler);
-            
             //create or update plugin
             if (pluginHost.Plugin == null)
             {
@@ -359,6 +351,11 @@ namespace VVVV.DX11.Factories
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
 
                 IDX11ShaderNodeWrapper shadernode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
+                shadernode.Source = nodeInfo;
+                shadernode.WantRecompile += new EventHandler(shadernode_WantRecompile);
+
+                shader = DX11Effect.FromString(code, FIncludeHandler,shadernode.Macros);
+
                 shadernode.SetShader(shader, true);
 
                 if (this.PluginCreated != null)
@@ -370,6 +367,7 @@ namespace VVVV.DX11.Factories
             {
                 PluginContainer container = pluginHost.Plugin as PluginContainer;
                 var shaderNode = container.PluginBase as IDX11ShaderNodeWrapper;
+                shader = DX11Effect.FromString(code, FIncludeHandler, shaderNode.Macros);
                 shaderNode.SetShader(shader, false);
             }
 
@@ -389,6 +387,16 @@ namespace VVVV.DX11.Factories
             project.ParameterDescription = f;
 
             return true;
+        }
+
+        void shadernode_WantRecompile(object sender, EventArgs e)
+        {
+            IDX11ShaderNodeWrapper wrp = (IDX11ShaderNodeWrapper)sender;
+            FIncludeHandler.ParentPath = Path.GetDirectoryName(wrp.Source.Filename);
+            string code = File.ReadAllText(wrp.Source.Filename);
+
+            var shader = DX11Effect.FromString(code, FIncludeHandler,wrp.Macros);
+            wrp.SetShader(shader, false);
         }
 
         protected override bool DeleteNode(INodeInfo nodeInfo, IInternalPluginHost host)

@@ -140,6 +140,7 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
+    <Compile Include="Nodes\Buffers\ReadBackRgionBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackBufferNode.cs" />

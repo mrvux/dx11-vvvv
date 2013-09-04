@@ -114,9 +114,18 @@ namespace VVVV.DX11.Lib.Devices
         {
             foreach (DX11RenderContext ctx in this.RenderContexts)
             {
-                ctx.CurrentDeviceContext.ClearState();
-                ctx.CurrentDeviceContext.Flush();
-                ctx.Dispose();
+                try
+                {
+                    ctx.CurrentDeviceContext.ClearState();
+                    ctx.CurrentDeviceContext.Flush();
+                }
+                catch { }
+
+                try
+                {
+                    ctx.Dispose();
+                }
+                catch { }
             }
         }
     }

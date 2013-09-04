@@ -17,6 +17,7 @@ using VVVV.DX11.Internals.Effects;
 using System.IO;
 using VVVV.DX11.Lib.RenderGraph.Listeners;
 using FeralTic.DX11;
+using VVVV.DX11.Lib.Effects;
 
 namespace VVVV.DX11.Factories
 {

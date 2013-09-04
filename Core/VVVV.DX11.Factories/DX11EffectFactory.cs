@@ -69,6 +69,7 @@ namespace VVVV.DX11.Factories
             get { return ""; }
         }
 
+        #region Verify
         protected override List<CompilerError> VerifyShader(string file, DX11Effect effect)
         {
             List<CompilerError> errors = new List<CompilerError>();
@@ -137,7 +138,9 @@ namespace VVVV.DX11.Factories
 
             return errors;
         }
+        #endregion
 
+        #region Check passes
         private bool ComputeOrPixelOnly(EffectPass pass)
         {
             return this.ComputeOnly(pass) || this.PixelOnly(pass);
@@ -195,6 +198,7 @@ namespace VVVV.DX11.Factories
 
             return false;
         }
+        #endregion
     }
 
     [Export(typeof(IAddonFactory))]

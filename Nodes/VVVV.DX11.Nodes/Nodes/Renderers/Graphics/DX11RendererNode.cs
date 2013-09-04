@@ -218,21 +218,17 @@ namespace VVVV.DX11.Nodes
         string oldbbformat = "";
         #endregion
 
-        #region Config Pins
-        IDiffSpread<EnumEntry> FCfgBackBufferFormat;
-        #endregion
-
         #region Output Pins
-        [Output("Mouse State")]
+        [Output("Mouse State",AllowFeedback=true)]
         protected ISpread<MouseState> FOutMouseState;
 
-        [Output("Keyboard State")]
+        [Output("Keyboard State", AllowFeedback = true)]
         protected ISpread<KeyboardState> FOutKState;
 
         [Output("Touch Supported",IsSingle=true)]
         protected ISpread<bool> FOutTouchSupport;
 
-        [Output("Touch Data")]
+        [Output("Touch Data", AllowFeedback = true)]
         protected ISpread<TouchData> FOutTouchData;
 
         [Output("Actual BackBuffer Size")]
@@ -301,9 +297,8 @@ namespace VVVV.DX11.Nodes
                 this.depthmanager.FormatChanged = false; //Clear flag ok
             }
             
-            if (this.oldbbformat != this.FCfgBackBufferFormat[0].Name || FInAASamplesPerPixel.IsChanged)
+            if (FInAASamplesPerPixel.IsChanged)
             {
-                this.oldbbformat = this.FCfgBackBufferFormat[0];
                 this.depthmanager.NeedReset = true;
                 this.FInvalidateSwapChain = true;
             }
@@ -503,14 +498,9 @@ namespace VVVV.DX11.Nodes
 
             if (this.FResized || this.FInvalidateSwapChain || this.FOutBackBuffer[0][context] == null)
             {
-                EnumEntry bbf = this.FCfgBackBufferFormat[0];
-
                 this.FOutBackBuffer[0].Dispose(context);
 
-                //NOTE ENUM BROKEN
-                Format fmt = (Format)Enum.Parse(typeof(Format), this.FCfgBackBufferFormat[0].Name);
-
-                this.FOutBackBuffer[0][context] = new DX11SwapChain(context,this.Handle, fmt, sd);
+                this.FOutBackBuffer[0][context] = new DX11SwapChain(context,this.Handle, Format.R8G8B8A8_UNorm, sd);
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
                 #endif

@@ -14,22 +14,35 @@ using VVVV.DX11.Nodes.Layers;
 using FeralTic.DX11;
 using FeralTic.DX11.Queries;
 using System.CodeDom.Compiler;
+using SlimDX.D3DCompiler;
 
 
 namespace VVVV.DX11.Lib.Effects
 {
+    public interface IDX11ShaderNodeWrapper
+    {
+        void SetShader(DX11Effect shader, bool isnew);
+        ShaderMacro[] Macros { get; }
+        event EventHandler WantRecompile;
+        INodeInfo Source { get; set;}
+    }
+
     public abstract class DX11BaseShaderNode : IPartImportsSatisfiedNotification, IDX11ShaderNodeWrapper, IDX11Queryable
     {
         protected IPluginHost FHost;
         protected IIOFactory FFactory;
         protected DX11Effect FShader;
         protected bool FInvalidate;
+        public INodeInfo Source { get; set; }
 
         [Input("Iterastion Count", Order = 10000, DefaultValue = 1,MinValue=1,Visibility=PinVisibility.OnlyInspector)]
         protected ISpread<int> FIter;
 
         [Input("Enabled", Order = 10000, DefaultValue = 1)]
         protected ISpread<bool> FInEnabled;
+
+        [Input("Defines", Order = 20000, Visibility=PinVisibility.OnlyInspector)]
+        protected IDiffSpread<string> FInDefines;
 
         protected IDiffSpread<EnumEntry> FInTechnique;
         protected string TechniqueEnumId;
@@ -68,9 +81,19 @@ namespace VVVV.DX11.Lib.Effects
             this.FCfgSave.Changed += new SpreadChangedEventHander<bool>(FCfgSave_Changed);
             //this.FInInclude.Changed += new SpreadChangedEventHander<DX11Include>(FInInclude_Changed);
 
+            this.FInDefines.Changed += new SpreadChangedEventHander<string>(FInDefines_Changed);
+
             this.FOutQueryable[0] = this;
 
             this.ImportsSatistieds();
+        }
+
+        void FInDefines_Changed(IDiffSpread<string> spread)
+        {
+            if (this.WantRecompile != null)
+            {
+                this.WantRecompile(this, new EventArgs());
+            }
         }
 
         public abstract void SetShader(DX11Effect shader, bool isnew);
@@ -95,5 +118,34 @@ namespace VVVV.DX11.Lib.Effects
         public event DX11QueryableDelegate BeginQuery;
 
         public event DX11QueryableDelegate EndQuery;
+
+        public event EventHandler WantRecompile;
+
+
+        public ShaderMacro[] Macros
+        {
+            get 
+            {
+                List<ShaderMacro> sms = new List<ShaderMacro>();
+                for (int i = 0; i < this.FInDefines.SliceCount; i++)
+                {
+                    try
+                    {
+                        string[] s = this.FInDefines[0].Split("=".ToCharArray());
+                        ShaderMacro sm = new ShaderMacro();
+                        sm.Name = s[0];
+                        sm.Value = s[1];
+
+                        sms.Add(sm);
+
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                return sms.ToArray();
+            }
+        }
     }
 }
