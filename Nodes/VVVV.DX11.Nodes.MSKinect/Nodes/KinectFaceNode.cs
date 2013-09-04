@@ -49,8 +49,6 @@ namespace VVVV.MSKinect.Nodes
 
         private KinectRuntime runtime;
 
-        private FaceTracker face;
-
         private byte[] colorImage;
         private short[] depthImage;
         private Skeleton[] skeletonData;
@@ -152,7 +150,12 @@ namespace VVVV.MSKinect.Nodes
                 {
                     //Need a reset
                     if (this.depthImage != null) { this.depthImage = null; }
-                    if (this.face != null) { this.face.Dispose(); this.face = null; }
+
+                    foreach (SkeletonFaceTracker sft in this.trackedSkeletons.Values)
+                    {
+                        sft.Dispose();
+                    }
+
                     this.trackedSkeletons.Clear();
                     this.olddepth = depthImageFrame.Format;
                 }
@@ -171,11 +174,6 @@ namespace VVVV.MSKinect.Nodes
             if (this.skeletonData == null || this.skeletonData.Length != skeletonFrame.SkeletonArrayLength)
             {
                 this.skeletonData = new Skeleton[skeletonFrame.SkeletonArrayLength];
-            }
-
-            if (face == null)
-            {
-                face = new FaceTracker(this.runtime.Runtime);
             }
 
             colorImageFrame.CopyPixelDataTo(this.colorImage);
