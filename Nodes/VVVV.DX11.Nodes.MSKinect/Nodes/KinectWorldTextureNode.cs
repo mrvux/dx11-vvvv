@@ -25,15 +25,11 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Help = "Returns a texture with world-space coordinates encoded in each pixel")]
     public unsafe class KinectWorldTextureNode : KinectBaseTextureNode
     {
-
-        private float[] world0;
-        private float[] world1;
         private DepthImagePixel[] depthpixels;
         private SkeletonPoint[] skelpoints;
         private DepthImageFormat currentformat = DepthImageFormat.Resolution320x240Fps30;
         private int width;
         private int height;
-
 
         public KinectWorldTextureNode()
         {
@@ -48,8 +44,6 @@ namespace VVVV.DX11.Nodes.MSKinect
                 this.currentformat = format;
                 if (this.currentformat == DepthImageFormat.Resolution320x240Fps30)
                 {
-                    this.world0 = new float[320 * 240 * 4];
-                    this.world1 = new float[320 * 240 * 4];
                     this.skelpoints = new SkeletonPoint[320 * 240];
                     this.depthpixels = new DepthImagePixel[320 * 240];
                     this.width = 320;
@@ -57,8 +51,6 @@ namespace VVVV.DX11.Nodes.MSKinect
                 }
                 else if (this.currentformat == DepthImageFormat.Resolution640x480Fps30)
                 {
-                    this.world0 = new float[640 * 480 * 4];
-                    this.world1 = new float[640 * 480 * 4];
                     this.skelpoints = new SkeletonPoint[640 * 480];
                     this.depthpixels = new DepthImagePixel[640 * 480];
                     this.width = 640;
@@ -74,50 +66,22 @@ namespace VVVV.DX11.Nodes.MSKinect
 
             if (frame != null)
             {
-                this.FInvalidate = true;
                 if (frame.FrameNumber != this.frameindex)
                 {
+                    this.FInvalidate = true;
                     this.RebuildBuffer(frame.Format, false);
 
                     this.frameindex = frame.FrameNumber;
                     frame.CopyDepthImagePixelDataTo(this.depthpixels);
-                    int cnt = 0;
-                    int img = 0;
-                    //DepthImagePixel dp;
-                    //dp.
-                    this.runtime.Runtime.CoordinateMapper.MapDepthFrameToSkeletonFrame(frame.Format, this.depthpixels, this.skelpoints);
-                    for (int h = 0; h < this.height; h++)
-                    {
-                        for (int w = 0; w < this.width; w++)
-                        {
-                            //this.runtime.Runtime.CoordinateMapper.
-                            //SkeletonPoint sp = frame.MapToSkeletonPoint(w, h);
-                            SkeletonPoint sp = this.skelpoints[img];
-                            this.world0[cnt] = sp.X;
-                            this.world0[cnt + 1] = sp.Y;
-                            this.world0[cnt + 2] = sp.Z;
-                            this.world0[cnt + 3] = 1.0f;
-                            cnt += 4;
-                            img++;
-                        }
-                    }
-
-                    frame.Dispose();
 
                     lock (m_lock)
                     {
-                        float[] tmp = this.world0;
-                        this.world0 = this.world1;
-                        this.world1 = tmp;
+                        this.runtime.Runtime.CoordinateMapper.MapDepthFrameToSkeletonFrame(frame.Format, this.depthpixels, this.skelpoints);
                     }
+                    frame.Dispose();
                 }
-
             }
-
-
         }
-
-
 
         protected override int Width
         {
@@ -136,12 +100,14 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
-            fixed (float* f = &world1[0])
+            lock (m_lock)
             {
-                IntPtr ptr = new IntPtr(f);
-                texture.WriteData(ptr, this.width * this.height * 4 * 4);
+                fixed (SkeletonPoint* f = &this.skelpoints[0])
+                {
+                    IntPtr ptr = new IntPtr(f);
+                    texture.WriteData(ptr, this.width * this.height * 16);
+                }
             }
-           // texture.WriteData<float>(world1);
         }
 
         protected override void OnRuntimeConnected()
