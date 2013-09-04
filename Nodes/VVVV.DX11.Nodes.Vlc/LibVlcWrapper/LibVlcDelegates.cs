@@ -25,4 +25,10 @@ namespace LibVlcWrapper
 	//typedef void(* libvlc_audio_play_cb)(void *data, const void *samples, unsigned count, int64_t pts)
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	unsafe delegate void VlcAudioPlayDelegate( ref IntPtr data, IntPtr samples, UInt32 count, Int64 pts);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    unsafe delegate uint VlcVideoFormatSetupHandlerDelegate(ref IntPtr pUserData, IntPtr chroma, IntPtr width, IntPtr height,uint* pitches,uint* lines);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    unsafe delegate void VlcVideoFormatCleanupHandlerDelegate(IntPtr data);
 }
