@@ -2,17 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VVVV.PluginInterfaces.V2;
-using SlimDX;
+
 using Microsoft.Kinect.Toolkit.FaceTracking;
+using SlimDX;
+using VVVV.DX11.Nodes.MSKinect;
 using VVVV.MSKinect.Lib;
+using VVVV.PluginInterfaces.V2;
+using VVVV.Utils.VMath;
 
 namespace MSKinect.Nodes
 {
-    [PluginInfo(Name = "FaceData", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "")]
+    [PluginInfo(Name = "FaceData", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11",
+	            Help = "Returns detailed 2D and 3D data describing the tracked face")]
     public class KinectFaceFrameDataNode : IPluginEvaluate
     {
-
         [Input("Face", CheckIfChanged = true)]
         private Pin<FaceTrackFrame> FInFrame;
 
@@ -28,13 +35,14 @@ namespace MSKinect.Nodes
         [Output("Face Points")]
         private ISpread<ISpread<Vector3>> FOutPts;
 
+        [Output("Face Normals")]
+        private ISpread<ISpread<Vector3>> FOutNormals;
+        
         [Output("Projected Face Points")]
         private ISpread<ISpread<Vector2>> FOutPPTs;
 
         [Output("Indices")]
         private ISpread<int> FOutIndices;
-
-        private float INVTWOPI = 0.5f / (float)Math.PI;
 
         private bool first = true;
 
@@ -62,20 +70,44 @@ namespace MSKinect.Nodes
                         FaceTrackFrame frame = this.FInFrame[cnt];
                         this.FOutOK[cnt] = frame.TrackSuccessful;
                         this.FOutPosition[cnt] = new Vector3(frame.Translation.X, frame.Translation.Y, frame.Translation.Z);
-                        this.FOutRotation[cnt] = new Vector3(frame.Rotation.X, frame.Rotation.Y, frame.Rotation.Z) * INVTWOPI;
+                        this.FOutRotation[cnt] = new Vector3(frame.Rotation.X, frame.Rotation.Y, frame.Rotation.Z) * (float)VMath.DegToCyc;
 
                         EnumIndexableCollection<FeaturePoint, PointF> pp = frame.GetProjected3DShape();
                         EnumIndexableCollection<FeaturePoint, Vector3DF> p = frame.Get3DShape();
 
                         this.FOutPPTs[cnt].SliceCount = pp.Count;
                         this.FOutPts[cnt].SliceCount = p.Count;
+						this.FOutNormals[cnt].SliceCount = p.Count;
 
-                        for (int i = 0; i < pp.Count; i++)
-                        {
-                            this.FOutPPTs[cnt][i] = new Vector2(pp[i].X, pp[i].Y);
-                            this.FOutPts[cnt][i] = new Vector3(p[i].X, p[i].Y, p[i].Z);
-                        }
+						//Compute smoothed normals
+						Vector3[] norms = new Vector3[p.Count];
+						int[] inds = KinectRuntime.FACE_INDICES;
+						int tricount = inds.Length / 3;
+						for (int j = 0; j < tricount; j++)
+						{
+							int i1 = inds[j * 3];
+							int i2 = inds[j * 3 + 1];
+							int i3 = inds[j * 3 + 2];
 
+							Vector3 v1 = p[i1].SlimVector();
+							Vector3 v2 = p[i2].SlimVector();
+							Vector3 v3 = p[i3].SlimVector();
+
+							Vector3 faceEdgeA = v2 - v1;
+							Vector3 faceEdgeB = v1 - v3;
+							Vector3 norm = Vector3.Cross(faceEdgeB, faceEdgeA);
+
+							norms[i1] += norm; 
+							norms[i2] += norm; 
+							norms[i3] += norm;
+						}
+						
+						for (int i = 0; i < pp.Count; i++)
+						{
+							this.FOutPPTs[cnt][i] = new Vector2(pp[i].X, pp[i].Y);
+							this.FOutPts[cnt][i] = new Vector3(p[i].X, p[i].Y, p[i].Z);
+							this.FOutNormals[cnt][i] = Vector3.Normalize(norms[i]);
+						}
 
                         /*FaceTriangle[] d = frame.GetTriangles();
                         this.FOutIndices.SliceCount = d.Length * 3;

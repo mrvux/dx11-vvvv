@@ -53,17 +53,14 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 9, DefaultValue = 1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
-        [Input("View", Order = 10)]
-        protected IDiffSpread<Matrix> FInView;
+        [Input("Position", Order = 10)]
+        protected IDiffSpread<Vector3> FInPosition;
 
-        [Input("Projection", Order = 11)]
-        protected IDiffSpread<Matrix> FInProjection;
+        [Input("Near Plane", Order = 11, DefaultValue=0.1)]
+        protected IDiffSpread<float> FInNear;
 
-        [Input("Aspect Ratio", Order = 12, Visibility = PinVisibility.Hidden)]
-        protected IDiffSpread<Matrix> FInAspect;
-
-        [Input("Crop", Order = 13, Visibility = PinVisibility.OnlyInspector)]
-        protected IDiffSpread<Matrix> FInCrop;
+        [Input("Far Plane", Order = 12, DefaultValue=100)]
+        protected IDiffSpread<float> FInFar;
 
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
@@ -86,6 +83,9 @@ namespace VVVV.DX11.Nodes
 
         private DX11RenderSettings settings = new DX11RenderSettings();
 
+        private List<Vector3> lookatvectors = new List<Vector3>();
+        private List<Vector3> upvectors = new List<Vector3>();
+
         #region Constructor
         [ImportingConstructor()]
         public DX11CubeRendererNode(IPluginHost FHost, IIOFactory iofactory)
@@ -97,6 +97,20 @@ namespace VVVV.DX11.Nodes
             tattr.DefaultEnumEntry = "R8G8B8A8_UNorm";
 
             this.FInFormat = iofactory.CreateDiffSpread<EnumEntry>(tattr);
+
+            lookatvectors.Add(new Vector3(1, 0, 0));
+            lookatvectors.Add(new Vector3(-1, 0, 0));
+            lookatvectors.Add(new Vector3(0, 1, 0));
+            lookatvectors.Add(new Vector3(0, -1, 0));
+            lookatvectors.Add(new Vector3(0, 0, 1));
+            lookatvectors.Add(new Vector3(0, 0, -1));
+
+            upvectors.Add(new Vector3(0, 1, 0));
+            upvectors.Add(new Vector3(0, 1, 0));
+            upvectors.Add(new Vector3(0, 0, -1));
+            upvectors.Add(new Vector3(0, 0, 1));
+            upvectors.Add(new Vector3(0, 1, 0));
+            upvectors.Add(new Vector3(0, 1, 0));
 
             //this.depthmanager = new DepthBufferManager(FHost,iofactory);
         }
@@ -131,7 +145,7 @@ namespace VVVV.DX11.Nodes
             if (!this.FOutCubeTexture[0].Contains(context))
             {
                 this.FOutCubeTexture[0][context] = new DX11CubeRenderTarget(context, this.FInSize[0], this.sd, DeviceFormatHelper.GetFormat(this.FInFormat[0].Name), false, 1);
-                this.FOutCubeDepthTexture[0][context] = new DX11CubeDepthStencil(context, this.FInSize[0], this.sd, Format.D32_Float);
+                this.FOutCubeDepthTexture[0][context] = new DX11CubeDepthStencil(context, this.FInSize[0], this.sd, Format.D24_UNorm_S8_UInt);
             }
 
             this.updateddevices.Add(context);
@@ -174,17 +188,19 @@ namespace VVVV.DX11.Nodes
 
                     int size = this.FInSize[0];
 
+                    Matrix proj = Matrix.PerspectiveFovLH((float)Math.PI * 0.5f, 1.0f, this.FInNear[0], this.FInFar[0]);
+
                     for (int i = 0; i < 6; i++)
                     {
                         settings.ViewportIndex = i;
                         settings.ViewportCount = 6;
-                        settings.View = this.FInView[i];
 
-                        Matrix proj = this.FInProjection[i];
-                        Matrix aspect = Matrix.Invert(this.FInAspect[i]);
-                        Matrix crop = Matrix.Invert(this.FInCrop[i]);
+                        Vector3 p = this.FInPosition[0];
 
-                        settings.Projection = proj * aspect * crop;
+                        Vector3 t = p + this.lookatvectors[i];
+
+                        settings.View = Matrix.LookAtLH(p, t, this.upvectors[i]);
+                        settings.Projection = proj;
                         settings.ViewProjection = settings.View * settings.Projection;
                         settings.RenderWidth = size;
                         settings.RenderHeight = size;

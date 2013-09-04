@@ -120,6 +120,7 @@
     <Compile Include="NodeInterfaces\IDX11UpdateBlocker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Layer\DX11Layer.cs" />
+    <Compile Include="Rendering\Layer\DX11RenderObject.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSettings.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSettings_Transforms.cs" />
     <Compile Include="Rendering\Effects\IDX11CustomRenderVariable.cs" />

@@ -69,6 +69,9 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "AspectRatio", Category = "DX11.Layer", Version = "")]
     public class AspectRatioNode : AbstractDX11LayerSpaceNode
     {
+        [Input("Transform In", IsSingle = true)]
+        private ISpread<Matrix> FTransformIn;
+
         [Input("Uniform Scale", DefaultValue=1, IsSingle = true)]
         ISpread<float> FScale;
 
@@ -82,6 +85,7 @@ namespace VVVV.DX11.Nodes
 
             float sx, sy;
 
+            #region Build scale
             if (FAlign[0].Name == "FitIn")
             {
                 if (w > h)
@@ -118,10 +122,11 @@ namespace VVVV.DX11.Nodes
                 sy = 1.0f;
                 sx = h / w;
             }
+            #endregion
 
             Matrix aspect = Matrix.Scaling(sx* FScale[0], sy * FScale[0], 1.0f);
-           
-            settings.Projection = settings.Projection * aspect;
+
+            settings.Projection = settings.Projection * aspect * FTransformIn[0];
             settings.ViewProjection = settings.View * settings.Projection;
         }
     }

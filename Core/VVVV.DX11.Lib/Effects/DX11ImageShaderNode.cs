@@ -41,7 +41,7 @@ namespace VVVV.DX11.Nodes.Layers
 
         public List<EffectResourceVariable> texturecache = new List<EffectResourceVariable>();
         public List<ImageShaderPass> passes = new List<ImageShaderPass>();
-
+        public List<EffectScalarVariable> passindex = new List<EffectScalarVariable>();
         
 
        // System.Collections.Generic.SortedDictionary<int,Vector2>
@@ -49,6 +49,7 @@ namespace VVVV.DX11.Nodes.Layers
         public void RebuildTextureCache()
         {
             texturecache.Clear();
+            passindex.Clear();
             for (int i = 0; i < this.shader.DefaultEffect.Description.GlobalVariableCount; i++)
             {
                 EffectVariable var = this.shader.DefaultEffect.GetVariableByIndex(i);
@@ -57,6 +58,15 @@ namespace VVVV.DX11.Nodes.Layers
                 {
                     EffectResourceVariable rv = var.AsResource();
                     texturecache.Add(rv);
+                }
+
+                if (var.GetVariableType().Description.TypeName == "float"
+                    || var.GetVariableType().Description.TypeName == "int")
+                {
+                    if (var.Description.Semantic == "PASSINDEX")
+                    {
+                        passindex.Add(var.AsScalar());
+                    }
                 }
             }
         }
@@ -284,6 +294,8 @@ namespace VVVV.DX11.Nodes.Layers
             int wi, he;
 
             bool preserve = false;
+            DX11ResourcePoolEntry<DX11RenderTarget2D> preservedtarget = null;
+            int passcounter = 0;
 
             for (int i = 0; i < this.spmax; i++)
             {
@@ -359,7 +371,7 @@ namespace VVVV.DX11.Nodes.Layers
                         ImageShaderPass pi = this.varmanager.passes[j];
                         EffectPass pass = tech.GetPassByIndex(j);
 
-                        if (j > 0)
+                        if (passcounter > 0)
                         {
                             int pid = j - 1;
                             string pname = "PASSRESULT" + pid;
@@ -402,11 +414,19 @@ namespace VVVV.DX11.Nodes.Layers
 
                         //Since device is not capable of telling us BGR not supported
                         if (fmt == Format.B8G8R8A8_UNorm) { fmt = Format.R8G8B8A8_UNorm; }
-                        
 
-                        DX11ResourcePoolEntry<DX11RenderTarget2D> elem = context.ResourcePool.LockRenderTarget(w, h, fmt, new SampleDescription(1, 0), mips, 0);
-                        locktargets.Add(elem);
+                        DX11ResourcePoolEntry<DX11RenderTarget2D> elem;
+                        if (preservedtarget != null)
+                        {
+                            elem = preservedtarget;
+                        }
+                        else
+                        {
+                            elem = context.ResourcePool.LockRenderTarget(w, h, fmt, new SampleDescription(1, 0), mips, 0);
+                            locktargets.Add(elem);
+                        }
                         DX11RenderTarget2D rt = elem.Element;
+
 
                         if (this.FDepthIn.PluginIO.IsConnected && pi.UseDepth)
                         {
@@ -475,6 +495,8 @@ namespace VVVV.DX11.Nodes.Layers
                         //Bind last render target
                         this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
 
+                        this.BindPassIndexSemantic(shaderdata.ShaderInstance.Effect, "PASSINDEX", j);
+
                         if (this.FDepthIn.PluginIO.IsConnected)
                         {
                             if (this.FDepthIn[0].Contains(context))
@@ -501,10 +523,21 @@ namespace VVVV.DX11.Nodes.Layers
                         //Generate mips if applicable
                         if (pi.Mips) { ctx.GenerateMips(rt.SRV); }
 
-                        rtlist.Add(rt);
+                        if (!pi.KeepTarget)
+                        {
+                            preserve = false;
+                            rtlist.Add(rt);
+                            lastrt = rt;
+                            lasttmp = elem;
+                            preservedtarget = null;
+                            passcounter++;
+                        }
+                        else
+                        {
+                            preserve = true;
+                            preservedtarget = elem;
+                        }
 
-                        lastrt = rt;
-                        lasttmp = elem;
 
                         context.RenderTargetStack.Pop();
 
@@ -562,7 +595,20 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 if (erv.Description.Semantic == semantic)
                 {
+                    /*erv.SetResource(resource.SRV);*/
                     effect.GetVariableByName(erv.Description.Name).AsResource().SetResource(resource.SRV);
+                }
+            }
+        }
+
+        private void BindPassIndexSemantic(Effect effect, string semantic,int passindex)
+        {
+            foreach (EffectScalarVariable erv in this.varmanager.passindex)
+            {
+                if (erv.Description.Semantic == semantic)
+                {
+                    //erv.Set(passindex);
+                    effect.GetVariableByName(erv.Description.Name).AsScalar().Set(passindex);
                 }
             }
         }
@@ -573,6 +619,7 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 if (erv.Description.Semantic == semantic)
                 {
+                    /*erv.SetResource(srv);*/
                     effect.GetVariableByName(erv.Description.Name).AsResource().SetResource(srv);
                 }
             }

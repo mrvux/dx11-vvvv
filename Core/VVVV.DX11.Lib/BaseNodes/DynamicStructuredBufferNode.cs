@@ -100,6 +100,7 @@ namespace VVVV.DX11.Nodes
                     else
                     {
                         this.FValid[0] = false;
+                        return;
                     }
                 }
 

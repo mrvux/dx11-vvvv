@@ -12,7 +12,7 @@ using VVVV.DX11.Effects;
 
 namespace VVVV.DX11
 {
-    public enum eRenderHint { Forward, MRT, Shadow, Overlay }
+    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector }
 
 
     public partial class DX11RenderSettings
@@ -32,12 +32,14 @@ namespace VVVV.DX11
             this.ViewportCount = 1;
             this.ViewportIndex = 0;
             this.RenderHint = eRenderHint.Forward;
-
+            this.SceneDescriptor = new DX11RenderScene();
         }
 
         public DX11RenderSpace RenderSpace { get; set; }
 
         public eRenderHint RenderHint { get; set; }
+
+        public DX11RenderScene SceneDescriptor { get; set; }
 
         /// <summary>
         /// Renderer Width

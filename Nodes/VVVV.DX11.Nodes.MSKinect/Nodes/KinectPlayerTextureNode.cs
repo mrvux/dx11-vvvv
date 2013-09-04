@@ -18,7 +18,12 @@ using Microsoft.Kinect;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "Player", Category = "Kinect", Version = "Microsoft", Author = "vux", Tags = "dx11,texture")]
+    [PluginInfo(Name = "Player", 
+	            Category = "Kinect", 
+	            Version = "Microsoft", 
+	            Author = "vux", 
+	            Tags = "DX11, texture",
+	            Help = "")]
     public class KinectPlayeTextureNode : KinectBaseTextureNode
     {
         private int[] playerimage;

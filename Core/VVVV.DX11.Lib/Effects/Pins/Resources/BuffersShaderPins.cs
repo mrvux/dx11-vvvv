@@ -30,7 +30,8 @@ namespace VVVV.DX11.Lib.Effects.Pins.Resources
                 }
                 else
                 {
-                    return this.pin[slice][context].SRV;
+                    IDX11ReadableStructureBuffer sb = this.pin[slice][context];
+                    return sb != null ? sb.SRV : null;
                 }
             }
         }
@@ -52,7 +53,8 @@ namespace VVVV.DX11.Lib.Effects.Pins.Resources
                 }
                 else
                 {
-                    return this.pin[slice][context].SRV;
+                    IDX11ReadableResource sb = this.pin[slice][context];
+                    return sb != null ? sb.SRV : null;
                 }
             }
         }
