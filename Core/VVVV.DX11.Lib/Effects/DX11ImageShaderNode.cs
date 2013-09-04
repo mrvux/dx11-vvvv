@@ -295,10 +295,12 @@ namespace VVVV.DX11.Nodes.Layers
 
             bool preserve = false;
             DX11ResourcePoolEntry<DX11RenderTarget2D> preservedtarget = null;
-            int passcounter = 0;
+            
 
             for (int i = 0; i < this.spmax; i++)
             {
+                int passcounter = 0;
+
                 if (this.FInEnabled[i])
                 {
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
