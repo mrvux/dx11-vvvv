@@ -128,6 +128,9 @@ namespace VVVV.DX11.Lib.Effects
         public bool KeepTarget { get; protected set; }
         public bool Clear { get; protected set; }
 
+        public bool HasVertexShader { get; protected set; }
+        public bool UseTriangle { get; protected set; }
+
         public string BlendPreset { get; protected set; }
         public string DepthPreset { get; protected set; }
 
@@ -144,8 +147,9 @@ namespace VVVV.DX11.Lib.Effects
             this.DepthPreset = "";
             this.UseDepth = false;
             this.HasState = false;
-            this.KeepTarget = false;
+            this.KeepTarget =false;
 
+            this.HasVertexShader = pd.VertexShaderDescription.Variable.IsValid;
 
             this.ComputeData = new ImageComputeData(pd);
 
@@ -190,6 +194,13 @@ namespace VVVV.DX11.Lib.Effects
             {
                 bool b = var.AsScalar().GetFloat() > 0.5f;
                 this.UseDepth = b;
+            }
+
+            var = pd.GetAnnotationByName("usetriangle");
+            if (var.IsValid)
+            {
+                bool b = var.AsScalar().GetFloat() > 0.5f;
+                this.UseTriangle = b;
             }
 
             var = pd.GetAnnotationByName("keeptarget");

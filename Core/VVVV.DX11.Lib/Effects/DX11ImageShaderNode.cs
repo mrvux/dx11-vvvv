@@ -427,7 +427,7 @@ namespace VVVV.DX11.Nodes.Layers
                         }
                         DX11RenderTarget2D rt = elem.Element;
 
-
+                        #region Use depth
                         if (this.FDepthIn.PluginIO.IsConnected && pi.UseDepth)
                         {
                             context.RenderTargetStack.Push(this.FDepthIn[0][context], true, elem.Element);
@@ -436,6 +436,7 @@ namespace VVVV.DX11.Nodes.Layers
                         {
                             context.RenderTargetStack.Push(elem.Element);
                         }
+                        #endregion
 
                         if (pi.Clear)
                         {

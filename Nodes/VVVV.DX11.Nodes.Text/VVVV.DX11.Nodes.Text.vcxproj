@@ -127,12 +127,12 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\work\repositories\directx11\dx11-vvvv\Dependencies\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\repositories\vvvv\dx11-vvvv\Dependencies\x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9">
-      <HintPath>..\..\Dependencies\x86\SlimDX.dll</HintPath>
+      <HintPath>..\..\Dependencies\x64\SlimDX.dll</HintPath>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
@@ -147,32 +147,32 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="VVVV.Core, Version=1.0.4924.26312, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Core.dll</HintPath>
+    <Reference Include="VVVV.Core, Version=1.0.4924.26166, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Dependencies\x64\VVVV.Core.dll</HintPath>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </Reference>
-    <Reference Include="VVVV.Hosting, Version=1.0.4924.26314, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Hosting.dll</HintPath>
+    <Reference Include="VVVV.Hosting, Version=1.0.4924.26168, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Dependencies\x64\VVVV.Hosting.dll</HintPath>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </Reference>
-    <Reference Include="VVVV.PluginInterfaces, Version=1.0.4924.26313, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.PluginInterfaces.dll</HintPath>
+    <Reference Include="VVVV.PluginInterfaces, Version=1.0.4924.26166, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Dependencies\x64\VVVV.PluginInterfaces.dll</HintPath>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </Reference>
-    <Reference Include="VVVV.Utils, Version=1.0.4924.26310, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils.dll</HintPath>
+    <Reference Include="VVVV.Utils, Version=1.0.4924.26163, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Dependencies\x64\VVVV.Utils.dll</HintPath>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </Reference>
-    <Reference Include="VVVV.Utils3rdParty, Version=1.0.4924.26311, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils3rdParty.dll</HintPath>
+    <Reference Include="VVVV.Utils3rdParty, Version=1.0.4924.26164, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\Dependencies\x64\VVVV.Utils3rdParty.dll</HintPath>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
