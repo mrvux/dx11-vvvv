@@ -22,6 +22,7 @@ using VVVV.Nodes;
 using System.Diagnostics;
 using FeralTic.DX11;
 using VVVV.PluginInterfaces.V2.Graph;
+using System.Windows.Forms;
 
 namespace VVVV.DX11.Factories
 {
@@ -60,7 +61,47 @@ namespace VVVV.DX11.Factories
             this.hdehost.MainLoop.OnRender += GraphEventService_OnRender;
 
             this.displaymanager = new DX11DisplayManager();
-            this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
+
+            string[] args = Environment.GetCommandLineArgs();
+
+            foreach (string s in args)
+            {
+                string sl = s.ToLower();
+                if (sl.StartsWith("/dx11mode:"))
+                {
+                    sl = sl.Replace("/dx11mode:", "");
+
+                    if (sl == "permonitor")
+                    {
+                        this.devicemanager = new DX11PerMonitorDeviceManager(this.logger, this.displaymanager);
+                    }
+                    else if (sl == "peradapter")
+                    {
+                        this.devicemanager = new DX11PerAdapterDeviceManager(this.logger, this.displaymanager);
+                    }
+                    else if (sl.StartsWith("force"))
+                    {
+                        sl = sl.Replace("force", "");
+                        try
+                        {
+                            int i = int.Parse(sl);
+                            if (i >= 0 && i < this.displaymanager.AdapterCount)
+                            {
+                                this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager, i);
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
+
+            if (this.devicemanager == null)
+            {
+                this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
+            }
 
            this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
            this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;

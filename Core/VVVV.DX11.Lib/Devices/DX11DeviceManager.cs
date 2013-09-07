@@ -7,6 +7,7 @@ using SlimDX.Direct3D11;
 using FeralTic.DX11;
 using FeralTic.Utils;
 using VVVV.Core.Logging;
+using SlimDX.DXGI;
 
 
 namespace VVVV.DX11.Lib.Devices
@@ -137,9 +138,6 @@ namespace VVVV.DX11.Lib.Devices
         { 
         }
 
-
-
-
         protected override int GetDeviceKey(DXGIScreen screen)
         {
             return screen.AdapterId;
@@ -156,26 +154,27 @@ namespace VVVV.DX11.Lib.Devices
         private DX11RenderContext context;
 
 
-        public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager)
+        public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager, int adapterid = 0)
             : base(logger ,displaymanager)
         {
+            Adapter1 adapter = this.DisplayManager.FindAdapter(adapterid);
+
             #if DEBUG
             try
             {
-                this.context = new DX11RenderContext(this.flags);
+                this.context = new DX11RenderContext(adapter, this.flags);
             }
             catch
             {
                 logger.Log(LogType.Warning, "Could not create Debug device, if you want debug informations make sure DirectX SDK is installed");
                 logger.Log(LogType.Warning, "Creating default DirectX 11 device");
                 this.flags = DeviceCreationFlags.BgraSupport;
-                this.context = new DX11RenderContext(this.flags);
+                this.context = new DX11RenderContext(adapter, this.flags);
             }
             #else
-				this.context = new DX11RenderContext(this.flags);
+				this.context = new DX11RenderContext(adapter,this.flags);
             #endif
 
-            this.context = new DX11RenderContext(this.flags);
             this.context.Initialize();
             this.contexts.Add(0, this.context);
         }

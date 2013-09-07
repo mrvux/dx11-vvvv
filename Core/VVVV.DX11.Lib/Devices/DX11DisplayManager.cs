@@ -19,12 +19,28 @@ namespace VVVV.DX11.Lib.Devices
 
         public Factory1 Factory { get; private set; }
 
+        public List<DXGIScreen> Screens { get { return this.screens; } }
+
+        public int AdapterCount { get; protected set; }
+
         public DX11DisplayManager()
         {
             this.Factory = new Factory1();
 
+            this.AdapterCount = this.Factory.GetAdapterCount1();
+
             //Scan once on creation
             this.Refresh();
+        }
+
+        public Adapter1 FindAdapter(int index)
+        {
+            if (index >= 0 && index < this.Factory.GetAdapterCount1())
+            {
+                return this.Factory.GetAdapter1(index);
+            }
+
+            return null;
         }
 
         public void Refresh()
