@@ -57,11 +57,16 @@ namespace VVVV.DX11.Nodes
     {
 	    [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)] 
 		private ISpread<Matrix> FTransformIn;
+
+        [Input("Double Scale", IsSingle = true, Order = 50)]
+        private ISpread<bool> FDoubleScale;
         
 		protected override void UpdateSettings(DX11RenderSettings settings)
         {
+            float f = this.FDoubleScale[0] ? 2.0f : 1.0f;
+
             settings.View = Matrix.Identity;
-            settings.Projection = Matrix.Scaling(1.0f / settings.RenderWidth, 1.0f / settings.RenderHeight, 1.0f) * FTransformIn[0];
+            settings.Projection = Matrix.Scaling(f / settings.RenderWidth,f / settings.RenderHeight, 1.0f) * FTransformIn[0];
             settings.ViewProjection = settings.Projection;
         }
     }
