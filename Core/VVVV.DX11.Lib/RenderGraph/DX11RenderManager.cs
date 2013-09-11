@@ -135,7 +135,15 @@ namespace VVVV.DX11.Lib.RenderGraph
         {
             foreach (IDX11RenderWindow window in this.FindRenderWindows())
             {
-                window.Present();
+                try
+                {
+                    window.Present();
+                }
+                catch (Exception ex)
+                {
+                    this.logger.Log(LogType.Error, "Failed to present render window");
+                    this.logger.Log(ex);
+                }
             }
 
             foreach (DX11RenderContext ctx in this.RenderGraphs.Keys)

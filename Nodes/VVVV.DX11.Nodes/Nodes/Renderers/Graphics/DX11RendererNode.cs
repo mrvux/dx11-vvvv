@@ -247,6 +247,9 @@ namespace VVVV.DX11.Nodes
 
         [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<Control> FOutCtrl;
+
+        [Output("Node Ref", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<INode> FOutRef;
         #endregion
 
         #region Fields
@@ -274,6 +277,8 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             this.FOutCtrl[0] = this;
+            this.FOutRef[0] = (INode)this.FHost;
+
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             if (this.FOutBackBuffer[0] == null)
             {
@@ -282,7 +287,6 @@ namespace VVVV.DX11.Nodes
                 this.FOuFS.SliceCount = 1;
                 this.FOuFS[0] = new DX11Resource<DX11SwapChain>();
             }
-
 
             this.updateddevices.Clear();
             this.rendereddevices.Clear();

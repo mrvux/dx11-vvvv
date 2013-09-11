@@ -149,17 +149,34 @@ namespace VVVV.DX11.Lib.Devices
         }
     }
 
+    public class DX11PerMonitorDeviceManager : AbstractDX11RenderContextManager<string>
+    {
+        public DX11PerMonitorDeviceManager(ILogger logger, DX11DisplayManager displaymanager) : base(logger,displaymanager) { }
+
+        protected override string GetDeviceKey(DXGIScreen screen)
+        {
+            return screen.Monitor.Description.Name;
+        }
+
+        public override bool Reallocate
+        {
+            get { return true; }
+        }
+    }
+
     public class DX11AutoAdapterDeviceManager : AbstractDX11RenderContextManager<int>
     {
         private DX11RenderContext context;
 
 
         public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager, int adapterid = 0)
-            : base(logger ,displaymanager)
+            : base(logger, displaymanager)
         {
             Adapter1 adapter = this.DisplayManager.FindAdapter(adapterid);
 
-            #if DEBUG
+            logger.Log(LogType.Message, "Creating device for adapter " + adapter.Description.Description);
+
+#if DEBUG
             try
             {
                 this.context = new DX11RenderContext(adapter, this.flags);
@@ -171,9 +188,9 @@ namespace VVVV.DX11.Lib.Devices
                 this.flags = DeviceCreationFlags.BgraSupport;
                 this.context = new DX11RenderContext(adapter, this.flags);
             }
-            #else
+#else
 				this.context = new DX11RenderContext(adapter,this.flags);
-            #endif
+#endif
 
             this.context.Initialize();
             this.contexts.Add(0, this.context);
@@ -200,18 +217,4 @@ namespace VVVV.DX11.Lib.Devices
         }
     }
 
-    public class DX11PerMonitorDeviceManager : AbstractDX11RenderContextManager<string>
-    {
-        public DX11PerMonitorDeviceManager(ILogger logger, DX11DisplayManager displaymanager) : base(logger,displaymanager) { }
-
-        protected override string GetDeviceKey(DXGIScreen screen)
-        {
-            return screen.Monitor.Description.Name;
-        }
-
-        public override bool Reallocate
-        {
-            get { return true; }
-        }
-    }
 }

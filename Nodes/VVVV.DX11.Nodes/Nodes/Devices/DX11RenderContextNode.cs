@@ -29,7 +29,6 @@ namespace VVVV.DX11.Nodes
         [Input("Clear Cache", IsBang = true)]
         protected ISpread<bool> FInClear;
 
-
         [Output("Feature Level")]
         protected ISpread<string> FOutFeatureLevel;
 
@@ -137,7 +136,7 @@ namespace VVVV.DX11.Nodes
                     this.FOutProcessedCount[i] = renderer.ProcessedNodes;
                     this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
                     this.FOUCS[i] = ctx.ComputeShaderSupport;
-
+ 
                     if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.BgraSupport)) { flags.Add(DeviceCreationFlags.BgraSupport);}
                     if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.Debug)) { flags.Add(DeviceCreationFlags.Debug);}
                     if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.PreventThreadingOptimizations)) { flags.Add(DeviceCreationFlags.PreventThreadingOptimizations);}
