@@ -79,6 +79,8 @@ namespace VVVV.DX11.Lib.Effects
                         if (this.shaderinstance != null) { this.shaderinstance.Dispose(); }
                         this.shaderinstance = new DX11ShaderInstance(this.context, shader.ByteCode);
                         this.UpdateTechnique();
+
+                        this.DisposeLayouts();
                     }
                 }
             }
@@ -165,7 +167,7 @@ namespace VVVV.DX11.Lib.Effects
         #endregion
 
         #region Dispose
-        private void DisposeLayouts()
+        public void DisposeLayouts()
         {
             for (int i = 0; i < this.layouts.Count; i++)
             {

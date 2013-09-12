@@ -15,6 +15,7 @@ using FeralTic.DX11;
 using FeralTic.DX11.Queries;
 using System.CodeDom.Compiler;
 using SlimDX.D3DCompiler;
+using VVVV.Core.Logging;
 
 
 namespace VVVV.DX11.Lib.Effects
@@ -52,6 +53,9 @@ namespace VVVV.DX11.Lib.Effects
 
         [Output("Query",Order=200, IsSingle=true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
+
+        [Import()]
+        protected ILogger FLogger;
 
         #region Config Pins
         [Config("Path")]
@@ -132,11 +136,14 @@ namespace VVVV.DX11.Lib.Effects
                     try
                     {
                         string[] s = this.FInDefines[0].Split("=".ToCharArray());
-                        ShaderMacro sm = new ShaderMacro();
-                        sm.Name = s[0];
-                        sm.Value = s[1];
 
-                        sms.Add(sm);
+                        if (s.Length == 2)
+                        {
+                            ShaderMacro sm = new ShaderMacro();
+                            sm.Name = s[0];
+                            sm.Value = s[1];
+                            sms.Add(sm);
+                        }
 
                     }
                     catch
