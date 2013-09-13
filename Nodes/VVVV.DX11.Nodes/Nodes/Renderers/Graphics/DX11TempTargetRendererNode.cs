@@ -19,6 +19,7 @@ using VVVV.DX11.Lib.Devices;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using VVVV.Core.Logging;
 
 
 namespace VVVV.DX11
@@ -115,6 +116,15 @@ namespace VVVV.DX11
 
                 if (aacount > 1)
                 {
+                    List<SampleDescription> sds = context.GetMultisampleFormatInfo(Format.R8G8B8A8_UNorm);
+                    int maxlevels = sds[sds.Count - 1].Count;
+
+                    if (aacount > maxlevels)
+                    {
+                        FHost.Log(TLogType.Warning, "Multisample count too high for this format, reverted to: " + maxlevels);
+                        aacount = maxlevels;
+                    }
+
                     DX11RenderTarget2D temptarget = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount,aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
                     DX11RenderTarget2D temptargetresolve = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(1, 0), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
 

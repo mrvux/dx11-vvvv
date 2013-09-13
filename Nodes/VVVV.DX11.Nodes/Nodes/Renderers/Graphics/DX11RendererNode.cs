@@ -165,6 +165,9 @@ namespace VVVV.DX11.Nodes
         [Import()]
         protected IPluginHost2 host2;
 
+        [Import()]
+        protected ILogger logger;
+
         [Input("Layers", Order=1,IsSingle = true)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
@@ -504,7 +507,17 @@ namespace VVVV.DX11.Nodes
             {
                 this.FOutBackBuffer[0].Dispose(context);
 
-                this.FOutBackBuffer[0][context] = new DX11SwapChain(context,this.Handle, Format.R8G8B8A8_UNorm, sd);
+                List<SampleDescription> sds = context.GetMultisampleFormatInfo(Format.R8G8B8A8_UNorm);
+                int maxlevels = sds[sds.Count - 1].Count;
+
+                if (sd.Count > maxlevels)
+                {
+                    logger.Log(LogType.Warning, "Multisample count too high for this format, reverted to: " + maxlevels);
+                    sd.Count = maxlevels;
+                }
+
+                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd);
+
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
                 #endif

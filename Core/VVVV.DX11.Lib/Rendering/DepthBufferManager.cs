@@ -42,7 +42,7 @@ namespace VVVV.DX11.Lib.Rendering
         public bool FormatChanged { get; set; }
 
         public eDepthBufferMode Mode { get { return this.currentmode; } }
-         
+
         public DepthBufferManager(IPluginHost host, IIOFactory factory)
         {
             this.host = host;
@@ -148,7 +148,18 @@ namespace VVVV.DX11.Lib.Rendering
                         }
                     }
 
-                    ds = new DX11DepthStencil(context, w, h, sd, DeviceFormatHelper.GetFormat(this.depthformatpin.IOObject[0].Name));
+                    Format depthfmt = DeviceFormatHelper.GetFormat(this.depthformatpin.IOObject[0].Name);
+
+                    List<SampleDescription> sds = context.GetMultisampleFormatInfo(depthfmt);
+                    int maxlevels = sds[sds.Count - 1].Count;
+
+                    if (sd.Count > maxlevels)
+                    {
+                        host.Log(TLogType.Warning, "Multisample count too high for this depth format, reverted to: " + maxlevels);
+                        sd.Count = maxlevels;
+                    }
+
+                    ds = new DX11DepthStencil(context, w, h, sd, depthfmt);
                     #if DEBUG
                     ds.Resource.DebugName = "DepthStencil";
                     #endif
