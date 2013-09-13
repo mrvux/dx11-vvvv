@@ -55,6 +55,8 @@ namespace VVVV.DX11.Nodes
 
         public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
         {
+            if (this.FLayerIn.SliceCount == 0) { return; }
+
             if (this.FEnabled[0])
             {
                 if (this.FLayerIn.PluginIO.IsConnected)
