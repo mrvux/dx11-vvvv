@@ -86,7 +86,10 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 			void* txt = (void*)Marshal::StringToHGlobalUni(this->FInString[i]);
 			void* font = (void*)Marshal::StringToHGlobalUni(this->FFontInput[i]);
 			float size = this->FInSize[i];
-			int color = this->FInColor[i].Color.ToArgb();
+			VVVV::Utils::VColor::RGBAColor c = this->FInColor[i];
+			c.R = this->FInColor[i].Color.B;
+			c.B = this->FInColor[i].Color.R;
+			int color = c.Color.ToArgb();
 
 
 			SlimDX::Matrix preScale = SlimDX::Matrix::Scaling(1.0f,-1.0f,1.0f);
