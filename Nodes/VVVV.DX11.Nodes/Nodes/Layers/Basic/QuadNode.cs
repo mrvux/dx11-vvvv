@@ -23,25 +23,25 @@ namespace VVVV.DX11.Nodes
         [Input("Render State")]
         protected Pin<DX11RenderState> FInState;
 
-        [Input("Transform In")]
+        [Input("Transform")]
         protected ISpread<Matrix> FInWorld;
 
-        [Input("Color",DefaultColor= new double[] {1,1,1,1})]
-        protected ISpread<Color4> FInColor;
-
-        [Input("Texture In")]
+        [Input("Texture")]
         protected Pin<DX11Resource<DX11Texture2D>> FInTexture;
-
-        [Input("Texture Transform")]
-        protected ISpread<Matrix> FInTexTransform;
 
         [Input("Samper State")]
         protected Pin<SamplerDescription> FInSamplerState;
+        
+        [Input("Texture Transform")]
+        protected ISpread<Matrix> FInTexTransform;
+        
+        [Input("Color", DefaultColor= new double[] {1,1,1,1})]
+        protected ISpread<Color4> FInColor;
 
         [Input("Enabled", DefaultValue = 1, Order = 100000)]
         protected IDiffSpread<bool> FEnabled;
 
-        [Output("Layer Out")]
+        [Output("Layer")]
         protected ISpread<DX11Resource<DX11Layer>> FOutLayer;
 
         [Output("Query", Order = 200, IsSingle = true)]
