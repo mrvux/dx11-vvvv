@@ -139,12 +139,10 @@ namespace VVVV.MSKinect.Nodes
                     try
                     {
                         this.runtime.SetDepthRange(this.FInDepthRange[0]);
+                        SetSkeletonRangeMode();
                     }
                     catch { }
                 }
-
-
-
 
                 if (this.FInEnableSkeleton.IsChanged || reset)
                 {
@@ -159,11 +157,13 @@ namespace VVVV.MSKinect.Nodes
                     //}
 
                     this.runtime.EnableSkeleton(this.FInEnableSkeleton[0], this.FInEnableSmooth[0], sp);
+                    SetSkeletonRangeMode();
                 }
 
                 if (this.FInSkMode.IsChanged || reset)
                 {
                     this.runtime.SetSkeletonMode(this.FInSkMode[0]);
+                    SetSkeletonRangeMode();
                 }
 
 
@@ -182,7 +182,6 @@ namespace VVVV.MSKinect.Nodes
 
                 Vector4 va = this.runtime.Runtime.AccelerometerGetCurrentReading();
                 Vector4D acc = new Vector4D(va.X, va.Y, va.Z, va.W);
-                
 
                 this.FOutColorFOV.SliceCount = 1;
                 this.FOutDepthFOV.SliceCount = 1;
@@ -200,6 +199,15 @@ namespace VVVV.MSKinect.Nodes
             this.FOutKCnt[0] = KinectSensor.KinectSensors.Count;
         }
 
+        private void SetSkeletonRangeMode()
+        {
+        	if (this.FInEnableSkeleton[0])
+            	if (this.FInDepthRange[0] == DepthRange.Near)
+            		this.runtime.Runtime.SkeletonStream.EnableTrackingInNearRange = true;
+            	else
+            		this.runtime.Runtime.SkeletonStream.EnableTrackingInNearRange = false; 
+        }
+        
         public void Dispose()
         {
             if (this.runtime != null)
