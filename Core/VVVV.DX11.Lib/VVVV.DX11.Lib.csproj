@@ -132,6 +132,7 @@
     <Compile Include="BaseNodes\AbstractDX11Renderer2DNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\AbstractAllowFeedback.cs" />
     <Compile Include="BaseNodes\ConsNonNilNode.cs">
       <SubType>Code</SubType>
     </Compile>

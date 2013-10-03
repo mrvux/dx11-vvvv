@@ -147,6 +147,7 @@
     <Compile Include="Nodes\Buffers\ReadBackRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\CopyCounterNode.cs" />
     <Compile Include="Nodes\Devices\DX11RenderContextNode.cs" />
+    <Compile Include="Nodes\Generics\AllowFeedbackNodes.cs" />
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
     <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\BoundingBoxGeometryNode.cs" />
