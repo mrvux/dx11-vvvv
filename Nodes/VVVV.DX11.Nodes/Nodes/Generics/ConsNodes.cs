@@ -33,4 +33,10 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "Cons", Category = "DX11.Validator", Version = "", Author = "vux")]
     public class ConsValidatorNode : ConsNonNilNode<IDX11ObjectValidator> { }
 
+    [PluginInfo(Name = "Cons", Category = "DX11.ReadableResource", Version = "", Author = "vux")]
+    public class ConsReadableResourceNode : ConsNonNilNode<DX11Resource<IDX11ReadableResource>> { }
+
+    [PluginInfo(Name = "Cons", Category = "DX11.Rawbuffer", Version = "", Author = "vux")]
+    public class ConsRawbufferNode : ConsNonNilNode<DX11Resource<DX11RawBuffer>> { }
+
 }
