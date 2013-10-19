@@ -27,8 +27,11 @@ namespace VVVV.DX11.Lib.RenderGraph
 
         private List<IDX11RenderWindow> oldwindows = new List<IDX11RenderWindow>();
 
+        public bool Enabled { get; set; }
+
         public DX11RenderManager(IDX11RenderContextManager devmanager, IDX11GraphBuilder builder, ILogger logger)
         {
+            this.Enabled = true;
             this.gb = builder;
             this.RenderGraphs = new Dictionary<DX11RenderContext, DX11DeviceRenderer>();
 
@@ -103,6 +106,12 @@ namespace VVVV.DX11.Lib.RenderGraph
 
         public void Render(IDX11ResourceDataRetriever sender, IPluginHost host)
         {
+            if (!this.Enabled)
+            {
+                sender.AssignedContext = null;
+                return;
+            }
+
             this.gb.Flush();
 
             //TODO : Allocate new device after
@@ -121,6 +130,11 @@ namespace VVVV.DX11.Lib.RenderGraph
 
         public void Render()
         {
+            if (!this.Enabled)
+            {
+                return;
+            }
+
             foreach (DX11RenderContext dev in this.RenderGraphs.Keys)
             {
                 this.RenderGraphs[dev].Render(this.FindRenderWindows(dev));
@@ -133,6 +147,11 @@ namespace VVVV.DX11.Lib.RenderGraph
         /// </summary>
         public void Present()
         {
+            if (!this.Enabled)
+            {
+                return;
+            }
+
             foreach (IDX11RenderWindow window in this.FindRenderWindows())
             {
                 try
