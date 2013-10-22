@@ -123,7 +123,6 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
             Device device = context.Device;
@@ -200,7 +199,7 @@ namespace VVVV.DX11.Nodes
                         }
                         else
                         {
-                            context.RenderTargetStack.Push(target);
+                            context.RenderTargetStack.Push(target.SliceRTV[i]);
                         }
 
                         

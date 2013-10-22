@@ -214,7 +214,7 @@ namespace VVVV.DX11.Nodes
                         }
                         else
                         {
-                            context.RenderTargetStack.Push(target);
+                            context.RenderTargetStack.Push(target.SliceRTV[i]);
                         }
 
                         
