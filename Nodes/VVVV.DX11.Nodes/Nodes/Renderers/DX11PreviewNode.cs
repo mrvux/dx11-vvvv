@@ -118,6 +118,7 @@ namespace VVVV.DX11.Nodes.Renderers
                      	context.CurrentDeviceContext.ClearRenderTargetView(this.swapchain[context].RTV, FInBgColor[0].Color);
                      }
                      context.RenderStateStack.Push(rs);
+                     context.CleanShaderStages();
                                                    
                      context.Primitives.FullTriVS.GetVariableBySemantic("TEXTURE").AsResource().SetResource(this.FIn[id][context].SRV);
                      context.Primitives.FullScreenTriangle.Bind(null);
