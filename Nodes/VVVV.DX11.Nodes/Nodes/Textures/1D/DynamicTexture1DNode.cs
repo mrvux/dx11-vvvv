@@ -33,15 +33,11 @@ namespace VVVV.DX11.Nodes
         [Output("Texture Out")]
         protected Pin<DX11Resource<DX11DynamicTexture1D>> FTextureOutput;
 
-        [Output("Is Valid")]
-        protected ISpread<bool> FValid;
-
         private bool FInvalidate;
 
         public void Evaluate(int SpreadMax)
         {
             this.FTextureOutput.SliceCount = 1;
-            this.FValid.SliceCount = SpreadMax;
             this.FInvalidate = false;
 
             if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture1D>(); }
@@ -108,7 +104,6 @@ namespace VVVV.DX11.Nodes
                 }
                 tex.WriteData(data);           
             }
-
         }
 
         public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
