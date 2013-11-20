@@ -6,6 +6,7 @@
     using SlimDX.Direct3D11;
 using VVVV.Utils.VColor;
 using SlimDX;
+using VVVV.PluginInterfaces.V1;
 
 namespace VVVV.DX11.Nodes
 {
@@ -33,10 +34,10 @@ namespace VVVV.DX11.Nodes
         [Input("Maximum Anisotropy", DefaultValue=1)]
         protected IDiffSpread<int> FInMaximumAnisotropy;
 
-        [Input("Minimum Lod", DefaultValue = double.MinValue)]
+        [Input("Minimum Lod", DefaultValue = float.MinValue)]
         protected IDiffSpread<float> FInMinimumLod;
 
-        [Input("Maximum Lod", DefaultValue=double.MaxValue)]
+        [Input("Maximum Lod", DefaultValue=float.MaxValue)]
         protected IDiffSpread<float> FInMaximumLod;
 
         [Input("Mip Lod Bias", DefaultValue=0)]
@@ -78,10 +79,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutSampler.SliceCount = SpreadMax;
 
 
-
                 this.FOutSampler[0] = sampler;
-
-
             }
         }
     }
