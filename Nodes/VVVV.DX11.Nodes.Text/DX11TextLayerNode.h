@@ -46,7 +46,7 @@ private:
     ISpread<float>^ FInSize;
 
 	[Input("Color")]
-    ISpread<VVVV::Utils::VColor::RGBAColor>^ FInColor;
+    ISpread<SlimDX::Color4>^ FInColor;
 
 	[Input("Horizontal Align", EnumName = "HorizontalAlign")]
 	ISpread<EnumEntry^>^ FHorizontalAlignInput;
