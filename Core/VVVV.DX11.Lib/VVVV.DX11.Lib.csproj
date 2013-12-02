@@ -146,6 +146,7 @@
     <Compile Include="BaseNodes\DynamicStructuredBufferNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\ReadBackStructNode.cs" />
     <Compile Include="Devices\DX11DeviceAllocator.cs" />
     <Compile Include="Devices\DX11DeviceManager.cs" />
     <Compile Include="Devices\DX11DisplayManager.cs" />

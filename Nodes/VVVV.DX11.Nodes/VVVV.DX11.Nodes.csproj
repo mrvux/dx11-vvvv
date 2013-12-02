@@ -140,6 +140,7 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
+    <Compile Include="Nodes\Buffers\ReadBackBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRgionBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
@@ -183,6 +184,8 @@
     <Compile Include="Nodes\Geometry\Primitives\DX11TetrahedronNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11TorusNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11OctahedronNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\Metaballs\MarchingCubes.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\Metaballs\MetaBallsMeshNode.cs" />
     <Compile Include="Nodes\Geometry\SetBoundingBoxGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\VertexInstancedDrawerNode.cs" />
