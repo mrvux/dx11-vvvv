@@ -30,6 +30,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -42,6 +43,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -147,35 +149,20 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="VVVV.Core, Version=1.0.4924.26312, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Core.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    <Reference Include="VVVV.Core">
+      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Core.dll</HintPath>
     </Reference>
-    <Reference Include="VVVV.Hosting, Version=1.0.4924.26314, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Hosting.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    <Reference Include="VVVV.Hosting">
+      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Hosting.dll</HintPath>
     </Reference>
-    <Reference Include="VVVV.PluginInterfaces, Version=1.0.4924.26313, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.PluginInterfaces.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    <Reference Include="VVVV.PluginInterfaces">
+      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.PluginInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VVVV.Utils, Version=1.0.4924.26310, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    <Reference Include="VVVV.Utils">
+      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Utils.dll</HintPath>
     </Reference>
-    <Reference Include="VVVV.Utils3rdParty, Version=1.0.4924.26311, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils3rdParty.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+    <Reference Include="VVVV.Utils3rdParty">
+      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Utils3rdParty.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

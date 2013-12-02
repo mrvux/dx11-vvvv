@@ -140,6 +140,7 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
+    <Compile Include="Nodes\Buffers\ReadBackBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRgionBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\IndexRawBufferNode.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Nodes\Geometry\IndexedInstancedDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\IndexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinNode.cs" />
+    <Compile Include="Nodes\Geometry\MeshJoinNode.cs" />
     <Compile Include="Nodes\Geometry\NullIndirectDrawer.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11QuadCrossNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX112dPolygonNode.cs" />
@@ -182,6 +184,8 @@
     <Compile Include="Nodes\Geometry\Primitives\DX11TetrahedronNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11TorusNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11OctahedronNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\Metaballs\MarchingCubes.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\Metaballs\MetaBallsMeshNode.cs" />
     <Compile Include="Nodes\Geometry\SetBoundingBoxGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\VertexInstancedDrawerNode.cs" />
@@ -262,7 +266,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+      <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

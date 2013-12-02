@@ -146,6 +146,7 @@
     <Compile Include="BaseNodes\DynamicStructuredBufferNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\ReadBackStructNode.cs" />
     <Compile Include="Devices\DX11DeviceAllocator.cs" />
     <Compile Include="Devices\DX11DeviceManager.cs" />
     <Compile Include="Devices\DX11DisplayManager.cs" />
@@ -230,7 +231,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+      <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
