@@ -34,9 +34,9 @@ using VVVV.DX11.Nodes.Renderers.Graphics.Touch;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
+    [PluginInfo(Name="Renderer3",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow 
+    public partial class DX11RendererNode3 : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow 
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -276,6 +276,8 @@ namespace VVVV.DX11.Nodes
         private DX11RenderContext primary;
         #endregion
 
+        bool setfull = false;
+
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
@@ -310,45 +312,12 @@ namespace VVVV.DX11.Nodes
                 this.FInvalidateSwapChain = true;
             }
 
-            if (this.FInFullScreen.IsChanged)
+            if (this.FInFullScreen[0] && this.FInFullScreen.IsChanged)
             {
-                string path;
-                this.FHost.GetNodePath(false, out path);
-                INode2 n2 = hde.GetNodeFromPath(path);
-
-                if (n2.Window != null)
-                {
-                    if (n2.Window.IsVisible)
-                    {
-                        if (this.FInFullScreen[0])
-                        {
-                            hde.SetComponentMode(n2, ComponentMode.Fullscreen);
-                        }
-                        else
-                        {
-                            hde.SetComponentMode(n2, ComponentMode.InAWindow);
-                        }
-                    }
-                }
+                this.setfull = true;
             }
 
-            /*if (this.FInFullScreen.IsChanged)
-            {
-                if (this.FInFullScreen[0])
-                {
-                    string path;
-                    this.FHost.GetNodePath(false, out path);
-                    INode2 n2 = hde.GetNodeFromPath(path);
-                    hde.SetComponentMode(n2, ComponentMode.Fullscreen);
-                }
-                else
-                {
-                    string path;
-                    this.FHost.GetNodePath(false, out path);
-                    INode2 n2 = hde.GetNodeFromPath(path);
-                    hde.SetComponentMode(n2, ComponentMode.InAWindow);
-                }
-            }*/
+
 
             this.FOutKState[0] = new KeyboardState(this.FKeys);
             this.FOutMouseState[0] = MouseState.Create(this.FMousePos.x, this.FMousePos.y, this.FMouseButtons.x > 0.5f, this.FMouseButtons.y > 0.5f, this.FMouseButtons.z> 0.5f, false, false, this.wheel);
@@ -525,6 +494,19 @@ namespace VVVV.DX11.Nodes
             }
 
             DX11SwapChain sc = this.FOutBackBuffer[0][context];
+
+            if (this.setfull)
+            {
+                Screen screen = Screen.FromControl(this);
+                this.Width = screen.Bounds.Width;
+                this.Height = screen.Bounds.Height;
+
+                sc.Resize();
+                sc.SetFullScreen(true);
+                this.setfull = false;
+            }
+
+            
 
             if (this.FResized)
             {
