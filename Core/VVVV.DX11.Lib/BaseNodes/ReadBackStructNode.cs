@@ -15,6 +15,7 @@ using FeralTic.DX11;
 using SlimDX.Direct3D11;
 using VVVV.Hosting.IO.Pointers;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes
 {
@@ -61,6 +62,13 @@ namespace VVVV.DX11.Nodes
                 IDX11RWStructureBuffer b = this.FInput[0][this.AssignedContext];
                 if (b != null)
                 {
+                    if (Marshal.SizeOf(typeof(T)) != b.Stride)
+                    {
+                        this.FOutput.SliceCount = 0;
+                        this.FHost.Log(TLogType.Error, "Buffer has an invalid stride");
+                        return;
+                    }
+
                     if (this.staging != null && this.staging.ElementCount != b.ElementCount) { this.staging.Dispose(); this.staging = null; }
 
                     if (this.staging == null)
