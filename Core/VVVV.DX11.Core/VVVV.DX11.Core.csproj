@@ -138,7 +138,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+      <Name>FeralTic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

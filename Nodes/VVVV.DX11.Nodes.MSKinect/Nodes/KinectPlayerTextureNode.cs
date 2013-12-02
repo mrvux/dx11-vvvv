@@ -104,9 +104,10 @@ namespace VVVV.DX11.Nodes.MSKinect
                 lock (m_lock)
                 {
                     frame.CopyPixelDataTo(this.rawdepth);
-                    for (int i16 = 0; i16 < 640 * 480; i16++)
+                    for (int i16 = 0; i16 < 512 * 424; i16++)
                     {
                         int player = rawdepth[i16] & DepthImageFrame.PlayerIndexBitmask;
+                        player = player % this.colors.Length;
                         this.playerimage[i16] = this.colors[player];
 
                     }
