@@ -151,6 +151,7 @@
     <Compile Include="Devices\DX11DeviceManager.cs" />
     <Compile Include="Devices\DX11DisplayManager.cs" />
     <Compile Include="Devices\DX11EnumFormatHelper.cs" />
+    <Compile Include="Devices\DX11FileTexturePool.cs" />
     <Compile Include="Devices\DX11GlobalDevice.cs" />
     <Compile Include="Effects\DX11BaseShaderNode.cs" />
     <Compile Include="Effects\DX11ImageShaderNode.cs" />
