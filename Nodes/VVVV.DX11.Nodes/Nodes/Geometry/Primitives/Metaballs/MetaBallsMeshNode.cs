@@ -242,6 +242,7 @@ namespace VVVV.Nodes
                         geom.VerticesCount = NumVertices;
                         geom.VertexSize = Pos3Norm3Vertex.VertexSize;
                         geom.InputLayout = Pos3Norm3Vertex.Layout;
+                        geom.Topology = SlimDX.Direct3D11.PrimitiveTopology.TriangleList;
                         
                         // lock buffers
                         
