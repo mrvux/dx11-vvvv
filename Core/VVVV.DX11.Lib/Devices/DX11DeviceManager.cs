@@ -22,6 +22,7 @@ namespace VVVV.DX11.Lib.Devices
         List<DX11RenderContext> RenderContexts { get; }
         DX11DisplayManager DisplayManager { get; }
         bool Reallocate { get; }
+        void EndFrame();
     }
 
 
@@ -54,6 +55,15 @@ namespace VVVV.DX11.Lib.Devices
         public DX11DisplayManager DisplayManager
         {   
             get { return this.displaymanager; }
+        }
+
+        public void EndFrame()
+        {
+            foreach (DX11RenderContext context in this.RenderContexts)
+            {
+                context.CleanUp();
+                context.CleanUpCS();
+            }
         }
 
         protected abstract T GetDeviceKey(DXGIScreen screen);
