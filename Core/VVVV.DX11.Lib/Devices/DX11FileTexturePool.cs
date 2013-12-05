@@ -115,6 +115,7 @@ namespace VVVV.DX11.Lib
                         }
                         else
                         {
+                            element.IncrementCounter();
                             texture = null;
                             return false;
                         }
