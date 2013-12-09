@@ -22,10 +22,10 @@ namespace VVVV.DX11.Nodes.Textures
         [Import()]
         IPluginHost FHost;
 
-        [Input("Texture In")]
+        [Input("Texture In", IsSingle=true)]
         Pin<DX11Resource<DX11Texture2D>> FTextureIn;
 
-        [Output("Pointer")]
+        [Output("Pointer",IsSingle=true)]
         ISpread<uint> FPointer;
 
         private bool FRendered = false;
@@ -45,37 +45,47 @@ namespace VVVV.DX11.Nodes.Textures
 
                 DX11RenderContext context = this.AssignedContext;
 
-                for (int i = 0; i < this.FTextureIn.SliceCount; i++)
+
+                try
                 {
-                    try
+                    if (this.FTextureIn[0].Contains(context))
                     {
-                        if (this.FTextureIn[i].Contains(context))
+                        if (tex != null)
                         {
-                            //Convert texture so it has no mips
-                            if (tex == null)
+                            Texture2D t = this.FTextureIn[0][context].Resource;
+                            if (t.Description.Width != this.tex.Description.Width 
+                                || t.Description.Height != this.tex.Description.Height
+                                || t.Description.Format != this.tex.Description.Format)
                             {
-                                Texture2D t = this.FTextureIn[0][context].Resource;
-                                Texture2DDescription desc = t.Description;
-                                desc.OptionFlags = ResourceOptionFlags.Shared;
-                                desc.MipLevels = 1;
-                                this.tex = new Texture2D(context.Device, desc);
-                                var SharedResource = new SlimDX.DXGI.Resource(this.tex);
-                                this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt32();
+                                this.tex.Dispose();
+                                this.tex = null;
                             }
 
-                            this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[0][context].Resource, this.tex);
-
-
                         }
-                        else
+                        //Convert texture so it has no mips
+                        if (tex == null)
                         {
-                            this.SetDefault(i);
+
+                            Texture2D t = this.FTextureIn[0][context].Resource;
+                            Texture2DDescription desc = t.Description;
+                            desc.BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget;
+                            desc.OptionFlags = ResourceOptionFlags.Shared;
+                            desc.MipLevels = 1;
+                            this.tex = new Texture2D(context.Device, desc);
+                            var SharedResource = new SlimDX.DXGI.Resource(this.tex);
+                            this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt32();
                         }
+
+                        this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[0][context].Resource, this.tex);
                     }
-                    catch
+                    else
                     {
-                        this.SetDefault(i);
+                        this.SetDefault(0);
                     }
+                }
+                catch
+                {
+                    this.SetDefault(0);
                 }
             }
             else
