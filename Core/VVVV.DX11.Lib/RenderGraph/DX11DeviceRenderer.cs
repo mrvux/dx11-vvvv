@@ -93,6 +93,16 @@ namespace VVVV.DX11.Lib.RenderGraph
         {
             this.ProcessedNodes = this.processed.Count;
             this.context.EndFrame();
+
+            if (this.context.RenderStateStack.Count > 0)
+            {
+                logger.Log(LogType.Error, "Render State Stack should now have a size of 0!");
+            }
+
+            if (this.context.RenderTargetStack.StackCount > 0)
+            {
+                logger.Log(LogType.Error, "Render Target Stack should now have a size of 0!");
+            }
         }
 
         public void Render(IDX11ResourceDataRetriever sender, IPluginHost host)
@@ -123,8 +133,13 @@ namespace VVVV.DX11.Lib.RenderGraph
                     //Check here, at end of render the com objects are already dead
                     try
                     {
-                        IDX11ResourceProvider provider = unused.ParentNode.Instance<IDX11ResourceProvider>();
-                        provider.Destroy(unused.PluginIO, this.context, false);
+                        //In case node has been deleted, we already called dispose
+                        if (this.graph.Nodes.Contains(unused.ParentNode))
+                        {
+                            IDX11ResourceProvider provider = unused.ParentNode.Instance<IDX11ResourceProvider>();
+                            provider.Destroy(unused.PluginIO, this.context, false);
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -206,8 +221,10 @@ namespace VVVV.DX11.Lib.RenderGraph
                         }
                         catch (Exception ex)
                         {
+                            this.logger.Log(LogType.Error, "Exception caused by node during update :" + node.HdeNode.GetNodePath(false));
                             this.logger.Log(ex);
-                            //Log 
+                            this.logger.Log(LogType.Message,"Stack Trace");
+                            this.logger.Log(LogType.Message, ex.StackTrace);
                         }
 
                         if (this.DoNotDestroy == false)
@@ -233,7 +250,10 @@ namespace VVVV.DX11.Lib.RenderGraph
                 }
                 catch (Exception ex)
                 {
+                    this.logger.Log(LogType.Error, "Exception caused by node during render :" + node.HdeNode.GetNodePath(false));
                     this.logger.Log(ex);
+                    this.logger.Log(LogType.Message, "Stack Trace");
+                    this.logger.Log(LogType.Message, ex.StackTrace);
                 }
             }
 
