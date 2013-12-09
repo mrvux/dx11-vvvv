@@ -56,6 +56,7 @@ namespace VVVV.DX11
         private Dictionary<DX11RenderContext, DX11RenderTarget2D> targets = new Dictionary<DX11RenderContext, DX11RenderTarget2D>();
         private Dictionary<DX11RenderContext, DX11RenderTarget2D> targetresolve = new Dictionary<DX11RenderContext, DX11RenderTarget2D>();
         private RenderTargetManager rtm;
+        private SlimDX.DXGI.Format format;
 
         #region Constructor
         [ImportingConstructor()]
@@ -94,10 +95,12 @@ namespace VVVV.DX11
 
             TexInfo ti = this.rtm.GetRenderTarget(context);
 
-            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged)
+            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged
+                || ti.format !=this.format)
             {
                 this.width = ti.w;
                 this.height = ti.h;
+                this.format = ti.format;
 
                 this.depthmanager.NeedReset = true;
 
@@ -116,7 +119,7 @@ namespace VVVV.DX11
 
                 if (aacount > 1)
                 {
-                    List<SampleDescription> sds = context.GetMultisampleFormatInfo(Format.R8G8B8A8_UNorm);
+                    List<SampleDescription> sds = context.GetMultisampleFormatInfo(ti.format);
                     int maxlevels = sds[sds.Count - 1].Count;
 
                     if (aacount > maxlevels)
