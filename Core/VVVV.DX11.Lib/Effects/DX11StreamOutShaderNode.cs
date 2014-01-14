@@ -54,10 +54,6 @@ namespace VVVV.DX11.Nodes.Layers
 
         private DX11RenderSettings settings = new DX11RenderSettings();
         private bool shaderupdated;
-        //private EffectTechnique lasttechnique;
-
-        private int autosize;
-        private InputElement[] autolayout;
 
         private int spmax = 0;
 
@@ -89,8 +85,6 @@ namespace VVVV.DX11.Nodes.Layers
         [Input("Resource Semantics", Order = 50001, Visibility = PinVisibility.OnlyInspector)]
         protected Pin<DX11Resource<IDX11RenderSemantic>> FInResSemantics;
         #endregion
-
-        private bool first = true;
 
         #region Output Pins
 

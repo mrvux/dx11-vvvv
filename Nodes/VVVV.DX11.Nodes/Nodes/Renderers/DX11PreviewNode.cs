@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes.Renderers
 {
      [PluginInfo(Name = "Preview", Category = "DX11.Texture", Author = "vux", AutoEvaluate = true,
         InitialWindowHeight = 300, InitialWindowWidth = 400, InitialBoxWidth = 400, InitialBoxHeight = 300, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface, IUserInputWindow
+    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface, IUserInputWindow, IBackgroundColor
     {
          private Control ctrl;
 
@@ -44,6 +44,11 @@ namespace VVVV.DX11.Nodes.Renderers
          DX11Resource<DX11SwapChain> swapchain = new DX11Resource<DX11SwapChain>();
 
          private bool resized;
+
+         public RGBAColor BackgroundColor
+         {
+             get { return new RGBAColor(0, 0, 0, 1); }
+         }
 
          public IntPtr InputWindowHandle
          {
