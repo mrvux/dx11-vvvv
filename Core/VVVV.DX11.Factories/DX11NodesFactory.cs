@@ -151,6 +151,7 @@ namespace VVVV.DX11.Factories
         void GraphEventService_OnPresent(object sender, EventArgs e)
         {
             this.rendermanager.Present();
+            this.devicemanager.EndFrame();
         }
 
         #region Factory Stuff

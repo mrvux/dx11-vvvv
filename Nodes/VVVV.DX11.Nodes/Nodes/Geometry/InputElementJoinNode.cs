@@ -25,6 +25,9 @@ namespace VVVV.DX11.Nodes.Geometry
         [Input("Element Type",DefaultEnumEntry="Position")]
         protected IDiffSpread<eInputLayoutType> FInLayoutType;
 
+        [Input("Auto Index", DefaultValue = 0, Order = 1000)]
+        protected IDiffSpread<bool> FAutoIndex;
+
         IDiffSpread<EnumEntry> FInFormat;
 
         [Output("Output")]
@@ -45,16 +48,27 @@ namespace VVVV.DX11.Nodes.Geometry
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInLayoutType.IsChanged || this.FInFormat.IsChanged)
+            if (this.FInLayoutType.IsChanged || this.FInFormat.IsChanged || this.FAutoIndex.IsChanged)
             {
                 this.FOutput.SliceCount = SpreadMax;
 				int offset = 0;
+
+                InputElement[] elements = new InputElement[SpreadMax];
+
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     Format fmt= (Format)Enum.Parse(typeof(Format), this.FInFormat[i].Name);
-                    this.FOutput[i] = InputLayoutFactory.GetInputElement(this.FInLayoutType[i],fmt,0,offset);
+                    elements[i] = InputLayoutFactory.GetInputElement(this.FInLayoutType[i],fmt,0,offset);
                     offset += FormatHelper.Instance.GetSize(fmt);
                 }
+
+                if (this.FAutoIndex[0])
+                {
+                    InputLayoutFactory.AutoIndex(elements);
+                }
+
+                this.FOutput.AssignFrom(elements);
+                
             }
         }
     }
