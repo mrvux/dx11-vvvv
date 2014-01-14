@@ -234,7 +234,7 @@ namespace VVVV.DX11.Nodes
         [Output("Touch Data", AllowFeedback = true)]
         protected ISpread<TouchData> FOutTouchData;
 
-        [Output("Actual BackBuffer Size")]
+        [Output("Actual BackBuffer Size", AllowFeedback = true)]
         protected ISpread<Vector2D> FOutBackBufferSize;
 
         [Output("Texture Out")]
