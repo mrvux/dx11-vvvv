@@ -72,7 +72,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Release|x64'">
-    <OutputPath>..\..\Deploy\Release\x64\lib\factories\</OutputPath>
+    <OutputPath>..\..\Deploy\Release\x64\packs\DX11\factories\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -136,7 +136,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+      <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\VVVV.DX11.Core\VVVV.DX11.Core.csproj">

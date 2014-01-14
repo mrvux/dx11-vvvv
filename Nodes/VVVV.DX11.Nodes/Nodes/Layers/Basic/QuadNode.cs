@@ -29,7 +29,7 @@ namespace VVVV.DX11.Nodes
         [Input("Texture")]
         protected Pin<DX11Resource<DX11Texture2D>> FInTexture;
 
-        [Input("Samper State")]
+        [Input("Sampler State")]
         protected Pin<SamplerDescription> FInSamplerState;
         
         [Input("Texture Transform")]

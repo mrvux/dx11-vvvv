@@ -75,7 +75,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Deploy_Release|x64'">
-    <OutputPath>..\..\Deploy\Release\x64\lib\core\</OutputPath>
+    <OutputPath>..\..\Deploy\Release\x64\packs\DX11\core\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -146,10 +146,12 @@
     <Compile Include="BaseNodes\DynamicStructuredBufferNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\ReadBackStructNode.cs" />
     <Compile Include="Devices\DX11DeviceAllocator.cs" />
     <Compile Include="Devices\DX11DeviceManager.cs" />
     <Compile Include="Devices\DX11DisplayManager.cs" />
     <Compile Include="Devices\DX11EnumFormatHelper.cs" />
+    <Compile Include="Devices\DX11FileTexturePool.cs" />
     <Compile Include="Devices\DX11GlobalDevice.cs" />
     <Compile Include="Effects\DX11BaseShaderNode.cs" />
     <Compile Include="Effects\DX11ImageShaderNode.cs" />
@@ -230,7 +232,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9EAD0F44-E6AA-4363-BE4D-D944C1D35044}</Project>
-      <Name>FeralTic %28FeralTic\FeralTic%29</Name>
+      <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
