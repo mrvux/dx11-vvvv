@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes.Renderers
 {
      [PluginInfo(Name = "Preview", Category = "DX11.Texture", Author = "vux", AutoEvaluate = true,
         InitialWindowHeight = 300, InitialWindowWidth = 400, InitialBoxWidth = 400, InitialBoxHeight = 300, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface, IUserInputWindow, IBackgroundColor
+    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface, IUserInputWindow
     {
          private Control ctrl;
 
