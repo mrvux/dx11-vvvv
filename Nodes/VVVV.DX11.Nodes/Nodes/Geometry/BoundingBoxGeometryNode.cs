@@ -52,6 +52,10 @@ namespace VVVV.DX11.Nodes
                 //Do NOT cache this, assignment done by the host
                 Device device = this.AssignedContext.Device;
 
+                this.FOutMin.SliceCount = this.FInGeom1.SliceCount;
+                this.FOutMax.SliceCount = this.FInGeom1.SliceCount;
+                this.FOutValid.SliceCount = this.FInGeom1.SliceCount;
+
                 for (int i = 0; i < this.FInGeom1.SliceCount; i++)
                 {
                     if (this.FInGeom1[i].Contains(this.AssignedContext))
