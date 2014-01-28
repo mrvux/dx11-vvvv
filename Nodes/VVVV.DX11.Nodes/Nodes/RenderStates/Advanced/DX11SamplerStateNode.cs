@@ -1,9 +1,9 @@
-﻿    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using VVVV.PluginInterfaces.V2;
-    using SlimDX.Direct3D11;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using VVVV.PluginInterfaces.V2;
+using SlimDX.Direct3D11;
 using VVVV.Utils.VColor;
 using SlimDX;
 using VVVV.PluginInterfaces.V1;
@@ -22,7 +22,7 @@ namespace VVVV.DX11.Nodes
         [Input("Address W", DefaultEnumEntry = "Wrap")]
         protected IDiffSpread<TextureAddressMode> FInAddressW;
 
-        [Input("Border Color",DefaultColor=new double[] { 0,0,0,1 })]
+        [Input("Border Color", DefaultColor = new double[] { 0, 0, 0, 1 })]
         protected IDiffSpread<RGBAColor> FInBorderColor;
 
         [Input("Comparison", DefaultEnumEntry = "Always")]
@@ -31,16 +31,16 @@ namespace VVVV.DX11.Nodes
         [Input("Filter Mode", DefaultEnumEntry = "MinMagMipLinear")]
         protected IDiffSpread<Filter> FInFilterMode;
 
-        [Input("Maximum Anisotropy", DefaultValue=1)]
+        [Input("Maximum Anisotropy", DefaultValue = 1)]
         protected IDiffSpread<int> FInMaximumAnisotropy;
 
         [Input("Minimum Lod", DefaultValue = float.MinValue)]
         protected IDiffSpread<float> FInMinimumLod;
 
-        [Input("Maximum Lod", DefaultValue=float.MaxValue)]
+        [Input("Maximum Lod", DefaultValue = float.MaxValue)]
         protected IDiffSpread<float> FInMaximumLod;
 
-        [Input("Mip Lod Bias", DefaultValue=0)]
+        [Input("Mip Lod Bias", DefaultValue = 0)]
         protected IDiffSpread<float> FInMipLodBias;
 
         [Output("Sampler")]
@@ -49,6 +49,8 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
+
+
             if (this.FInAddressU.IsChanged
                 || this.FInAddressV.IsChanged
                 || this.FInAddressW.IsChanged
@@ -60,26 +62,29 @@ namespace VVVV.DX11.Nodes
                 || this.FInMinimumLod.IsChanged
                 || this.FInMipLodBias.IsChanged)
             {
-                this.FOutSampler.SliceCount = 1;
-                RGBAColor c = this.FInBorderColor[0];
-                Color4 col = new Color4((float)c.R, (float)c.G, (float)c.B, (float)c.A);
-                SamplerDescription sampler = new SamplerDescription()
-                {
-                    AddressU = this.FInAddressU[0],
-                    AddressV = this.FInAddressV[0],
-                    AddressW = this.FInAddressW[0],
-                    BorderColor = col,
-                    ComparisonFunction = this.FInComparison[0],
-                    Filter = this.FInFilterMode[0],
-                    MaximumAnisotropy = this.FInMaximumAnisotropy[0],
-                    MaximumLod = this.FInMaximumLod[0],
-                    MinimumLod = this.FInMinimumLod[0],
-                    MipLodBias = this.FInMipLodBias[0]
-                };
                 this.FOutSampler.SliceCount = SpreadMax;
 
+                for (int i = 0; i < SpreadMax; i++)
+                {
+                    RGBAColor c = this.FInBorderColor[i];
 
-                this.FOutSampler[0] = sampler;
+                    Color4 col = new Color4((float)c.R, (float)c.G, (float)c.B, (float)c.A);
+                    SamplerDescription sampler = new SamplerDescription()
+                    {
+                        AddressU = this.FInAddressU[i],
+                        AddressV = this.FInAddressV[i],
+                        AddressW = this.FInAddressW[i],
+                        BorderColor = col,
+                        ComparisonFunction = this.FInComparison[i],
+                        Filter = this.FInFilterMode[i],
+                        MaximumAnisotropy = this.FInMaximumAnisotropy[i],
+                        MaximumLod = this.FInMaximumLod[i],
+                        MinimumLod = this.FInMinimumLod[i],
+                        MipLodBias = this.FInMipLodBias[i]
+                    };
+
+                    this.FOutSampler[i] = sampler;
+                }
             }
         }
     }
