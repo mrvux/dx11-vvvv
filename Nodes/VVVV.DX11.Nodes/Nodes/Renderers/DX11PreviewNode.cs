@@ -19,7 +19,14 @@ namespace VVVV.DX11.Nodes.Renderers
 {
      [PluginInfo(Name = "Preview", Category = "DX11.Texture", Author = "vux", AutoEvaluate = true,
         InitialWindowHeight = 300, InitialWindowWidth = 400, InitialBoxWidth = 400, InitialBoxHeight = 300, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11PreviewNode :IDX11RendererProvider, IDisposable, IPluginEvaluate, IDX11RenderWindow, IWin32Window, ICustomQueryInterface, IUserInputWindow
+    public class DX11PreviewNode :IDX11RendererProvider, 
+         IDisposable,
+         IPluginEvaluate, 
+         IDX11RenderWindow, 
+         IWin32Window, 
+         ICustomQueryInterface, 
+         IUserInputWindow,
+         IBackgroundColor
     {
          private Control ctrl;
 
@@ -63,6 +70,7 @@ namespace VVVV.DX11.Nodes.Renderers
              this.ctrl = new Control();
              this.ctrl.Dock = DockStyle.Fill;
              this.ctrl.Resize += new EventHandler(ctrl_Resize);
+             this.ctrl.BackColor = System.Drawing.Color.Black;
 
              this.ctrl.PreviewKeyDown += new PreviewKeyDownEventHandler(ctrl_PreviewKeyDown);
              this.ctrl.KeyDown += new KeyEventHandler(ctrl_KeyDown);

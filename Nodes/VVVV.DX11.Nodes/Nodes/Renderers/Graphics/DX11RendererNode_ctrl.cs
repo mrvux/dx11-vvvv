@@ -30,10 +30,11 @@ namespace VVVV.DX11.Nodes
 		[ImportingConstructor()]
         public DX11RendererNode(IPluginHost host, IIOFactory iofactory,IHDEHost hdehost)
         {
-            this.BackColor = System.Drawing.Color.Black;
+            
             InitializeComponent();
 			this.FHost = host;
             this.hde = hdehost;
+            this.BackColor = System.Drawing.Color.Black;
 
             //this.hde.BeforeComponentModeChange += new ComponentModeEventHandler(hde_BeforeComponentModeChange);
             
