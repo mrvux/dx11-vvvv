@@ -249,6 +249,8 @@ namespace VVVV.DX11.Nodes.Layers
 
             bool popstate = false;
 
+            bool multistate = this.FInState.PluginIO.IsConnected && this.FInState.SliceCount > 1;
+
             if (this.FInEnabled[0])
             {
                 if (settings.RenderHint == eRenderHint.Collector)
@@ -317,7 +319,7 @@ namespace VVVV.DX11.Nodes.Layers
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
                     }
 
-                    if (this.stateconnected)
+                    if (this.stateconnected && !multistate)
                     {
                         context.RenderStateStack.Push(this.FInState[0]);
                         popstate = true;
@@ -340,6 +342,11 @@ namespace VVVV.DX11.Nodes.Layers
 
                     for (int i = 0; i < this.spmax; i++)
                     {
+                        if (multistate)
+                        {
+                            context.RenderStateStack.Push(this.FInState[i]);
+                        }
+
                         if (shaderdata.IsLayoutValid(i) || settings.Geometry != null)
                         {
                             objectsettings.IterationCount = this.FIter[i];
@@ -370,7 +377,6 @@ namespace VVVV.DX11.Nodes.Layers
 
                                 if (settings.ValidateObject(objectsettings))
                                 {
-
                                     this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, this.objectsettings, i);
 
                                     shaderdata.ApplyPass(ctx);
@@ -381,6 +387,11 @@ namespace VVVV.DX11.Nodes.Layers
                                     shaderdata.ShaderInstance.CleanUp();
                                 }
                             }
+                        }
+
+                        if (multistate)
+                        {
+                            context.RenderStateStack.Pop();
                         }
                     }
 
