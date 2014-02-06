@@ -73,7 +73,6 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 		ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
 		ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)context->CurrentDeviceContext->ComPointer.ToPointer();
 
-
 		int cnt;
 		float* tr;
 		this->FInTr->GetMatrixPointer(cnt,tr);
