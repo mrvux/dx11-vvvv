@@ -7,6 +7,7 @@ DX11TextLayerNode::DX11TextLayerNode(IIOFactory^ factory)
 {
 	this->iofactory = factory;
 	factory->PluginHost->CreateTransformInput("Transform In",TSliceMode::Dynamic,TPinVisibility::True,this->FInTr);
+	this->FInTr->Order = 1;
 	this->fontrenderers = gcnew	Dictionary<DX11RenderContext^,IntPtr>();
 }
 

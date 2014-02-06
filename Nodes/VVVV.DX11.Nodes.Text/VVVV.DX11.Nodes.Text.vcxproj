@@ -140,6 +140,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DX11TextLayerAdvNode.h" />
     <ClInclude Include="DX11TextLayerNode.h" />
     <ClInclude Include="FW1FontWrapper.h" />
     <ClInclude Include="resource.h" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="DX11TextLayerAdvNode.cpp" />
     <ClCompile Include="DX11TextLayerNode.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
