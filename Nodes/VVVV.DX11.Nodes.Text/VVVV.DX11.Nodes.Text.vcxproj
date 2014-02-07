@@ -244,4 +244,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(SolutionDir)\Dependencies\x86\FW1FontWrapper.dll" DestinationFolder="$(OutputPath)" Condition="'$(Platform)' == 'Win32'" />
+    <Copy SourceFiles="$(SolutionDir)\Dependencies\x64\FW1FontWrapper.dll" DestinationFolder="$(OutputPath)" Condition="'$(Platform)' == 'x64'" />
+  </Target>
+
 </Project>
