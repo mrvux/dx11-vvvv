@@ -31,6 +31,7 @@ namespace VVVV.DX11.Nodes.Textures
         private bool FRendered = false;
         private bool FUpdated = false;
         private Texture2D tex = null;
+        private SlimDX.DXGI.Resource SharedResource = null;
 
         public void Evaluate(int SpreadMax)
         {
@@ -57,6 +58,8 @@ namespace VVVV.DX11.Nodes.Textures
                                 || t.Description.Height != this.tex.Description.Height
                                 || t.Description.Format != this.tex.Description.Format)
                             {
+                                this.SharedResource.Dispose();
+                                this.SharedResource = null;
                                 this.tex.Dispose();
                                 this.tex = null;
                             }
@@ -72,7 +75,7 @@ namespace VVVV.DX11.Nodes.Textures
                             desc.OptionFlags = ResourceOptionFlags.Shared;
                             desc.MipLevels = 1;
                             this.tex = new Texture2D(context.Device, desc);
-                            var SharedResource = new SlimDX.DXGI.Resource(this.tex);
+                            this.SharedResource = new SlimDX.DXGI.Resource(this.tex);
                             this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt32();
                         }
 
@@ -92,8 +95,6 @@ namespace VVVV.DX11.Nodes.Textures
             {
                 this.SetNull();
             }
-        
-            
         }
 
 
