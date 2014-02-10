@@ -205,7 +205,10 @@ namespace VVVV.MSKinect.Nodes
             if (this.runtime != null)
             {
                 this.runtime.Stop();
-                this.runtime.Runtime.Dispose();
+                if (this.runtime.Runtime != null)
+                {
+                    this.runtime.Runtime.Dispose();
+                }   
             }
         }
     }
