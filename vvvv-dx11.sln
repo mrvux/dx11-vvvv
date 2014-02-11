@@ -134,7 +134,8 @@ Global
 		{51469F38-9510-4A16-8998-67A55C386059}.Release|Win32.Build.0 = Release|Win32
 		{51469F38-9510-4A16-8998-67A55C386059}.Release|x64.ActiveCfg = Release|x64
 		{51469F38-9510-4A16-8998-67A55C386059}.Release|x64.Build.0 = Release|x64
-		{51469F38-9510-4A16-8998-67A55C386059}.Release|x86.ActiveCfg = Release|x64
+		{51469F38-9510-4A16-8998-67A55C386059}.Release|x86.ActiveCfg = Release|Win32
+		{51469F38-9510-4A16-8998-67A55C386059}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
