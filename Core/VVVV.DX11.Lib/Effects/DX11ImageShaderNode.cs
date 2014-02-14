@@ -638,6 +638,11 @@ namespace VVVV.DX11.Nodes.Layers
                 this.deviceshaderdata[context].Dispose();
                 this.deviceshaderdata.Remove(context);
             }
+
+            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
+            {
+                entry.UnLock();
+            }
         }
         #endregion
 
@@ -648,7 +653,11 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 sd.Dispose();
             }
-            //if (this.effect != null) { this.effect.Dispose(); }
+
+            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
+            {
+                entry.UnLock();
+            }
         }
         #endregion
 
