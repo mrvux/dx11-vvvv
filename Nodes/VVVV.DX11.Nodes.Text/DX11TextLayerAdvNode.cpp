@@ -113,18 +113,7 @@ namespace VVVV {
 						FW1_RECTF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
 						int flag = 0;
 
-						/*System::String^ str = this->FInString->Stream->Buffer[i % this->FInString->Stream->Buffer->Length];*/
 						TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->Stream->Buffer->Length];
-
-	
-						/*if (this->FHorizontalAlignInput[i]->Index == 0) { tl->TextAlignment = TextAlignment::Leading; }
-						else if (this->FHorizontalAlignInput[i]->Index == 1) { tl->TextAlignment = TextAlignment::Center; }
-						else if (this->FHorizontalAlignInput[i]->Index == 2) { tl->TextAlignment = TextAlignment::Trailing; }
-
-						if (this->FVerticalAlignInput[i]->Index == 0) { tl->ParagraphAlignment = ParagraphAlignment::Far; }
-						else if (this->FVerticalAlignInput[i]->Index == 1) { tl->ParagraphAlignment = ParagraphAlignment::Center; }
-						else if (this->FVerticalAlignInput[i]->Index == 2) { tl->ParagraphAlignment = ParagraphAlignment::Near; }*/
-
 						fw->DrawTextLayout(pContext, (IDWriteTextLayout*)tf->ComPointer.ToPointer(), 0, 0, color, NULL, tr, 0);
 					}
 
