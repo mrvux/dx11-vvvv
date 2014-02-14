@@ -16,8 +16,8 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "CaretPosition", Category = "String", Version = "DirectWrite", Author = "vux")]
     public class CaretPositionNode : IPluginEvaluate
     {
-        [Input("Text Layout")]
-        protected IDiffSpread<TextLayout> FLayout;
+        [Input("Text Layout",CheckIfChanged=true)]
+        protected Pin<TextLayout> FLayout;
 
         [Input("Index")]
         protected IDiffSpread<int> FIndex;
@@ -38,6 +38,12 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
+            if (!FLayout.IsConnected)
+            {
+                this.FPosition.SliceCount = 0;
+                return;
+            }
+
             if (this.FLayout.IsChanged|| this.FIndex.IsChanged || this.FTrailing.IsChanged)
             {
                 this.FPosition.SliceCount = SpreadMax;

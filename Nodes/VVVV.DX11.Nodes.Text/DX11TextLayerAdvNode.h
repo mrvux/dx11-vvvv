@@ -33,8 +33,8 @@ namespace VVVV {
 			private:
 				ITransformIn^ FInTr;
 
-				[Input("Text Layout")]
-				IDiffSpread<TextLayout^>^ FLayout;
+				[Input("Text Layout", CheckIfChanged=true)]
+				Pin<TextLayout^>^ FLayout;
 
 				[Input("Color", Order = 6)]
 				ISpread<SlimDX::Color4>^ FInColor;

@@ -15,14 +15,22 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         [Input("Text")]
         protected IDiffSpread<string> FText;
 
-        [Input("Format")]
-        protected IDiffSpread<TextFormat> FFormat;
+        [Input("Format", CheckIfChanged=true)]
+        protected Pin<TextFormat> FFormat;
+
+        [Input("Text Alignment")]
+        protected IDiffSpread<TextAlignment> FTextAlign;
+
+        [Input("Paragraph Alignment")]
+        protected IDiffSpread<ParagraphAlignment> FParaAlign;
 
         [Input("Maximum Width", DefaultValue=100)]
         protected IDiffSpread<float> FMaxWidth;
 
         [Input("Maximum Height", DefaultValue = 50)]
         protected IDiffSpread<float> FMaxHeight;
+
+
 
         [Output("Output")]
         protected ISpread<TextLayout> FOutput;
@@ -37,8 +45,16 @@ namespace VVVV.DX11.Nodes.Nodes.Text
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FFormat.IsChanged || this.FMaxHeight.IsChanged || this.FMaxWidth.IsChanged)
+            if (!this.FFormat.IsConnected)
             {
+                this.FOutput.SliceCount = 0;
+                return;
+            }
+
+            if (this.FFormat.IsChanged || this.FMaxHeight.IsChanged || this.FMaxWidth.IsChanged || this.FText.IsChanged)
+            {
+                this.FOutput.SliceCount = SpreadMax;
+
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
                     if (this.FOutput[i] != null) { this.FOutput[i].Dispose(); }
@@ -46,7 +62,10 @@ namespace VVVV.DX11.Nodes.Nodes.Text
 
                 for (int i = 0; i < SpreadMax; i++)
                 {
-                    this.FOutput[i] = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
+                    var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
+                    tl.TextAlignment = this.FTextAlign[i];
+                    tl.ParagraphAlignment = this.FParaAlign[i];
+                    this.FOutput[i] = tl;
                 }
             }
         }

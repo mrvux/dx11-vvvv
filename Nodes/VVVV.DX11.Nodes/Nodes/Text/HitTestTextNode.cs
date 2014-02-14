@@ -16,8 +16,8 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "HitTest", Category = "String", Version = "DirectWrite", Author = "vux")]
     public class HitTestTextNode : IPluginEvaluate
     {
-        [Input("Text Layout")]
-        protected IDiffSpread<TextLayout> FLayout;
+        [Input("Text Layout",CheckIfChanged=true)]
+        protected Pin<TextLayout> FLayout;
 
         [Input("Position")]
         protected IDiffSpread<Vector2> FPosition;
@@ -38,6 +38,13 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
+            if (!FLayout.IsConnected)
+            {
+                this.FHit.SliceCount = 0;
+                this.FIndex.SliceCount = 0;
+                return;
+            }
+
             if (this.FLayout.IsChanged || this.FPosition.IsChanged)
             {
                 this.FIndex.SliceCount = SpreadMax;

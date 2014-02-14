@@ -16,8 +16,8 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "CaretRange", Category = "String", Version = "DirectWrite", Author = "vux")]
     public class CaretRangeNode : IPluginEvaluate
     {
-        [Input("Text Layout")]
-        protected IDiffSpread<TextLayout> FInLayout;
+        [Input("Text Layout",CheckIfChanged=true)]
+        protected Pin<TextLayout> FInLayout;
 
         [Input("Index")]
         protected IDiffSpread<int> FIndex;
@@ -54,6 +54,16 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
+            if (!FInLayout.IsConnected)
+            {
+                this.FLeft.SliceCount = 0;
+                this.FTop.SliceCount = 0;
+                this.FWidth.SliceCount = 0;
+                this.FHeight.SliceCount = 0;
+                this.FResultBin.SliceCount = 0;
+                return;
+            }
+
             if (this.FInLayout.IsChanged || this.FIndex.IsChanged
                 || this.FTrailing.IsChanged || this.FRange.IsChanged)
             {

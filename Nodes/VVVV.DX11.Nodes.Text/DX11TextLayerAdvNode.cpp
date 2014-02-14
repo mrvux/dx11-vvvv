@@ -69,7 +69,7 @@ namespace VVVV {
 
 			void DX11TextLayerAdvNode::Render(IPluginIO^ pin, DX11RenderContext^ context, DX11RenderSettings^ settings)
 			{
-				if (this->FInEnabled[0])
+				if (this->FInEnabled[0] && this->FLayout->IsConnected)
 				{
 					float w = settings->RenderWidth;
 					float h = settings->RenderHeight;
