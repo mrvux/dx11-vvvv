@@ -131,12 +131,6 @@
     <Compile Include="Nodes\Textures\3D\WriterTexture3dNode.cs" />
     <Compile Include="Nodes\Textures\FileTextureBaseNode.cs" />
     <Compile Include="Nodes\Textures\FileTextureNodes.cs" />
-    <Compile Include="Nodes\Text\TextLayoutMetricsNode.cs" />
-    <Compile Include="Nodes\Text\TextRangeNode.cs" />
-    <Compile Include="Nodes\Text\TextPositionNode.cs" />
-    <Compile Include="Nodes\Text\HitTestTextNode.cs" />
-    <Compile Include="Nodes\Text\TextFormatNode.cs" />
-    <Compile Include="Nodes\Text\TextLayoutNode.cs" />
     <Compile Include="Nodes\Utils\CameraFrustrumNode.cs" />
     <Compile Include="Nodes\Utils\MeasureTextNode.cs" />
     <Compile Include="Nodes\Validators\FrustrumTestNode.cs" />

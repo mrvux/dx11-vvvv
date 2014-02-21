@@ -25,8 +25,8 @@ namespace VVVV.DX11.Nodes.Renderers
          IDX11RenderWindow, 
          IWin32Window, 
          ICustomQueryInterface, 
-         IUserInputWindow,
-         IBackgroundColor
+         IUserInputWindow
+         //IBackgroundColor
     {
          private Control ctrl;
 

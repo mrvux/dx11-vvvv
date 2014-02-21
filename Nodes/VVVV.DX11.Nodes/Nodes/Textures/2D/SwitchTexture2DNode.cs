@@ -41,7 +41,7 @@ namespace VVVV.DX11.Nodes
 
                 var pin = FInputs[idx].IOObject;
 
-                this.FOutput[idx] = pin.IsConnected ? pin[i] : new DX11Resource<DX11Texture2D>();
+                this.FOutput[idx] = pin.PluginIO.IsConnected ? pin[i] : new DX11Resource<DX11Texture2D>();
             }
         }
 
