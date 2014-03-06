@@ -25,6 +25,7 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
+    <Compile Include="Nodes\Buffers\DynamicBufferNodesBin.cs" />
     <Compile Include="Nodes\Buffers\ReadBackBufferNodes.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRgionBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicBufferNodes.cs" />

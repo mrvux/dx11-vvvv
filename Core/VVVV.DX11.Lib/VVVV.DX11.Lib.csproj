@@ -38,6 +38,7 @@
     <Compile Include="BaseNodes\DynamicArrayBufferNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\DynamicStructuredBufferBinSizeNode.cs" />
     <Compile Include="BaseNodes\DynamicStructuredBufferNode.cs">
       <SubType>Code</SubType>
     </Compile>
