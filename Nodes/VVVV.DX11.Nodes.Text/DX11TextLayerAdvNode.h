@@ -33,6 +33,9 @@ namespace VVVV {
 			private:
 				ITransformIn^ FInTr;
 
+				[Input("Render State")]
+				Pin<DX11RenderState^>^ FStateIn;
+
 				[Input("Text Layout", CheckIfChanged=true)]
 				Pin<TextLayout^>^ FLayout;
 

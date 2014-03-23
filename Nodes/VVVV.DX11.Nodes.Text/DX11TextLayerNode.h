@@ -30,6 +30,9 @@ public:
 private:
 	ITransformIn^ FInTr;
 
+	[Input("Render State")]
+	Pin<DX11RenderState^>^ FStateIn;
+
 	[Input("String",DefaultString="DX11", Order=0)]
     ISpread<System::String^>^ FInString;
 

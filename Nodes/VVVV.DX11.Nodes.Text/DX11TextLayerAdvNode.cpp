@@ -76,6 +76,9 @@ namespace VVVV {
 
 					IFW1FontWrapper* fw = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
 
+					IFW1GlyphRenderStates* pRenderStates;
+					fw->GetRenderStates(&pRenderStates);
+
 					ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
 					ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)context->CurrentDeviceContext->ComPointer.ToPointer();
 
@@ -85,9 +88,10 @@ namespace VVVV {
 
 					SlimDX::Matrix* smp = (SlimDX::Matrix*)&tr[0];
 
+					bool applyState = this->FStateIn->PluginIO->IsConnected;
+
 					for (int i = 0; i < this->spmax; i++)
 					{
-
 						SlimDX::Color4 c = this->FInColor[i];
 						c.Red = this->FInColor[i].Blue;
 						c.Blue = this->FInColor[i].Red;
@@ -113,8 +117,22 @@ namespace VVVV {
 						FW1_RECTF rect = { 0.0f, 0.0f, 0.0f, 0.0f };
 						int flag = 0;
 
-						TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->Stream->Buffer->Length];
-						fw->DrawTextLayout(pContext, (IDWriteTextLayout*)tf->ComPointer.ToPointer(), 0, 0, color, NULL, tr, 0);
+						if (applyState)
+						{
+							pRenderStates->SetStates(pContext, 0);
+
+							context->RenderStateStack->Push(this->FStateIn[i]);
+
+							TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->Stream->Buffer->Length];
+							fw->DrawTextLayout(pContext, (IDWriteTextLayout*)tf->ComPointer.ToPointer(), 0, 0, color, NULL, tr, FW1_STATEPREPARED);
+
+							context->RenderStateStack->Pop();
+						}
+						else
+						{
+							TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->Stream->Buffer->Length];
+							fw->DrawTextLayout(pContext, (IDWriteTextLayout*)tf->ComPointer.ToPointer(), 0, 0, color, NULL, tr, 0);
+						}
 					}
 
 					//Apply old states back
