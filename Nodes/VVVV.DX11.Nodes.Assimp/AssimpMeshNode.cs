@@ -107,52 +107,55 @@ namespace VVVV.DX11.Nodes.Assimp
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
 
-            if (this.FInvalidate || !this.FOutGeom[0].Contains(context))
+            if (this.FInvalidate || this.FOutGeom.SliceCount>0 && !this.FOutGeom[0].Contains(context))
             {
-                for (int i = 0; i < this.FInScene[0].MeshCount; i++)
+                if (FInScene[0] != null)
                 {
-                    AssimpMesh assimpmesh = this.FInScene[0].Meshes[i];
-
-                    DataStream vS = assimpmesh.Vertices;
-                    vS.Position = 0;
-
-                    List<int> inds = assimpmesh.Indices;
-
-                    if (inds.Count > 0 && assimpmesh.VerticesCount > 0)
+                    for (int i = 0; i < this.FInScene[0].MeshCount; i++)
                     {
+                        AssimpMesh assimpmesh = this.FInScene[0].Meshes[i];
 
-                        var vertices = new SlimDX.Direct3D11.Buffer(context.Device, vS, new BufferDescription()
+                        DataStream vS = assimpmesh.Vertices;
+                        vS.Position = 0;
+
+                        List<int> inds = assimpmesh.Indices;
+
+                        if (inds.Count > 0 && assimpmesh.VerticesCount > 0)
                         {
-                            BindFlags = BindFlags.VertexBuffer,
-                            CpuAccessFlags = CpuAccessFlags.None,
-                            OptionFlags = ResourceOptionFlags.None,
-                            SizeInBytes = (int)vS.Length,
-                            Usage = ResourceUsage.Default
-                        });
+
+                            var vertices = new SlimDX.Direct3D11.Buffer(context.Device, vS, new BufferDescription()
+                            {
+                                BindFlags = BindFlags.VertexBuffer,
+                                CpuAccessFlags = CpuAccessFlags.None,
+                                OptionFlags = ResourceOptionFlags.None,
+                                SizeInBytes = (int)vS.Length,
+                                Usage = ResourceUsage.Default
+                            });
 
 
 
-                        var indexstream = new DataStream(inds.Count * 4, true, true);
-                        indexstream.WriteRange(inds.ToArray());
-                        indexstream.Position = 0;
+                            var indexstream = new DataStream(inds.Count * 4, true, true);
+                            indexstream.WriteRange(inds.ToArray());
+                            indexstream.Position = 0;
 
 
-                        DX11IndexedGeometry geom = new DX11IndexedGeometry(context);
-                        geom.VertexBuffer = vertices;
-                        geom.IndexBuffer = new DX11IndexBuffer(context, indexstream, false, true);
-                        geom.InputLayout = assimpmesh.GetInputElements().ToArray();
-                        geom.Topology = PrimitiveTopology.TriangleList;
-                        geom.VerticesCount = assimpmesh.VerticesCount;
-                        geom.VertexSize = assimpmesh.CalculateVertexSize();
-                        geom.HasBoundingBox = true;
-                        geom.BoundingBox = assimpmesh.BoundingBox;
+                            DX11IndexedGeometry geom = new DX11IndexedGeometry(context);
+                            geom.VertexBuffer = vertices;
+                            geom.IndexBuffer = new DX11IndexBuffer(context, indexstream, false, true);
+                            geom.InputLayout = assimpmesh.GetInputElements().ToArray();
+                            geom.Topology = PrimitiveTopology.TriangleList;
+                            geom.VerticesCount = assimpmesh.VerticesCount;
+                            geom.VertexSize = assimpmesh.CalculateVertexSize();
+                            geom.HasBoundingBox = true;
+                            geom.BoundingBox = assimpmesh.BoundingBox;
 
 
-                        this.FOutGeom[i][context] = geom;
-                    }
-                    else
-                    {
-                        this.FOutGeom[i][context] = null;
+                            this.FOutGeom[i][context] = geom;
+                        }
+                        else
+                        {
+                            this.FOutGeom[i][context] = null;
+                        }
                     }
                 }
                 this.FInvalidate = false;

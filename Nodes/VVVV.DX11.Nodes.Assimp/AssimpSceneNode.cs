@@ -68,6 +68,7 @@ namespace VVVV.Assimp.Nodes
                     this.FOutValid[0] = false;
                     this.FOutMeshCount[0] = 0;
                     this.FOutMeshes.SliceCount = 0;
+                    scene = null;
                 }
                 this.FOutScene[0] = this.scene;
             }
