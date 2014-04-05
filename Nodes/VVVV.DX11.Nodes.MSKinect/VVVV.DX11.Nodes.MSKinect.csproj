@@ -20,6 +20,9 @@
     <Reference Include="Microsoft.Kinect.Toolkit">
       <HintPath>Dependencies\Microsoft.Kinect.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.Interaction">
+      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.Interaction.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -61,12 +64,14 @@
     <Compile Include="Nodes\KinectFaceDataNode.cs" />
     <Compile Include="Nodes\KinectFaceMeshNode.cs" />
     <Compile Include="Nodes\KinectFaceNode.cs" />
+    <Compile Include="Nodes\KinectMSInteractionNode.cs" />
     <Compile Include="Nodes\KinectPlayerTextureNode.cs" />
     <Compile Include="Nodes\KinectRuntimeNode.cs" />
     <Compile Include="Nodes\KinectSkelectionGestureNode.cs" />
     <Compile Include="Nodes\KinectSkeletonIndicesNode.cs" />
     <Compile Include="Nodes\KinectSkeletonNode.cs" />
     <Compile Include="Nodes\KinectSmoothSettingsNode.cs" />
+    <Compile Include="Nodes\KinectUserInteractionInfoNode.cs" />
     <Compile Include="Nodes\KinectWorldTextureNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -91,5 +96,8 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="Dependencies\$(Platform)\FaceTrackData.dll" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="Dependencies\$(Platform)\FaceTrackLib.dll" DestinationFolder="$(OutputPath)" />
+    
+    <Copy SourceFiles="Dependencies\$(Platform)\KinectInteraction180_32.dll" DestinationFolder="$(OutputPath)" Condition="$(Platform) == 'x86'" />
+     <Copy SourceFiles="Dependencies\$(Platform)\KinectInteraction180_64.dll" DestinationFolder="$(OutputPath)" Condition="$(Platform) == 'x64'" />
   </Target>
 </Project>
