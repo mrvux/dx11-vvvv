@@ -81,7 +81,6 @@ namespace VVVV.DX11.Nodes
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     TextLayout layout = this.FInLayout[i];
-                    
                     var results = layout.HitTestTextRange(this.FIndex[i], this.FRange[i], 0.0f, 0.0f);
 
                     this.FResultBin[i] = results.Length;
