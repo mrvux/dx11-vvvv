@@ -19,9 +19,9 @@ using Device = SlimDX.Direct3D11.Device;
 
 namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 {
-    [PluginInfo(Name="RenderForm",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
+    [PluginInfo(Name="Renderer",Category="DX11", Version="Form", Author="vux",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public class DX11RenderFormNode : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererProvider
+    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererProvider
     {
         #region Input Pins
         IPluginHost FHost;
@@ -39,16 +39,17 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Input("Layers", Order = 1, IsSingle = true)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
-
-
         [Input("Clear", DefaultValue = 1, Order = 2)]
         protected ISpread<bool> FInClear;
 
-        [Input("Position", DefaultValues = new double[] { 50, 50 }, AsInt = true)]
-        protected IDiffSpread<Vector2> FInPos;
-
-        [Input("Res", DefaultValues = new double[] { 1920,1200 }, AsInt=true)]
+        [Input("Full Screen Resolution", DefaultValues = new double[] { 1920,1200 }, AsInt=true)]
         protected ISpread<Vector2> FInRes;
+
+        [Input("Border",DefaultValue=1)]
+        protected IDiffSpread<bool> FInBorder;
+
+        [Input("Resize", IsBang=true)]
+        protected ISpread<bool> FInResize;
 
         [Input("Rate", Visibility = PinVisibility.OnlyInspector,DefaultValue=30)]
         protected ISpread<int> FInRate;
@@ -86,10 +87,11 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         private int prevy = 300;
 
         private bool setfull = false;
+        private bool invalidate;
         #endregion
 
 		[ImportingConstructor()]
-        public DX11RenderFormNode(IPluginHost host, IIOFactory iofactory, IHDEHost hdehost)
+        public DX11RenderFormNode2(IPluginHost host, IIOFactory iofactory, IHDEHost hdehost)
         {
 			this.FHost = host;
             this.hde = hdehost;
@@ -97,32 +99,46 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.form = new Form();
             this.form.Width = 400;
             this.form.Height = 300;
+            //this.form.
+            //this.form.ResizeEnd += form_ResizeEnd;
+            this.invalidate = true;
             this.form.Show();
 
-
+           
             /*this.form.Resize += DX11RendererNode_Resize;
             this.form.Load += new EventHandler(DX11RendererNode_Load);*/
 
         
         }
 
+        void form_ResizeEnd(object sender, EventArgs e)
+        {
+            this.FInvalidateSwapChain = true;
+        }
+
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInPos.IsChanged)
-            {
-                this.form.Top = Convert.ToInt32(this.FInPos[0].Y);
-                this.form.Left = Convert.ToInt32(this.FInPos[0].X);
-            }
+            this.FInvalidateSwapChain = false;
 
             if (this.FInTopMost.IsChanged)
             {
                 this.form.TopMost = this.FInTopMost[0];
             }
 
+            if (this.FInBorder.IsChanged)
+            {
+                this.SetBorder();
+            }
+
+            if (this.FInResize[0])
+            {
+                this.FInvalidateSwapChain = true;
+            }
+
             this.updateddevices.Clear();
             this.rendereddevices.Clear();
-            this.FInvalidateSwapChain = false;
+            
 
             if (this.FInFullScreen.IsChanged)
             {
@@ -130,6 +146,12 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             }
         }
         #endregion
+
+        private void SetBorder()
+        {
+            this.form.FormBorderStyle = this.FInBorder[0] ? FormBorderStyle.Fixed3D : FormBorderStyle.None;
+            this.FInvalidateSwapChain = true;
+        }
 
         #region Update
         public void Update(IPluginIO pin, DX11RenderContext context)
