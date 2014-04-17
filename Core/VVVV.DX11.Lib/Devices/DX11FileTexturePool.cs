@@ -84,6 +84,11 @@ namespace VVVV.DX11.Lib
             this.refcount--;
         }
 
+        public void MarkForAbort()
+        {
+            this.m_task.MarkForAbort();
+        }
+
         public int RefCount
         {
             get { return this.refcount; }
@@ -181,6 +186,11 @@ namespace VVVV.DX11.Lib
                 {
                     if (e.RefCount < 0 || (e.Status == eDX11SheduleTaskStatus.Error || e.Status == eDX11SheduleTaskStatus.Aborted))
                     {
+                        if (e.Status == eDX11SheduleTaskStatus.Queued)
+                        {
+                            e.MarkForAbort();
+                        }
+
                         if (e.Texture != null) { e.Texture.Dispose(); }
                     }
                     else

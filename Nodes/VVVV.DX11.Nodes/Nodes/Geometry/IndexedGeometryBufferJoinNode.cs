@@ -39,7 +39,7 @@ namespace VVVV.DX11.Nodes
         [Input("Input Layout", CheckIfChanged = true, AutoValidate = false)]
         protected Pin<InputElement> FInLayout;
 
-        [Input("Topology", Order = 2, AutoValidate = false)]
+        [Input("Topology", Order = 2, AutoValidate = false, DefaultEnumEntry="TriangleList")]
         protected ISpread<PrimitiveTopology> FInTopology;
 
         [Input("Apply",IsBang=true,DefaultValue=1)]
@@ -151,7 +151,14 @@ namespace VVVV.DX11.Nodes
                 geom.IndexBuffer = new DX11IndexBuffer(context, this.FIndexStream, false, false);
 
                 geom.InputLayout = this.inputlayout;
-                geom.Topology = this.FInTopology[0];
+
+                var topo = this.FInTopology[0];
+                if (topo == PrimitiveTopology.Undefined)
+                {
+                    topo = PrimitiveTopology.TriangleList;
+                    this.FHost.Log(TLogType.Warning, "Undefined topology is not valid for indexed geometry join, defaulting to TriangleList");
+                }
+                geom.Topology = topo;
 
                 geom.VertexBuffer = vertices;
                 geom.VertexSize = this.vertexsize;

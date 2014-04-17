@@ -24,6 +24,8 @@ using FeralTic.DX11;
 using VVVV.PluginInterfaces.V2.Graph;
 using System.Windows.Forms;
 
+using DWriteFactory = SlimDX.DirectWrite.Factory;
+
 namespace VVVV.DX11.Factories
 {
 	[Export(typeof(IAddonFactory))]
@@ -41,6 +43,9 @@ namespace VVVV.DX11.Factories
 
         private DX11GraphBuilder<IDX11ResourceProvider> graphbuilder;
         private ILogger logger;
+
+        [Export]
+        public DWriteFactory DirectWriteFactory { get; private set; }
 
         [ImportingConstructor()]
         public DX11NodesFactory(IHDEHost hdehost, DotNetPluginFactory dnfactory, INodeInfoFactory ni, IORegistry ioreg, ILogger logger)
@@ -61,6 +66,8 @@ namespace VVVV.DX11.Factories
             this.hdehost.MainLoop.OnRender += GraphEventService_OnRender;
 
             this.displaymanager = new DX11DisplayManager();
+
+            this.DirectWriteFactory = new DWriteFactory(SlimDX.DirectWrite.FactoryType.Shared);
 
             string[] args = Environment.GetCommandLineArgs();
 

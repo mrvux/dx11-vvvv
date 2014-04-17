@@ -139,6 +139,7 @@ namespace VVVV.MSKinect.Nodes
                     try
                     {
                         this.runtime.SetDepthRange(this.FInDepthRange[0]);
+                        SetSkeletonRangeMode();
                     }
                     catch { }
                 }
@@ -159,11 +160,13 @@ namespace VVVV.MSKinect.Nodes
                     //}
 
                     this.runtime.EnableSkeleton(this.FInEnableSkeleton[0], this.FInEnableSmooth[0], sp);
+                    SetSkeletonRangeMode();
                 }
 
                 if (this.FInSkMode.IsChanged || reset)
                 {
                     this.runtime.SetSkeletonMode(this.FInSkMode[0]);
+                    SetSkeletonRangeMode();
                 }
 
 
@@ -200,12 +203,24 @@ namespace VVVV.MSKinect.Nodes
             this.FOutKCnt[0] = KinectSensor.KinectSensors.Count;
         }
 
+        private void SetSkeletonRangeMode()
+        {
+            if (this.FInEnableSkeleton[0])
+                if (this.FInDepthRange[0] == DepthRange.Near)
+                    this.runtime.Runtime.SkeletonStream.EnableTrackingInNearRange = true;
+                else
+                    this.runtime.Runtime.SkeletonStream.EnableTrackingInNearRange = false;
+        }
+
         public void Dispose()
         {
             if (this.runtime != null)
             {
                 this.runtime.Stop();
-                this.runtime.Runtime.Dispose();
+                if (this.runtime.Runtime != null)
+                {
+                    this.runtime.Runtime.Dispose();
+                }   
             }
         }
     }

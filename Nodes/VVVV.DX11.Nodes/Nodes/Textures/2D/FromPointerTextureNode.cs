@@ -28,6 +28,9 @@ namespace VVVV.DX11.Nodes.Textures
 
         private bool FInvalidate;
 
+        private ShaderResourceView srv;
+        private Texture2D tex;
+
         public void Evaluate(int SpreadMax)
         {
             if (this.FTextureOutput[0] == null)
@@ -49,16 +52,14 @@ namespace VVVV.DX11.Nodes.Textures
 
             if (this.FInvalidate)
             {
-                if (this.FTextureOutput[0].Contains(context))
-                {
-                    this.FTextureOutput[0].Dispose(context);
-                }
-
+                if (srv != null) { srv.Dispose(); }
+                if (tex != null) { tex.Dispose(); }
+                
                 try
                 {
                 	int p = unchecked((int) this.FPointer[0]);
-                    Texture2D tex = context.Device.OpenSharedResource<Texture2D>(new IntPtr(p));
-                    ShaderResourceView srv = new ShaderResourceView(context.Device, tex);
+                    tex = context.Device.OpenSharedResource<Texture2D>(new IntPtr(p));
+                    srv = new ShaderResourceView(context.Device, tex);
 
                     DX11Texture2D resource = DX11Texture2D.FromTextureAndSRV(context, tex, srv);
 

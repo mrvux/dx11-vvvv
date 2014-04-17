@@ -110,7 +110,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     for (int i16 = 0; i16 < 512 * 424; i16++)
                     {
                         byte player = rawdepth[i16];
-                        this.playerimage[i16] = player == 255 ? bg : this.colors[player];
+                        this.playerimage[i16] = player == 255 ? bg : this.colors[player % 9];
 
                     }
                 }
