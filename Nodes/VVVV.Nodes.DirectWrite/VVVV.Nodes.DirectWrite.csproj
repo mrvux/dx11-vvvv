@@ -23,12 +23,6 @@
     <Compile Include="HitTestTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextFormatNode.cs" />
-    <Compile Include="TextLayer\BaseTextLayoutRangeFuncNode.cs" />
-    <Compile Include="TextLayer\BaseTextLayoutFuncNode.cs" />
-    <Compile Include="TextLayer\FontFamilyNode.cs" />
-    <Compile Include="TextLayer\FontSizeNode.cs" />
-    <Compile Include="TextLayer\FontStyleNode.cs" />
-    <Compile Include="TextLayer\UnderlineNode.cs" />
     <Compile Include="TextLayoutMetricsNode.cs" />
     <Compile Include="TextLayoutNode.cs" />
     <Compile Include="TextPositionNode.cs" />
