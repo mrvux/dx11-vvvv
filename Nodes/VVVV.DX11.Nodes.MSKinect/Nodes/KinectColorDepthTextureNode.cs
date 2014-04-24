@@ -21,9 +21,9 @@ namespace VVVV.DX11.Nodes.MSKinect
     [PluginInfo(Name = "RGBDepth",
                 Category = "Kinect",
                 Version = "Microsoft",
-                Author = "vux",
+                Author = "tmp",
                 Tags = "DX11, texture",
-                Help = "Returns a static G32R32F formatted texture whose pixels represent a UV map mapping pixels from depth to color space.")]
+                Help = "Returns a G32R32F formatted texture whose pixels represent a UV map mapping pixels from depth to color space. Enable Relative Lookup to use it as displacement texture.")]
     public unsafe class KinectColorDepthTextureNode : KinectBaseTextureNode
     {
         private DepthImagePixel[] depthpixels;
