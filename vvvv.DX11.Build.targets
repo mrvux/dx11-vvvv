@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="vvvv.DX11.References.targets" />
+  <PropertyGroup>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+	  <Private>False</Private>
+    </Reference>
+	<Reference Include="SlimDX">
+      <HintPath>$(SolutionDir)\Dependencies\$(Platform)\SlimDX.dll</HintPath>
+	  <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Core">
+      <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Core.dll</HintPath>
+	  <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils">
+      <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Utils.dll</HintPath>
+	  <Private>False</Private>
+    </Reference>
+	<Reference Include="VVVV.Hosting">
+      <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Hosting.dll</HintPath>
+	  <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.PluginInterfaces">
+      <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
+	  <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

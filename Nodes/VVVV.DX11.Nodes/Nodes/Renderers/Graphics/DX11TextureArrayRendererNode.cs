@@ -74,7 +74,10 @@ namespace VVVV.DX11.Nodes
         [Output("Texture Out", Order = 2, IsSingle = true)]
         protected ISpread<DX11Resource<DX11RenderTextureArray>> FOutTexture;
 
-        [Output("Depth Out", Order = 2, IsSingle = true)]
+        [Output("Texture Slices Out", Order = 3)]
+        protected ISpread<DX11Resource<DX11Texture2D>> FOutSliceTextures;
+
+        [Output("Depth Out", Order = 4, IsSingle = true)]
         protected ISpread<DX11Resource<DX11DepthTextureArray>> FOutDepthTexture;
 
         public event DX11QueryableDelegate BeginQuery;
@@ -114,13 +117,22 @@ namespace VVVV.DX11.Nodes
             if (this.FOutTexture[0] == null) { this.FOutTexture[0] = new DX11Resource<DX11RenderTextureArray>(); }
             if (this.FOutDepthTexture[0] == null) { this.FOutDepthTexture[0] = new DX11Resource<DX11DepthTextureArray>(); }
 
+
             if (this.FInFormat.IsChanged
                 || this.FInSize.IsChanged
                 || this.FInElementCount.IsChanged)
             {
                 this.FOutTexture[0].Dispose();
                 this.FOutDepthTexture[0].Dispose();
+
+                this.FOutSliceTextures.SliceCount = this.FInElementCount[0];
+
+                for (int i = 0; i < this.FInElementCount[0]; i++)
+                {
+                    this.FOutSliceTextures[i] = new DX11Resource<DX11Texture2D>();
+                }
             }
+        
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
@@ -133,8 +145,14 @@ namespace VVVV.DX11.Nodes
 
             if (!this.FOutTexture[0].Contains(context))
             {
-                this.FOutTexture[0][context] = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]), true);
+                var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]), true);
+                this.FOutTexture[0][context] = result;
                 this.FOutDepthTexture[0][context] = new DX11DepthTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], Format.R32_Float, true);
+                for (int i = 0; i < this.FInElementCount[0]; i++)
+                {
+                    DX11Texture2D slice = DX11Texture2D.FromTextureAndSRV(context, result.Resource, result.SliceRTV[i].SRV);
+                    this.FOutSliceTextures[i][context] = slice;
+                }
             }
 
             this.updateddevices.Add(context);

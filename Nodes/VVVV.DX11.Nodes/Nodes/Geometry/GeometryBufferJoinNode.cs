@@ -29,7 +29,7 @@ namespace VVVV.DX11.Nodes
         [Input("Vertices Count", Order=1, AutoValidate=false,DefaultValue=1)]
         protected ISpread<int> FInVerticesCount;
 
-        [Input("Topology", Order = 2,AutoValidate=false)]
+        [Input("Topology", Order = 2,AutoValidate=false, DefaultEnumEntry="TriangleList")]
         protected ISpread<PrimitiveTopology> FInTopology;
 
         [Input("Input Layout", Order = 3, AutoValidate=false)]
@@ -143,7 +143,15 @@ namespace VVVV.DX11.Nodes
 
                     geom.VerticesCount = this.FInVerticesCount[0];
                     geom.VertexBuffer = vertices;
-                    geom.Topology = this.FInTopology[0];
+
+                    var topo = this.FInTopology[0];
+                    if (topo == PrimitiveTopology.Undefined)
+                    {
+                        topo = PrimitiveTopology.TriangleList;
+                        this.FHost.Log(TLogType.Warning, "Undefined topology is not valid for geometry join, defaulting to TriangleList");
+                    }
+
+                    geom.Topology = topo;
                     geom.HasBoundingBox = false;
 
                     /*if (geom.Topology == PrimitiveTopology.LineListWithAdjacency)

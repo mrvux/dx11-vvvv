@@ -7,6 +7,7 @@ DX11TextLayerNode::DX11TextLayerNode(IIOFactory^ factory)
 {
 	this->iofactory = factory;
 	factory->PluginHost->CreateTransformInput("Transform In",TSliceMode::Dynamic,TPinVisibility::True,this->FInTr);
+	this->FInTr->Order = 1;
 	this->fontrenderers = gcnew	Dictionary<DX11RenderContext^,IntPtr>();
 }
 
@@ -73,12 +74,16 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 		ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
 		ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)context->CurrentDeviceContext->ComPointer.ToPointer();
 
+		IFW1GlyphRenderStates* pRenderStates;
+		fw->GetRenderStates(&pRenderStates);
 
 		int cnt;
 		float* tr;
 		this->FInTr->GetMatrixPointer(cnt,tr);
 
 		SlimDX::Matrix* smp = (SlimDX::Matrix*)&tr[0];
+
+		bool applyState = this->FStateIn->PluginIO->IsConnected;
 
 		for (int i = 0; i < this->spmax; i++)
 		{
@@ -120,17 +125,43 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 			else if (this->FVerticalAlignInput[i]->Index == 1) { flag |= FW1_VCENTER; }
 			else if (this->FVerticalAlignInput[i]->Index == 2) { flag |= FW1_BOTTOM; }
 
-			fw->DrawString(
+
+			if (applyState)
+			{
+				pRenderStates->SetStates(pContext, 0);
+
+				context->RenderStateStack->Push(this->FStateIn[i]);
+
+				fw->DrawString(
 					pContext,
 					(WCHAR*)txt,
 					(WCHAR*)font,
 					size,
 					&rect,
 					color,
-					NULL, 
+					NULL,
+					tr,
+					flag | FW1_STATEPREPARED
+					);
+
+				context->RenderStateStack->Pop();
+			}
+			else
+			{
+				fw->DrawString(
+					pContext,
+					(WCHAR*)txt,
+					(WCHAR*)font,
+					size,
+					&rect,
+					color,
+					NULL,
 					tr,
 					flag
-				);
+					);
+			}
+
+
 
 			Marshal::FreeHGlobal(System::IntPtr(txt));
 			Marshal::FreeHGlobal(System::IntPtr(font));
