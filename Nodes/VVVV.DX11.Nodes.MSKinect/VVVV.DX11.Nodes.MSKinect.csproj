@@ -59,6 +59,7 @@
     <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\ZoomSegments.cs" />
     <Compile Include="Lib\KinectRuntime.cs" />
     <Compile Include="Nodes\KinectBaseTextureNode.cs" />
+    <Compile Include="Nodes\KinectColorDepthTextureNode.cs" />
     <Compile Include="Nodes\KinectColorTextureNode.cs" />
     <Compile Include="Nodes\KinectDepthTextureNode.cs" />
     <Compile Include="Nodes\KinectFaceDataNode.cs" />
@@ -96,8 +97,7 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="Dependencies\$(Platform)\FaceTrackData.dll" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="Dependencies\$(Platform)\FaceTrackLib.dll" DestinationFolder="$(OutputPath)" />
-    
     <Copy SourceFiles="Dependencies\$(Platform)\KinectInteraction180_32.dll" DestinationFolder="$(OutputPath)" Condition="$(Platform) == 'x86'" />
-     <Copy SourceFiles="Dependencies\$(Platform)\KinectInteraction180_64.dll" DestinationFolder="$(OutputPath)" Condition="$(Platform) == 'x64'" />
+    <Copy SourceFiles="Dependencies\$(Platform)\KinectInteraction180_64.dll" DestinationFolder="$(OutputPath)" Condition="$(Platform) == 'x64'" />
   </Target>
 </Project>
