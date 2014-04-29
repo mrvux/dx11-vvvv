@@ -49,6 +49,15 @@ namespace VVVV.DX11.Nodes
         }
     }
 
+    [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Int")]
+    public class IntSemanticNode : DX11CustomSemanticNode<int, IntRenderSemantic>
+    {
+        protected override IntRenderSemantic GetData(int input, string semantic, bool mandatory)
+        {
+            return new IntRenderSemantic(semantic, mandatory, input);
+        }
+    }
+
     [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "2d")]
     public class Vector2SemanticNode : DX11CustomSemanticNode<Vector2, Vector2RenderSemantic>
     {
