@@ -88,7 +88,6 @@
     <Compile Include="Nodes\Queries\TimeStampQueryNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\DX11PreviewNode.cs" />
-    <Compile Include="Nodes\Renderers\Graphics\DX11RenderFormNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11TextureArrayRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11CubeRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11MRTRendererNode.cs" />

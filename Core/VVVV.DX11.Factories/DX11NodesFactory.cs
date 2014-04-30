@@ -25,6 +25,7 @@ using VVVV.PluginInterfaces.V2.Graph;
 using System.Windows.Forms;
 
 using DWriteFactory = SlimDX.DirectWrite.Factory;
+using System.IO;
 
 namespace VVVV.DX11.Factories
 {
@@ -50,6 +51,19 @@ namespace VVVV.DX11.Factories
         [ImportingConstructor()]
         public DX11NodesFactory(IHDEHost hdehost, DotNetPluginFactory dnfactory, INodeInfoFactory ni, IORegistry ioreg, ILogger logger)
 		{
+            //Attach lib core path and plugins path
+
+            string path = Path.GetDirectoryName(typeof(DX11DeviceRenderer).Assembly.Location);
+            string vvvvpath = Path.GetDirectoryName(Application.ExecutablePath);
+
+            string varpath = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process);
+            varpath += ";" + path;
+
+            vvvvpath = Path.Combine(vvvvpath, "packs\\dx11\\nodes\\plugins");
+            varpath += ";" + path;
+
+            Environment.SetEnvironmentVariable("Path", varpath, EnvironmentVariableTarget.Process);
+
             DX11EnumFormatHelper.CreateNullDeviceFormat();
 
             this.hdehost = hdehost;

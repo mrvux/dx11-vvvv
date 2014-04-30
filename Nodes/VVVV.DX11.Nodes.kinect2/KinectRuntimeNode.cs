@@ -47,8 +47,8 @@ namespace VVVV.MSKinect.Nodes
         [Output("Kinect Count", IsSingle = true)]
         ISpread<int> FOutKCnt;
 
-        [Output("Kinect Status", IsSingle = true)]
-        ISpread<KinectStatus> FOutStatus;
+        [Output("Is Available", IsSingle = true)]
+        ISpread<bool> FOutStatus;
 
         [Output("Is Started", IsSingle = true)]
         ISpread<bool> FOutStarted;
@@ -118,7 +118,7 @@ namespace VVVV.MSKinect.Nodes
                 }
 
 
-                this.FOutStatus[0] = runtime.Runtime.Status;
+                this.FOutStatus[0] = runtime.Runtime.IsAvailable;
                 this.FOutRuntime[0] = runtime;
                 this.FOutStarted[0] = runtime.IsStarted;
 

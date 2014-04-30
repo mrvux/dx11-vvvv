@@ -11,6 +11,7 @@ using Microsoft.Kinect.Toolkit.Interaction;
 using Microsoft.Kinect;
 using System.ComponentModel.Composition;
 using VVVV.Core.Logging;
+using System.IO;
 
 namespace VVVV.DX11.Nodes.Nodes
 {
@@ -50,6 +51,27 @@ namespace VVVV.DX11.Nodes.Nodes
 
         [Import()]
         ILogger log;
+
+        public KinectMSInteractionNode()
+        {
+            Register();
+        }
+
+        private static bool registered = false;
+
+        private static void Register()
+        {
+            if (!registered)
+            {
+                string path = Path.GetDirectoryName(typeof(KinectMSInteractionNode).Assembly.Location);
+
+                string varpath = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process);
+                varpath += ";" + path;
+                Environment.SetEnvironmentVariable("Path", varpath, EnvironmentVariableTarget.Process);
+
+                registered = true;
+            }
+        }
 
         public void Evaluate(int SpreadMax)
         {
