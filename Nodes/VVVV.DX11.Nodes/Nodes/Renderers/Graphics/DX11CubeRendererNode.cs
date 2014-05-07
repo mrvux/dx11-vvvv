@@ -192,11 +192,11 @@ namespace VVVV.DX11.Nodes
                 if (this.FInClear[0])
                 {
                     context.CurrentDeviceContext.ClearRenderTargetView(target.RTV, this.FInBgColor[0]);
+                }
 
-                    if (this.FInDepthBuffer[0])
-                    {
-                        context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
-                    }
+                if (this.FInDepthBuffer[0] && this.FInClearDepth[0])
+                {
+                    context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
                 }
 
                 if (this.FInLayer.PluginIO.IsConnected)
