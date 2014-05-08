@@ -116,6 +116,7 @@
     <Compile Include="Nodes\Semantics\DX11CustomSemanticNode.cs" />
     <Compile Include="Nodes\Semantics\DX11RenderSemanticNode.cs" />
     <Compile Include="Nodes\Textures\1D\DynamicTexture1DNode.cs" />
+    <Compile Include="Nodes\Textures\2D\AsRaw.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DColorNode.cs" />
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
     <Compile Include="Nodes\Textures\2D\FileTexturePoolNode.cs" />
