@@ -99,6 +99,16 @@ namespace VVVV.DX11.Nodes
                 this.FValid[ft.Slice] = true;
             }
         }
+
+        protected override void LoadInfo(int slice, string path)
+        {
+            
+        }
+
+        protected override void MarkInvalid(int slice)
+        {
+
+        }
     }
 
 
@@ -107,6 +117,12 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name="FileTexture",Category="DX11",Version="2d",Author="vux,tonfilm")]
     public class FileTexture2dNode : FileTextureBaseNode<DX11Texture2D>
     {
+
+        [Output("Size", AsInt = true)]
+        ISpread<Vector2> size;
+
+        [Output("Format", Order = 400)]
+        protected ISpread<SlimDX.DXGI.Format> format;
 
         void task_StatusChanged(IDX11ScheduledTask task)
         {
@@ -158,6 +174,40 @@ namespace VVVV.DX11.Nodes
             context.ResourceScheduler.AddTask(task);
             return task;
         }
+
+        protected override void SliceCountchanged(int slicecount)
+        {
+            this.size.SliceCount = slicecount;
+            this.format.SliceCount = slicecount;
+        }
+
+        protected override void LoadInfo(int slice, string path)
+        {
+            try
+            {
+                ImageInformation? info = ImageInformation.FromFile(path);
+                if (info.HasValue)
+                {
+                    this.size[slice] = new Vector2(info.Value.Width, info.Value.Height);
+                    this.format[slice] = info.Value.Format;
+                }
+                else
+                {
+                    MarkInvalid(slice);
+                }
+                
+            }
+            catch
+            {
+                MarkInvalid(slice);
+            }
+        }
+
+        protected override void MarkInvalid(int slice)
+        {
+            this.size[slice] = new Vector2(-1, -1);
+            this.format[slice] = SlimDX.DXGI.Format.Unknown;
+        }
     }
 
     [PluginInfo(Name = "FileTexture", Category = "DX11", Version = "3d", Author = "vux")]
@@ -203,6 +253,16 @@ namespace VVVV.DX11.Nodes
                 this.FTextureOutput[ft.Slice][ft.Context] = ft.Resource;
                 this.FValid[ft.Slice] = true;
             }
+        }
+
+        protected override void LoadInfo(int slice, string path)
+        {
+
+        }
+
+        protected override void MarkInvalid(int slice)
+        {
+
         }
     }
 
