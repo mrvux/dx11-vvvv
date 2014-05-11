@@ -114,6 +114,19 @@ namespace VVVV.DX11
             return res;
         }
 
+        public static bool InvY(this EffectVariable var)
+        {
+            bool res = false;
+            if (var.GetAnnotationByName("invy") != null)
+            {
+                if (var.GetAnnotationByName("invy").AsScalar() != null)
+                {
+                    res = var.GetAnnotationByName("invy").AsScalar().GetFloat() > 0.5f;
+                }
+            }
+            return res;
+        }
+
         public static string[] LinkClasses(this EffectVariable var)
         {
             string[] result = new string[0];
