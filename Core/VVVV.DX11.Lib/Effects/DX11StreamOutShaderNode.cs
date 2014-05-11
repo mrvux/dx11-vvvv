@@ -169,6 +169,11 @@ namespace VVVV.DX11.Nodes.Layers
         {
             this.spmax = this.CalculateSpreadMax();
 
+            if (this.FInTechnique.IsChanged)
+            {
+                this.techniquechanged = true;
+            }
+
             if (this.FOut[0] == null)
             {
                 this.FOut[0] = new DX11Resource<IDX11Geometry>();
@@ -258,10 +263,10 @@ namespace VVVV.DX11.Nodes.Layers
                 shaderdata.ResetShaderStages(ctx);
 
 
-                if (this.FIn.IsChanged || this.FInTechnique.IsChanged || shaderdata.LayoutValid.Count == 0)
+                if (this.FIn.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                 {
                     shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
-                    
+                    this.techniquechanged = false;
                 }
 
                 if (shaderdata.IsLayoutValid(0) && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance,this.settings))

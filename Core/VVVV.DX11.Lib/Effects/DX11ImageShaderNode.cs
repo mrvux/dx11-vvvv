@@ -199,6 +199,11 @@ namespace VVVV.DX11.Nodes.Layers
             
             this.spmax = this.CalculateSpreadMax();
 
+            if (this.FInTechnique.IsChanged)
+            {
+                this.techniquechanged = true;
+            }
+
             this.FOut.SliceCount = this.spmax;
             for (int i = 0; i < SpreadMax; i++)
             {

@@ -152,6 +152,12 @@ namespace VVVV.DX11.Nodes.Layers
             this.shaderupdated = false;
             this.spmax = this.CalculateSpreadMax();
 
+            if (this.FInTechnique.IsChanged)
+            {
+                this.techniquechanged = true;
+            }
+            
+
             float* src;
 
             //Cache world pointer
@@ -312,11 +318,12 @@ namespace VVVV.DX11.Nodes.Layers
                     this.OnBeginQuery(context);
 
                     //Need to build input layout
-                    if (this.FGeometry.IsChanged || this.FInTechnique.IsChanged || shaderdata.LayoutValid.Count == 0)
+                    if (this.FGeometry.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                     {
                         shaderdata.Update(this.FInTechnique[0].Index, 0, this.FGeometry);
                         this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
+                        this.techniquechanged = false;
                     }
 
                     if (this.stateconnected && !multistate)

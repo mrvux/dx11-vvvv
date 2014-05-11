@@ -48,6 +48,8 @@ namespace VVVV.DX11.Lib.Effects
         protected IDiffSpread<EnumEntry> FInTechnique;
         protected string TechniqueEnumId;
 
+        protected bool techniquechanged;
+
         [Output("Compiled")]
         protected ISpread<bool> FOutCompiled;
 
