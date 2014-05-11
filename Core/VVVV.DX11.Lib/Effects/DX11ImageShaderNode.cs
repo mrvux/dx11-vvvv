@@ -407,10 +407,19 @@ namespace VVVV.DX11.Nodes.Layers
 
                         if (pi.DoScale)
                         {
-                            h = Convert.ToInt32((float)h * pi.Scale);
-                            w = Convert.ToInt32((float)w * pi.Scale);
-                            h = Math.Max(h, 1);
+                            if (pi.Absolute)
+                            {
+                                w = Convert.ToInt32(pi.ScaleVector.X);
+                                h = Convert.ToInt32(pi.ScaleVector.Y);
+                            }
+                            else
+                            {
+                                w = Convert.ToInt32((float)w * pi.ScaleVector.X);
+                                h = Convert.ToInt32((float)h * pi.ScaleVector.Y);
+                            }
+                            
                             w = Math.Max(w, 1);
+                            h = Math.Max(h, 1);
                         }
 
                         //Check format support for render target, and default to rgb8 if not
