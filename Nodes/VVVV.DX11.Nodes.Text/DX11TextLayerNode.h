@@ -45,7 +45,7 @@ private:
 	[Input("Bold", Order = 4)]
 	IDiffSpread<bool>^ FBoldInput;
 
-	[Input("Size", Order = 5)]
+	[Input("Size", Order = 5, DefaultValue=32)]
     ISpread<float>^ FInSize;
 
 	[Input("Color", Order = 6)]
