@@ -6,6 +6,7 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using FeralTic.DX11;
 using SlimDX.D3DCompiler;
+using SlimDX;
 
 namespace VVVV.DX11.Lib.Effects
 {
@@ -121,12 +122,14 @@ namespace VVVV.DX11.Lib.Effects
         public bool CustomFormat { get; protected set; }
         public Format Format { get; protected set; }
         public bool DoScale { get; protected set; }
-        public float Scale { get; protected set; }
         public eImageScaleReference Reference { get; protected set; }
         public bool UseDepth { get; protected set; }
         public bool HasState { get; protected set; }
         public bool KeepTarget { get; protected set; }
         public bool Clear { get; protected set; }
+        public bool Absolute { get; protected set; }
+
+        public Vector2 ScaleVector { get; protected set; }
 
         public string BlendPreset { get; protected set; }
         public string DepthPreset { get; protected set; }
@@ -137,7 +140,7 @@ namespace VVVV.DX11.Lib.Effects
         {
             this.Mips = false;
             this.CustomFormat = false;
-            this.Scale = 1.0f;
+            this.ScaleVector = new Vector2(1, 1);
             this.DoScale = false;
             this.Reference = eImageScaleReference.Previous;
             this.BlendPreset = "";
@@ -145,7 +148,7 @@ namespace VVVV.DX11.Lib.Effects
             this.UseDepth = false;
             this.HasState = false;
             this.KeepTarget = false;
-
+            this.Absolute = false;
 
             this.ComputeData = new ImageComputeData(pd);
 
@@ -167,8 +170,24 @@ namespace VVVV.DX11.Lib.Effects
             var = pd.GetAnnotationByName("scale");
             if (var.IsValid)
             {
-                this.Scale = var.AsScalar().GetFloat();
-                this.DoScale = true;
+                if (var.GetVariableType().Description.Class == ShaderVariableClass.Scalar)
+                {
+                    float s = var.AsScalar().GetFloat();
+                    this.ScaleVector = new Vector2(s, s);
+                    this.DoScale = true;
+                }
+                if (var.GetVariableType().Description.Class == ShaderVariableClass.Vector)
+                {
+                    Vector4 s = var.AsVector().GetVector();
+                    this.ScaleVector = new Vector2(s.X, s.Y);
+                    this.DoScale = true;
+                }
+                var = pd.GetAnnotationByName("absolute");
+                if (var.IsValid && var.GetVariableType().Description.Class == ShaderVariableClass.Scalar)
+                {
+                    this.Absolute = var.AsScalar().GetFloat() > 0.5f;
+                }
+
             }
 
             var = pd.GetAnnotationByName("initial");

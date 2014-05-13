@@ -24,6 +24,9 @@ using FeralTic.DX11;
 using VVVV.PluginInterfaces.V2.Graph;
 using System.Windows.Forms;
 
+using DWriteFactory = SlimDX.DirectWrite.Factory;
+using System.IO;
+
 namespace VVVV.DX11.Factories
 {
 	[Export(typeof(IAddonFactory))]
@@ -42,9 +45,25 @@ namespace VVVV.DX11.Factories
         private DX11GraphBuilder<IDX11ResourceProvider> graphbuilder;
         private ILogger logger;
 
+        [Export]
+        public DWriteFactory DirectWriteFactory { get; private set; }
+
         [ImportingConstructor()]
         public DX11NodesFactory(IHDEHost hdehost, DotNetPluginFactory dnfactory, INodeInfoFactory ni, IORegistry ioreg, ILogger logger)
 		{
+            //Attach lib core path and plugins path
+
+            string path = Path.GetDirectoryName(typeof(DX11DeviceRenderer).Assembly.Location);
+            string vvvvpath = Path.GetDirectoryName(Application.ExecutablePath);
+
+            string varpath = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process);
+            varpath += ";" + path;
+
+            vvvvpath = Path.Combine(vvvvpath, "packs\\dx11\\nodes\\plugins");
+            varpath += ";" + path;
+
+            Environment.SetEnvironmentVariable("Path", varpath, EnvironmentVariableTarget.Process);
+
             DX11EnumFormatHelper.CreateNullDeviceFormat();
 
             this.hdehost = hdehost;
@@ -61,6 +80,8 @@ namespace VVVV.DX11.Factories
             this.hdehost.MainLoop.OnRender += GraphEventService_OnRender;
 
             this.displaymanager = new DX11DisplayManager();
+
+            this.DirectWriteFactory = new DWriteFactory(SlimDX.DirectWrite.FactoryType.Shared);
 
             string[] args = Environment.GetCommandLineArgs();
 

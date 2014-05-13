@@ -61,16 +61,19 @@ namespace VVVV.DX11.Nodes.Geometry
             {
                 if (this.FInEnabled[i])
                 {
-                    if (this.FInVCnt.IsChanged || this.FInICnt.IsChanged)
+                    if (this.FInVCnt.IsChanged || this.FInICnt.IsChanged || this.FOutGeom[i].Contains(context) == false)
                     {
-                        this.FOutGeom[i].Dispose(context);
+                        if (this.FOutGeom[i].Contains(context))
+                        {
+                            this.FOutGeom[i].Dispose(context);
+                            
+
+                        }
 
                         this.FOutGeom[i][context] = new DX11NullGeometry(context);
-
                         DX11NullIndirectDrawer ind = new DX11NullIndirectDrawer();
-                        ind.Update(context,this.FInVCnt[i],this.FInICnt[i]);
+                        ind.Update(context, this.FInVCnt[i], this.FInICnt[i]);
                         this.FOutGeom[i][context].AssignDrawer(ind);
-
                     }
 
                     DX11NullIndirectDrawer drawer = (DX11NullIndirectDrawer)this.FOutGeom[i][context].Drawer;
@@ -84,8 +87,6 @@ namespace VVVV.DX11.Nodes.Geometry
                     {
                         drawer.IndirectArgs.CopyVertexCount(context.CurrentDeviceContext, this.FInV[i][context].UAV);
                     }
-
-                    //this.FOutGeom[i][context] = geom;
                 }
             }
         }

@@ -73,7 +73,6 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
         [ImportingConstructor()]
         public DX11VolumeRendererNode(IPluginHost FHost,IIOFactory factory)
         {
-            this.FHost = FHost;
             string ename = DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.RenderTarget);
 
             InputAttribute tattr = new InputAttribute("Target Format");

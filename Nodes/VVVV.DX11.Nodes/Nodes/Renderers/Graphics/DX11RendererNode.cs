@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow 
+    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -234,7 +234,7 @@ namespace VVVV.DX11.Nodes
         [Output("Touch Data", AllowFeedback = true)]
         protected ISpread<TouchData> FOutTouchData;
 
-        [Output("Actual BackBuffer Size")]
+        [Output("Actual BackBuffer Size", AllowFeedback = true)]
         protected ISpread<Vector2D> FOutBackBufferSize;
 
         [Output("Texture Out")]
@@ -630,6 +630,23 @@ namespace VVVV.DX11.Nodes
         public IntPtr InputWindowHandle
         {
             get { return this.Handle; }
+        }
+
+        public RGBAColor BackgroundColor
+        {
+            get { return new RGBAColor(0, 0, 0, 1); }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // DX11RendererNode
+            // 
+            this.BackColor = System.Drawing.Color.Black;
+            this.Name = "DX11RendererNode";
+            this.ResumeLayout(false);
+
         }
     }
 }

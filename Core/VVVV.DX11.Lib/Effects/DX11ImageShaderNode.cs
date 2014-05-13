@@ -199,6 +199,11 @@ namespace VVVV.DX11.Nodes.Layers
             
             this.spmax = this.CalculateSpreadMax();
 
+            if (this.FInTechnique.IsChanged)
+            {
+                this.techniquechanged = true;
+            }
+
             this.FOut.SliceCount = this.spmax;
             for (int i = 0; i < SpreadMax; i++)
             {
@@ -402,10 +407,19 @@ namespace VVVV.DX11.Nodes.Layers
 
                         if (pi.DoScale)
                         {
-                            h = Convert.ToInt32((float)h * pi.Scale);
-                            w = Convert.ToInt32((float)w * pi.Scale);
-                            h = Math.Max(h, 1);
+                            if (pi.Absolute)
+                            {
+                                w = Convert.ToInt32(pi.ScaleVector.X);
+                                h = Convert.ToInt32(pi.ScaleVector.Y);
+                            }
+                            else
+                            {
+                                w = Convert.ToInt32((float)w * pi.ScaleVector.X);
+                                h = Convert.ToInt32((float)h * pi.ScaleVector.Y);
+                            }
+                            
                             w = Math.Max(w, 1);
+                            h = Math.Max(h, 1);
                         }
 
                         //Check format support for render target, and default to rgb8 if not
@@ -638,6 +652,11 @@ namespace VVVV.DX11.Nodes.Layers
                 this.deviceshaderdata[context].Dispose();
                 this.deviceshaderdata.Remove(context);
             }
+
+            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
+            {
+                entry.UnLock();
+            }
         }
         #endregion
 
@@ -648,7 +667,11 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 sd.Dispose();
             }
-            //if (this.effect != null) { this.effect.Dispose(); }
+
+            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
+            {
+                entry.UnLock();
+            }
         }
         #endregion
 

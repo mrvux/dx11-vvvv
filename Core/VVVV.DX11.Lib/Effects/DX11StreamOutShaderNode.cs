@@ -54,10 +54,6 @@ namespace VVVV.DX11.Nodes.Layers
 
         private DX11RenderSettings settings = new DX11RenderSettings();
         private bool shaderupdated;
-        //private EffectTechnique lasttechnique;
-
-        private int autosize;
-        private InputElement[] autolayout;
 
         private int spmax = 0;
 
@@ -89,8 +85,6 @@ namespace VVVV.DX11.Nodes.Layers
         [Input("Resource Semantics", Order = 50001, Visibility = PinVisibility.OnlyInspector)]
         protected Pin<DX11Resource<IDX11RenderSemantic>> FInResSemantics;
         #endregion
-
-        private bool first = true;
 
         #region Output Pins
 
@@ -174,6 +168,11 @@ namespace VVVV.DX11.Nodes.Layers
         public void Evaluate(int SpreadMax)
         {
             this.spmax = this.CalculateSpreadMax();
+
+            if (this.FInTechnique.IsChanged)
+            {
+                this.techniquechanged = true;
+            }
 
             if (this.FOut[0] == null)
             {
@@ -264,10 +263,10 @@ namespace VVVV.DX11.Nodes.Layers
                 shaderdata.ResetShaderStages(ctx);
 
 
-                if (this.FIn.IsChanged || this.FInTechnique.IsChanged || shaderdata.LayoutValid.Count == 0)
+                if (this.FIn.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                 {
                     shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
-                    
+                    this.techniquechanged = false;
                 }
 
                 if (shaderdata.IsLayoutValid(0) && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance,this.settings))

@@ -16,6 +16,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
     public class MatrixShaderPin : AbstractValuePin<Matrix>
     {
         private bool uvspace;
+        private bool invy;
 
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
@@ -26,9 +27,17 @@ namespace VVVV.DX11.Internals.Effects.Pins
             else
             {
                 Matrix m = pin[slice];
-                //m.M42 = -m.M42;
-                m = Matrix.Translation(-0.5f, -0.5f, 0.0f) * m * Matrix.Translation(0.5f, 0.5f, 0.0f);
-                
+                if (this.invy)
+                {
+                    m = Matrix.Translation(-0.5f, -0.5f, 0.0f) * Matrix.Scaling(1, -1, 1) * m;
+                    m *= Matrix.Translation(0.5f, 0.5f, 0.0f) * Matrix.Scaling(1, -1, 1) * Matrix.Translation(0, 1, 0);
+                }
+                else
+                {
+                    m = Matrix.Translation(-0.5f, -0.5f, 0.0f)  * m;
+                    m *= Matrix.Translation(0.5f, 0.5f, 0.0f);
+                }
+  
                 shaderinstance.SetByName(this.Name, m);
             }
         }
@@ -41,6 +50,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
         protected override bool RecreatePin(EffectVariable var)
         {
             this.uvspace = var.IsTextureMatrix();
+            this.invy = var.InvY();
             //Just pick up space, and return same value (no need to kill pin)
             return base.RecreatePin(var);
         }

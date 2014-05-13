@@ -19,8 +19,6 @@ namespace VVVV.MSKinect.Lib
         public event EventHandler<InfraredFrameArrivedEventArgs> IRFrameReady;
         public event EventHandler<BodyIndexFrameArrivedEventArgs> BodyFrameReady;
 
-        public KinectStatus LastStatus { get; private set; }
-
         private DepthFrameReader depthreader;
         private ColorFrameReader colorreader;
         private InfraredFrameReader irreader;

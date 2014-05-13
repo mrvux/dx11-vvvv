@@ -42,7 +42,7 @@ namespace VVVV.DX11.Nodes.Layers
     public unsafe class DX11ShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11LayerProvider, IPartImportsSatisfiedNotification
     {
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
-
+        
 
         private DX11ShaderVariableManager varmanager;
         private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
@@ -59,7 +59,7 @@ namespace VVVV.DX11.Nodes.Layers
         [Input("Geometry", CheckIfChanged = true)]
         protected Pin<DX11Resource<IDX11Geometry>> FGeometry;
 
-        [Input("Apply Only", Visibility = PinVisibility.OnlyInspector)]
+        [Input("Apply Only", Visibility=PinVisibility.OnlyInspector)]
         protected ISpread<bool> FInApplyOnly;
 
         protected ITransformIn FInWorld;
@@ -151,6 +151,12 @@ namespace VVVV.DX11.Nodes.Layers
         {
             this.shaderupdated = false;
             this.spmax = this.CalculateSpreadMax();
+
+            if (this.FInTechnique.IsChanged)
+            {
+                this.techniquechanged = true;
+            }
+            
 
             float* src;
 
@@ -304,19 +310,20 @@ namespace VVVV.DX11.Nodes.Layers
                 }
 
                 DX11ShaderData shaderdata = this.deviceshaderdata[context];
-                if ((shaderdata.IsValid &&
-                    (this.geomconnected || settings.Geometry != null)
+                if ((shaderdata.IsValid && 
+                    (this.geomconnected || settings.Geometry != null) 
                     && this.spmax > 0 && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, settings))
                     || this.FInApplyOnly[0])
                 {
                     this.OnBeginQuery(context);
 
                     //Need to build input layout
-                    if (this.FGeometry.IsChanged || this.FInTechnique.IsChanged || shaderdata.LayoutValid.Count == 0)
+                    if (this.FGeometry.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                     {
                         shaderdata.Update(this.FInTechnique[0].Index, 0, this.FGeometry);
                         this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
+                        this.techniquechanged = false;
                     }
 
                     if (this.stateconnected && !multistate)
@@ -338,7 +345,7 @@ namespace VVVV.DX11.Nodes.Layers
                     objectsettings.Geometry = null;
                     DX11Resource<IDX11Geometry> pg = null;
 
-
+                    
 
                     for (int i = 0; i < this.spmax; i++)
                     {
@@ -396,7 +403,7 @@ namespace VVVV.DX11.Nodes.Layers
                     }
 
                     this.OnEndQuery(context);
-
+                    
                 }
                 //this.query.End();
             }
@@ -410,7 +417,7 @@ namespace VVVV.DX11.Nodes.Layers
                 //Since shaders can define their own states, reapply top of the stack
                 context.RenderStateStack.Apply();
             }
-
+            
         }
         #endregion
 

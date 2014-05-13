@@ -30,34 +30,37 @@ public:
 private:
 	ITransformIn^ FInTr;
 
-	[Input("String",DefaultString="DX11")]
+	[Input("Render State")]
+	Pin<DX11RenderState^>^ FStateIn;
+
+	[Input("String",DefaultString="DX11", Order=0)]
     ISpread<System::String^>^ FInString;
 
-	[Input("Font", EnumName = "SystemFonts")]
+	[Input("Font", EnumName = "SystemFonts", Order = 2)]
 	ISpread<EnumEntry^>^ FFontInput;
 
-	[Input("Italic")]
+	[Input("Italic", Order = 3)]
 	ISpread<bool>^ FItalicInput;
 
-	[Input("Bold")]
+	[Input("Bold", Order = 4)]
 	IDiffSpread<bool>^ FBoldInput;
 
-	[Input("Size")]
+	[Input("Size", Order = 5, DefaultValue=32)]
     ISpread<float>^ FInSize;
 
-	[Input("Color")]
+	[Input("Color", Order = 6)]
     ISpread<SlimDX::Color4>^ FInColor;
 
-	[Input("Horizontal Align", EnumName = "HorizontalAlign")]
+	[Input("Horizontal Align", EnumName = "HorizontalAlign", Order = 7)]
 	ISpread<EnumEntry^>^ FHorizontalAlignInput;
 
-	[Input("Vertical Align", EnumName = "VerticalAlign")]
+	[Input("Vertical Align", EnumName = "VerticalAlign", Order = 8)]
 	ISpread<EnumEntry^>^ FVerticalAlignInput;
 
-	[Input("Normalize", EnumName = "Normalize")]
+	[Input("Normalize", EnumName = "Normalize", Order = 9)]
 	ISpread<EnumEntry^>^ FNormalizeInput;
 
-	[Input("Enabled",IsSingle = true,DefaultValue=1)]
+	[Input("Enabled", IsSingle = true, DefaultValue = 1, Order = 10)]
 	ISpread<bool>^ FInEnabled;
 
 

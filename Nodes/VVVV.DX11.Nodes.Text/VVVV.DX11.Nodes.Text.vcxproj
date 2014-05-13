@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\vvvv.DX11.References.targets" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -37,6 +38,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -50,6 +52,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -93,7 +96,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\repositories\vvvv\dx11-vvvv\Dependencies\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\x86</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,6 +109,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\x64</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,7 +121,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\repositories\vvvv\dx11-vvvv\Dependencies\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\x86</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,43 +133,17 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>FW1FontWrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\work\repositories\directx11\dx11-vvvv\Dependencies\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Dependencies\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9">
-      <HintPath>..\..\Dependencies\x86\SlimDX.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition.Codeplex, Version=4.1.2.0, Culture=neutral, PublicKeyToken=13e5ffd4e05db186">
-      <HintPath>..\..\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
-    <Reference Include="VVVV.Core">
-      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.Hosting">
-      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Hosting.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.PluginInterfaces">
-      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.PluginInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.Utils">
-      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Utils.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.Utils3rdParty">
-      <HintPath>..\..\..\..\..\vvvv\vvvv_45beta31_x86\lib\core\VVVV.Utils3rdParty.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DX11TextLayerAdvNode.h" />
     <ClInclude Include="DX11TextLayerNode.h" />
     <ClInclude Include="FW1FontWrapper.h" />
     <ClInclude Include="resource.h" />
@@ -173,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="DX11TextLayerAdvNode.cpp" />
     <ClCompile Include="DX11TextLayerNode.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -213,7 +192,63 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup Condition="'$(Platform)'=='Win32'">
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SlimDX">
+      <HintPath>$(SolutionDir)\Dependencies\x86\SlimDX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Core">
+      <HintPath>$(SolutionDir)\Dependencies\x86\VVVV.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils">
+      <HintPath>$(SolutionDir)\Dependencies\x86\VVVV.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Hosting">
+      <HintPath>$(SolutionDir)\Dependencies\x86\VVVV.Hosting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.PluginInterfaces">
+      <HintPath>$(SolutionDir)\Dependencies\x86\VVVV.PluginInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Platform)'=='x64'">
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SlimDX">
+      <HintPath>$(SolutionDir)\Dependencies\x64\SlimDX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Core">
+      <HintPath>$(SolutionDir)\Dependencies\x64\VVVV.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils">
+      <HintPath>$(SolutionDir)\Dependencies\x64\VVVV.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Hosting">
+      <HintPath>$(SolutionDir)\Dependencies\x64\VVVV.Hosting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.PluginInterfaces">
+      <HintPath>$(SolutionDir)\Dependencies\x64\VVVV.PluginInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(SolutionDir)\Dependencies\x86\FW1FontWrapper.dll" DestinationFolder="$(OutputPath)" Condition="'$(Platform)' == 'Win32'" />
+    <Copy SourceFiles="$(SolutionDir)\Dependencies\x64\FW1FontWrapper.dll" DestinationFolder="$(OutputPath)" Condition="'$(Platform)' == 'x64'" />
+  </Target>
 </Project>
