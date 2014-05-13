@@ -29,6 +29,8 @@ namespace VVVV.DX11.Lib.Effects.Registries
             this.RegisterType("float4x4", "VIEWINVERSETRANSPOSE", false, (var, host, factory) => new MatrixInvViewTransposeRenderVariable(var));
             this.RegisterType("float4x4", "VIEWPROJECTIONINVERSETRANSPOSE", false, (var, host, factory) => new MatrixInvViewProjTransposeRenderVariable(var));
 
+            this.RegisterType("float3", "CAMERAPOSITION", false, (var, host, factory) => new CameraPositionRenderVariable(var));
+
             this.RegisterType("RWTexture2D", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("RWTexture3D", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("RWStructuredBuffer", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));

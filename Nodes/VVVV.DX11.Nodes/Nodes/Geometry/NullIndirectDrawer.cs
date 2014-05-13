@@ -87,8 +87,6 @@ namespace VVVV.DX11.Nodes.Geometry
                     {
                         drawer.IndirectArgs.CopyVertexCount(context.CurrentDeviceContext, this.FInV[i][context].UAV);
                     }
-
-                    //this.FOutGeom[i][context] = geom;
                 }
             }
         }

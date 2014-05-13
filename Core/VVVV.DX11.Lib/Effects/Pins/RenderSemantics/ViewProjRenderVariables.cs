@@ -72,6 +72,17 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         }
     }
 
+    public class CameraPositionRenderVariable : AbstractRenderVariable
+    {
+        public CameraPositionRenderVariable(EffectVariable var) : base(var) { }
+
+        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        {
+            Matrix iv = Matrix.Invert(settings.View);
+            shaderinstance.SetByName(this.Name, new Vector3(iv.M41, iv.M42, iv.M43));
+        }
+    }
+
     public class MatrixInvViewTransposeRenderVariable : AbstractRenderVariable
     {
         public MatrixInvViewTransposeRenderVariable(EffectVariable var) : base(var) { }
