@@ -33,18 +33,6 @@ namespace VVVV.Nodes
     #endregion PluginInfo
     public class DX11_TextureQRCodeNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
-        //little helper class used to store information for each
-        //texture resource
-       /* public class Info
-        {
-            public int Slice;
-            public int PixelSize;
-            public string Text;
-            public ErrorCorrectionLevel ECLevel;
-            public QuietZoneModules QZModules;
-            public Bitmap QRCodeBMP;
-        }*/
-
         [Input("Text", DefaultString = "vvvv")]
         public IDiffSpread<string> FText;
 
@@ -97,31 +85,6 @@ namespace VVVV.Nodes
                     this.FTextureOut[i] = new DX11Resource<DX11Texture2D>();
                 }
             }
-
-            /*    FTextureOut.ResizeAndDispose(spreadMax, CreateTextureResource);
-            for (int i = 0; i < spreadMax; i++)
-            {
-                var textureResource = FTextureOut[i];
-                var info = textureResource.Metadata;
-                //recreate textures if resolution was changed
-                if (info.PixelSize != FPixelSize[i] || info.Text != FText[i] || info.ECLevel != FErrorCorrectionLevel[i] || info.QZModules != FQuietZoneModules[i])
-                {
-                    textureResource.Dispose();
-                    textureResource = CreateTextureResource(i);
-                    info = textureResource.Metadata;
-                }
-
-                //update textures if their colors changed
-                if (FBackColor.IsChanged || FForeColor.IsChanged)
-                {
-                    ComputeQRCode(info, i);
-                    textureResource.NeedsUpdate = true;
-                }
-                else
-                    textureResource.NeedsUpdate = false;
-
-                FTextureOut[i] = textureResource;
-            }*/
         }
 
         Bitmap ComputeQRCode(int slice)
