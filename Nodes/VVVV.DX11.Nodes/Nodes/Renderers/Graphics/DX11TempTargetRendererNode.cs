@@ -53,6 +53,8 @@ namespace VVVV.DX11
         private bool genmipmap;
         private int mipmaplevel;
 
+        private bool invalidate = true;
+
         private Dictionary<DX11RenderContext, DX11RenderTarget2D> targets = new Dictionary<DX11RenderContext, DX11RenderTarget2D>();
         private Dictionary<DX11RenderContext, DX11RenderTarget2D> targetresolve = new Dictionary<DX11RenderContext, DX11RenderTarget2D>();
         private RenderTargetManager rtm;
@@ -82,6 +84,7 @@ namespace VVVV.DX11
                 this.genmipmap = this.FInDoMipMaps[0];
                 this.mipmaplevel = Math.Max(FInMipLevel[0], 0);
                 this.depthmanager.NeedReset = true;
+                this.invalidate = true;
             }
 
             this.FOutBufferSize[0] = new Vector2D(this.width, this.height);          
@@ -95,9 +98,10 @@ namespace VVVV.DX11
 
             TexInfo ti = this.rtm.GetRenderTarget(context);
 
-            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged
+            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.invalidate
                 || ti.format !=this.format)
             {
+                this.invalidate = false;
                 this.width = ti.w;
                 this.height = ti.h;
                 this.format = ti.format;

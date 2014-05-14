@@ -96,7 +96,9 @@ namespace VVVV.DX11.Lib.RenderGraph
 
             if (this.context.RenderStateStack.Count > 0)
             {
-                logger.Log(LogType.Error, "Render State Stack should now have a size of 0!");
+                logger.Log(LogType.Warning, "Render State Stack should now have a size of 0!");
+                logger.Log(LogType.Message, "Clearing");
+                context.RenderStateStack.Reset();
             }
 
             if (this.context.RenderTargetStack.StackCount > 0)
