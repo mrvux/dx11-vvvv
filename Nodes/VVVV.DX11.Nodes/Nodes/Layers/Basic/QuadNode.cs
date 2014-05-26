@@ -288,15 +288,15 @@ namespace VVVV.DX11.Nodes
                 quadshader.SetBySemantic("TEXTUREMATRIXCOUNT", this.uvbuffer.ElementCount);
                 quadshader.SetBySemantic("TEXTUREMATRIXBUFFER", this.uvbuffer.SRV);
 
-                this.uvbuffer.WriteData(this.FInTexTransform.ToArray());
+                this.uvbuffer.WriteData(this.FInTexTransform.Stream.Buffer, 0, this.FInTexTransform.SliceCount);
             }
 
             if (this.worldbuffer == null) { this.worldbuffer = new DX11DynamicStructuredBuffer<Matrix>(context, this.FInWorld.SliceCount); }
             if (this.colorbuffer == null) { this.colorbuffer = new DX11DynamicStructuredBuffer<Color4>(context, this.FInColor.SliceCount); }
             
 
-            this.worldbuffer.WriteData(this.FInWorld.ToArray());
-            this.colorbuffer.WriteData(this.FInColor.ToArray());
+            this.worldbuffer.WriteData(this.FInWorld.Stream.Buffer, 0, this.FInWorld.SliceCount);
+            this.colorbuffer.WriteData(this.FInColor.Stream.Buffer, 0, this.FInColor.SliceCount);
 
             quadshader.SetBySemantic("WORLDBUFFER", this.worldbuffer.SRV);
             quadshader.SetBySemantic("COLORBUFFER", this.colorbuffer.SRV);
