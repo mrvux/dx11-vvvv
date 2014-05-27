@@ -45,6 +45,7 @@ namespace VVVV.DX11.Nodes
         private int spreadmax;
 
         protected bool ffixed = false;
+        protected virtual bool NeedConvert { get { return false; } }
 
         protected T[] tempbuffer = new T[0];
 
@@ -110,9 +111,20 @@ namespace VVVV.DX11.Nodes
                 {
                     Array.Resize<T>(ref this.tempbuffer, count);
                 }
-                this.WriteArray(count);
 
-                b.WriteData(this.tempbuffer);
+                //If fixed or if size is the same, we can do a direct copy
+                bool needconvert = ((this.ffixed && count != this.FInData.SliceCount) || this.NeedConvert);
+                
+                if (needconvert)
+                {
+                    this.WriteArray(count);
+                    b.WriteData(this.tempbuffer);
+                }
+                else
+                {
+                    b.WriteData(this.FInData.Stream.Buffer);
+                }
+                
             }
 
         }
