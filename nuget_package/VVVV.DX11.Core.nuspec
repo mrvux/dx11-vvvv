@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>VVVV.DX11.Core</id>
+    <title>VVVV.DX11.Core</title>
+    <version>32.1.1</version>
+    <authors>smakhtin</authors>
+    <owners>vux</owners>
+    <projectUrl>https://github.com/mrvux/dx11-vvvv</projectUrl>
+    <iconUrl>http://www.mtbs3d.com/gallery/albums%2Fuserpics%2F10002%2Fdirectx-11-logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>DirectX11 Rendering within vvvv</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <tags>dx11 vvvv</tags>
+    <dependencies>
+      <dependency id="VVVV.FeralTic" version="1.0.0" />
+      <dependency id="VVVV.PluginInterfaces" version="32.0.0"/>
+    </dependencies>
+  </metadata>
+</package>

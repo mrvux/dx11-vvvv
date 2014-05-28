@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="VVVV.DX11.Core">
+      <HintPath>$(MSBuildThisFileDirectory)\lib\$(Platform)\VVVV.DX11.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.DX11.Lib">
+      <HintPath>$(MSBuildThisFileDirectory)\lib\$(Platform)\VVVV.DX11.Lib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
