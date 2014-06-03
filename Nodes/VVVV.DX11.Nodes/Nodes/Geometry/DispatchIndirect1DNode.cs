@@ -28,6 +28,9 @@ namespace VVVV.DX11.Nodes.Geometry
         [Output("Geometry Out")]
         protected ISpread<DX11Resource<DX11NullGeometry>> FOutGeom;
 
+        [Output("Counter Buffer")]
+        protected ISpread<DX11Resource<IDX11StructuredBuffer>> FOutCounter;
+
         bool invalidate = false;
 
         private DX11ShaderInstance generateShader;
@@ -45,20 +48,19 @@ namespace VVVV.DX11.Nodes.Geometry
                 if (this.FOutGeom.SliceCount == 0)
                 {
                     this.FOutGeom.SliceCount = 1;
+                    this.FOutCounter.SliceCount = 1;
                 }
 
                 if (this.FOutGeom[0] == null)
                 {
                     this.FOutGeom[0] = new DX11Resource<DX11NullGeometry>();
+                    this.FOutCounter[0] = new DX11Resource<IDX11StructuredBuffer>();
                 }
             }
             else
             {
-                if (this.FOutGeom.SliceCount == 1)
-                {
-                    if (this.FOutGeom[0] != null) { this.FOutGeom[0].Dispose(); }                
-                    this.FOutGeom.SliceCount = 0;
-                }
+                this.FOutGeom.SliceCount = 0;
+                this.FOutCounter.SliceCount = 0;
             }
         }
 
@@ -82,6 +84,7 @@ namespace VVVV.DX11.Nodes.Geometry
                 nullgeom.AssignDrawer(this.indirectDispatch);
 
                 this.FOutGeom[0][context] = nullgeom;
+                this.FOutCounter[0][context] = this.dispatchBuffer.RWBuffer;
             }
 
             var countuav = this.FInArgBuffer[0][context];
