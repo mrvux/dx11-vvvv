@@ -23,6 +23,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
+    <Compile Include="Nodes\Textures\Array\TextureArraySetSlice.cs" />
+    <Compile Include="Nodes\Textures\Array\TextureArraySetSliceNode.cs" />
+    <Compile Include="ShaderUtils.cs" />
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
     <Compile Include="Nodes\Buffers\ReadBackBufferNodes.cs" />
@@ -135,6 +139,7 @@
     <Compile Include="Nodes\Utils\MeasureTextNode.cs" />
     <Compile Include="Nodes\Validators\FrustrumTestNode.cs" />
     <Compile Include="Nodes\Validators\SelectValidatorNode.cs" />
+    <Compile Include="Nodes\Validators\ViewportValidatorNode.cs" />
     <Compile Include="Nodes\Validators\SliceValidatorNode.cs" />
     <Compile Include="Nodes\Validators\SliceValidatorSpreadedNode.cs" />
     <Compile Include="Nodes\Validators\SpreadValidatorNode.cs" />
@@ -162,6 +167,12 @@
     <EmbeddedResource Include="Nodes\Renderers\Graphics\DX11RendererNode.resx">
       <DependentUpon>DX11RendererNode.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="effects\SetSlice.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="effects\GenerateDispatch1D.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
