@@ -46,6 +46,7 @@ namespace VVVV.DX11.Nodes
         protected abstract void WriteData(DataStream ds, int elementcount);
 
 
+
         #region IPluginEvaluate Members
         public void Evaluate(int SpreadMax)
         {
@@ -79,13 +80,24 @@ namespace VVVV.DX11.Nodes
                     this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
 
                     this.FOutput.SliceCount = b.ElementCount;
+
                     DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
+                    try
+                    {
+                        
+                        this.WriteData(ds, b.ElementCount);
 
-                    this.WriteData(ds,b.ElementCount);
+                        this.FOutput.Flush(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        FHost.Log(TLogType.Error, "Error inreadback node: " + ex.Message);
+                    }
+                    finally
+                    {
+                        staging.UnMap(this.AssignedContext.CurrentDeviceContext);
+                    }
 
-                    this.FOutput.Flush(true);
-
-                    staging.UnMap(this.AssignedContext.CurrentDeviceContext);
                 }
                 else
                 {

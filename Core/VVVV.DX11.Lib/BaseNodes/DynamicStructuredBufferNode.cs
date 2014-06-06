@@ -51,12 +51,9 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.spreadmax = SpreadMax;
-            this.FOutput.SliceCount = SpreadMax > 0 ? 1 : 0;
-            this.FValid.SliceCount = SpreadMax > 0 ? 1 : 0;
             this.FInvalidate = false;
 
-            if (this.spreadmax > 0)
+            if (SpreadMax > 0)
             {
                 if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicStructuredBuffer<T>>(); }
 
@@ -69,6 +66,10 @@ namespace VVVV.DX11.Nodes
                     }
 
                     this.FInData.Sync();
+
+                    this.spreadmax = this.FInData.SliceCount;
+                    this.FOutput.SliceCount = this.FInData.SliceCount > 0 ? 1 : 0;
+                    this.FValid.SliceCount = this.FInData.SliceCount > 0 ? 1 : 0;
 
                     this.FInvalidate = true;
                     this.FFirst = false;
@@ -115,15 +116,24 @@ namespace VVVV.DX11.Nodes
                 //If fixed or if size is the same, we can do a direct copy
                 bool needconvert = ((this.ffixed && count != this.FInData.SliceCount) || this.NeedConvert);
                 
-                if (needconvert)
+                try
                 {
-                    this.WriteArray(count);
-                    b.WriteData(this.tempbuffer);
-                }
-                else
+                    if (needconvert)
+                    {
+                        this.WriteArray(count);
+                        b.WriteData(this.tempbuffer);
+                    }
+                    else
+                    {
+                        b.WriteData(this.FInData.Stream.Buffer,0, this.FInData.SliceCount);
+                    }
+                } 
+                catch (Exception ex)
                 {
-                    b.WriteData(this.FInData.Stream.Buffer);
+
                 }
+
+ 
                 
             }
 

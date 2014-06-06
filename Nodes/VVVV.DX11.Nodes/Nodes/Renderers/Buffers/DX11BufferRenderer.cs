@@ -179,6 +179,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.updateddevices.Contains(context)) { return; }
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);
