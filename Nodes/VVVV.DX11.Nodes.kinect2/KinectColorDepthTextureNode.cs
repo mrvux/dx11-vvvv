@@ -31,12 +31,9 @@ namespace VVVV.DX11.Nodes.MSKinect
         private object m_depthlock = new object();
 
         ushort[] depthData;
-
         private ColorSpacePoint[] colpoints;
-        //private DepthSpacePoint[] colpoints;
         private float[] colorimage;
 
-        //private SlimDX.DXGI.Format format;
         private int width;
         private int height;
 
@@ -51,14 +48,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         private void InitBuffers()
         {
-            //this.format = SlimDX.DXGI.Format.R16_UInt;
             this.width = 512;
             this.height = 424;
 
             this.depthData = new ushort[width * height];
 
             this.colpoints = new ColorSpacePoint[this.width * this.height];
-            //this.colpoints = new DepthSpacePoint[this.width * this.height];
             this.colorimage = new float[this.width * this.height * 2];
         }
 
@@ -74,8 +69,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     {
                         frame.CopyFrameDataToArray(depthData);
 
-                        this.runtime.Runtime.CoordinateMapper.MapDepthFrameToColorSpace(depthData, colpoints);
-                        //this.runtime.Runtime.CoordinateMapper.MapColorFrameToDepthSpace(depthData, colpoints);
+                        this.runtime.Runtime.CoordinateMapper.MapDepthFrameToColorSpace(this.depthData, this.colpoints);
                     }
 
                     this.FInvalidate = true;
@@ -107,13 +101,14 @@ namespace VVVV.DX11.Nodes.MSKinect
                 {
                     if (FRelativeLookup[0])
                     {
-                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - i % this.width, 0, this.width, 0, 1, TMapMode.Float);
-                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - VMath.Abs(i / this.width), 0, this.height, 0, 1, TMapMode.Float);
+                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - i % 1920, 0, 1920, 0, 1, TMapMode.Float);
+                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - VMath.Abs(i / 1920), 0, 1080, 0, 1, TMapMode.Float);
                     }
                     else
                     {
-                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X, 0, this.width, 0, 1, TMapMode.Clamp);
-                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y, 0, this.height, 0, 1, TMapMode.Clamp);
+
+                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X, 0, 1920, 0, 1, TMapMode.Clamp);
+                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y, 0, 1080, 0, 1, TMapMode.Clamp);
                     }
                 }
 
@@ -123,6 +118,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     texture.WriteData(ptr, this.width * this.height * 8);
                 }
             }
+
         }
 
         protected override void OnRuntimeConnected()
