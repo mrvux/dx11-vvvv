@@ -59,11 +59,8 @@ namespace VVVV.MSKinect.Nodes
         [Output("Is Started", IsSingle = true)]
         ISpread<bool> FOutStarted;
 
-        /*[Output("Color FOV")]
-        ISpread<Vector2D> FOutColorFOV;
-
-        [Output("Depth FOV")]
-        ISpread<Vector2D> FOutDepthFOV;*/
+        [Output("DepthRange (cm)" )]
+        ISpread<Vector2D> FDepthrange;
 
         private KinectRuntime runtime = new KinectRuntime();
 
@@ -137,6 +134,9 @@ namespace VVVV.MSKinect.Nodes
 
                 this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthFrameSource.FrameDescription.HorizontalFieldOfView,
                                                     this.runtime.Runtime.DepthFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
+
+                this.FDepthrange[0] = new Vector2D( (double)this.runtime.Runtime.DepthFrameSource.DepthMinReliableDistance,
+                                                    (double)this.runtime.Runtime.DepthFrameSource.DepthMaxReliableDistance);
             }
 
             this.FOutKCnt[0] = KinectSensor.KinectSensors.Count;
