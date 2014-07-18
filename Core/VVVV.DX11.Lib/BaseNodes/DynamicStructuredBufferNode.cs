@@ -114,7 +114,7 @@ namespace VVVV.DX11.Nodes
                 }
 
                 //If fixed or if size is the same, we can do a direct copy
-                bool needconvert = ((this.ffixed && count != this.FInData.SliceCount) || this.NeedConvert);
+                bool needconvert = ((this.ffixed && count != this.FInData.SliceCount)) || this.NeedConvert;
                 
                 try
                 {

@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
         {
             get
             {
-                return !this.FTranspose[0]; //If we transpose (eg: default), we need to convert
+                return this.FTranspose[0]; //If we transpose (eg: default), we need to convert
             }
         }
 
