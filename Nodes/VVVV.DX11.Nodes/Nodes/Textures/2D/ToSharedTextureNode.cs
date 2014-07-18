@@ -76,7 +76,7 @@ namespace VVVV.DX11.Nodes.Textures
                             desc.MipLevels = 1;
                             this.tex = new Texture2D(context.Device, desc);
                             this.SharedResource = new SlimDX.DXGI.Resource(this.tex);
-                            this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt32();
+                            this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt64();
                         }
 
                         this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[0][context].Resource, this.tex);
