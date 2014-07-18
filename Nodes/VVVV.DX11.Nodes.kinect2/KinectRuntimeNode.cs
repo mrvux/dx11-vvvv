@@ -134,7 +134,7 @@ namespace VVVV.MSKinect.Nodes
                     								this.runtime.Runtime.DepthStream.NominalVerticalFieldOfView) * (float)VMath.DegToCyc;*/
             }
 
-            this.FOutKCnt[0] = KinectSensor.KinectSensors.Count;
+            this.FOutKCnt[0] = 1; // KinectSensor.KinectSensors.Count;
         }
 
         public void Dispose()
@@ -142,7 +142,7 @@ namespace VVVV.MSKinect.Nodes
             if (this.runtime != null)
             {
                 this.runtime.Stop();
-                this.runtime.Runtime.Dispose();
+                //this.runtime.Runtime.Dispose();
             }
         }
     }

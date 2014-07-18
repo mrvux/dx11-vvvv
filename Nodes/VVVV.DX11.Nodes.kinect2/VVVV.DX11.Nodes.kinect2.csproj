@@ -19,6 +19,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SolutionDir)\Dependencies\x64\Kinect2\Microsoft.Kinect.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect.Face">
+      <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.Face.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.Fusion">
+      <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.Toolkit.Fusion.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -31,6 +37,8 @@
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
+    <Compile Include="KinectFaceNode.cs" />
+    <Compile Include="KinectFusionNode.cs" />
     <Compile Include="KinectWorldTextureNode.cs" />
     <Compile Include="KinectIRTextureNode.cs" />
     <Compile Include="KinectDepthTextureNode.cs">

@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 {
                     lock (m_depthlock)
                     {
-                        frame.CopyFrameDataToBuffer(512 * 424 * 2, this.depthwrite);
+                        frame.CopyFrameDataToIntPtr(this.depthwrite, 512 * 424 * 2);
 
                         IntPtr swap = this.depthread;
                         this.depthread = this.depthwrite;
