@@ -50,6 +50,12 @@ namespace VVVV.MSKinect.Nodes
         [Output("Is Available", IsSingle = true)]
         ISpread<bool> FOutStatus;
 
+        [Output("Color FOV")]
+        ISpread<Vector2D> FOutColorFOV;
+
+        [Output("Depth FOV")]
+        ISpread<Vector2D> FOutDepthFOV;
+
         [Output("Is Started", IsSingle = true)]
         ISpread<bool> FOutStarted;
 
@@ -123,15 +129,14 @@ namespace VVVV.MSKinect.Nodes
                 this.FOutStarted[0] = runtime.IsStarted;
 
 
+                this.FOutColorFOV.SliceCount = 1;
+                this.FOutDepthFOV.SliceCount = 1;
 
-                /*this.FOutColorFOV.SliceCount = 1;
-                this.FOutDepthFOV.SliceCount = 1;*/
+                this.FOutColorFOV[0] = new Vector2D(this.runtime.Runtime.ColorFrameSource.FrameDescription.HorizontalFieldOfView,
+                                                    this.runtime.Runtime.ColorFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
 
-                /*this.FOutColorFOV[0] = new Vector2D(this.runtime.Runtime.ColorStream.NominalHorizontalFieldOfView,
-                                                    this.runtime.Runtime.ColorStream.NominalVerticalFieldOfView) * (float)VMath.DegToCyc;
-
-                this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthStream.NominalHorizontalFieldOfView,
-                    								this.runtime.Runtime.DepthStream.NominalVerticalFieldOfView) * (float)VMath.DegToCyc;*/
+                this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthFrameSource.FrameDescription.HorizontalFieldOfView,
+                                                    this.runtime.Runtime.DepthFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
             }
 
             this.FOutKCnt[0] = 1; // KinectSensor.KinectSensors.Count;

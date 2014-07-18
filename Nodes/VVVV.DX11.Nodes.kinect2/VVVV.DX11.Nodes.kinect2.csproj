@@ -14,6 +14,9 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Kinect">
       <SpecificVersion>False</SpecificVersion>
@@ -36,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
+    <Compile Include="KinectColorDepthTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
     <Compile Include="KinectFaceNode.cs" />
     <Compile Include="KinectFusionNode.cs" />
