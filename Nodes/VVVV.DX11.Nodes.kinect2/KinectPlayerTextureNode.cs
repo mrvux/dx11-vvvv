@@ -103,7 +103,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             if (frame != null)
             {
                 this.FInvalidate = true;
-                this.frameindex = (int)frame.RelativeTime;
+                this.frameindex = (int)frame.RelativeTime.Ticks;
                 lock (m_lock)
                 {
                     frame.CopyFrameDataToArray(this.rawdepth);

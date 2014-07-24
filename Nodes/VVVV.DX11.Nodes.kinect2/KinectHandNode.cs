@@ -166,7 +166,7 @@ namespace VVVV.MSKinect.Nodes
             {
                 if (skeletonFrame != null)
                 {
-                    this.frameid = (int)e.FrameReference.RelativeTime;
+                    this.frameid = (int)e.FrameReference.RelativeTime.Ticks;
                     lock (m_lock)
                     {
                         skeletonFrame.GetAndRefreshBodyData(this.lastframe);

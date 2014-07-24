@@ -42,7 +42,10 @@ namespace VVVV.MSKinect.Lib
                 this.Stop();
             }
 
-            if (KinectSensor.KinectSensors.Count > 0)
+            this.Runtime = KinectSensor.GetDefault();
+            return true;
+
+            /*if (Microsoft.Kinect...Count > 0)
             {
                 this.Runtime = KinectSensor.KinectSensors[idx % KinectSensor.KinectSensors.Count];
                 return true;
@@ -50,7 +53,7 @@ namespace VVVV.MSKinect.Lib
             else
             {
                 return false;
-            }
+            }*/
         }
 
 

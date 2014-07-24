@@ -56,13 +56,16 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 9, DefaultValue = 1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
-        [Input("View", Order = 10)]
+        [Input("Bind Whole Target", DefaultValue = 0, Order = 10, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInBindTarget;
+
+        [Input("View", Order = 11)]
         protected IDiffSpread<Matrix> FInView;
 
-        [Input("Projection", Order = 11)]
+        [Input("Projection", Order = 12)]
         protected IDiffSpread<Matrix> FInProjection;
 
-        [Input("Aspect Ratio", Order = 12, Visibility = PinVisibility.Hidden)]
+        [Input("Aspect Ratio", Order = 13, Visibility = PinVisibility.Hidden)]
         protected IDiffSpread<Matrix> FInAspect;
 
         [Input("Crop", Order = 13, Visibility = PinVisibility.OnlyInspector)]
@@ -192,6 +195,18 @@ namespace VVVV.DX11.Nodes
 
                 if (this.FInLayer.PluginIO.IsConnected)
                 {
+                    if (this.FInBindTarget[0])
+                    {
+                        if (this.FInDepthBuffer[0])
+                        {
+                            context.RenderTargetStack.Push(depth, false, target);
+                        }
+                        else
+                        {
+                            context.RenderTargetStack.Push(target);
+                        }
+                    }
+
                     for (int i = 0; i < target.ElemCnt; i++)
                     {
                         settings.ViewportIndex = i;
@@ -211,16 +226,17 @@ namespace VVVV.DX11.Nodes
                         settings.CustomSemantics.Clear();
                         settings.ResourceSemantics.Clear();
 
-                        if (this.FInDepthBuffer[0])
+                        if (this.FInBindTarget[0] == false)
                         {
-                            context.RenderTargetStack.Push(depth.SliceDSV[i], false, target.SliceRTV[i]);
+                            if (this.FInDepthBuffer[0])
+                            {
+                                context.RenderTargetStack.Push(depth.SliceDSV[i], false, target.SliceRTV[i]);
+                            }
+                            else
+                            {
+                                context.RenderTargetStack.Push(target.SliceRTV[i]);
+                            }
                         }
-                        else
-                        {
-                            context.RenderTargetStack.Push(target.SliceRTV[i]);
-                        }
-
-                        
 
                         for (int j = 0; j < this.FInLayer.SliceCount; j++)
                         {
@@ -234,10 +250,17 @@ namespace VVVV.DX11.Nodes
                             }
                         }
 
-                        context.RenderTargetStack.Pop();
+
+                        if (this.FInBindTarget[0] == false)
+                        {
+                            context.RenderTargetStack.Pop();
+                        }
                     }
 
-                    
+                    if (this.FInBindTarget[0])
+                    {
+                        context.RenderTargetStack.Pop();
+                    }
                 }
 
 

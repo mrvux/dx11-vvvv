@@ -14,11 +14,15 @@ using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 
 using VVVV.MSKinect.Lib;
+using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
     public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceProvider, IDisposable
     {
+         [DllImport("msvcrt.dll", SetLastError = false)]
+        protected static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
+
         [Input("Kinect Runtime")]
         private Pin<KinectRuntime> FInRuntime;
 

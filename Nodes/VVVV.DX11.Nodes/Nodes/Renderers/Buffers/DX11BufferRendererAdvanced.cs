@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
-
 using SlimDX;
 using VVVV.Utils.VMath;
 
@@ -14,98 +13,95 @@ using System.ComponentModel.Composition;
 using VVVV.Hosting.Pins;
 using VVVV.DX11.Internals.Helpers;
 using VVVV.DX11.Internals;
-using VVVV.DX11.Lib.Rendering;
+using VVVV.DX11.Internals.Effects;
 
-using FeralTic.DX11;
+using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11.Queries;
 using FeralTic.DX11.Resources;
+using FeralTic.DX11;
+using System.IO;
 
-namespace VVVV.DX11.Nodes.Renderers.Graphics
+namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Volume", Author = "vux", AutoEvaluate = false)]
-    public class DX11VolumeRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
+    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer", Author = "vux", AutoEvaluate = false)]
+    public class DX11AdvancedBufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
         [Input("Layer", Order = 1, IsSingle = true)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
-        [Input("Texture Size", Order = 5, DefaultValues = new double[] { 32, 32,8 })]
-        protected IDiffSpread<Vector3D> FInTextureSize;
+        [Input("Element Count", Order = 8, DefaultValue = 512)]
+        protected IDiffSpread<int> FInElementCount;
 
-        [Input("Background Color", DefaultColor = new double[] { 0, 0, 0, 1 }, Order = 7)]
-        protected ISpread<Color4> FInBgColor;
+        [Input("Stride", Order = 8, DefaultValue = 16)]
+        protected IDiffSpread<int> FInStride;
 
-        [Input("Clear", DefaultValue = 1, Order = 8)]
-        protected ISpread<bool> FInClear;
+        [Input("Buffer Mode", Order = 8, DefaultValue = 0)]
+        protected IDiffSpread<eDX11BufferMode> FInMode;
 
-        [Input("Enabled", DefaultValue = 1, Order = 9)]
+        [Input("Reset Counter",IsBang=true )]
+        protected IDiffSpread<bool> FInResetCounter;
+
+        [Input("Reset Counter Value")]
+        protected IDiffSpread<int> FInResetCounterValue;
+
+        [Input("Enabled", DefaultValue = 1, Order = 15)]
         protected ISpread<bool> FInEnabled;
 
-        [Input("Bind As Target", DefaultValue = 0, Order = 10, Visibility= PinVisibility.OnlyInspector)]
-        protected ISpread<bool> FInBindTarget;
-
-        [Input("View", Order = 10)]
+        [Input("View", Order = 16)]
         protected IDiffSpread<Matrix> FInView;
 
-        [Input("Projection", Order = 11)]
+        [Input("Projection", Order = 17)]
         protected IDiffSpread<Matrix> FInProjection;
 
         [Output("Buffers", IsSingle = true)]
-        protected ISpread<DX11Resource<DX11RenderTexture3D>> FOutBuffers;
+        protected ISpread<DX11Resource<IDX11RWStructureBuffer>> FOutBuffers;
 
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
-        IDiffSpread<EnumEntry> FInFormat;
-
-        protected int width;
-        protected int height;
-        protected int depth;
+        protected int cnt;
+        protected int stride;
 
         protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
         protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
+
+        private bool reset = false;
 
 
         public event DX11QueryableDelegate BeginQuery;
 
         public event DX11QueryableDelegate EndQuery;
 
-        private bool reset = false;
+        private DX11RenderSettings settings = new DX11RenderSettings();
 
         [ImportingConstructor()]
-        public DX11VolumeRendererNode(IPluginHost FHost,IIOFactory factory)
+        public DX11AdvancedBufferRendererNode(IPluginHost FHost)
         {
-            string ename = DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.RenderTarget);
 
-            InputAttribute tattr = new InputAttribute("Target Format");
-            tattr.EnumName = ename;
-            tattr.DefaultEnumEntry = "R8G8B8A8_UNorm";
-            tattr.CheckIfChanged = true;
-
-            this.FInFormat = factory.CreateDiffSpread<EnumEntry>(tattr);
         }
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            reset = this.FInTextureSize.IsChanged || this.FInFormat.IsChanged;
+            reset = this.FInElementCount.IsChanged || this.FInStride.IsChanged || this.FInMode.IsChanged;
 
             if (this.FOutBuffers[0] == null)
             {
-                this.FOutBuffers[0] = new DX11Resource<DX11RenderTexture3D>();
+                this.FOutBuffers[0] = new DX11Resource<IDX11RWStructureBuffer>();
             }
+            if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
+
+            DX11Resource<IDX11RWStructureBuffer> res = this.FOutBuffers[0];
+            this.FOutBuffers[0] = res;
 
             if (reset)
             {
-                Vector3D v = this.FInTextureSize[0];
-
-                width = (int)v.x;
-                height = (int)v.y;
-                depth = (int)v.z;
+                this.stride = this.FInStride[0];
+                this.cnt = this.FInElementCount[0];
             }
         }
 
@@ -125,6 +121,8 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
                 this.Update(null, context);
             }
 
+
+
             if (!this.FInLayer.PluginIO.IsConnected) { return; }
 
             if (this.rendereddevices.Contains(context)) { return; }
@@ -136,48 +134,39 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
                     this.BeginQuery(context);
                 }
 
-                
-
-                if (this.FInClear[0])
-                {
-                    ctx.ClearRenderTargetView(this.FOutBuffers[0][context].RTV, this.FInBgColor[0]);
-                }
-
-                /*Viewport vp = new Viewport(0, 0, this.width, this.height);
-                ctx.Rasterizer.SetViewports(vp);*/
-                //ctx.OutputMerger.SetTargets(this.FOutBuffers[0][context].RTV);
+                context.CurrentDeviceContext.OutputMerger.SetTargets(new RenderTargetView[0]);
 
                 int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
 
-                if (this.FInBindTarget[0])
-                {
-                    context.RenderTargetStack.Push(this.FOutBuffers[0][context]);
-                }
-
                 for (int i = 0; i < rtmax; i++)
                 {
-                    DX11RenderSettings settings = new DX11RenderSettings();
                     settings.ViewportIndex = 0;
                     settings.ViewportCount = 1;
                     settings.View = this.FInView[i];
                     settings.Projection = this.FInProjection[i];
                     settings.ViewProjection = settings.View * settings.Projection;
-                    settings.RenderWidth = this.width;
-                    settings.RenderHeight = this.height;
-                    settings.RenderDepth = this.depth;
+                    settings.RenderWidth = this.cnt;
+                    settings.RenderHeight = this.cnt;
+                    settings.RenderDepth = this.cnt;
                     settings.BackBuffer = this.FOutBuffers[0][context];
-                    settings.CustomSemantics.Clear();
-                    settings.ResourceSemantics.Clear();
+                    
+
+                    if (this.FInResetCounter[0])
+                    {
+                        settings.ResetCounter = true;
+                        settings.CounterValue = this.FInResetCounterValue[0];
+                    }
+                    else
+                    {
+                        settings.ResetCounter = false;
+                    }
+
+                   // this.rwbuffersemantic.Data = this.FOutBuffers[0][context];
 
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
                         this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
                     }
-                }
-
-                if (this.FInBindTarget[0])
-                {
-                    context.RenderTargetStack.Pop();
                 }
 
                 if (this.EndQuery != null)
@@ -190,12 +179,13 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
             if (this.updateddevices.Contains(context)) { return; }
-
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);
 
-                DX11RenderTexture3D rt = new DX11RenderTexture3D(context, width, height, depth, DeviceFormatHelper.GetFormat(this.FInFormat[0].Name));
+                eDX11BufferMode mode = this.FInMode[0];
+
+                DX11RWStructuredBuffer rt = new DX11RWStructuredBuffer(context.Device, this.cnt, this.stride, mode);
 
                 this.FOutBuffers[0][context] = rt;
             }
@@ -203,9 +193,9 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
             this.updateddevices.Add(context);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
         {
-            this.DisposeBuffers(context);    
+            //this.DisposeBuffers(OnDevice.Device);
         }
 
         #region Dispose Buffers
@@ -222,7 +212,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
         {
             for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
             {
-                this.FOutBuffers[i].Dispose();
+                if (this.FOutBuffers[i] != null) { this.FOutBuffers[i].Dispose(); }
             }
         }
     }

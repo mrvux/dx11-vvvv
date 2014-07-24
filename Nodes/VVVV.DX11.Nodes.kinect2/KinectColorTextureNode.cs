@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 {
                     lock (m_depthlock)
                     {
-                        frame.CopyConvertedFrameDataToBuffer(1920 * 1080 * 4, this.depthwrite, ColorImageFormat.Bgra);
+                        frame.CopyConvertedFrameDataToIntPtr(this.depthwrite,1920 * 1080 * 4, ColorImageFormat.Bgra);
 
                         IntPtr swap = this.depthread;
                         this.depthread = this.depthwrite;
