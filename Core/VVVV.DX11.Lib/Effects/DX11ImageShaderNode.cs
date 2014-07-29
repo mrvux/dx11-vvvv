@@ -268,7 +268,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context, int iterationindex)
+        public void Update(IPluginIO pin, DX11RenderContext context)
         {
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
