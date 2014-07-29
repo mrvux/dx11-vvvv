@@ -118,10 +118,10 @@ namespace VVVV.DX11.Nodes
     public class FileTexture2dNode : FileTextureBaseNode<DX11Texture2D>
     {
 
-        [Output("Size", AsInt = true)]
+        [Output("Size", AsInt = true, Order = 400)]
         ISpread<Vector2> size;
 
-        [Output("Format", Order = 400)]
+        [Output("Format", Order = 401)]
         protected ISpread<SlimDX.DXGI.Format> format;
 
         void task_StatusChanged(IDX11ScheduledTask task)
