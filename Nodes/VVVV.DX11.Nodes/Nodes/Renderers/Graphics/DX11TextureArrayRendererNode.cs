@@ -195,6 +195,7 @@ namespace VVVV.DX11.Nodes
 
                 if (this.FInLayer.PluginIO.IsConnected)
                 {
+                    int slicecount = target.ElemCnt;
                     if (this.FInBindTarget[0])
                     {
                         if (this.FInDepthBuffer[0])
@@ -205,9 +206,10 @@ namespace VVVV.DX11.Nodes
                         {
                             context.RenderTargetStack.Push(target);
                         }
+                        slicecount = 1;
                     }
 
-                    for (int i = 0; i < target.ElemCnt; i++)
+                    for (int i = 0; i < slicecount; i++)
                     {
                         settings.ViewportIndex = i;
                         settings.ViewportCount = target.ElemCnt;

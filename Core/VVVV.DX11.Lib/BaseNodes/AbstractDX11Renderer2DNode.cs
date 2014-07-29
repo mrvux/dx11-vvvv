@@ -66,9 +66,6 @@ namespace VVVV.DX11
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
 
-        [Input("Transformation Index",Order=22, DefaultValue = 1, Visibility = PinVisibility.OnlyInspector)]
-        protected IDiffSpread<int> FInTI;
-
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 

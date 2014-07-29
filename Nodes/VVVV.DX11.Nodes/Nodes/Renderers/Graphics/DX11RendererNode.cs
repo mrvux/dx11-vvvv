@@ -216,8 +216,6 @@ namespace VVVV.DX11.Nodes
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
 
-        [Input("Transformation Index", DefaultValue=-1,Visibility=PinVisibility.OnlyInspector, Order=22)]
-        protected IDiffSpread<int> FInTI;
         string oldbbformat = "";
         #endregion
 
@@ -443,22 +441,9 @@ namespace VVVV.DX11.Nodes
 
                         bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
 
-                        if (this.FInTI.SliceCount == 1 && this.FInTI[0] < 0)
+                        for (int i = 0; i < rtmax; i++)
                         {
-                            for (int i = 0; i < rtmax; i++)
-                            {
-                                this.RenderSlice(context, settings, i, viewportpop);
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < this.FInTI.SliceCount; i++)
-                            {
-                                if (this.FInTI[i] >= 0)
-                                {
-                                    this.RenderSlice(context, settings, this.FInTI[i], viewportpop);
-                                }
-                            }
+                            this.RenderSlice(context, settings, i, viewportpop);
                         }
                     }
 
