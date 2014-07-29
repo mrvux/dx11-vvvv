@@ -51,7 +51,8 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 return;
             }
 
-            if (this.FFormat.IsChanged || this.FMaxHeight.IsChanged || this.FMaxWidth.IsChanged || this.FText.IsChanged)
+            if (this.FFormat.IsChanged || this.FMaxHeight.IsChanged || this.FMaxWidth.IsChanged 
+                || this.FText.IsChanged || this.FTextAlign.IsChanged || this.FParaAlign.IsChanged)
             {
                 this.FOutput.SliceCount = SpreadMax;
 
