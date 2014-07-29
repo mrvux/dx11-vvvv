@@ -16,7 +16,7 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name="SelectViewport",Category="DX11.Layer",Version="", Author="vux")]
     public class DX11LayerSelectViewportNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Viewport Index", DefaultValue = -1)]
