@@ -257,8 +257,29 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 shaderdata.SetEffect(this.FShader);
                 shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
-                this.shaderupdated = false;
             }
+
+            bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
+            if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged || this.shaderupdated)
+            {
+                elems = null;
+                int size = 0;
+
+                if (this.FInAutoLayout[0])
+                {
+                    elems = this.FShader.DefaultEffect.GetTechniqueByIndex(tid).GetPassByIndex(0).GetStreamOutputLayout(out size);
+                }
+                else
+                {
+                    if (customlayout)
+                    {
+                        elems = this.BindInputLayout(out size);
+                    }
+                }
+                this.layoutsize = size;
+            }
+
+            this.shaderupdated = false;
 
             if (this.FInEnabled[0] && this.FIn.PluginIO.IsConnected)
             {
@@ -272,27 +293,7 @@ namespace VVVV.DX11.Nodes.Layers
                     this.techniquechanged = false;
                 }
 
-                bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
-                if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
-                {                    
-                    elems = null;
-                    int size = 0;
 
-                    if (this.FInAutoLayout[0])
-                    {
-                        elems = this.FShader.DefaultEffect.GetTechniqueByIndex(tid).GetPassByIndex(0).GetStreamOutputLayout(out size);
-                    }
-                    else
-                    {
-                        if (customlayout)
-                        {
-                            elems = this.BindInputLayout(out size);
-                        }
-                    }
-                    this.layoutsize = size;
-                }
-
-                
                 if (shaderdata.IsLayoutValid(0) && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance,this.settings))
                 {
                     this.OnBeginQuery(context);

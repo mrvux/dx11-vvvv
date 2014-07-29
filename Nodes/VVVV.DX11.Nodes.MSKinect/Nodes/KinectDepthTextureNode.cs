@@ -49,6 +49,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             this.height = frame.Height;
             this.depthpixels = new DepthImagePixel[frame.Width * frame.Height];
             this.rawdepth = new short[frame.Width * frame.Height];
+            this.Resized = true;
         }
 
         private void DepthFrameReady(object sender, DepthImageFrameReadyEventArgs e)
@@ -56,10 +57,11 @@ namespace VVVV.DX11.Nodes.MSKinect
             DepthImageFrame frame = e.OpenDepthImageFrame();
             if (frame != null)
             {
-                if (this.first || frame.Format != this.format)
+                if (this.first || frame.Format != this.format || this.width != frame.Width || this.height != frame.Height)
                 {
                     this.InitBuffers(frame);
                     this.DisposeTextures();
+                    this.first = false;
                 }
 
                 this.FInvalidate = true;
