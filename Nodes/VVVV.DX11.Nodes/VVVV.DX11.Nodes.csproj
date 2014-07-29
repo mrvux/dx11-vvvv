@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
@@ -95,9 +96,7 @@
     <Compile Include="Nodes\Queries\StreamOutQueryNode.cs" />
     <Compile Include="Nodes\Queries\TimeStampQueryNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRenderer.cs" />
-    <Compile Include="Nodes\Renderers\DX11PreviewNode.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Nodes\Renderers\DX11PreviewNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11TextureArrayRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11CubeRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11MRTRendererNode.cs" />
