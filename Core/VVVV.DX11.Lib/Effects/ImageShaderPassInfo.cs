@@ -129,6 +129,8 @@ namespace VVVV.DX11.Lib.Effects
         public bool Clear { get; protected set; }
         public bool Absolute { get; protected set; }
 
+        public int IterationCount { get; protected set; }
+
         public Vector2 ScaleVector { get; protected set; }
 
         public string BlendPreset { get; protected set; }
@@ -149,6 +151,7 @@ namespace VVVV.DX11.Lib.Effects
             this.HasState = false;
             this.KeepTarget = false;
             this.Absolute = false;
+            this.IterationCount = 1;
 
             this.ComputeData = new ImageComputeData(pd);
 
@@ -195,6 +198,21 @@ namespace VVVV.DX11.Lib.Effects
             {
                 bool b = var.AsScalar().GetFloat() > 0.5f;
                 this.Reference = b ? eImageScaleReference.Initial : eImageScaleReference.Previous;
+            }
+
+            var = pd.GetAnnotationByName("iterations");
+            if (var.IsValid)
+            {
+                try
+                {
+                    int i = var.AsScalar().GetInt();
+
+                    this.IterationCount = Math.Max(1, i);
+                }
+                catch
+                {
+
+                }
             }
 
             var = pd.GetAnnotationByName("clear");
