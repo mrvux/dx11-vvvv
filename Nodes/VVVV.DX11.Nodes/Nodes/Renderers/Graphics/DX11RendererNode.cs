@@ -443,43 +443,21 @@ namespace VVVV.DX11.Nodes
 
                         bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
 
-                        float cw = (float)this.ClientSize.Width;
-                        float ch = (float)this.ClientSize.Height;
-
-                        for (int i = 0; i < rtmax; i++)
+                        if (this.FInTI.SliceCount == 1 && this.FInTI[0] < 0)
                         {
-
-                            settings.ViewportIndex = i;
-                            settings.View = this.FInView[i];
-
-                            Matrix proj = this.FInProjection[i];
-                            Matrix aspect = Matrix.Invert(this.FInAspect[i]);
-                            Matrix crop = Matrix.Invert(this.FInCrop[i]);
-
-
-                            settings.Projection = proj * aspect * crop;
-                            settings.ViewProjection = settings.View * settings.Projection;
-                            settings.BackBuffer = this.FOutBackBuffer[0][context];
-                            settings.RenderWidth = this.FOutBackBuffer[0][context].Resource.Description.Width;
-                            settings.RenderHeight = this.FOutBackBuffer[0][context].Resource.Description.Height;
-                            settings.ResourceSemantics.Clear();
-                            settings.CustomSemantics.Clear();
-
-                            if (viewportpop)
+                            for (int i = 0; i < rtmax; i++)
                             {
-                                context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
+                                this.RenderSlice(context, settings, i, viewportpop);
                             }
-
-
-                            //Call render on all layers
-                            for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                        }
+                        else
+                        {
+                            for (int i = 0; i < this.FInTI.SliceCount; i++)
                             {
-                                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-                            }
-
-                            if (viewportpop)
-                            {
-                                context.RenderTargetStack.PopViewport();
+                                if (this.FInTI[i] >= 0)
+                                {
+                                    this.RenderSlice(context, settings, this.FInTI[i], viewportpop);
+                                }
                             }
                         }
                     }
@@ -508,6 +486,45 @@ namespace VVVV.DX11.Nodes
             }
         }
         #endregion
+
+        private void RenderSlice(DX11RenderContext context,DX11RenderSettings settings, int i, bool viewportpop)
+        {
+            float cw = (float)this.ClientSize.Width;
+            float ch = (float)this.ClientSize.Height;
+
+            settings.ViewportIndex = i;
+            settings.View = this.FInView[i];
+
+            Matrix proj = this.FInProjection[i];
+            Matrix aspect = Matrix.Invert(this.FInAspect[i]);
+            Matrix crop = Matrix.Invert(this.FInCrop[i]);
+
+
+            settings.Projection = proj * aspect * crop;
+            settings.ViewProjection = settings.View * settings.Projection;
+            settings.BackBuffer = this.FOutBackBuffer[0][context];
+            settings.RenderWidth = this.FOutBackBuffer[0][context].Resource.Description.Width;
+            settings.RenderHeight = this.FOutBackBuffer[0][context].Resource.Description.Height;
+            settings.ResourceSemantics.Clear();
+            settings.CustomSemantics.Clear();
+
+            if (viewportpop)
+            {
+                context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
+            }
+
+
+            //Call render on all layers
+            for (int j = 0; j < this.FInLayer.SliceCount; j++)
+            {
+                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+            }
+
+            if (viewportpop)
+            {
+                context.RenderTargetStack.PopViewport();
+            }
+        }
 
         #region Update
         public void Update(IPluginIO pin, DX11RenderContext context)
@@ -545,6 +562,7 @@ namespace VVVV.DX11.Nodes
 
             if (this.FResized)
             {
+                
                 //if (!sc.IsFullScreen)
                 //{
                    // sc.Resize();

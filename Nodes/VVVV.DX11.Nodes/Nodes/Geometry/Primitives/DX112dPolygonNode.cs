@@ -85,7 +85,7 @@ namespace VVVV.DX11.Nodes
                         double h = maxy - miny;
                         for (int j = 0; j < dblcount; j++)
                         {
-                            verts[0].TexCoords = new Vector2(Convert.ToSingle((verts[j + 1].Position.X - minx) / w),
+                            verts[j+1].TexCoords = new Vector2(Convert.ToSingle((verts[j + 1].Position.X - minx) / w),
                                  Convert.ToSingle((verts[j + 1].Position.Y - miny) / h));
                         }
 

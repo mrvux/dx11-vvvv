@@ -20,28 +20,26 @@ using FeralTic.DX11.Queries;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 using System.IO;
+using FeralTic.DX11.Utils;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer Legacy", Author = "vux", AutoEvaluate = false)]
-    public class DX11BufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
+    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "StreamOut", Author = "vux", AutoEvaluate = false)]
+    public class DX11SORendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable
     {
         protected IPluginHost FHost;
 
         [Input("Layer", Order = 1, IsSingle = true)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
+        [Input("Vertex Size", Order = 8, DefaultValue = 12)]
+        protected IDiffSpread<int> FInVSize;
+
         [Input("Element Count", Order = 8, DefaultValue = 512)]
-        protected IDiffSpread<int> FInElementCount;
+        protected IDiffSpread<int> FInElemCount;
 
-        [Input("Stride", Order = 8, DefaultValue = 16)]
-        protected IDiffSpread<int> FInStride;
-
-        [Input("Appendable", Order = 8, DefaultValue = 0)]
-        protected IDiffSpread<bool> FInAppendable;
-
-        [Input("Reset Counter",IsBang=true )]
-        protected IDiffSpread<bool> FInResetCounter;
+        [Input("Output Layout", Order = 10005, CheckIfChanged = true)]
+        protected Pin<InputElement> FInLayout;
 
         [Input("Reset Counter Value")]
         protected IDiffSpread<int> FInResetCounterValue;
@@ -55,14 +53,11 @@ namespace VVVV.DX11.Nodes
         [Input("Projection", Order = 17)]
         protected IDiffSpread<Matrix> FInProjection;
 
-        [Output("Buffers", IsSingle = true)]
-        protected ISpread<DX11Resource<IDX11RWStructureBuffer>> FOutBuffers;
+        [Output("Geometry Out", IsSingle = true)]
+        protected ISpread<DX11Resource<IDX11Geometry>> FOutGeom;
 
-        [Output("Query", Order = 200, IsSingle = true)]
-        protected ISpread<IDX11Queryable> FOutQueryable;
-
+        protected int vsize;
         protected int cnt;
-        protected int stride;
 
         protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
         protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
@@ -75,10 +70,10 @@ namespace VVVV.DX11.Nodes
         public event DX11QueryableDelegate EndQuery;
 
         private DX11RenderSettings settings = new DX11RenderSettings();
-        private RWStructuredBufferRenderSemantic rwbuffersemantic = new RWStructuredBufferRenderSemantic("MYBUFFER", true);
+        private SlimDX.Direct3D11.Buffer buffer;
 
         [ImportingConstructor()]
-        public DX11BufferRendererNode(IPluginHost FHost)
+        public DX11SORendererNode(IPluginHost FHost)
         {
             //this.settings.CustomSemantics.Add(this.rwbuffersemantic);
         }
@@ -88,21 +83,17 @@ namespace VVVV.DX11.Nodes
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            reset = this.FInElementCount.IsChanged || this.FInStride.IsChanged || this.FInAppendable.IsChanged;
+            reset = this.FInVSize.IsChanged || this.FInElemCount.IsChanged;
 
-            if (this.FOutBuffers[0] == null)
+            if (this.FOutGeom[0] == null)
             {
-                this.FOutBuffers[0] = new DX11Resource<IDX11RWStructureBuffer>();
+                this.FOutGeom[0] = new DX11Resource<IDX11Geometry>();
             }
-            if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
-
-            DX11Resource<IDX11RWStructureBuffer> res = this.FOutBuffers[0];
-            this.FOutBuffers[0] = res;
 
             if (reset)
             {
-                this.stride = this.FInStride[0];
-                this.cnt = this.FInElementCount[0];
+                this.cnt = this.FInElemCount[0];
+                this.vsize = this.FInVSize[0];
             }
         }
 
@@ -137,6 +128,8 @@ namespace VVVV.DX11.Nodes
 
                 context.CurrentDeviceContext.OutputMerger.SetTargets(new RenderTargetView[0]);
 
+                ctx.StreamOutput.SetTargets(new StreamOutputBufferBinding(this.buffer, 0));
+
                 int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
 
                 for (int i = 0; i < rtmax; i++)
@@ -149,20 +142,9 @@ namespace VVVV.DX11.Nodes
                     settings.RenderWidth = this.cnt;
                     settings.RenderHeight = this.cnt;
                     settings.RenderDepth = this.cnt;
-                    settings.BackBuffer = this.FOutBuffers[0][context];
-                    
+                    settings.BackBuffer = null;
 
-                    if (this.FInResetCounter[0])
-                    {
-                        settings.ResetCounter = true;
-                        settings.CounterValue = this.FInResetCounterValue[0];
-                    }
-                    else
-                    {
-                        settings.ResetCounter = false;
-                    }
-
-                   // this.rwbuffersemantic.Data = this.FOutBuffers[0][context];
+                    // this.rwbuffersemantic.Data = this.FOutBuffers[0][context];
 
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
@@ -170,25 +152,34 @@ namespace VVVV.DX11.Nodes
                     }
                 }
 
-                if (this.EndQuery != null)
-                {
-                    this.EndQuery(context);
-                }
+                ctx.StreamOutput.SetTargets(null);
+
             }
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
             if (this.updateddevices.Contains(context)) { return; }
-            if (reset || !this.FOutBuffers[0].Contains(context))
+            if (reset || !this.FOutGeom[0].Contains(context))
             {
                 this.DisposeBuffers(context);
 
-                eDX11BufferMode mode = this.FInAppendable[0] ? eDX11BufferMode.Append : eDX11BufferMode.Default;
+                // int vsize = customlayout ? size : ig.VertexSize;
+                SlimDX.Direct3D11.Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, this.cnt);
 
-                DX11RWStructuredBuffer rt = new DX11RWStructuredBuffer(context.Device, this.cnt, this.stride, mode);
+                //Copy a new Vertex buffer with stream out
+                DX11VertexGeometry vg = new DX11VertexGeometry(context);
+                vg.AssignDrawer(new DX11VertexAutoDrawer());
+                vg.HasBoundingBox = false;
+                vg.InputLayout = this.FInLayout.ToArray();
+                vg.Topology = PrimitiveTopology.TriangleList;
+                vg.VertexBuffer = vbo;
+                vg.VertexSize = vsize;
+                vg.VerticesCount = this.cnt;
 
-                this.FOutBuffers[0][context] = rt;
+                this.buffer = vbo;
+
+                this.FOutGeom[0][context] = vg;
             }
 
             this.updateddevices.Add(context);
@@ -196,24 +187,24 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
         {
-            //this.DisposeBuffers(OnDevice.Device);
+            this.DisposeBuffers(OnDevice);
         }
 
         #region Dispose Buffers
         private void DisposeBuffers(DX11RenderContext context)
         {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
+            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                this.FOutBuffers[i].Dispose(context);
+                this.FOutGeom[i].Dispose(context);
             }
         }
         #endregion
 
         public void Dispose()
         {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
+            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                if (this.FOutBuffers[i] != null) { this.FOutBuffers[i].Dispose(); }
+                this.FOutGeom[i].Dispose();
             }
         }
     }

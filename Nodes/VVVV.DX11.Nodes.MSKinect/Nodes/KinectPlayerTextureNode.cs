@@ -37,10 +37,23 @@ namespace VVVV.DX11.Nodes.MSKinect
         [Input("Player Color", DefaultColor = new double[] { 1, 0, 0, 0 })]
         private IDiffSpread<RGBAColor> FInPlayerColor;
 
+        private int width;
+        private int height;
+        private bool first = true;
+
+        private void InitBuffers(DepthImageFrame frame)
+        {
+            this.width = frame.Width;
+            this.height = frame.Height;
+            this.playerimage = new int[width * height];
+            this.rawdepth = new short[width * height];
+            this.first = false;
+            this.Resized = true;
+        }
+
         public KinectPlayeTextureNode()
         {
-            this.playerimage = new int[640 * 480];
-            this.rawdepth = new short[640 * 480];
+            
         }
 
         protected override void OnEvaluate()
@@ -64,12 +77,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override int Width
         {
-            get { return 640; }
+            get { return this.width; }
         }
 
         protected override int Height
         {
-            get { return 480; }
+            get { return this.height; }
         }
 
         protected override SlimDX.DXGI.Format Format
@@ -99,12 +112,19 @@ namespace VVVV.DX11.Nodes.MSKinect
 
             if (frame != null)
             {
+                if (this.first || frame.Width != width || frame.Height != height)
+                {
+                    this.InitBuffers(frame);
+                    this.DisposeTextures();
+                    this.first = false;
+                }
+
                 this.FInvalidate = true;
                 this.frameindex = frame.FrameNumber;
                 lock (m_lock)
                 {
                     frame.CopyPixelDataTo(this.rawdepth);
-                    for (int i16 = 0; i16 < 512 * 424; i16++)
+                    for (int i16 = 0; i16 < this.width * this.height; i16++)
                     {
                         int player = rawdepth[i16] & DepthImageFrame.PlayerIndexBitmask;
                         player = player % this.colors.Length;
@@ -114,6 +134,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 }
 
                 frame.Dispose();
+
             }
         }
     }
