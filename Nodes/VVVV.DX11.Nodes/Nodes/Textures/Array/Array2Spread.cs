@@ -7,7 +7,7 @@ using System.ComponentModel.Composition;
 
 using SlimDX;
 using SlimDX.Direct3D11;
-using SlimDX.DXGI;
+//using SlimDX.DXGI;
 
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
@@ -62,41 +62,47 @@ namespace VVVV.DX11.Nodes
 
             for (int i = 0; i < ArrayCount; i++)
             {
-                //if (!this.FTextureOutput[i].Contains(context))
-                //{
+
                 Texture2DDescription desc;
 
-                    if (this.FTextureOutput[i].Contains(context))
+                if (this.FTextureOutput[i].Contains(context))
+                {
+                    desc = FTexIn[0][context].Resource.Description;
+
+                    if (desc.Width != this.FTexIn[0][context].Resource.Description.Width || desc.Height != this.FTexIn[0][context].Resource.Description.Height || desc.Format != this.FTexIn[0][context].Resource.Description.Format)
                     {
-                        desc = FTexIn[0][context].Resource.Description;
-
-                        if (desc.Width != this.FTexIn[0][context].Resource.Description.Width || desc.Height != this.FTexIn[0][context].Resource.Description.Height || desc.Format != this.FTexIn[0][context].Resource.Description.Format)
-                        {
-                            this.FTextureOutput[i].Dispose(context);
-                            this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
-                        }
+                        this.FTextureOutput[i].Dispose(context);
+                        this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
                     }
-                    else
-                    {
-                        this.FTextureOutput[i][context] = new DX11Texture2D();
-                    }
+                }
+                else
+                {
+                    this.FTextureOutput[i][context] = new DX11Texture2D();
+                }
 
-                    //desc = this.FTextureOutput[i][context].Resource.Description;
+                desc = this.FTexIn[0][context].Resource.Description;
 
-                    desc = this.FTexIn[0][context].Resource.Description;
+                    
 
-                    SlimDX.Direct3D11.Resource source = this.FTexIn[0][context].Resource;
-                    SlimDX.Direct3D11.Resource destiantion = this.FTextureOutput[i][context].Resource;
+                if (this.FTextureOutput[i][context].Resource == null)
+                {
+                    this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
 
-                    // here's the error
-                    context.CurrentDeviceContext.CopySubresourceRegion(source, i, destiantion, 0, 0, 0, 0);
+                    this.FTextureOutput[i][context] = DX11Texture2D.FromDescription(context, desc) ;
 
-                //}
-                //else // contains context
-                //{
-                //    IDX11ResourceProvider provider = source.Instance<IDX11ResourceProvider>();
-                //    this.FTextureOutput[i].Assign(context.);
-                //}
+                }
+
+                SlimDX.Direct3D11.Resource source = this.FTexIn[0][context].Resource;
+                SlimDX.Direct3D11.Resource destination = this.FTextureOutput[i][context].Resource;                   
+
+                //int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, i, desc.MipLevels);
+                //int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
+
+                ResourceRegion region = new ResourceRegion(0, 0, 0, FInElementCount[0] * 4, 1, 1);
+
+                // here's the error
+                //context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, desc.Width, desc.Height, 0);
+                context.CurrentDeviceContext.CopySubresourceRegion(source, 0, region, destination, 0, 0, 0, 0);
             }
         }
         
