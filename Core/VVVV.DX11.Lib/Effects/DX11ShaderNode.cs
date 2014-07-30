@@ -52,6 +52,8 @@ namespace VVVV.DX11.Nodes.Layers
         private bool stateconnected;
 
         #region Default Input Pins
+        [Input("Layer In")]
+        protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Render State", CheckIfChanged = true)]
         protected Pin<DX11RenderState> FInState;
@@ -416,6 +418,11 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 //Since shaders can define their own states, reapply top of the stack
                 context.RenderStateStack.Apply();
+            }
+
+            if (this.FInLayer.PluginIO.IsConnected && this.FInEnabled[0])
+            {
+                this.FInLayer[0][context].Render(this.FInLayer.PluginIO, context, settings);
             }
             
         }
