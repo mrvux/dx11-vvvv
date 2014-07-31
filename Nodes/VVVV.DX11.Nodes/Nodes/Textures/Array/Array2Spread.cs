@@ -25,18 +25,13 @@ namespace VVVV.DX11.Nodes
     public class Array2Spread : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Input("TextureArray In", IsSingle = true)]
-        //protected Pin<DX11Resource<DX11TextureArray2D>> FTexIn;
         protected Pin<DX11Resource<DX11RenderTextureArray>> FTexIn;
 
         [Input("Element Count", DefaultValue = 1)]
         protected IDiffSpread<int> FInElementCount;
 
-        //[Input("Reset", IsBang = true)]
-        //protected ISpread<bool> FReset;
-
         [Output("Textures Out")]
         protected ISpread<DX11Resource<DX11Texture2D>> FTextureOutput;
-
 
 
         public void Evaluate(int SpreadMax)
@@ -62,7 +57,6 @@ namespace VVVV.DX11.Nodes
 
             for (int i = 0; i < ArrayCount; i++)
             {
-
                 Texture2DDescription desc;
 
                 if (this.FTextureOutput[i].Contains(context))
@@ -82,8 +76,8 @@ namespace VVVV.DX11.Nodes
 
                 desc = this.FTexIn[0][context].Resource.Description;
 
-                    
-
+                desc.ArraySize = 1;
+     
                 if (this.FTextureOutput[i][context].Resource == null)
                 {
                     this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
@@ -93,16 +87,12 @@ namespace VVVV.DX11.Nodes
                 }
 
                 SlimDX.Direct3D11.Resource source = this.FTexIn[0][context].Resource;
-                SlimDX.Direct3D11.Resource destination = this.FTextureOutput[i][context].Resource;                   
+                SlimDX.Direct3D11.Resource destination = this.FTextureOutput[i][context].Resource;
 
-                //int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, i, desc.MipLevels);
-                //int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
+                int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, i, desc.MipLevels);
+                int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
 
-                ResourceRegion region = new ResourceRegion(0, 0, 0, FInElementCount[0] * 4, 1, 1);
-
-                // here's the error
-                //context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, desc.Width, desc.Height, 0);
-                context.CurrentDeviceContext.CopySubresourceRegion(source, 0, region, destination, 0, 0, 0, 0);
+                context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
             }
         }
         
