@@ -21,24 +21,30 @@ using VVVV.DX11.Lib.Rendering;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Array2Spread", Category = "DX11.Texture2D", Version = "", Author = "sebl")]
+    [PluginInfo(Name = "GetSlice", Category = "DX11.TextureArray", Version = "", Author = "sebl")]
     public class Array2Spread : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Input("TextureArray In", IsSingle = true)]
         protected Pin<DX11Resource<DX11RenderTextureArray>> FTexIn;
 
+        [Input("Index")]
+        protected ISpread<int> FIndex;
+
         [Output("Textures Out")]
         protected ISpread<DX11Resource<DX11Texture2D>> FTextureOutput;
 
         int ArrayCount = 1;
+        int numSlicesOut;
 
         public void Evaluate(int SpreadMax)
         {
-            if (FTexIn.IsConnected)
+            if (this.FTexIn.IsConnected)
             {
-                FTextureOutput.SliceCount = ArrayCount;
+                //FTextureOutput.SliceCount = ArrayCount;
+                this.numSlicesOut = this.FIndex.SliceCount;
+                this.FTextureOutput.SliceCount = this.numSlicesOut;
 
-                for (int i = 0; i < ArrayCount; i++)
+                for (int i = 0; i < numSlicesOut; i++)
                 {
                     if (this.FTextureOutput[i] == null)
                     {
@@ -53,10 +59,18 @@ namespace VVVV.DX11.Nodes
                 {
                     this.FTextureOutput[i].Dispose();
                 }
-                ArrayCount = 1;
+                this.ArrayCount = 1;
             }
 
-            FTextureOutput.SliceCount = ArrayCount;
+            this.FTextureOutput.SliceCount = this.numSlicesOut;
+
+            if (this.FTextureOutput.SliceCount > this.numSlicesOut)
+            {
+                for (int t = numSlicesOut; t < this.FTextureOutput.SliceCount; t++)
+                {
+                    this.FTextureOutput[t].Dispose();
+                }
+            }
         }
 
         
@@ -68,8 +82,11 @@ namespace VVVV.DX11.Nodes
             {
                 ArrayCount = FTexIn[0][context].ElemCnt;
 
-                for (int i = 0; i < ArrayCount; i++)
+                //for (int i = 0; i < numSlicesOut; i++)
+                foreach( int i in FIndex)
                 {
+                    int slice = i % ArrayCount;
+
                     Texture2DDescription descIn;
                     Texture2DDescription descOut;
 
@@ -104,7 +121,7 @@ namespace VVVV.DX11.Nodes
                     SlimDX.Direct3D11.Resource source = this.FTexIn[0][context].Resource;
                     SlimDX.Direct3D11.Resource destination = this.FTextureOutput[i][context].Resource;
 
-                    int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, i, descIn.MipLevels);
+                    int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
                     int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
 
                     context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
