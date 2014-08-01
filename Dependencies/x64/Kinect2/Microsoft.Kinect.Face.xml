@@ -20,121 +20,6 @@ Initializes a new instance of the PropertyChangedAdapter class with the given ha
 </summary>
             <param name="handler">PropertyChangedEventHandler to wrap.</param>
         </member>
-        <member name="M:Microsoft.Kinect.Face.HighDefinitionFaceFrame.GetAndRefreshFaceAlignmentResult(Microsoft.Kinect.Face.FaceAlignment)">
-            <summary>
-Refreshes and gets the face alignment results.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.FaceAlignmentQuality">
-            <summary>
-Gets the face alignment quality.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.FaceModel">
-            <summary>
-Gets the face model.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.InfraredFrameReference">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.DepthFrameReference">
-            <summary>
-Gets the depth frame reference.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.ColorFrameReference">
-            <summary>
-Gets the color frame reference.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.BodyFrameReference">
-            <summary>
-Gets the body frame reference.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.HighDefinitionFaceFrameSource">
-            <summary>
-Gets the high definition face frame source.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.FaceEngagement">
-            <summary>
-Enable detection of whether or not the user is engaged with the content they are viewing
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.Glasses">
-            <summary>
-Enable detection of whether or not the user is wearing glasses
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.LookingAway">
-            <summary>
-Enable detection of whether or not the user is looking at the sensor
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.MouthMoved">
-            <summary>
-Enable detection of whether or not the user's mouth has moved since the previous frame
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.MouthOpen">
-            <summary>
-Enable detection of whether or not the user's mouth is open
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.LeftEyeClosed">
-            <summary>
-Enable detection of whether or not the user's left eye is closed
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.RightEyeClosed">
-            <summary>
-Enable detection of whether or not the user's right eye is closed
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.Happy">
-            <summary>
-Enable deteciotn of the user's happy facial expression
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.RotationOrientation">
-            <summary>
-The face rotation and orientation will be computed
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.PointsInColorSpace">
-            <summary>
-The face alignment points will be computed in color space
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.BoundingBoxInColorSpace">
-            <summary>
-The bounding box will be computed in color space
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.PointsInInfraredSpace">
-            <summary>
-The face alignment points will be computed in infrared space
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.BoundingBoxInInfraredSpace">
-            <summary>
-The bounding box will be computed in infrared space
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.None">
-            <summary>
-No face frame features will be computed
-</summary>
-        </member>
         <member name="M:Microsoft.Kinect.Face.FaceFrameReference.AcquireFrame">
             <summary>
 Acquires the frame held by this reference.
@@ -176,6 +61,51 @@ Gets the body frame reference for this frame.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.Face.FaceFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Face.HighDefinitionFaceFrame.GetAndRefreshFaceAlignmentResult(Microsoft.Kinect.Face.FaceAlignment)">
+            <summary>
+Refreshes and gets the face alignment results.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.FaceAlignmentQuality">
+            <summary>
+Gets the face alignment quality.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.FaceModel">
+            <summary>
+Gets the face model.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.InfraredFrameReference">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.DepthFrameReference">
+            <summary>
+Gets the depth frame reference.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.ColorFrameReference">
+            <summary>
+Gets the color frame reference.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.BodyFrameReference">
+            <summary>
+Gets the body frame reference.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.HighDefinitionFaceFrameSource">
+            <summary>
+Gets the high definition face frame source.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrame.RelativeTime">
             <summary>
 Gets the unique relative time at which the frame was captured.
 </summary>
@@ -248,6 +178,76 @@ Acquires the frame held by this reference.
         <member name="P:Microsoft.Kinect.Face.HighDefinitionFaceFrameReference.RelativeTime">
             <summary>
 Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.FaceEngagement">
+            <summary>
+Enable detection of whether or not the user is engaged with the content they are viewing
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.Glasses">
+            <summary>
+Enable detection of whether or not the user is wearing glasses
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.LookingAway">
+            <summary>
+Enable detection of whether or not the user is looking at the sensor
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.MouthMoved">
+            <summary>
+Enable detection of whether or not the user's mouth has moved since the previous frame
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.MouthOpen">
+            <summary>
+Enable detection of whether or not the user's mouth is open
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.LeftEyeClosed">
+            <summary>
+Enable detection of whether or not the user's left eye is closed
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.RightEyeClosed">
+            <summary>
+Enable detection of whether or not the user's right eye is closed
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.Happy">
+            <summary>
+Enable deteciotn of the user's happy facial expression
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.RotationOrientation">
+            <summary>
+The face rotation and orientation will be computed
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.PointsInColorSpace">
+            <summary>
+The face alignment points will be computed in color space
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.BoundingBoxInColorSpace">
+            <summary>
+The bounding box will be computed in color space
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.PointsInInfraredSpace">
+            <summary>
+The face alignment points will be computed in infrared space
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.BoundingBoxInInfraredSpace">
+            <summary>
+The bounding box will be computed in infrared space
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.Face.FaceFrameFeatures.None">
+            <summary>
+No face frame features will be computed
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.Face.FaceAlignmentQuality">

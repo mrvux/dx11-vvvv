@@ -4,6 +4,22 @@
         "Microsoft.Kinect.VisualGestureBuilder.Managed"
     </assembly>
     <members>
+        <member name="F:Microsoft.Kinect.PropertyChangedAdapter._handler">
+            <summary>
+The wrapped handler.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.OnPropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
+            <summary>
+Called to trigger the property changed event handler. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.#ctor(System.ComponentModel.PropertyChangedEventHandler)">
+            <summary>
+Initializes a new instance of the PropertyChangedAdapter class with the given handler. 
+</summary>
+            <param name="handler">PropertyChangedEventHandler to wrap.</param>
+        </member>
         <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderDatabase.AvailableGesturesCount">
             <summary>
 Gets the number of available gestures in the database
@@ -14,40 +30,10 @@ Gets the number of available gestures in the database
 Gets available gestures in the database
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.ContinuousGestureResult.Progress">
-            <summary>
-Gets the progress value
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.DiscreteGestureResult.Confidence">
-            <summary>
-Gets the confidence of detected result
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.DiscreteGestureResult.FirstFrameDetected">
-            <summary>
-Gets whether detected at first frame
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.DiscreteGestureResult.Detected">
-            <summary>
-Gets whether detected
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrameReference.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrame.GestureResults">
-            <summary>
-Gets the gesture result.
-</summary>
+        <member name="T:TechProcessor">
+            <copyright file="VisualGestureBuilderFrameSource.h" company="Microsoft">
+   Copyright (c) Microsoft Corporation. All rights reserved.
+</copyright>
         </member>
         <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrame.VisualGestureBuilderFrameSource">
             <summary>
@@ -60,6 +46,16 @@ Gets the tracking body ID at which the frame was captured.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderFrameReference.RelativeTime">
             <summary>
 Gets the unique relative time at which the frame was captured.
 </summary>
@@ -79,9 +75,24 @@ Gets the name of gesture
 Gets the type of gesture
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderTechResult.GestureResults">
+        <member name="P:Microsoft.Kinect.VisualGestureBuilder.DiscreteGestureResult.Confidence">
             <summary>
-Gets the gesture result.
+Gets the confidence of detected result
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.VisualGestureBuilder.DiscreteGestureResult.FirstFrameDetected">
+            <summary>
+Gets whether detected at first frame
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.VisualGestureBuilder.DiscreteGestureResult.Detected">
+            <summary>
+Gets whether detected
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.VisualGestureBuilder.ContinuousGestureResult.Progress">
+            <summary>
+Gets the progress value
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.VisualGestureBuilder.VisualGestureBuilderTechResult.TrackingId">
@@ -96,27 +107,6 @@ Gets the unique relative time at which the result was calculated.
         </member>
         <member name="T:TechResult">
             <copyright file="VisualGestureBuilderTechResult.h" company="Microsoft Corporation">
-   Copyright (c) Microsoft Corporation. All rights reserved.
-</copyright>
-        </member>
-        <member name="F:Microsoft.Kinect.PropertyChangedAdapter._handler">
-            <summary>
-The wrapped handler.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.OnPropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
-            <summary>
-Called to trigger the property changed event handler. 
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.#ctor(System.ComponentModel.PropertyChangedEventHandler)">
-            <summary>
-Initializes a new instance of the PropertyChangedAdapter class with the given handler. 
-</summary>
-            <param name="handler">PropertyChangedEventHandler to wrap.</param>
-        </member>
-        <member name="T:TechProcessor">
-            <copyright file="VisualGestureBuilderFrameSource.h" company="Microsoft">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
         </member>
