@@ -63,7 +63,8 @@ namespace VVVV.DX11.Nodes
             {
                 for (int i = 0; i < FTextureOutput.SliceCount; i++)
                 {
-                    this.FTextureOutput[i].Dispose();
+                    if (this.FTextureOutput[i] != null)
+                        this.FTextureOutput[i].Dispose();
                 }
                 this.ArrayCount = 1;
             }
@@ -89,9 +90,7 @@ namespace VVVV.DX11.Nodes
                 ArrayCount = FTexIn[0][context].ElemCnt;
 
                 for (int i = 0; i < numSlicesOut; i++)
-                //foreach( int i in FIndex)
                 {
-                    //int slice = FIndex[i] % ArrayCount;
                     int slice = VMath.Zmod(FIndex[i], ArrayCount);
 
                     Texture2DDescription descIn;
@@ -128,7 +127,7 @@ namespace VVVV.DX11.Nodes
                     int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
                     int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
 
-                    this.logger.Log(LogType.Message, "get slice " + slice + " into " + i);
+                    //this.logger.Log(LogType.Message, "get slice " + slice + " into " + i);
                     context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
                 }
             }
