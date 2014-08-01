@@ -20,6 +20,9 @@
     <Reference Include="Microsoft.Kinect.Toolkit">
       <HintPath>Dependencies\Microsoft.Kinect.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect.Toolkit.BackgroundRemoval">
+      <HintPath>Dependencies\Microsoft.Kinect.Toolkit.BackgroundRemoval.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Kinect.Toolkit.Interaction">
       <HintPath>Dependencies\Microsoft.Kinect.Toolkit.Interaction.dll</HintPath>
     </Reference>
@@ -60,6 +63,7 @@
     <Compile Include="Lib\KinectRuntime.cs" />
     <Compile Include="Nodes\KinectBaseTextureNode.cs" />
     <Compile Include="Nodes\KinectColorDepthTextureNode.cs" />
+    <Compile Include="Nodes\KinectBackgroundTextureNode.cs" />
     <Compile Include="Nodes\KinectColorTextureNode.cs" />
     <Compile Include="Nodes\KinectDepthTextureNode.cs" />
     <Compile Include="Nodes\KinectFaceDataNode.cs" />
