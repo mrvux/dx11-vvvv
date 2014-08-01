@@ -77,7 +77,7 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
         {
-            //Not ownding resource eg: do nothing
+
         }
     }
 }
