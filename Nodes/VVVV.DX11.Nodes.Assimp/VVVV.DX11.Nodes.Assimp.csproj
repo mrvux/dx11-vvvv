@@ -24,6 +24,7 @@
     </Reference>
     <Reference Include="VVVV.Utils3rdParty">
       <HintPath>..\..\Dependencies\x86\VVVV.Utils3rdParty.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
