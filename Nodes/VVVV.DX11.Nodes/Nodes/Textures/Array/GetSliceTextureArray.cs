@@ -19,22 +19,28 @@ using VVVV.DX11.Nodes;
 using VVVV.DX11;
 using VVVV.DX11.Lib.Rendering;
 
+using VVVV.Core.Logging;
+using VVVV.Utils.VMath;
+
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "GetSlice", Category = "DX11.TextureArray", Version = "", Author = "sebl")]
-    public class Array2Spread : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class GetSliceTextureArray : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Input("TextureArray In", IsSingle = true)]
         protected Pin<DX11Resource<DX11RenderTextureArray>> FTexIn;
 
         [Input("Index")]
-        protected ISpread<int> FIndex;
+        protected IDiffSpread<int> FIndex;
 
         [Output("Textures Out")]
         protected ISpread<DX11Resource<DX11Texture2D>> FTextureOutput;
 
         int ArrayCount = 1;
         int numSlicesOut;
+
+        [Import()]
+        public ILogger logger;
 
         public void Evaluate(int SpreadMax)
         {
@@ -82,10 +88,11 @@ namespace VVVV.DX11.Nodes
             {
                 ArrayCount = FTexIn[0][context].ElemCnt;
 
-                //for (int i = 0; i < numSlicesOut; i++)
-                foreach( int i in FIndex)
+                for (int i = 0; i < numSlicesOut; i++)
+                //foreach( int i in FIndex)
                 {
-                    int slice = i % ArrayCount;
+                    //int slice = FIndex[i] % ArrayCount;
+                    int slice = VMath.Zmod(FIndex[i], ArrayCount);
 
                     Texture2DDescription descIn;
                     Texture2DDescription descOut;
@@ -95,16 +102,15 @@ namespace VVVV.DX11.Nodes
                         descIn = FTexIn[0][context].Resource.Description;
                         descOut = this.FTextureOutput[i][context].Resource.Description;
 
-                        if (descIn.Format != descOut.Format || descIn.Width != descOut.Width || descIn.Height != descOut.Height)
+                        if (/*FIndex.IsChanged ||*/ descIn.Format != descOut.Format || descIn.Width != descOut.Width || descIn.Height != descOut.Height)
                         {
-                            this.FTextureOutput[i].Dispose(context);
-                            this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
-                            descIn.ArraySize = 1;
-                            this.FTextureOutput[i][context] = DX11Texture2D.FromDescription(context, descIn);
+                            //this.logger.Log(LogType.Message, "init slice " + i);
+                            InitTexture(context, i, descIn);                           
                         }
                     }
                     else
                     {
+                        //InitTexture(context, i, descIn);  
                         this.FTextureOutput[i][context] = new DX11Texture2D();
                     }
 
@@ -112,10 +118,8 @@ namespace VVVV.DX11.Nodes
 
                     if (this.FTextureOutput[i][context].Resource == null)
                     {
-                        this.FTextureOutput[i].Dispose(context);
-                        this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
-                        descIn.ArraySize = 1;
-                        this.FTextureOutput[i][context] = DX11Texture2D.FromDescription(context, descIn);
+                        //this.logger.Log(LogType.Message, "init slice " + i);
+                        InitTexture(context, i, descIn);
                     }
 
                     SlimDX.Direct3D11.Resource source = this.FTexIn[0][context].Resource;
@@ -124,9 +128,18 @@ namespace VVVV.DX11.Nodes
                     int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
                     int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
 
+                    this.logger.Log(LogType.Message, "get slice " + slice + " into " + i);
                     context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
                 }
             }
+        }
+
+        private void InitTexture(DX11RenderContext context, int index, Texture2DDescription description)
+        {
+            this.FTextureOutput[index].Dispose(context);
+            this.FTextureOutput[index] = new DX11Resource<DX11Texture2D>();
+            description.ArraySize = 1;
+            this.FTextureOutput[index][context] = DX11Texture2D.FromDescription(context, description);
         }
         
 
