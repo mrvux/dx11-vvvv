@@ -35,14 +35,17 @@ namespace VVVV.DX11.Nodes
         [Input("Layer", Order = 1, IsSingle = true)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
-        [Input("Size", DefaultValues  = new double[] { 512, 512 },AsInt=true, Order = 5)]
+        [Input("Size", DefaultValues  = new double[] { 512, 512 },AsInt=true, Order = 3)]
         protected IDiffSpread<Vector2> FInSize;
 
-        [Input("Element Count", DefaultValue = 1, Order = 5)]
+        [Input("Element Count", DefaultValue = 1, Order = 4)]
         protected IDiffSpread<int> FInElementCount;
 
         [Input("Clear", DefaultValue = 1, Order = 6)]
         protected ISpread<bool> FInClear;
+
+        [Input("Mips", DefaultValue = 0, Order = 5)]
+        protected IDiffSpread<bool> FInMips;
 
         [Input("Clear Depth", DefaultValue = 1, Order = 6)]
         protected ISpread<bool> FInClearDepth;
@@ -123,7 +126,8 @@ namespace VVVV.DX11.Nodes
 
             if (this.FInFormat.IsChanged
                 || this.FInSize.IsChanged
-                || this.FInElementCount.IsChanged)
+                || this.FInElementCount.IsChanged
+                || this.FInMips.IsChanged)
             {
                 this.FOutTexture[0].Dispose();
                 this.FOutDepthTexture[0].Dispose();
@@ -148,7 +152,7 @@ namespace VVVV.DX11.Nodes
 
             if (!this.FOutTexture[0].Contains(context))
             {
-                var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]), true);
+                var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]),true, this.FInMips[0] ? 0 : 1);
                 this.FOutTexture[0][context] = result;
                 this.FOutDepthTexture[0][context] = new DX11DepthTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], Format.R32_Float, true);
                 for (int i = 0; i < this.FInElementCount[0]; i++)
@@ -262,6 +266,11 @@ namespace VVVV.DX11.Nodes
                     if (this.FInBindTarget[0])
                     {
                         context.RenderTargetStack.Pop();
+                    }
+
+                    if (this.FInMips[0])
+                    {
+                        context.CurrentDeviceContext.GenerateMips(this.FOutTexture[0][context].SRV);
                     }
                 }
 
