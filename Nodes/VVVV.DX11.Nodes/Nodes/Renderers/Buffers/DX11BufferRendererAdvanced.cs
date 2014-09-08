@@ -23,7 +23,7 @@ using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer", Author = "vux", AutoEvaluate = false)]
+    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer Advanced", Author = "vux", AutoEvaluate = false)]
     public class DX11AdvancedBufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;

@@ -53,13 +53,16 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 9, DefaultValue = 1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
-        [Input("Position", Order = 10)]
+        [Input("Bind Whole Target", DefaultValue = 0, Order = 10, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInBindTarget;
+
+        [Input("Position", Order = 11)]
         protected IDiffSpread<Vector3> FInPosition;
 
-        [Input("Near Plane", Order = 11, DefaultValue=0.1)]
+        [Input("Near Plane", Order = 12, DefaultValue=0.1)]
         protected IDiffSpread<float> FInNear;
 
-        [Input("Far Plane", Order = 12, DefaultValue=100)]
+        [Input("Far Plane", Order = 13, DefaultValue=100)]
         protected IDiffSpread<float> FInFar;
 
         [Output("Query", Order = 200, IsSingle = true)]
