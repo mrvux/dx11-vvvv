@@ -26,7 +26,7 @@ namespace VVVV.DX11.Nodes.Textures
         Pin<DX11Resource<DX11Texture2D>> FTextureIn;
 
         [Output("Pointer",IsSingle=true)]
-        ISpread<uint> FPointer;
+        ISpread<ulong> FPointer;
 
         private bool FRendered = false;
         private bool FUpdated = false;
@@ -76,7 +76,7 @@ namespace VVVV.DX11.Nodes.Textures
                             desc.MipLevels = 1;
                             this.tex = new Texture2D(context.Device, desc);
                             this.SharedResource = new SlimDX.DXGI.Resource(this.tex);
-                            this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt64();
+                            this.FPointer[0] = (ulong)SharedResource.SharedHandle;
                         }
 
                         this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[0][context].Resource, this.tex);
