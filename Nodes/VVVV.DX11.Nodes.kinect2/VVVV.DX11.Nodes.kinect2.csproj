@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
+    <Compile Include="KinectDepthColorTextureNode.cs" />
     <Compile Include="KinectColorDepthTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
     <Compile Include="KinectFaceNode.cs" />

@@ -47,8 +47,8 @@ namespace VVVV.MSKinect.Nodes
         private KinectRuntime runtime;
         private Microsoft.Kinect.Face.FaceFrameSource faceSrc;
         private Microsoft.Kinect.Face.FaceFrameReader faceReader;
-        /*private Microsoft.Kinect.Face.HighDefinitionFaceFrameSource hdSrc;
-        private Microsoft.Kinect.Face.HighDefinitionFaceFrameReader hdRead;*/
+        private Microsoft.Kinect.Face.HighDefinitionFaceFrameSource hdSrc;
+        private Microsoft.Kinect.Face.HighDefinitionFaceFrameReader hdRead;
 
         private bool FInvalidate = false;
 
@@ -67,13 +67,13 @@ namespace VVVV.MSKinect.Nodes
                     if (runtime != null)
                     {
                         faceSrc = new Microsoft.Kinect.Face.FaceFrameSource(this.runtime.Runtime);
-                        faceSrc.FaceFrameFeatures = FaceFrameFeatures.BoundingBoxInInfraredSpace | FaceFrameFeatures.BoundingBoxInColorSpace;
+                        faceSrc.FaceFrameFeatures = FaceFrameFeatures.FaceEngagement | FaceFrameFeatures.LeftEyeClosed | FaceFrameFeatures.LookingAway | FaceFrameFeatures.FaceEngagement | FaceFrameFeatures.Happy | FaceFrameFeatures.MouthMoved | FaceFrameFeatures.MouthOpen | FaceFrameFeatures.RightEyeClosed | FaceFrameFeatures.RotationOrientation;
                         faceReader = faceSrc.OpenReader();
                         faceReader.FrameArrived += this.faceReader_FrameArrived;
 
-                       /* hdSrc = new HighDefinitionFaceFrameSource(this.runtime.Runtime);
+                        hdSrc = new HighDefinitionFaceFrameSource(this.runtime.Runtime);
                         hdRead = hdSrc.OpenReader();
-                        hdRead.FrameArrived += hdRead_FrameArrived;*/
+                        hdRead.FrameArrived += hdRead_FrameArrived;
                     }
                 }
                 else
@@ -91,7 +91,13 @@ namespace VVVV.MSKinect.Nodes
 
         void hdRead_FrameArrived(object sender, HighDefinitionFaceFrameArrivedEventArgs e)
         {
-           
+            using (HighDefinitionFaceFrame frame = e.FrameReference.AcquireFrame())
+            {
+                if (frame != null)
+                {
+                    
+                }
+            }         
         }
 
         void faceReader_FrameArrived(object sender, Microsoft.Kinect.Face.FaceFrameArrivedEventArgs e)
