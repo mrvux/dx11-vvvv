@@ -56,8 +56,6 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
 
-            if (this.invalidate)
-            {
                 for (int i = 0; i < this.FOutGeom.SliceCount; i++)
                 {
                     if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined)
@@ -72,7 +70,7 @@ namespace VVVV.DX11.Nodes
                         this.FOutGeom[i][context] = this.FInGeom[i][context];
                     }
                 }
-            }
+            
         }
 
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
