@@ -56,21 +56,20 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
 
-                for (int i = 0; i < this.FOutGeom.SliceCount; i++)
+            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
+            {
+                if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined)
                 {
-                    if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined)
-                    {
 
-                        IDX11Geometry geom = this.FInGeom[i][context].ShallowCopy();
-                        geom.Topology = this.FInTopology[i];
-                        this.FOutGeom[i][context] = geom;
-                    }
-                    else
-                    {
-                        this.FOutGeom[i][context] = this.FInGeom[i][context];
-                    }
+                    IDX11Geometry geom = this.FInGeom[i][context].ShallowCopy();
+                    geom.Topology = this.FInTopology[i];
+                    this.FOutGeom[i][context] = geom;
                 }
-            
+                else
+                {
+                    this.FOutGeom[i][context] = this.FInGeom[i][context];
+                }
+            }
         }
 
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
