@@ -180,7 +180,7 @@
     <EmbeddedResource Include="effects\SetSlice.fx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="effects\GenerateDispatch1D.fx" />
+    <EmbeddedResource Include="effects\GenerateDispatch1D.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
