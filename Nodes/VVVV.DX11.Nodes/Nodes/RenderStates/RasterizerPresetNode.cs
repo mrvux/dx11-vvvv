@@ -10,7 +10,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Rasterizer", Category = "DX11.RenderState", Author = "vux")]
+    [PluginInfo(Name = "Rasterizer", Category = "DX11.RenderState", Tags="fill, point, wireframe, solid", Author = "vux")]
     public class RasterizerPresetNode : BaseDX11RenderStateSimple
     {
         [ImportingConstructor()]
