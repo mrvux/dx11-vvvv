@@ -25,8 +25,8 @@ namespace VVVV.DX11.Nodes.Textures
         [Input("Texture In", IsSingle=true)]
         Pin<DX11Resource<DX11Texture2D>> FTextureIn;
 
-        [Output("Pointer",IsSingle=true)]
-        ISpread<ulong> FPointer;
+        [Output("Pointer",IsSingle=true, AsInt=true)]
+        ISpread<long> FPointer;
 
         private bool FRendered = false;
         private bool FUpdated = false;
@@ -54,6 +54,7 @@ namespace VVVV.DX11.Nodes.Textures
                         if (tex != null)
                         {
                             Texture2D t = this.FTextureIn[0][context].Resource;
+
                             if (t.Description.Width != this.tex.Description.Width 
                                 || t.Description.Height != this.tex.Description.Height
                                 || t.Description.Format != this.tex.Description.Format)
@@ -62,6 +63,18 @@ namespace VVVV.DX11.Nodes.Textures
                                 this.SharedResource = null;
                                 this.tex.Dispose();
                                 this.tex = null;
+                            }
+
+
+                            if (t.Description.MipLevels > 1)
+                            {
+                                this.FPointer[0] = 0;
+                                throw new Exception("Sharing texture with more than one mip level is not allowed");
+                            }
+                            if (t.Description.SampleDescription.Count > 1)
+                            {
+                                this.FPointer[0] = 0;
+                                throw new Exception("Sharing multisampled texture is not allowed");
                             }
 
                         }
@@ -76,7 +89,7 @@ namespace VVVV.DX11.Nodes.Textures
                             desc.MipLevels = 1;
                             this.tex = new Texture2D(context.Device, desc);
                             this.SharedResource = new SlimDX.DXGI.Resource(this.tex);
-                            this.FPointer[0] = (ulong)SharedResource.SharedHandle;
+                            this.FPointer[0] = SharedResource.SharedHandle.ToInt64();
                         }
 
                         this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[0][context].Resource, this.tex);
