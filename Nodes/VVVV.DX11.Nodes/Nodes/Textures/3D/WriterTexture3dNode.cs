@@ -12,6 +12,7 @@ using SlimDX.Direct3D11;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
@@ -23,6 +24,9 @@ namespace VVVV.DX11.Nodes
 
         [Input("Filename",StringType=StringType.Filename,DefaultString="render")]
         protected ISpread<string> FInPath;
+
+        [Input("Create Folder", IsSingle = true, Visibility=PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FCreateFolder;
 
         [Input("Write", IsBang = true)]
         protected ISpread<bool> FInSave;
@@ -63,6 +67,15 @@ namespace VVVV.DX11.Nodes
                 {
                     if (this.FTextureIn[i].Contains(context) && this.FInSave[i])
                     {
+                        if (this.FCreateFolder[0])
+                        {
+                            string path = Path.GetDirectoryName(this.FInPath[i]);
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                        }
+
                         try
                         {
                             string path = this.FInPath[i];

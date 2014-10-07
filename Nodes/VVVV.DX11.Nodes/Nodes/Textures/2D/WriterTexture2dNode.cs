@@ -13,6 +13,7 @@ using VVVV.Core.Logging;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
@@ -27,6 +28,9 @@ namespace VVVV.DX11.Nodes
 
         [Input("Format")]
         protected ISpread<ImageFileFormat> FInFormat;
+
+        [Input("Create Folder", IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FCreateFolder;
 
         [Input("Write", IsBang = true)]
         protected ISpread<bool> FInSave;
@@ -66,6 +70,15 @@ namespace VVVV.DX11.Nodes
                 {
                     if (this.FTextureIn[i].Contains(this.AssignedContext) && this.FInSave[i])
                     {
+                        if (this.FCreateFolder[0])
+                        {
+                            string path = Path.GetDirectoryName(this.FInPath[i]);
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                        }
+
                         try
                         {
                             Texture2D.SaveTextureToFile(this.AssignedContext.CurrentDeviceContext, this.FTextureIn[i][this.AssignedContext].Resource, this.FInFormat[i], this.FInPath[i]);
