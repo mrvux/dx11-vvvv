@@ -41,6 +41,8 @@ namespace VVVV.DX11.Nodes
 
         private bool FInvalidate;
 
+        private float[] data = new float[0];
+
         public void Evaluate(int SpreadMax)
         {
             /*if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
@@ -73,7 +75,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public unsafe void Update(IPluginIO pin, DX11RenderContext context)
         {
             if (this.FTextureOutput.SliceCount == 0) { return; }
 
@@ -126,14 +128,30 @@ namespace VVVV.DX11.Nodes
                 chans = Math.Min(chans, 4);
                 chans = Math.Max(chans, 1);
 
-                float[] data = new float[desc.Width * desc.Height * chans];
+                if (data.Length != desc.Width * desc.Height * chans)
+                {
+                    data = new float[desc.Width * desc.Height * chans];
+                }
 
                 for (int i = 0; i < data.Length; i++)
                 {
-                    data[i] = this.FInData[i % data.Length];
+                    data[i] = this.FInData[i];
                 }
 
-                this.FTextureOutput[0][context].WriteData(data, chans);
+                int stride = chans * 4;
+                var t = this.FTextureOutput[0][context];
+                fixed (float* fptr = & data[0])
+                {
+                    IntPtr ptr = new IntPtr(fptr);
+                    if (t.GetRowPitch() == desc.Width * stride)
+                    {
+                        t.WriteData(ptr, desc.Width * desc.Height * stride);
+                    }
+                    else
+                    {
+                        t.WriteDataPitch(ptr, desc.Width * desc.Height * stride, stride);
+                    }
+                }
                 this.FInvalidate = false;
             }
 

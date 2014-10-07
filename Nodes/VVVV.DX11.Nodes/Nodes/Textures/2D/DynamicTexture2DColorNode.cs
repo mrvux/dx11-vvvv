@@ -38,6 +38,8 @@ namespace VVVV.DX11.Nodes
 
         private bool FInvalidate;
 
+        private Color4[] data = new Color4[0];
+
         public void Evaluate(int SpreadMax)
         {
             if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
@@ -52,7 +54,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public unsafe void Update(IPluginIO pin, DX11RenderContext context)
         {
             if (this.FInvalidate || ! this.FTextureOutput[0].Contains(context))
             {
@@ -78,14 +80,31 @@ namespace VVVV.DX11.Nodes
 
                 desc = this.FTextureOutput[0][context].Resource.Description;
 
-                Color4[] data = new Color4[desc.Width * desc.Height];
+                if (data.Length != desc.Width * desc.Height)
+                {
+                    data = new Color4[desc.Width * desc.Height];
+                }
 
                 for (int i = 0; i < data.Length; i++)
                 {
-                    data[i] = this.FInData[i % data.Length];
+                    data[i] = this.FInData[i];
                 }
 
-                this.FTextureOutput[0][context].WriteData<Color4>(data);
+                var t = this.FTextureOutput[0][context];
+                fixed (Color4* cp = &data[0])
+                {
+                    IntPtr ptr = new IntPtr(cp);
+                    if (t.GetRowPitch() == desc.Width * 16)
+                    {
+                        t.WriteData(ptr, desc.Width * desc.Height * 16);
+                    }
+                    else
+                    {
+                        t.WriteDataPitch(ptr, desc.Width * desc.Height * 16, 16);
+                    }
+                    
+                }
+
                 this.FInvalidate = false;
             }
 
