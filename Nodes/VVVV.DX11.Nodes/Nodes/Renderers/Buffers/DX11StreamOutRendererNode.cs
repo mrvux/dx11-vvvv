@@ -53,8 +53,14 @@ namespace VVVV.DX11.Nodes
         [Input("Projection", Order = 17)]
         protected IDiffSpread<Matrix> FInProjection;
 
+        [Input("Keep In Memory", Order = 18, Visibility = PinVisibility.OnlyInspector, IsSingle=true)]
+        protected ISpread<bool> FInKeepInMemory;
+
         [Output("Geometry Out", IsSingle = true)]
         protected ISpread<DX11Resource<IDX11Geometry>> FOutGeom;
+
+        [Output("Buffer Out", IsSingle = true)]
+        protected ISpread<DX11Resource<DX11RawBuffer>> FOutBuffer;
 
         protected int vsize;
         protected int cnt;
@@ -75,7 +81,7 @@ namespace VVVV.DX11.Nodes
         [ImportingConstructor()]
         public DX11SORendererNode(IPluginHost FHost)
         {
-            //this.settings.CustomSemantics.Add(this.rwbuffersemantic);
+
         }
 
         public void Evaluate(int SpreadMax)
@@ -144,8 +150,6 @@ namespace VVVV.DX11.Nodes
                     settings.RenderDepth = this.cnt;
                     settings.BackBuffer = null;
 
-                    // this.rwbuffersemantic.Data = this.FOutBuffers[0][context];
-
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
                         this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
@@ -180,14 +184,26 @@ namespace VVVV.DX11.Nodes
                 this.buffer = vbo;
 
                 this.FOutGeom[0][context] = vg;
+
+                if (context.ComputeShaderSupport)
+                {
+                    this.FOutBuffer[0][context] = new DX11RawBuffer(context, vbo);
+                }
+                else
+                {
+                    this.FOutBuffer[0][context] = null;
+                }
             }
 
             this.updateddevices.Add(context);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
         {
-            this.DisposeBuffers(OnDevice);
+            if (force || this.FInKeepInMemory[0] == false)
+            {
+                this.DisposeBuffers(context);
+            }
         }
 
         #region Dispose Buffers
@@ -208,4 +224,6 @@ namespace VVVV.DX11.Nodes
             }
         }
     }
+
+
 }
