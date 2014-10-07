@@ -36,7 +36,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
                     if (this.state != null) { this.state.Dispose(); this.state = null; }
                 }
 
-                if (this.state == null)
+                if (this.state == null || this.state.Disposed)
                 {
                     this.state = SamplerState.FromDescription(shaderinstance.RenderContext.Device, this.pin[0]);
                 }
