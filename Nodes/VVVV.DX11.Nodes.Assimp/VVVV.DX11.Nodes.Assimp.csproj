@@ -37,6 +37,7 @@
     <Compile Include="AssimpChannelAnimNode.cs" />
     <Compile Include="AssimpChannelsNode.cs" />
     <Compile Include="AssimpMaterialNode.cs" />
+    <Compile Include="AssimpMergeLoaderNode.cs" />
     <Compile Include="AssimpMeshInfoNode.cs" />
     <Compile Include="AssimpMeshMergeNode.cs" />
     <Compile Include="AssimpMeshNode.cs" />
