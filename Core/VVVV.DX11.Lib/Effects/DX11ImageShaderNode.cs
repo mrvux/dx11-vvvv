@@ -146,7 +146,6 @@ namespace VVVV.DX11.Nodes.Layers
                 this.varmanager.RebuildTextureCache();
 
                 this.varmanager.RebuildPassCache(tid);
-               //this.varmanager.RebuildPassCache(0);
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -388,10 +387,11 @@ namespace VVVV.DX11.Nodes.Layers
 
                             if (passcounter > 0)
                             {
-                                int pid = j - 1;
-                                string pname = "PASSRESULT" + pid;
-
-                                this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, pname, rtlist[pid]);
+                                for (int pid = 0; pid < passcounter; pid++)
+                                {
+                                    string pname = "PASSRESULT" + pid;
+                                    this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, pname, rtlist[pid]);
+                                }
                             }
 
                             Format fmt = initial.Format;
@@ -576,21 +576,21 @@ namespace VVVV.DX11.Nodes.Layers
                                 context.RenderStateStack.Apply();
                             }
                         }
-
-                        //Set last render target
-                        this.FOut[i][context] = lastrt;
-
-                        //Unlock all resources
-                        foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> lt in locktargets)
-                        {
-                            lt.UnLock();
-                        }
-
-                        //Keep lock on last rt, since don't want it overidden
-                        lasttmp.Lock();
-
-                        this.lastframetargets.Add(lasttmp);
                     }
+
+                    //Set last render target
+                    this.FOut[i][context] = lastrt;
+
+                    //Unlock all resources
+                    foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> lt in locktargets)
+                    {
+                        lt.UnLock();
+                    }
+
+                    //Keep lock on last rt, since don't want it overidden
+                    lasttmp.Lock();
+
+                    this.lastframetargets.Add(lasttmp);
                 }
                 else
                 {
