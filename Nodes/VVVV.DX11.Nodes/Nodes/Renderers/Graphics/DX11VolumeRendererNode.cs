@@ -42,7 +42,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
 
-        [Input("Bind As Target", DefaultValue = 0, Order = 10, Visibility= PinVisibility.OnlyInspector)]
+        [Input("Bind As Target", DefaultValue = 1, Order = 10, Visibility= PinVisibility.OnlyInspector)]
         protected ISpread<bool> FInBindTarget;
 
         [Input("View", Order = 10)]
