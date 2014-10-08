@@ -99,6 +99,8 @@ namespace VVVV.DX11.Nodes.Geometry
 
             context.CurrentDeviceContext.Dispatch(1, 1, 1);
             this.generateShader.CleanUp();
+
+            this.dispatchBuffer.UpdateBuffer();
         }
 
         public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
