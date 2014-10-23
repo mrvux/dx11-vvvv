@@ -28,9 +28,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 Help = "Returns a G32R32F formatted texture whose pixels represent a UV map mapping pixels from depth to color space.")]
     public unsafe class KinectDepthColorTextureNode : KinectBaseTextureNode
     {
-        private object m_depthlock = new object();
-
-        IntPtr depthData;
+        private IntPtr depthData;
         private IntPtr colpoints;
  
         private int width;
@@ -60,7 +58,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 using (frame)
                 {
-                    lock (m_depthlock)
+                    lock (m_lock)
                     {
                         frame.CopyFrameDataToIntPtr(depthData, 512 * 424 * 2);
                         this.runtime.Runtime.CoordinateMapper.MapColorFrameToDepthSpaceUsingIntPtr(depthData, 512 * 424 * 2, colpoints, 1920 * 1080 * 8);

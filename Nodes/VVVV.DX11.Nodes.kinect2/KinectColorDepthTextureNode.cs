@@ -28,11 +28,9 @@ namespace VVVV.DX11.Nodes.MSKinect
                 Help = "Returns a G32R32F formatted texture whose pixels represent a UV map mapping pixels from depth to color space. Enable Relative Lookup to use it as displacement texture.")]
     public unsafe class KinectColorDepthTextureNode : KinectBaseTextureNode
     {
-        private object m_depthlock = new object();
-
-        ushort[] depthData;
-        private ColorSpacePoint[] colpoints;
-        private float[] colorimage;
+        private IntPtr depthData;
+        private IntPtr colpoints;
+        private IntPtr convertedColPoints;
 
         private int width;
         private int height;
@@ -54,10 +52,9 @@ namespace VVVV.DX11.Nodes.MSKinect
             this.width = 512;
             this.height = 424;
 
-            this.depthData = new ushort[width * height];
-
-            this.colpoints = new ColorSpacePoint[this.width * this.height];
-            this.colorimage = new float[this.width * this.height * 2];
+            this.depthData = Marshal.AllocHGlobal(512 * 424 * 2);
+            this.colpoints = Marshal.AllocHGlobal(512 * 424 * 8);
+            this.convertedColPoints = Marshal.AllocHGlobal(512 * 424 * 8);
         }
 
         private void DepthFrameReady(object sender, DepthFrameArrivedEventArgs e)
@@ -68,11 +65,32 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 using (frame)
                 {
-                    lock (m_depthlock)
+                    lock (m_lock)
                     {
-                        frame.CopyFrameDataToArray(depthData);
+                        frame.CopyFrameDataToIntPtr(depthData, 512 * 424 * 2);
+                        this.runtime.Runtime.CoordinateMapper.MapDepthFrameToColorSpaceUsingIntPtr(depthData, 512 * 424 * 2, colpoints, 512 * 424 * 8);
 
-                        this.runtime.Runtime.CoordinateMapper.MapDepthFrameToColorSpace(this.depthData, this.colpoints);
+                        if (!this.FRawData[0])
+                        {
+                            float* col = (float*)this.colpoints;
+                            float* conv = (float*)this.convertedColPoints;
+                            if (FRelativeLookup[0])
+                            {
+                                for (int i = 0; i < 512 * 424;i++ )
+                                {
+                                    conv[i*2] = (float)VMath.Map(col[i*2] - i % 1920, 0, 1920, 0, 1, TMapMode.Float);
+                                    conv[i*2+1] = (float)VMath.Map(col[i*2+1] - VMath.Abs(i / 1920), 0, 1080, 0, 1, TMapMode.Float);
+                                }
+                            }
+                            else
+                            {
+                                for (int i = 0; i < 512 * 424; i++)
+                                {
+                                    conv[i * 2] = (float)VMath.Map(col[i*2], 0, 1920, 0, 1, TMapMode.Clamp);
+                                    conv[i * 2 + 1] = (float)VMath.Map(col[i*2+1], 0, 1080, 0, 1, TMapMode.Clamp);
+                                }
+                            }
+                        }
                     }
 
                     this.FInvalidate = true;
@@ -100,41 +118,8 @@ namespace VVVV.DX11.Nodes.MSKinect
         {
             lock (m_lock)
             {
-                if (FRawData[0])
-                {
-                    for (int i = 0; i < this.colpoints.Length; i++)
-                    {
-                        this.colorimage[i * 2] = colpoints[i].X;
-                        this.colorimage[i * 2 + 1] = colpoints[i].Y;
-                    }
-                }
-                else
-                {
-                    if (FRelativeLookup[0])
-                    {
-                        for (int i = 0; i < this.colpoints.Length; i++)
-                        {
-                            this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - i % 1920, 0, 1920, 0, 1, TMapMode.Float);
-                            this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - VMath.Abs(i / 1920), 0, 1080, 0, 1, TMapMode.Float);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < this.colpoints.Length; i++)
-                        {
-                            this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X, 0, 1920, 0, 1, TMapMode.Clamp);
-                            this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y, 0, 1080, 0, 1, TMapMode.Clamp);
-                        }
-                    }
-                }
-
-                fixed (float* f = &this.colorimage[0])
-                {
-                    IntPtr ptr = new IntPtr(f);
-                    texture.WriteData(ptr, this.width * this.height * 8);
-                }
+                texture.WriteData(this.colpoints, this.width * this.height * 8);
             }
-
         }
 
         protected override void OnRuntimeConnected()
@@ -149,6 +134,8 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void Disposing()
         {
+            Marshal.FreeHGlobal(this.colpoints);
+            Marshal.FreeHGlobal(this.depthData);
         }
 
     }
