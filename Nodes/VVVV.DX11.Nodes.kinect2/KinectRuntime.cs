@@ -81,7 +81,7 @@ namespace VVVV.MSKinect.Lib
             }
         }
 
-        public void EnableSkeleton(bool enable, bool smooth)//, TransformSmoothParameters sp)
+        public void EnableSkeleton(bool enable, bool smooth)
         {
             if (enable && this.bodyreader == null)
             {
@@ -209,9 +209,12 @@ namespace VVVV.MSKinect.Lib
 
         private void Runtime_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
         {
-            if (this.OnReset != null)
+            if (e.IsAvailable)
             {
-                this.OnReset(sender, new EventArgs());
+                if (this.OnReset != null)
+                {
+                    this.OnReset(sender, new EventArgs());
+                }
             }
         }
 

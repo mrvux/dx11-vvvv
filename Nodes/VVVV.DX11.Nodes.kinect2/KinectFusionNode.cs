@@ -241,12 +241,14 @@ namespace VVVV.DX11.Nodes.Nodes
                     FusionDepthProcessor.DefaultMaximumDepth,
                     false);
 
+                float energy;
                 // ProcessFrame will first calculate the camera pose and then integrate
                 // if tracking is successful
                 bool trackingSucceeded = this.colorVolume.ProcessFrame(
                     this.depthFloatBuffer,
                     FusionDepthProcessor.DefaultAlignIterationCount,
                     FusionDepthProcessor.DefaultIntegrationWeight,
+                    out energy,
                     this.colorVolume.GetCurrentWorldToCameraTransform());
 
                 // If camera tracking failed, no data integration or raycast for reference
