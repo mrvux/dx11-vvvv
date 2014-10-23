@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
+    <Compile Include="KinectBodySplitNode.cs" />
     <Compile Include="KinectDepthColorTextureNode.cs" />
     <Compile Include="KinectColorDepthTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="KinectHandNode.cs" />
     <Compile Include="KinectSkeletonNode.cs" />
     <Compile Include="Lib\BodyExtensionMethods.cs" />
+    <Compile Include="Lib\ClosestBodySelector.cs" />
     <Compile Include="Lib\FuncBodySelector.cs" />
     <Compile Include="Lib\IBodySelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
