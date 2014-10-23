@@ -118,7 +118,15 @@ namespace VVVV.DX11.Nodes.MSKinect
         {
             lock (m_lock)
             {
-                texture.WriteData(this.colpoints, this.width * this.height * 8);
+                if (this.FRawData[0])
+                {
+                    texture.WriteData(this.colpoints, this.width * this.height * 8);
+                }
+                else
+                {
+                    texture.WriteData(this.convertedColPoints, this.width * this.height * 8);
+                }
+
             }
         }
 
