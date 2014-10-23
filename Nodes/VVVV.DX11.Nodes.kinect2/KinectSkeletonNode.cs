@@ -32,15 +32,6 @@ namespace VVVV.MSKinect.Nodes
         [Output("Position")]
         private ISpread<Vector3> FOutPosition;
 
-        [Output("Wear Glasses")]
-        private ISpread<DetectionResult> FOutWearGlasses;
-
-        [Output("Happy")]
-        private ISpread<DetectionResult> FOutHappy;
-
-        [Output("Neutral")]
-        private ISpread<DetectionResult> FOutNeutral;
-
         [Output("Clipping")]
         private ISpread<Vector4> FOutClipped;
 
@@ -125,9 +116,6 @@ namespace VVVV.MSKinect.Nodes
                     this.FOutJointID.SliceCount = cnt * 25;
                     this.FOutJointOrientation.SliceCount = cnt * 25;
                     this.FOutFrameNumber[0] = this.frameid;
-                    this.FOutWearGlasses.SliceCount = cnt;
-                    this.FOutHappy.SliceCount = cnt;
-                    this.FOutNeutral.SliceCount = cnt;
 
 
                     int jc = 0;
@@ -138,11 +126,6 @@ namespace VVVV.MSKinect.Nodes
                         Joint ce = sk.Joints[JointType.SpineBase];
                         this.FOutPosition[i] = new Vector3(ce.Position.X, ce.Position.Y, ce.Position.Z);
                         this.FOutUserIndex[i] = (int)sk.TrackingId;
-                        this.FOutWearGlasses[i] = sk.Appearance[Appearance.WearingGlasses];
-                        this.FOutHappy[i] = sk.Expressions[Expression.Happy];
-                        this.FOutNeutral[i] = sk.Expressions[Expression.Neutral];
-
-                        //var t = sk.Expressions[Expression.]
 
                         Vector4 clip = Vector4.Zero;
                         clip.X = Convert.ToSingle(sk.ClippedEdges.HasFlag(FrameEdges.Left));
@@ -174,7 +157,6 @@ namespace VVVV.MSKinect.Nodes
                     this.FOutJointState.SliceCount = 0;
                     this.FOutFrameNumber[0] = 0;
                     this.FOutJointOrientation.SliceCount = 0;
-                    this.FOutWearGlasses.SliceCount = 0;
                 }
                 this.FInvalidate = false;
             }

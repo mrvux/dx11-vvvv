@@ -19,6 +19,8 @@ namespace VVVV.MSKinect.Lib
         public event EventHandler<InfraredFrameArrivedEventArgs> IRFrameReady;
         public event EventHandler<BodyIndexFrameArrivedEventArgs> BodyFrameReady;
 
+        public event EventHandler OnReset;
+
         private DepthFrameReader depthreader;
         private ColorFrameReader colorreader;
         private InfraredFrameReader irreader;
@@ -43,29 +45,9 @@ namespace VVVV.MSKinect.Lib
             }
 
             this.Runtime = KinectSensor.GetDefault();
+            this.Runtime.IsAvailableChanged += Runtime_IsAvailableChanged;
             return true;
-
-            /*if (Microsoft.Kinect...Count > 0)
-            {
-                this.Runtime = KinectSensor.KinectSensors[idx % KinectSensor.KinectSensors.Count];
-                return true;
-            }
-            else
-            {
-                return false;
-            }*/
         }
-
-
-
-       /* void Runtime_AllFramesReady(object sender, AllFramesReadyEventArgs e)
-        {
-            if (this.AllFrameReady != null)
-            {
-                this.AllFrameReady(sender, e);
-            }
-
-        }*/
 
         void Runtime_DepthFrameReady(object sender, DepthFrameArrivedEventArgs e)
         {
@@ -101,42 +83,94 @@ namespace VVVV.MSKinect.Lib
 
         public void EnableSkeleton(bool enable, bool smooth)//, TransformSmoothParameters sp)
         {
-            if (enable)
+            if (enable && this.bodyreader == null)
             {
                 this.bodyreader = this.Runtime.BodyFrameSource.OpenReader();
                 this.bodyreader.FrameArrived += this.Runtime_SkeletonFrameReady;
-            }           
+            }  
+            else
+            {
+                if (this.bodyreader != null)
+                {
+                    this.bodyreader.FrameArrived -= this.Runtime_SkeletonFrameReady;
+                    this.bodyreader.Dispose();
+                    this.bodyreader = null;
+                }
+            }
         }
 
 
         public void SetPlayer(bool enable)
         {
-            if (enable)
+            if (enable && this.playerreader == null)
             {
                 playerreader = this.Runtime.BodyIndexFrameSource.OpenReader();
                 playerreader.FrameArrived += this.Runtime_PlayerFrameReady;
+            }
+            else
+            {
+                if(this.playerreader != null)
+                {
+                    this.playerreader.FrameArrived -= this.Runtime_PlayerFrameReady;
+                    this.playerreader.Dispose();
+                    this.playerreader = null;
+                }
             }
         }
 
         public void SetDepthMode(bool enable)
         {
-            if (enable)
+            if (enable && this.depthreader == null)
             {
                 depthreader = this.Runtime.DepthFrameSource.OpenReader();
                 depthreader.FrameArrived += this.Runtime_DepthFrameReady ;
+            }
+            else
+            {
+                if (this.depthreader != null)
+                {
+                    this.depthreader.FrameArrived -= this.Runtime_DepthFrameReady;
+                    this.depthreader.Dispose(); this.depthreader = null;
+                }
             }
         }
 
         public void SetColor(bool enable)
         {
-            colorreader = this.Runtime.ColorFrameSource.OpenReader();
-            colorreader.FrameArrived += this.Runtime_ColorFrameReady;
+            if (this.colorreader == null && enable)
+            {
+                colorreader = this.Runtime.ColorFrameSource.OpenReader();
+                colorreader.FrameArrived += this.Runtime_ColorFrameReady;
+            }
+            else
+            {
+                if (this.colorreader != null)
+                {
+                    this.colorreader.FrameArrived -= this.Runtime_ColorFrameReady;
+                    this.colorreader.Dispose();
+                    this.colorreader = null;
+                }
+            }
+            
         }
 
         public void SetInfrared(bool enable)
         {
-            irreader = this.Runtime.InfraredFrameSource.OpenReader();
-            irreader.FrameArrived += irreader_FrameArrived;
+            if (this.irreader == null && enable)
+            {
+                irreader = this.Runtime.InfraredFrameSource.OpenReader();
+                irreader.FrameArrived += irreader_FrameArrived;
+            }
+            else
+            {
+                if (this.irreader != null)
+                {
+                    this.irreader.FrameArrived -= this.irreader_FrameArrived;
+                    this.irreader.Dispose();
+                    this.irreader = null;
+                }
+            }
+
         }
 
         void irreader_FrameArrived(object sender, InfraredFrameArrivedEventArgs e)
@@ -149,7 +183,7 @@ namespace VVVV.MSKinect.Lib
 
 
         #region Start
-        public void Start(bool color, bool skeleton, bool depth)
+        public void Start()
         {
             if (this.Runtime != null)
             {
@@ -163,7 +197,6 @@ namespace VVVV.MSKinect.Lib
                     try
                     {
                         this.Runtime.Open();
-
                         this.IsStarted = true;
                     }
                     catch (Exception ex)
@@ -171,8 +204,14 @@ namespace VVVV.MSKinect.Lib
                         this.IsStarted = false;
                     }
                 }
+            }
+        }
 
-                //this.Runtime.AllFramesReady += Runtime_AllFramesReady;
+        private void Runtime_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
+        {
+            if (this.OnReset != null)
+            {
+                this.OnReset(sender, new EventArgs());
             }
         }
 
@@ -187,7 +226,13 @@ namespace VVVV.MSKinect.Lib
                 {
                     try
                     {
+                        this.EnableSkeleton(false, false);
+                        this.SetColor(false);
+                        this.SetDepthMode(false);
+                        this.SetInfrared(false);
+                        this.SetPlayer(false);
 
+                        this.Runtime.Close();
                     }
                     catch
                     {

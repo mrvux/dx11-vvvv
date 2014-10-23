@@ -17,8 +17,8 @@ namespace VVVV.MSKinect.Nodes
 	            Help = "Provides access to a Kinect through the MSKinect API")]
     public class KinectRuntimeNode : IPluginEvaluate, IDisposable
     {
-        [Input("Index", IsSingle = true)]
-        IDiffSpread<int> FInIndex;
+        /*[Input("Index", IsSingle = true)]
+        IDiffSpread<int> FInIndex;*/
 
         [Input("Enable Color", IsSingle = true, DefaultValue = 1)]
         IDiffSpread<bool> FInEnableColor;
@@ -66,14 +66,18 @@ namespace VVVV.MSKinect.Nodes
 
         private bool haskinect = false;
 
+        
+        private bool onkinectreset = false;
+
         public void Evaluate(int SpreadMax)
         {
-
             bool reset = false;
 
-            if (this.FInIndex.IsChanged || this.FInReset[0] || this.runtime.Runtime == null)
+            if (this.FInReset[0] || this.runtime.Runtime == null)
             {
-                this.haskinect = this.runtime.Assign(this.FInIndex[0]);
+                //Keep until we have multiple kinect support
+                this.haskinect = this.runtime.Assign(0);
+                this.runtime.OnReset += (s, e) => this.onkinectreset = true;
                 reset = true;
             }
 
@@ -84,7 +88,7 @@ namespace VVVV.MSKinect.Nodes
                 {
                     if (this.FInEnabled[0])
                     {
-                        this.runtime.Start(this.FInEnableColor[0], this.FInEnableSkeleton[0], this.FInDepthMode[0]);
+                        this.runtime.Start();
                     }
                     else
                     {
@@ -94,31 +98,37 @@ namespace VVVV.MSKinect.Nodes
                     reset = true;
                 }
 
-                if (this.FInDepthMode.IsChanged || reset)
+                if (this.FInDepthMode.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetDepthMode(this.FInDepthMode[0]);
                 }
 
 
-                if (this.FInEnableColor.IsChanged || reset)
+                if (this.FInEnableColor.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetColor(this.FInEnableColor[0]);
                 }
 
-                if (this.FInInfrared.IsChanged || reset)
+                if (this.FInInfrared.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetInfrared(this.FInInfrared[0]);
                 }
 
-                if (this.FInEnablePlayer.IsChanged || reset)
+                if (this.FInEnablePlayer.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetPlayer(this.FInEnablePlayer[0]);
                 }
 
-                if (this.FInEnableSkeleton.IsChanged || reset)
+                if (this.FInEnableSkeleton.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.EnableSkeleton(this.FInEnableSkeleton[0], false);
                 }
+
+                //TODO : Modify here to make sure flag has been taken properly
+                if (this.onkinectreset)
+                {
+                    this.onkinectreset = false;
+                }  
 
 
                 this.FOutStatus[0] = runtime.Runtime.IsAvailable;
@@ -140,6 +150,7 @@ namespace VVVV.MSKinect.Nodes
             }
 
             this.FOutKCnt[0] = 1; // KinectSensor.KinectSensors.Count;
+                       
         }
 
         public void Dispose()
@@ -147,7 +158,6 @@ namespace VVVV.MSKinect.Nodes
             if (this.runtime != null)
             {
                 this.runtime.Stop();
-                //this.runtime.Runtime.Dispose();
             }
         }
     }

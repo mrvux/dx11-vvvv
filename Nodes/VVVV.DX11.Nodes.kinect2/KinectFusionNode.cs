@@ -5,7 +5,6 @@ using System.Text;
 using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 using FeralTic.DX11;
-using Microsoft.Kinect.Toolkit.Fusion;
 using Microsoft.Kinect;
 using VVVV.MSKinect.Lib;
 using FeralTic.DX11.Resources;
@@ -17,6 +16,7 @@ using FeralTic.DX11.Utils;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using SlimDX.Direct3D11;
+using Microsoft.Kinect.Fusion;
 
 namespace VVVV.DX11.Nodes.Nodes
 {
@@ -384,8 +384,8 @@ namespace VVVV.DX11.Nodes.Nodes
 
                     DX11IndexBuffer ibo = new DX11IndexBuffer(context, ds, false, true);
 
-                    ReadOnlyCollection<Microsoft.Kinect.Toolkit.Fusion.Vector3> pos = m.GetVertices();
-                    ReadOnlyCollection<Microsoft.Kinect.Toolkit.Fusion.Vector3> norm = m.GetNormals();
+                    ReadOnlyCollection<Microsoft.Kinect.Fusion.Vector3> pos = m.GetVertices();
+                    ReadOnlyCollection<Microsoft.Kinect.Fusion.Vector3> norm = m.GetNormals();
                     ReadOnlyCollection<int> col = m.GetColors();
 
                     DataStream dsv = new DataStream(Pos3Norm3Vertex.VertexSize * pos.Count,true,true);
@@ -395,11 +395,11 @@ namespace VVVV.DX11.Nodes.Nodes
 
                     for (int i = 0; i < pos.Count; i++)
                     {
-                        Microsoft.Kinect.Toolkit.Fusion.Vector3 p = pos[i];
-                        Microsoft.Kinect.Toolkit.Fusion.Vector3 n = norm[i];
+                        Microsoft.Kinect.Fusion.Vector3 p = pos[i];
+                        Microsoft.Kinect.Fusion.Vector3 n = norm[i];
 
-                        dsv.Write<Microsoft.Kinect.Toolkit.Fusion.Vector3>(p);
-                        dsv.Write<Microsoft.Kinect.Toolkit.Fusion.Vector3>(n);
+                        dsv.Write<Microsoft.Kinect.Fusion.Vector3>(p);
+                        dsv.Write<Microsoft.Kinect.Fusion.Vector3>(n);
                         dsv.Write<int>(col[i]);
 
                         if (p.X < bmin.X) { bmin.X = p.X; }
