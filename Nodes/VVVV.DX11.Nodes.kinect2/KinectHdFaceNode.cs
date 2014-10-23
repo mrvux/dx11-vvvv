@@ -13,18 +13,18 @@ using Microsoft.Kinect.Face;
 
 namespace VVVV.MSKinect.Nodes
 {
-    [PluginInfo(Name = "Face", 
+    [PluginInfo(Name = "HDFace", 
 	            Category = "Kinect2", 
 	            Version = "Microsoft", 
 	            Author = "flateric", 
 	            Tags = "DX11", 
-	            Help = "Returns face data for each tracked user")]
-    public class KinectFaceNode : IPluginEvaluate, IPluginConnections
+	            Help = "Returns high definition face data for each tracked user")]
+    public class KinectHDFaceNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
         private Pin<KinectRuntime> FInRuntime;
 
-        [Output("Position Infrared")]
+        /*[Output("Position Infrared")]
         private ISpread<Vector2> FOutPositionInfrared;
 
         [Output("Size Infrared")]
@@ -40,18 +40,28 @@ namespace VVVV.MSKinect.Nodes
         private ISpread<Quaternion> FOutOrientation;
 
         [Output("Mouth Open")]
-        private ISpread<DetectionResult> FOutMouthOpen;
+        private ISpread<DetectionResult> FOutMouthOpen;*/
+
+        [Output("Vertices")]
+        private ISpread<Vector3> FOutVertices;
+
+        [Output("Indices")]
+        private ISpread<uint> FOutIndices;
+
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<int> FOutFrameNumber;
+        private ISpread<long> FOutFrameNumber;
 
         private bool FInvalidateConnect = false;
 
         private KinectRuntime runtime;
 
-        private FaceFrameSource[] faceFrameSources = null;
-        private FaceFrameReader[] faceFrameReaders = null;
-        private FaceFrameResult[] lastResults = null;
+        private HighDefinitionFaceFrameSource[] faceFrameSources = null;
+        private HighDefinitionFaceFrameReader[] faceFrameReaders = null;
+
+        private FaceModel faceModel = new FaceModel();
+        private FaceAlignment faceAlignment = new FaceAlignment();
+//private HighDefinitionFaceFrameResult[] lastResults = null;
 
         private bool FInvalidate = false;
 
@@ -60,14 +70,15 @@ namespace VVVV.MSKinect.Nodes
         private object m_lock = new object();
         private int frameid = -1;
 
-        public KinectFaceNode()
+        private FaceModelBuilder faceModelBuilder = null;
+
+        public KinectHDFaceNode()
         {
-            faceFrameReaders = new FaceFrameReader[6];
-            faceFrameSources = new FaceFrameSource[6];
-            lastResults = new FaceFrameResult[6];
+            faceFrameReaders = new HighDefinitionFaceFrameReader[6];
+            faceFrameSources = new HighDefinitionFaceFrameSource[6];
         }
 
-        private int GetIndex(FaceFrameSource src)
+        private int GetIndex(HighDefinitionFaceFrameSource src)
         {
             for (int i = 0; i < faceFrameSources.Length;i++)
             {
@@ -76,8 +87,20 @@ namespace VVVV.MSKinect.Nodes
             return 0;
         }
 
+        private bool first = true;
+
         public void Evaluate(int SpreadMax)
         {
+            if (first)
+            {
+                var vertices = this.faceModel.CalculateVerticesForAlignment(this.faceAlignment);
+                this.FOutVertices.SliceCount = vertices.Count;
+
+                this.FOutIndices.SliceCount = this.faceModel.TriangleIndices.Count;
+                this.FOutIndices.AssignFrom(this.faceModel.TriangleIndices);
+                this.first = false;
+            }
+
             if (this.FInvalidateConnect)
             {
                 if (this.FInRuntime.PluginIO.IsConnected)
@@ -89,25 +112,20 @@ namespace VVVV.MSKinect.Nodes
 
                     if (runtime != null)
                     {
-                        FaceFrameFeatures faceFrameFeatures =
-                            FaceFrameFeatures.BoundingBoxInColorSpace
-                            | FaceFrameFeatures.PointsInColorSpace
-                            | FaceFrameFeatures.RotationOrientation
-                            | FaceFrameFeatures.FaceEngagement
-                            | FaceFrameFeatures.Glasses
-                            | FaceFrameFeatures.Happy
-                            | FaceFrameFeatures.LeftEyeClosed
-                            | FaceFrameFeatures.RightEyeClosed
-                            | FaceFrameFeatures.LookingAway
-                            | FaceFrameFeatures.MouthMoved
-                            | FaceFrameFeatures.MouthOpen;
-
                         for (int i = 0; i < this.faceFrameSources.Length; i++)
                         {
-                            this.faceFrameSources[i] = new FaceFrameSource(this.runtime.Runtime, 0, faceFrameFeatures);
+                            this.faceFrameSources[i] = new HighDefinitionFaceFrameSource(this.runtime.Runtime);
                             this.faceFrameReaders[i] = this.faceFrameSources[i].OpenReader();
                             this.faceFrameReaders[i].FrameArrived += this.faceReader_FrameArrived;
+
+                            
                         }
+
+                        this.faceModelBuilder = this.faceFrameSources[0].OpenModelBuilder(FaceModelBuilderAttributes.None);
+
+                        this.faceModelBuilder.BeginFaceDataCollection();
+
+                        this.faceModelBuilder.CollectionCompleted += this.HdFaceBuilder_CollectionCompleted;
                     }
                 }
                 else
@@ -117,22 +135,45 @@ namespace VVVV.MSKinect.Nodes
                     {
                         this.faceFrameReaders[i].FrameArrived -= this.faceReader_FrameArrived;
                         this.faceFrameReaders[i].Dispose();
-                        this.faceFrameSources[i].Dispose();
+                        //this.faceFrameSources[i].Dispose();
                     }
                 }
 
                 this.FInvalidateConnect = false;
             }
+
+            this.FOutVertices.Flush(true);
         }
 
-        void faceReader_FrameArrived(object sender, Microsoft.Kinect.Face.FaceFrameArrivedEventArgs e)
+        private void HdFaceBuilder_CollectionCompleted(object sender, FaceModelBuilderCollectionCompletedEventArgs e)
         {
-            using (FaceFrame frame = e.FrameReference.AcquireFrame())
+            var modelData = e.ModelData;
+
+            this.faceModel = modelData.ProduceFaceModel();
+
+            this.faceModelBuilder.Dispose();
+            this.faceModelBuilder = null;
+        }
+
+        void faceReader_FrameArrived(object sender, HighDefinitionFaceFrameArrivedEventArgs e)
+        {
+            using (HighDefinitionFaceFrame frame = e.FrameReference.AcquireFrame())
             {
                 if (frame != null)
                 {
-                    var res = frame.FaceFrameResult;
-                    if(res != null)
+                    if (frame.IsTrackingIdValid == false) { return; }
+                    frame.GetAndRefreshFaceAlignmentResult(this.faceAlignment);
+                    var vertices = this.faceModel.CalculateVerticesForAlignment(this.faceAlignment);
+
+                    for (int i = 0; i < vertices.Count; i++)
+                    {
+                        var v = vertices[i];
+                        this.FOutVertices[i] = new Vector3(v.X, v.Y, v.Z);
+                    }
+
+                    this.FOutFrameNumber[0] = frame.RelativeTime.Ticks;
+                    //var res = frame.FaceModel.CalculateVerticesForAlignment(FaceAlignmen;
+                    /*if(res != null)
                     {
                         this.FOutFrameNumber[0] = (int)frame.FaceFrameResult.RelativeTime.Ticks;
 
@@ -155,7 +196,7 @@ namespace VVVV.MSKinect.Nodes
                             res.FaceRotationQuaternion.Z, res.FaceRotationQuaternion.W);
 
                         this.FOutMouthOpen[0] = res.FaceProperties[FaceProperty.MouthOpen];
-                    } 
+                    } */
                 }
             }
         }
@@ -167,14 +208,12 @@ namespace VVVV.MSKinect.Nodes
             {
                 if (skeletonFrame != null)
                 {
-                   // lock (m_lock)
-                   // {
-                   skeletonFrame.GetAndRefreshBodyData(this.lastframe);
-                   // }
 
-                    for (int i = 0; i < this.lastResults.Length;i++)
+                   skeletonFrame.GetAndRefreshBodyData(this.lastframe);
+
+                   for (int i = 0; i < this.lastframe.Length; i++)
                     {
-                        if (this.faceFrameSources[i].IsTrackingIdValid)
+                        if (this.faceFrameSources[0].IsTrackingIdValid)
                         {
 
                         }
@@ -182,7 +221,7 @@ namespace VVVV.MSKinect.Nodes
                         {
                             if (this.lastframe[i].IsTracked)
                             {
-                                this.faceFrameSources[i].TrackingId = this.lastframe[i].TrackingId;
+                                this.faceFrameSources[0].TrackingId = this.lastframe[i].TrackingId;
                             }
                         }
                     }

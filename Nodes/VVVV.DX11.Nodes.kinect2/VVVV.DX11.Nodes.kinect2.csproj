@@ -45,6 +45,8 @@
     <Compile Include="KinectDepthColorTextureNode.cs" />
     <Compile Include="KinectColorDepthTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
+    <Compile Include="KinectHdFaceNode.cs" />
+    <Compile Include="KinectFaceNode.cs" />
     <Compile Include="KinectFusionNode.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -72,6 +74,9 @@
       <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Lib\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
