@@ -61,6 +61,9 @@
     <Compile Include="KinectRuntimeNode.cs" />
     <Compile Include="KinectHandNode.cs" />
     <Compile Include="KinectSkeletonNode.cs" />
+    <Compile Include="Lib\BodyExtensionMethods.cs" />
+    <Compile Include="Lib\FuncBodySelector.cs" />
+    <Compile Include="Lib\IBodySelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,9 +78,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lib\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
