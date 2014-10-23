@@ -47,7 +47,6 @@ namespace VVVV.MSKinect.Nodes
         [Output("Right State")]
         private ISpread<HandState> FOutRState;
 
-
         [Output("Frame Number", IsSingle = true)]
         private ISpread<int> FOutFrameNumber;
 

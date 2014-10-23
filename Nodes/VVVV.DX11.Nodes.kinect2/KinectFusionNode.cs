@@ -27,16 +27,16 @@ namespace VVVV.DX11.Nodes.Nodes
         private Pin<KinectRuntime> FInRuntime;
 
         [Input("Voxel Per Meter", DefaultValue = 256)]
-        private ISpread<int> FInVPM;
+        private IDiffSpread<int> FInVPM;
 
         [Input("Voxel X",DefaultValue=256)]
-        private ISpread<int> FInVX;
+        private IDiffSpread<int> FInVX;
 
         [Input("Voxel Y", DefaultValue = 256)]
-        private ISpread<int> FInVY;
+        private IDiffSpread<int> FInVY;
 
         [Input("Voxel Z", DefaultValue = 256)]
-        private ISpread<int> FInVZ;
+        private IDiffSpread<int> FInVZ;
 
         [Input("Enabled", DefaultValue = 1)]
         private ISpread<bool> FInEnabled;
@@ -89,8 +89,7 @@ namespace VVVV.DX11.Nodes.Nodes
         private FusionColorImageFrame shadedSurfaceColorFrame;
         private Matrix4 worldToCameraTransform;
         private Matrix4 defaultWorldToVolumeTransform;
-        //private Reconstruction volume;
-        private ColorReconstruction colorVolume;
+        private Reconstruction volume;
 
         private bool FInvalidateConnect = false;
         protected KinectRuntime runtime;
@@ -127,17 +126,7 @@ namespace VVVV.DX11.Nodes.Nodes
                     this.runtime = this.FInRuntime[0];
                     this.runtime.DepthFrameReady += this.runtime_DepthFrameReady;
 
-                    var volParam = new ReconstructionParameters(VoxelsPerMeter, VoxelResolutionX, VoxelResolutionY, VoxelResolutionZ);
-                    this.worldToCameraTransform = Matrix4.Identity;
-
-                    //this.volume = Reconstruction.FusionCreateReconstruction(volParam, ProcessorType, 0, this.worldToCameraTransform);
-                    this.colorVolume = ColorReconstruction.FusionCreateReconstruction(volParam, ProcessorType, 0, this.worldToCameraTransform);
                     
-                    //this.volume.
-                    /*FusionPointCloudImageFrame pc;
-                    pc.*/
-
-                    this.defaultWorldToVolumeTransform = this.colorVolume.GetCurrentWorldToVolumeTransform();
 
                     // Depth frames generated from the depth input
                     this.depthFloatBuffer = new FusionFloatImageFrame(width, height);
@@ -148,8 +137,25 @@ namespace VVVV.DX11.Nodes.Nodes
                     // Create images to raycast the Reconstruction Volume
                     this.shadedSurfaceColorFrame = new FusionColorImageFrame(width, height);
 
-                    this.ResetReconstruction();
+                    
                 }
+            }
+
+            if (this.FInVPM.IsChanged || this.FInVX.IsChanged || this.FInVY.IsChanged || this.FInVZ.IsChanged)
+            {
+                if (this.volume != null)
+                {
+                    this.volume.Dispose();
+                }
+
+                var volParam = new ReconstructionParameters(VoxelsPerMeter, VoxelResolutionX, VoxelResolutionY, VoxelResolutionZ);
+                this.worldToCameraTransform = Matrix4.Identity;
+
+                this.volume = Reconstruction.FusionCreateReconstruction(volParam, ProcessorType, 0, this.worldToCameraTransform);
+
+                this.defaultWorldToVolumeTransform = this.volume.GetCurrentWorldToVolumeTransform();
+
+                this.ResetReconstruction();
             }
 
             if (this.runtime != null)
@@ -244,12 +250,12 @@ namespace VVVV.DX11.Nodes.Nodes
                 float energy;
                 // ProcessFrame will first calculate the camera pose and then integrate
                 // if tracking is successful
-                bool trackingSucceeded = this.colorVolume.ProcessFrame(
+                bool trackingSucceeded = this.volume.ProcessFrame(
                     this.depthFloatBuffer,
                     FusionDepthProcessor.DefaultAlignIterationCount,
                     FusionDepthProcessor.DefaultIntegrationWeight,
                     out energy,
-                    this.colorVolume.GetCurrentWorldToCameraTransform());
+                    this.volume.GetCurrentWorldToCameraTransform());
 
                 // If camera tracking failed, no data integration or raycast for reference
                 // point cloud will have taken place, and the internal camera pose
@@ -260,8 +266,8 @@ namespace VVVV.DX11.Nodes.Nodes
                 }
                 else
                 {
-                    Matrix4 calculatedCameraPose = this.colorVolume.GetCurrentWorldToCameraTransform();
-                    Matrix4 sdfPose = this.colorVolume.GetCurrentWorldToVolumeTransform();
+                    Matrix4 calculatedCameraPose = this.volume.GetCurrentWorldToCameraTransform();
+                    Matrix4 sdfPose = this.volume.GetCurrentWorldToVolumeTransform();
 
                     this.FOutWorldCam[0] = this.getmat(calculatedCameraPose);
                     this.FOutWorldVoxel[0] = this.getmat(sdfPose);
@@ -273,7 +279,7 @@ namespace VVVV.DX11.Nodes.Nodes
                 }
 
                 // Calculate the point cloud
-                this.colorVolume.CalculatePointCloud(this.pointCloudBuffer, this.worldToCameraTransform);
+                this.volume.CalculatePointCloud(this.pointCloudBuffer, this.worldToCameraTransform);
                 //this.volume.AlignDepthFloatToReconstruction
 
                 // Shade point cloud and render
@@ -288,18 +294,6 @@ namespace VVVV.DX11.Nodes.Nodes
                     this.shadedSurfaceColorFrame.CopyPixelDataTo(this.pic);
 
                     this.pointCloudBuffer.CopyPixelDataTo(this.piccloud);
-
-                    //this.LockFrameAndExecute((Action<IntPtr>)(src => Marshal.Copy(src, destinationPixelData, 0, this.PixelDataLength)));
-
-                    /*var v = (Action<IntPtr>) (src => Marshal.Copy(src, this.piccloud, 0, 640*480*6));
-
-                    Type t = this.pointCloudBuffer.GetType();
-                    MethodInfo m =t.GetMethod("LockFrameAndExecute",BindingFlags.NonPublic | BindingFlags.Instance);
-                    m.Invoke(this.pointCloudBuffer, new object[] { v });*/
-                    //MethodInfo m = 
-
-                    //this.pointCloudBuffer.CopyPixelDataTo(this.piccloud);
-
 
                     this.FInvalidate = true;
                 }
@@ -349,7 +343,7 @@ namespace VVVV.DX11.Nodes.Nodes
 
                 short[] data = new short[this.VoxelResolutionX * this.VoxelResolutionY * this.VoxelResolutionZ];
 
-                this.colorVolume.ExportVolumeBlock(0, 0, 0, this.VoxelResolutionX, this.VoxelResolutionY, this.VoxelResolutionZ, 1, data);
+                this.volume.ExportVolumeBlock(0, 0, 0, this.VoxelResolutionX, this.VoxelResolutionY, this.VoxelResolutionZ, 1, data);
 
                 DX11DynamicStructuredBuffer<int> b = new DX11DynamicStructuredBuffer<int>(context, this.VoxelResolutionX * this.VoxelResolutionY * this.VoxelResolutionZ);
 
@@ -372,9 +366,9 @@ namespace VVVV.DX11.Nodes.Nodes
                     this.FGeomOut[0].Dispose(context);
                 }
 
-                if (this.colorVolume != null)
+                if (this.volume != null)
                 {
-                    ColorMesh m = this.colorVolume.CalculateMesh(this.FInGeomVoxelStep[0]);
+                    Mesh m = this.volume.CalculateMesh(this.FInGeomVoxelStep[0]);
 
                     DX11IndexedGeometry geom = new DX11IndexedGeometry(context);
 
@@ -388,7 +382,7 @@ namespace VVVV.DX11.Nodes.Nodes
 
                     ReadOnlyCollection<Microsoft.Kinect.Fusion.Vector3> pos = m.GetVertices();
                     ReadOnlyCollection<Microsoft.Kinect.Fusion.Vector3> norm = m.GetNormals();
-                    ReadOnlyCollection<int> col = m.GetColors();
+                    //ReadOnlyCollection<int> col = m.GetColors();
 
                     DataStream dsv = new DataStream(Pos3Norm3Vertex.VertexSize * pos.Count,true,true);
 
@@ -402,7 +396,7 @@ namespace VVVV.DX11.Nodes.Nodes
 
                         dsv.Write<Microsoft.Kinect.Fusion.Vector3>(p);
                         dsv.Write<Microsoft.Kinect.Fusion.Vector3>(n);
-                        dsv.Write<int>(col[i]);
+                        //dsv.Write<int>(col[i]);
 
                         if (p.X < bmin.X) { bmin.X = p.X; }
                         if (p.Y < bmin.Y) { bmin.Y = p.Y; }
@@ -415,9 +409,9 @@ namespace VVVV.DX11.Nodes.Nodes
 
                     geom.IndexBuffer = ibo;
                     geom.HasBoundingBox = true;
-                    geom.InputLayout = FusionColoredVertex.Layout;
+                    geom.InputLayout = Pos3Norm3Vertex.Layout;// FusionColoredVertex.Layout;
                     geom.Topology = SlimDX.Direct3D11.PrimitiveTopology.TriangleList;
-                    geom.VertexSize = FusionColoredVertex.VertexSize;
+                    geom.VertexSize = Pos3Norm3Vertex.VertexSize;// FusionColoredVertex.VertexSize;
                     geom.VertexBuffer = BufferHelper.CreateVertexBuffer(context, dsv, false, true);
                     geom.VerticesCount = pos.Count;
                     geom.BoundingBox = new BoundingBox(bmin, bmax);
@@ -459,9 +453,9 @@ namespace VVVV.DX11.Nodes.Nodes
             // Set the world-view transform to identity, so the world origin is the initial camera location.
             this.worldToCameraTransform = Matrix4.Identity;
 
-            if (null != this.colorVolume)
+            if (null != this.volume)
             {
-                this.colorVolume.ResetReconstruction(this.worldToCameraTransform);
+                this.volume.ResetReconstruction(this.worldToCameraTransform);
             }
         }
 

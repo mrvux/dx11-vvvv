@@ -28,6 +28,9 @@
     <Reference Include="Microsoft.Kinect.Fusion">
       <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.Fusion.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect.VisualGestureBuilder">
+      <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.VisualGestureBuilder.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -42,6 +45,10 @@
     <Compile Include="KinectDepthColorTextureNode.cs" />
     <Compile Include="KinectColorDepthTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
+    <Compile Include="KinectFusionNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="KinectGestureNode.cs" />
     <Compile Include="KinectWorldTextureNode.cs" />
     <Compile Include="KinectIRTextureNode.cs" />
     <Compile Include="KinectDepthTextureNode.cs">
