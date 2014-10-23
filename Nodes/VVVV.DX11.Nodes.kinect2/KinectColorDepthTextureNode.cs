@@ -37,6 +37,9 @@ namespace VVVV.DX11.Nodes.MSKinect
         private int width;
         private int height;
 
+        [Input("Raw Data", IsSingle = true, IsToggle = true, DefaultBoolean = true)]
+        protected Pin<bool> FRawData;
+
         [Input("Relative Lookup", IsSingle = true, IsToggle = true, DefaultBoolean = false)]
         protected Pin<bool> FRelativeLookup;
 
@@ -97,18 +100,31 @@ namespace VVVV.DX11.Nodes.MSKinect
         {
             lock (m_lock)
             {
-                for (int i = 0; i < this.colpoints.Length; i++)
+                if (FRawData[0])
+                {
+                    for (int i = 0; i < this.colpoints.Length; i++)
+                    {
+                        this.colorimage[i * 2] = colpoints[i].X;
+                        this.colorimage[i * 2 + 1] = colpoints[i].Y;
+                    }
+                }
+                else
                 {
                     if (FRelativeLookup[0])
                     {
-                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - i % 1920, 0, 1920, 0, 1, TMapMode.Float);
-                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - VMath.Abs(i / 1920), 0, 1080, 0, 1, TMapMode.Float);
+                        for (int i = 0; i < this.colpoints.Length; i++)
+                        {
+                            this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - i % 1920, 0, 1920, 0, 1, TMapMode.Float);
+                            this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - VMath.Abs(i / 1920), 0, 1080, 0, 1, TMapMode.Float);
+                        }
                     }
                     else
                     {
-
-                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X, 0, 1920, 0, 1, TMapMode.Clamp);
-                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y, 0, 1080, 0, 1, TMapMode.Clamp);
+                        for (int i = 0; i < this.colpoints.Length; i++)
+                        {
+                            this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X, 0, 1920, 0, 1, TMapMode.Clamp);
+                            this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y, 0, 1080, 0, 1, TMapMode.Clamp);
+                        }
                     }
                 }
 
