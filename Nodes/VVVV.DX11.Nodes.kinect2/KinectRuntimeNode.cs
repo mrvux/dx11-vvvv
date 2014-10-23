@@ -69,15 +69,22 @@ namespace VVVV.MSKinect.Nodes
         
         private bool onkinectreset = false;
 
+
         public void Evaluate(int SpreadMax)
         {
             bool reset = false;
 
             if (this.FInReset[0] || this.runtime.Runtime == null)
             {
+                bool regevent = this.runtime.Runtime == null;
                 //Keep until we have multiple kinect support
                 this.haskinect = this.runtime.Assign(0);
-                this.runtime.OnReset += (s, e) => this.onkinectreset = true;
+
+                if (regevent)
+                {
+                    this.runtime.OnReset += (s, e) => this.onkinectreset = true;
+                }
+
                 reset = true;
             }
 

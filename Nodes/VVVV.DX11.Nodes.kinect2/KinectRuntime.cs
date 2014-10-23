@@ -36,7 +36,7 @@ namespace VVVV.MSKinect.Lib
         {
             if (this.Runtime != null)
             {
-                this.Runtime = null;
+                return true;
             }
 
             if (this.IsStarted)
@@ -83,7 +83,7 @@ namespace VVVV.MSKinect.Lib
 
         public void EnableSkeleton(bool enable, bool smooth)
         {
-            if (enable && this.bodyreader == null)
+            if (enable && this.bodyreader == null && this.Runtime.IsAvailable)
             {
                 this.bodyreader = this.Runtime.BodyFrameSource.OpenReader();
                 this.bodyreader.FrameArrived += this.Runtime_SkeletonFrameReady;
@@ -102,7 +102,7 @@ namespace VVVV.MSKinect.Lib
 
         public void SetPlayer(bool enable)
         {
-            if (enable && this.playerreader == null)
+            if (enable && this.playerreader == null && this.Runtime.IsAvailable)
             {
                 playerreader = this.Runtime.BodyIndexFrameSource.OpenReader();
                 playerreader.FrameArrived += this.Runtime_PlayerFrameReady;
@@ -120,7 +120,7 @@ namespace VVVV.MSKinect.Lib
 
         public void SetDepthMode(bool enable)
         {
-            if (enable && this.depthreader == null)
+            if (enable && this.depthreader == null && this.Runtime.IsAvailable)
             {
                 depthreader = this.Runtime.DepthFrameSource.OpenReader();
                 depthreader.FrameArrived += this.Runtime_DepthFrameReady ;
@@ -137,7 +137,7 @@ namespace VVVV.MSKinect.Lib
 
         public void SetColor(bool enable)
         {
-            if (this.colorreader == null && enable)
+            if (this.colorreader == null && enable && this.Runtime.IsAvailable)
             {
                 colorreader = this.Runtime.ColorFrameSource.OpenReader();
                 colorreader.FrameArrived += this.Runtime_ColorFrameReady;
@@ -156,7 +156,7 @@ namespace VVVV.MSKinect.Lib
 
         public void SetInfrared(bool enable)
         {
-            if (this.irreader == null && enable)
+            if (this.irreader == null && enable && this.Runtime.IsAvailable)
             {
                 irreader = this.Runtime.InfraredFrameSource.OpenReader();
                 irreader.FrameArrived += irreader_FrameArrived;
