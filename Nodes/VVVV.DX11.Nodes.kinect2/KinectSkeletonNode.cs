@@ -48,7 +48,7 @@ namespace VVVV.MSKinect.Nodes
         private ISpread<string> FOutJointState;
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<int> FOutFrameNumber;
+        private ISpread<long> FOutFrameNumber;
 
 
         private bool FInvalidateConnect = false;
@@ -59,7 +59,7 @@ namespace VVVV.MSKinect.Nodes
 
         private Body[] lastframe = new Body[6];
         private object m_lock = new object();
-        private int frameid = -1;
+        private long frameid = -1;
 
         public void Evaluate(int SpreadMax)
         {

@@ -65,6 +65,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     }
 
                     this.FInvalidate = true;
+                    this.frameindex = frame.RelativeTime.Ticks;
                 }
             }
         }

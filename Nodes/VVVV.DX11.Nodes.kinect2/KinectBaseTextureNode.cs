@@ -30,9 +30,9 @@ namespace VVVV.DX11.Nodes.MSKinect
         Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
 
         [Output("Frame Index", IsSingle = true, Order = 10)]
-        private ISpread<int> FOutFrameIndex;
+        private ISpread<long> FOutFrameIndex;
 
-        protected int frameindex = -1;
+        protected long frameindex = -1;
 
         private bool FInvalidateConnect = false;
         protected bool FInvalidate = true;

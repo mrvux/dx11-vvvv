@@ -26,7 +26,6 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Help = "")]
     public class KinectColorTextureNode : KinectBaseTextureNode
     {
-        private object m_depthlock = new object();
         private IntPtr depthread;
         private IntPtr depthwrite;
 
@@ -58,7 +57,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 using (frame)
                 {
-                    lock (m_depthlock)
+                    lock (m_lock)
                     {
                         frame.CopyConvertedFrameDataToIntPtr(this.depthwrite,1920 * 1080 * 4, ColorImageFormat.Bgra);
 
@@ -66,8 +65,8 @@ namespace VVVV.DX11.Nodes.MSKinect
                         this.depthread = this.depthwrite;
                         this.depthwrite = swap;
                     }
-
                     this.FInvalidate = true;
+                    this.frameindex = frame.RelativeTime.Ticks;
                 }
             }
         }
@@ -89,7 +88,10 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
-            texture.WriteData(this.depthread,1920*1080*4);
+            lock (m_lock)
+            {
+                texture.WriteData(this.depthread, 1920 * 1080 * 4);
+            }
         }
 
         protected override void OnRuntimeConnected()

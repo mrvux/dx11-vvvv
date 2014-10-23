@@ -26,7 +26,6 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Help = "Returns a 16bit depthmap from the Kinects depth camera.")]
     public class KinectIRTextureNode : KinectBaseTextureNode
     {
-        private object m_depthlock = new object();
         private IntPtr depthread;
         private IntPtr depthwrite;
 
@@ -58,7 +57,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 using (frame)
                 {
-                    lock (m_depthlock)
+                    lock (m_lock)
                     {
                         frame.CopyFrameDataToIntPtr(this.depthwrite, 512 * 424 * 2);
 
@@ -68,6 +67,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     }
 
                     this.FInvalidate = true;
+                    this.frameindex = frame.RelativeTime.Ticks;
                 }
             }
         }
@@ -89,7 +89,10 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
-            texture.WriteData(this.depthread,512 * 424 * 2);
+            lock (m_lock)
+            {
+                texture.WriteData(this.depthread, 512 * 424 * 2);
+            }
         }
 
         protected override void OnRuntimeConnected()

@@ -80,7 +80,10 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
-            texture.WriteData<int>(this.playerimage);
+            lock (m_lock)
+            {
+                texture.WriteData<int>(this.playerimage);
+            }      
         }
 
         protected override void OnRuntimeConnected()
@@ -103,7 +106,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             if (frame != null)
             {
                 this.FInvalidate = true;
-                this.frameindex = (int)frame.RelativeTime.Ticks;
+                this.frameindex = frame.RelativeTime.Ticks;
                 lock (m_lock)
                 {
                     frame.CopyFrameDataToArray(this.rawdepth);
