@@ -25,7 +25,7 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Version = "Microsoft", 
 	            Author = "vux", 
 	            Tags = "DX11, texture",
-                Help = "Returns a G32R32F formatted texture whose pixels represent a UV map mapping pixels from depth to color space. Enable Relative Lookup to use it as displacement texture.")]
+                Help = "Returns a G32R32F formatted texture whose pixels represent a UV map mapping pixels from depth to color space.")]
     public unsafe class KinectDepthColorTextureNode : KinectBaseTextureNode
     {
         private object m_depthlock = new object();

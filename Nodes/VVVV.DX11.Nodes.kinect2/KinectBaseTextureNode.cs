@@ -23,7 +23,7 @@ namespace VVVV.DX11.Nodes.MSKinect
          [DllImport("msvcrt.dll", SetLastError = false)]
         protected static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
 
-        [Input("Kinect Runtime")]
+        [Input("Kinect Runtime", Order = -20)]
         private Pin<KinectRuntime> FInRuntime;
 
         [Output("Texture", IsSingle = true)]
