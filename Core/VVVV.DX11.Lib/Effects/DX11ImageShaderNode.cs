@@ -665,6 +665,7 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 entry.UnLock();
             }
+            this.lastframetargets.Clear();
         }
         #endregion
 
