@@ -53,26 +53,23 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
 
-            if (invalidate)
+            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                for (int i = 0; i < this.FOutGeom.SliceCount; i++)
+                if (this.FInEnabled[i] && this.FInGeom[i].Contains(context))
                 {
-                    if (this.FInEnabled[i])
-                    {
-                        DX11IndexedGeometry v = (DX11IndexedGeometry)this.FInGeom[i][context].ShallowCopy();
+                    DX11IndexedGeometry v = (DX11IndexedGeometry)this.FInGeom[i][context].ShallowCopy();
 
-                        DX11PerVertexIndexedDrawer drawer = new DX11PerVertexIndexedDrawer();
-                        v.AssignDrawer(drawer);
+                    DX11PerVertexIndexedDrawer drawer = new DX11PerVertexIndexedDrawer();
+                    v.AssignDrawer(drawer);
 
-                        this.FOutGeom[i][context] = v;
-
-                    }
-                    else
-                    {
-                        this.FOutGeom[i][context] = this.FInGeom[i][context];
-                    }
+                    this.FOutGeom[i][context] = v;
 
                 }
+                else
+                {
+                    this.FOutGeom[i][context] = this.FInGeom[i][context];
+                }
+
             }
         }
 

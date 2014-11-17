@@ -45,9 +45,6 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            /*if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
-            this.FValid.SliceCount = 1;*/
-
             if (this.FApply[0])
             {
                 this.FInChannels.Sync();

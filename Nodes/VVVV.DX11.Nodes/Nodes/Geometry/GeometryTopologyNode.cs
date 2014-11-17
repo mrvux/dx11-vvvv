@@ -58,7 +58,7 @@ namespace VVVV.DX11.Nodes
 
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined)
+                if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined && this.FInGeom[i].Contains(context))
                 {
 
                     IDX11Geometry geom = this.FInGeom[i][context].ShallowCopy();

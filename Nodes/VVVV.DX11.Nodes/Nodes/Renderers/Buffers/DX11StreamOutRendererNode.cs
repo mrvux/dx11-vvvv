@@ -94,6 +94,7 @@ namespace VVVV.DX11.Nodes
             if (this.FOutGeom[0] == null)
             {
                 this.FOutGeom[0] = new DX11Resource<IDX11Geometry>();
+                this.FOutBuffer[0] = new DX11Resource<DX11RawBuffer>();
             }
 
             if (reset)
