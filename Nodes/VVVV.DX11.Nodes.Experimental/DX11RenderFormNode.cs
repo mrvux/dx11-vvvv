@@ -33,6 +33,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Import()]
         protected ILogger logger;
 
+        [Input("Position", AsInt=true)]
+        protected IDiffSpread<Vector2> FInPosition;
+
         [Input("TopMost")]
         protected IDiffSpread<bool> FInTopMost;
 
@@ -86,6 +89,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         private int prevx = 400;
         private int prevy = 300;
 
+        private int prevpx;
+        private int prevpy;
+
         private bool setfull = false;
         private bool invalidate;
         #endregion
@@ -134,6 +140,12 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             if (this.FInResize[0])
             {
                 this.FInvalidateSwapChain = true;
+            }
+
+            if (this.FInPosition.IsChanged)
+            {
+                this.form.Left = (int)this.FInPosition[0].X;
+                this.form.Top = (int)this.FInPosition[0].Y;
             }
 
             this.updateddevices.Clear();
