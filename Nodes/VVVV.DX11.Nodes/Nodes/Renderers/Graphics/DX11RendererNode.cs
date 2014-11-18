@@ -180,8 +180,14 @@ namespace VVVV.DX11.Nodes
         [Input("Background Color",DefaultColor=new double[] { 0,0,0,1 },Order=3)]
         protected ISpread<RGBAColor> FInBgColor;
 
-        [Input("VSync",Visibility=PinVisibility.OnlyInspector)]
+        [Input("VSync",Visibility=PinVisibility.OnlyInspector, IsSingle=true)]
         protected ISpread<bool> FInVsync;
+
+        [Input("Buffer Count", Visibility = PinVisibility.OnlyInspector, DefaultValue=1, IsSingle=true)]
+        protected ISpread<int> FInBufferCount;
+
+        [Input("Do Not Wait", Visibility = PinVisibility.OnlyInspector, IsSingle=true)]
+        protected ISpread<bool> FInDNW;
 
         [Input("Show Cursor", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInShowCursor;
@@ -302,7 +308,7 @@ namespace VVVV.DX11.Nodes
                 this.depthmanager.FormatChanged = false; //Clear flag ok
             }
             
-            if (FInAASamplesPerPixel.IsChanged)
+            if (FInAASamplesPerPixel.IsChanged || this.FInBufferCount.IsChanged)
             {
                 this.depthmanager.NeedReset = true;
                 this.FInvalidateSwapChain = true;
@@ -535,7 +541,8 @@ namespace VVVV.DX11.Nodes
                     sd.Count = maxlevels;
                 }
 
-                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd);
+                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, 60,
+                    this.FInBufferCount[0]);
 
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
@@ -581,17 +588,19 @@ namespace VVVV.DX11.Nodes
             Stopwatch sw = Stopwatch.StartNew();
             try
             {
+                PresentFlags flags = this.FInDNW[0] ? (PresentFlags)8 : PresentFlags.None;
                 if (this.FInVsync[0])
                 {
-                    this.FOutBackBuffer[0][this.RenderContext].Present(1, PresentFlags.None); 
+                    this.FOutBackBuffer[0][this.RenderContext].Present(1, flags); 
                 }
                 else
                 {
-                    this.FOutBackBuffer[0][this.RenderContext].Present(0, PresentFlags.None); 
+                    this.FOutBackBuffer[0][this.RenderContext].Present(0, flags); 
                 }
             }
             catch
             {
+                
             }
 
             sw.Stop();

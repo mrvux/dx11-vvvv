@@ -104,7 +104,8 @@ namespace VVVV.DX11.Nodes.Renderers
 
              if (!this.swapchain.Contains(context))
              {
-                 this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1, 0));
+                 this.swapchain[context] = new DX11SwapChain(context, this.Handle, 
+                     SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1, 0),60,1);
              }
 
              if (this.resized)
@@ -158,7 +159,8 @@ namespace VVVV.DX11.Nodes.Renderers
 
              if (!this.swapchain.Contains(context))
              {
-                 this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1,0));
+                 this.swapchain[context] = new DX11SwapChain(context, this.Handle, 
+                     SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1,0), 60,1);
              }
 
              if (this.resized)
