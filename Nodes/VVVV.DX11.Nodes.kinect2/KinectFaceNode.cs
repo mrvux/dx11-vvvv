@@ -36,11 +36,38 @@ namespace VVVV.MSKinect.Nodes
         [Output("Size Color")]
         private ISpread<Vector2> FOutSizeColor;
 
+        [Output("Points Color")]
+        private ISpread<ISpread<Vector2>> FOutPointsColor;
+
         [Output("Orientation")]
         private ISpread<Quaternion> FOutOrientation;
 
+        [Output("Engaged")]
+        private ISpread<string> FOutEngaged;
+
+        [Output("Wear Glasses")]
+        private ISpread<string> FOutWearGlasses;
+
+        [Output("Happy")]
+        private ISpread<string> FOutHappy;
+
+        [Output("Left Eye Closed")]
+        private ISpread<string> FOutLeftEyeClosed;
+
+        [Output("Right Eye Closed")]
+        private ISpread<string> FOutRightEyeClosed;
+
+        [Output("Looking Away")]
+        private ISpread<string> FOutlookAway;
+
         [Output("Mouth Open")]
-        private ISpread<DetectionResult> FOutMouthOpen;
+        private ISpread<string> FOutMouthOpen;
+
+        [Output("Mouth Moved")]
+        private ISpread<string> FOutMouthMoved;
+
+        [Output("User Index")]
+        private ISpread<int> FOutUserIndex;
 
         [Output("Frame Number", IsSingle = true)]
         private ISpread<int> FOutFrameNumber;
@@ -123,6 +150,91 @@ namespace VVVV.MSKinect.Nodes
 
                 this.FInvalidateConnect = false;
             }
+
+            List<FaceFrameResult> results = new List<FaceFrameResult>();
+
+
+            for (int i = 0; i < lastResults.Length; i++)
+            {
+                if (this.lastResults[i] != null && this.faceFrameReaders[i].FaceFrameSource.IsTrackingIdValid)
+                {
+                    results.Add(lastResults[i]);
+                }
+            }
+
+            this.FOutWearGlasses.SliceCount = results.Count;
+            this.FOutUserIndex.SliceCount = results.Count;
+            this.FOutSizeInfrared.SliceCount = results.Count;
+            this.FOutSizeColor.SliceCount = results.Count;
+            this.FOutRightEyeClosed.SliceCount = results.Count;
+            this.FOutPositionInfrared.SliceCount = results.Count;
+            this.FOutPositionColor.SliceCount = results.Count;
+            this.FOutPointsColor.SliceCount = results.Count;
+            this.FOutOrientation.SliceCount = results.Count;
+            this.FOutMouthOpen.SliceCount = results.Count;
+            this.FOutMouthMoved.SliceCount = results.Count;
+            this.FOutlookAway.SliceCount = results.Count;
+            this.FOutLeftEyeClosed.SliceCount = results.Count;
+            this.FOutHappy.SliceCount = results.Count;
+            this.FOutEngaged.SliceCount = results.Count;
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                this.WriteFaceData(results[i], i);
+            }
+        }
+
+        private Vector2 ProcessPoint(Vector2 pos)
+        {
+            pos.X /= 1920.0f;
+            pos.X = pos.X * 2.0f - 1.0f;
+
+            pos.Y = 1.0f - (pos.Y / 1080.0f);
+            pos.Y = pos.Y * 2.0f - 1.0f;
+            return pos;
+        }
+
+        private void WriteFaceData(FaceFrameResult res, int slice)
+        {
+            Vector2 pos;
+            Vector2 size;
+
+            size.X = Math.Abs(res.FaceBoundingBoxInColorSpace.Right - res.FaceBoundingBoxInColorSpace.Left);
+            size.Y = Math.Abs(res.FaceBoundingBoxInColorSpace.Bottom - res.FaceBoundingBoxInColorSpace.Top);
+
+            pos.X = (float)res.FaceBoundingBoxInColorSpace.Left + (size.X * 0.5f);
+            pos.Y = (float)res.FaceBoundingBoxInColorSpace.Top + (size.Y * 0.5f);
+
+            pos = this.ProcessPoint(pos);
+
+            size.X /= 1920.0f;
+            size.Y /= 1080.0f;
+
+            this.FOutPositionColor[slice] = pos;
+            this.FOutSizeColor[slice] = size;
+
+            this.FOutPointsColor[slice].SliceCount = res.FacePointsInColorSpace.Count;
+            var pointRef = this.FOutPointsColor[slice];
+            for (int i = 0; i < res.FacePointsInColorSpace.Count; i++)
+            {
+                var pt = res.FacePointsInColorSpace[(FacePointType)i];
+                pointRef[i] = this.ProcessPoint(new Vector2(pt.X, pt.Y));
+            }
+
+
+
+            this.FOutOrientation[slice] = new Quaternion(res.FaceRotationQuaternion.X, res.FaceRotationQuaternion.Y,
+                res.FaceRotationQuaternion.Z, res.FaceRotationQuaternion.W);
+
+            this.FOutEngaged[slice] = res.FaceProperties[FaceProperty.Engaged].ToString();
+            this.FOutWearGlasses[slice] = res.FaceProperties[FaceProperty.WearingGlasses].ToString();
+            this.FOutHappy[slice] = res.FaceProperties[FaceProperty.Happy].ToString();
+            this.FOutLeftEyeClosed[slice] = res.FaceProperties[FaceProperty.LeftEyeClosed].ToString();
+            this.FOutRightEyeClosed[slice] = res.FaceProperties[FaceProperty.RightEyeClosed].ToString();
+            this.FOutlookAway[slice] = res.FaceProperties[FaceProperty.LookingAway].ToString();
+            this.FOutMouthMoved[slice] = res.FaceProperties[FaceProperty.MouthMoved].ToString();
+            this.FOutMouthOpen[slice] = res.FaceProperties[FaceProperty.MouthOpen].ToString();
+            this.FOutUserIndex[slice] = (int)res.TrackingId;
         }
 
         void faceReader_FrameArrived(object sender, Microsoft.Kinect.Face.FaceFrameArrivedEventArgs e)
@@ -132,30 +244,23 @@ namespace VVVV.MSKinect.Nodes
                 if (frame != null)
                 {
                     var res = frame.FaceFrameResult;
+
                     if(res != null)
                     {
+                        for (int i = 0; i < this.lastResults.Length; i++)
+                        {
+                            if (frame.TrackingId == this.faceFrameReaders[i].FaceFrameSource.TrackingId)
+                            {
+                                this.lastResults[i] = res;
+                            }
+                        }
+
                         this.FOutFrameNumber[0] = (int)frame.FaceFrameResult.RelativeTime.Ticks;
 
-                        Vector2 pos;
-                        Vector2 size;
+                        //this.WriteFaceData(res, 0);
+                    }
 
-                        size.X = res.FaceBoundingBoxInColorSpace.Right - res.FaceBoundingBoxInColorSpace.Left;
-                        //size.X /= 1920.0f;
-
-                        size.Y = res.FaceBoundingBoxInColorSpace.Bottom - res.FaceBoundingBoxInColorSpace.Top;
-                        //size.Y /= 1080.0f;
-
-                        pos.X = size.X / 2.0f + (float)res.FaceBoundingBoxInColorSpace.Left;
-                        pos.Y = size.Y / 2.0f + (float)res.FaceBoundingBoxInColorSpace.Top;
-
-                        this.FOutPositionColor[0] = pos;
-                        this.FOutSizeColor[0] = size;
-                        
-                        this.FOutOrientation[0] = new Quaternion(res.FaceRotationQuaternion.X, res.FaceRotationQuaternion.Y, 
-                            res.FaceRotationQuaternion.Z, res.FaceRotationQuaternion.W);
-
-                        this.FOutMouthOpen[0] = res.FaceProperties[FaceProperty.MouthOpen];
-                    } 
+                    
                 }
             }
         }
@@ -167,24 +272,22 @@ namespace VVVV.MSKinect.Nodes
             {
                 if (skeletonFrame != null)
                 {
-                   // lock (m_lock)
-                   // {
                    skeletonFrame.GetAndRefreshBodyData(this.lastframe);
-                   // }
 
                     for (int i = 0; i < this.lastResults.Length;i++)
                     {
-                        if (this.faceFrameSources[i].IsTrackingIdValid)
+                        if (this.lastframe[i].IsTracked)
+                        {
+                            this.faceFrameSources[i].TrackingId = this.lastframe[i].TrackingId;
+                        }
+                        /*if (this.faceFrameSources[i].IsTrackingIdValid)
                         {
 
                         }
                         else
                         {
-                            if (this.lastframe[i].IsTracked)
-                            {
-                                this.faceFrameSources[i].TrackingId = this.lastframe[i].TrackingId;
-                            }
-                        }
+  
+                        }*/
                     }
 
                     skeletonFrame.Dispose();

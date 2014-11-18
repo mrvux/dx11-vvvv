@@ -27,7 +27,7 @@ namespace VVVV.DX11.Nodes.MSKinect
     public class KinectBackGroundTextureNode : KinectBaseTextureNode
     {
         private BackgroundRemovedColorStream backgroundstream;
-        private Skeleton[] skeletons;
+        private Skeleton[] skeletons; 
         private int currentlyTrackedSkeletonId;
 
         private byte[] bgdata;
@@ -67,6 +67,7 @@ namespace VVVV.DX11.Nodes.MSKinect
         {
             this.runtime.AllFrameReady += runtime_AllFrameReady;
             this.backgroundstream = new BackgroundRemovedColorStream(this.runtime.Runtime);
+            this.backgroundstream.Enable(ColorImageFormat.RgbResolution640x480Fps30, DepthImageFormat.Resolution640x480Fps30);
             this.backgroundstream.BackgroundRemovedFrameReady += backgroundstream_BackgroundRemovedFrameReady;
         }
 
@@ -80,6 +81,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     {
                         backgroundRemovedFrame.CopyPixelDataTo(this.bgdata);
                     }
+                    this.frameindex = (int)backgroundRemovedFrame.Timestamp;
                 }
             }
         }
@@ -106,6 +108,11 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 if (null != skeletonFrame)
                 {
+                    if (this.skeletons == null)
+                    {
+                        this.skeletons = new Skeleton[skeletonFrame.SkeletonArrayLength];
+                    }
+
                     skeletonFrame.CopySkeletonDataTo(this.skeletons);
                     this.backgroundstream.ProcessSkeleton(this.skeletons, skeletonFrame.Timestamp);
                 }

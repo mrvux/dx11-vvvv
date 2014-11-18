@@ -107,8 +107,11 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void Disposing()
         {
-            Marshal.FreeHGlobal(this.depthread);
-            Marshal.FreeHGlobal(depthwrite);
+            lock( m_lock)
+            {
+                Marshal.FreeHGlobal(this.depthread);
+                Marshal.FreeHGlobal(depthwrite);
+            }
         }
     }
 }
