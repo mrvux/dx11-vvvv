@@ -17,7 +17,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
     {
         protected abstract ShaderResourceView GetSRV(DX11RenderContext context, int slice);
 
-
         protected virtual ShaderResourceView GetDefaultSRV(DX11RenderContext context) { return null; }
 
 
