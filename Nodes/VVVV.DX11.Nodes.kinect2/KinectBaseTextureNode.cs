@@ -136,6 +136,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         public void Dispose()
         {
+            if (this.runtime != null)
+            {
+                //Force a disconnect, to unregister event
+                this.OnRuntimeDisconnected();
+            }
+
             this.Disposing();
 
             if (this.FTextureOutput[0] != null)
