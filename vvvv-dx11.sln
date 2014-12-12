@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FeralTic", "FeralTic", "{5F0D7AF2-A20D-44E4-9E22-953026C1DCE4}"
 EndProject
@@ -41,6 +41,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.DX11.Nodes.QrCode", "Nodes\VVVV.DX11.Nodes.QrCode\VVVV.DX11.Nodes.QrCode.csproj", "{347BF0F2-19E1-4B2B-B125-8AC265CB034A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.Nodes.Bullet", "Nodes\VVVV.DX11.Nodes.Bullet\VVVV.Nodes.Bullet.csproj", "{220F0ECF-6A3B-4DEF-9C34-95ED87DFE439}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{29554C28-CFAA-4FE9-8638-19FF83C5F0E1}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

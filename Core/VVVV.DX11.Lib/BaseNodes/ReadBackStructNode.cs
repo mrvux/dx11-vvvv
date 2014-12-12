@@ -60,48 +60,53 @@ namespace VVVV.DX11.Nodes
                     return;
                 }
 
-                IDX11RWStructureBuffer b = this.FInput[0][this.AssignedContext];
-                if (b != null)
+                this.FOutput.SliceCount = 0; // reset
+
+                for (int i = 0; i < SpreadMax; i++)
                 {
-                    if (Marshal.SizeOf(typeof(T)) != b.Stride)
+                    IDX11RWStructureBuffer b = this.FInput[i][this.AssignedContext];
+                    if (b != null)
                     {
-                        this.FOutput.SliceCount = 0;
-                        this.FHost.Log(TLogType.Error, "Buffer has an invalid stride");
-                        return;
-                    }
+                        if (Marshal.SizeOf(typeof(T)) != b.Stride)
+                        {
+                            this.FOutput.SliceCount = 0;
+                            this.FHost.Log(TLogType.Error, "Buffer has an invalid stride");
+                            return;
+                        }
 
-                    if (this.staging != null && this.staging.ElementCount != b.ElementCount) { this.staging.Dispose(); this.staging = null; }
+                        if (this.staging != null && this.staging.ElementCount != b.ElementCount) { this.staging.Dispose(); this.staging = null; }
 
-                    if (this.staging == null)
-                    {
-                        staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, b.Stride);
-                    }
+                        if (this.staging == null)
+                        {
+                            staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, b.Stride);
+                        }
 
-                    this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
+                        this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
 
-                    this.FOutput.SliceCount = b.ElementCount;
+                        this.FOutput.SliceCount += b.ElementCount;
 
-                    DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
-                    try
-                    {
+                        DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
+                        try
+                        {
                         
-                        this.WriteData(ds, b.ElementCount);
+                            this.WriteData(ds, b.ElementCount);
 
-                        this.FOutput.Flush(true);
-                    }
-                    catch (Exception ex)
-                    {
-                        FHost.Log(TLogType.Error, "Error inreadback node: " + ex.Message);
-                    }
-                    finally
-                    {
-                        staging.UnMap(this.AssignedContext.CurrentDeviceContext);
-                    }
+                            this.FOutput.Flush(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            FHost.Log(TLogType.Error, "Error in ReadBack Node: " + ex.Message);
+                        }
+                        finally
+                        {
+                            staging.UnMap(this.AssignedContext.CurrentDeviceContext);
+                        }
 
-                }
-                else
-                {
-                    this.FOutput.SliceCount = 0;
+                    }
+                    else
+                    {
+                        if (i == 0) { this.FOutput.SliceCount = 0; }
+                    }
                 }
             }
             else
