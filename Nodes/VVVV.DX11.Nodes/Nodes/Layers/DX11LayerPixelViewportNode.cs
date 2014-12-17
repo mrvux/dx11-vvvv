@@ -16,7 +16,7 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name="ViewportArray",Category="DX11.Layer",Version="", Author="vux")]
     public class DX11LayerViewportArrayNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
     {
-        [Input("Viewports", IsSingle = true)]
+        [Input("Viewports")]
         protected Pin<Viewport> FInViewports;
 
         [Input("Layer In", AutoValidate = false)]
