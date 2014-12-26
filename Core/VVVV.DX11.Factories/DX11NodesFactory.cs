@@ -96,6 +96,10 @@ namespace VVVV.DX11.Factories
                     {
                         this.devicemanager = new DX11PerMonitorDeviceManager(this.logger, this.displaymanager);
                     }
+                    else if (sl == "nvidia")
+                    {
+                        this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
+                    }
                     else if (sl == "peradapter")
                     {
                         this.devicemanager = new DX11PerAdapterDeviceManager(this.logger, this.displaymanager);

@@ -159,6 +159,7 @@ namespace VVVV.DX11.Lib.Devices
         }
     }
 
+
     public class DX11PerMonitorDeviceManager : AbstractDX11RenderContextManager<string>
     {
         public DX11PerMonitorDeviceManager(ILogger logger, DX11DisplayManager displaymanager) : base(logger,displaymanager) { }
@@ -179,8 +180,27 @@ namespace VVVV.DX11.Lib.Devices
         private DX11RenderContext context;
 
 
-        public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager, int adapterid = 0)
+        public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager, int adapterid)
             : base(logger, displaymanager)
+        {
+            SetDevice(logger, displaymanager, adapterid);
+        }
+
+        public DX11AutoAdapterDeviceManager(ILogger logger, DX11DisplayManager displaymanager)
+            : base(logger, displaymanager)
+        {
+            bool foundnv;
+            int devid = this.DisplayManager.FindNVidia(out foundnv);
+
+            if (!foundnv)
+            {
+                logger.Log(LogType.Warning, "Did not find NVidia adapter, revert to default");
+            }
+
+            SetDevice(logger, displaymanager, devid);
+        }
+
+        private void SetDevice(ILogger logger, DX11DisplayManager displaymanager, int adapterid)
         {
             Adapter1 adapter = this.DisplayManager.FindAdapter(adapterid);
 
@@ -199,7 +219,7 @@ namespace VVVV.DX11.Lib.Devices
                 this.context = new DX11RenderContext(adapter, this.flags);
             }
 #else
-				this.context = new DX11RenderContext(adapter,this.flags);
+            this.context = new DX11RenderContext(adapter, this.flags);
 #endif
 
             this.context.Initialize();
