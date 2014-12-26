@@ -23,6 +23,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
+    <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
+    <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
     <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinAdvancedNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentZNode.cs" />
@@ -34,6 +37,8 @@
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\Touch\TouchStateJoin.cs" />
     <Compile Include="Nodes\Textures\1D\WriterTexture1dNode.cs" />
+    <Compile Include="Nodes\Textures\2D\TextureLoader.cs" />
+    <Compile Include="Nodes\Textures\2D\WriterTextureCompressedNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSlice.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSliceNode.cs" />
