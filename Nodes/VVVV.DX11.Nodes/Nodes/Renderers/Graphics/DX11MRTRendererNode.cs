@@ -177,7 +177,10 @@ namespace VVVV.DX11
         {
             for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
             {
-                this.FOutBuffers[i].Dispose();
+                if (this.FOutBuffers[i] != null)
+                {
+                    this.FOutBuffers[i].Dispose();
+                }
             }
         }
         #endregion

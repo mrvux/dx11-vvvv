@@ -29,6 +29,9 @@ namespace VVVV.DX11.Nodes
         [Input("Clear Cache", IsBang = true)]
         protected ISpread<bool> FInClear;
 
+        [Output("Adapter Name")]
+        protected ISpread<string> FOutAdapter;
+
         [Output("Feature Level")]
         protected ISpread<string> FOutFeatureLevel;
 
@@ -117,6 +120,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutProcessedCount.SliceCount = ctxlist.Count;
                 this.FOutFeatureLevel.SliceCount = ctxlist.Count;
                 this.FOUCS.SliceCount = ctxlist.Count;
+                this.FOutAdapter.SliceCount = ctxlist.Count;
 
                 List<DeviceCreationFlags> flags = new List<DeviceCreationFlags>();
 
@@ -124,6 +128,15 @@ namespace VVVV.DX11.Nodes
                 foreach (DX11RenderContext ctx in ctxlist)
                 {
                     DX11DeviceRenderer renderer = DX11GlobalDevice.RenderManager.RenderGraphs[ctx];
+
+                    try
+                    {
+                        this.FOutAdapter[i] = ctx.Adapter.Description.Description;
+                    }
+                    catch
+                    {
+                        this.FOutAdapter[i] = "Unknown";
+                    }
 
                     this.FOutBufferCount[i] = ctx.ResourcePool.BufferCount;
                     this.FOutRTCount[i] = ctx.ResourcePool.RenderTargetCount;
