@@ -27,7 +27,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
             else
             {
                 Matrix m = pin[slice];
-                if (this.invy)
+                if (!this.invy)
                 {
                     m = Matrix.Translation(-0.5f, -0.5f, 0.0f) * Matrix.Scaling(1, -1, 1) * m;
                     m *= Matrix.Translation(0.5f, 0.5f, 0.0f) * Matrix.Scaling(1, -1, 1) * Matrix.Translation(0, 1, 0);
