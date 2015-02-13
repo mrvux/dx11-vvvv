@@ -5,9 +5,9 @@ DirectX11 Rendering within vvvv
 
 # How to build
 
-First of all, get the code of alphatest branch
+First of all, get the code of master branch
 
-    git clone -b alphatest git@github.com:mrvux/dx11-vvvv.git
+    git clone -b master git@github.com:mrvux/dx11-vvvv.git
 
 Then update submodules.
 
