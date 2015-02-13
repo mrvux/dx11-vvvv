@@ -325,6 +325,24 @@ namespace VVVV.DX11.Nodes.Layers
                         shaderdata.Update(this.FInTechnique[0].Index, 0, this.FGeometry);
                         this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
+
+                        int errorCount = 0;
+                        StringBuilder sbMsg = new StringBuilder();
+                        sbMsg.Append("Invalid layout detected for slices:");
+                        for(int i = 0; i < shaderdata.LayoutValid.Count; i++)
+                        {
+                            if (shaderdata.LayoutValid[i] == false)
+                            {
+                                errorCount++;
+                                sbMsg.Append(i + ",");
+                            }
+                        }
+
+                        if (errorCount > 0)
+                        {
+                            this.FHost.Log(TLogType.Warning, sbMsg.ToString());
+                        }
+
                         this.techniquechanged = false;
                     }
 
