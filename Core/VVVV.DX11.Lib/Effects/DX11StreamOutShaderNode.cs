@@ -173,6 +173,29 @@ namespace VVVV.DX11.Nodes.Layers
         {
             this.spmax = this.CalculateSpreadMax();
 
+            if (this.spmax == 0)
+            {
+                if (this.FOut.SliceCount == 0) // Already 0
+                    return;
+
+                if (this.FOut[0] != null)
+                {
+                    this.FOut[0].Dispose();
+                }
+                if (this.FOutBuffer[0] != null)
+                {
+                    this.FOutBuffer[0].Dispose();
+                }
+                this.FOut.SliceCount = 0;
+                this.FOutBuffer.SliceCount = 0;
+                return;
+            }
+            else
+            {
+                this.FOutBuffer.SliceCount = 1;
+                this.FOut.SliceCount = 1;
+            }
+
             if (this.FInTechnique.IsChanged)
             {
                 this.techniquechanged = true;
@@ -221,6 +244,9 @@ namespace VVVV.DX11.Nodes.Layers
         #region Calculate Spread Max
         private int CalculateSpreadMax()
         {
+            if (this.FIn.SliceCount == 0 || this.FInView.SliceCount == 0 || this.FInProjection.SliceCount == 0)
+                return 0;
+
             int max = this.varmanager.CalculateSpreadMax();
 
             if (max == 0 || this.FIn.SliceCount == 0)
