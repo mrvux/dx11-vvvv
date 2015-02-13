@@ -22,6 +22,10 @@ namespace VVVV.DX11.Nodes
         [Import()]
         ILogger logger;
 
+        [Config("Suppress Warning", DefaultValue = 0)]
+        protected ISpread<bool> FSuppressWarning;
+
+
         [Input("Width", DefaultValue=1)]
         protected ISpread<int> FInWidth;
 
@@ -49,7 +53,7 @@ namespace VVVV.DX11.Nodes
             if (this.FApply[0])
             {
                 this.FInvalidate = true;
-                if (this.FInChannels[0] == 3)
+                if (this.FInChannels[0] == 3 && FSuppressWarning[0] == false)
                 {
                     logger.Log(LogType.Warning, "Using 3 channels texture format, samplers are not allowed in this case, use load only");
                 }
