@@ -137,7 +137,7 @@ namespace VVVV.DX11.Lib.Effects
                 {
                     try
                     {
-                        string[] s = this.FInDefines[0].Split("=".ToCharArray());
+                        string[] s = this.FInDefines[i].Split("=".ToCharArray());
 
                         if (s.Length == 2)
                         {
