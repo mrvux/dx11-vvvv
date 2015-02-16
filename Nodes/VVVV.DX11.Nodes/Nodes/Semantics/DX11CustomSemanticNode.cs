@@ -85,6 +85,15 @@ namespace VVVV.DX11.Nodes
         }
     }
 
+    [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Color")]
+    public class Color4SemanticNode : DX11CustomSemanticNode<Color4, Vector4RenderSemantic>
+    {
+        protected override Vector4RenderSemantic GetData(Color4 input, string semantic, bool mandatory)
+        {
+            return new Vector4RenderSemantic(semantic, mandatory, input.ToVector4());
+        }
+    }
+
     [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Transform")]
     public class MatrixSemanticNode : DX11CustomSemanticNode<Matrix, MatrixRenderSemantic>
     {
