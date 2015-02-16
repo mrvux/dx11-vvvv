@@ -15,7 +15,7 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "ResetCounter", Category = "DX11.Layer", Version = "", Author = "vux")]
     public class DX11ResetCounterNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Reset Counter", IsSingle = true, DefaultValue = 1)]
@@ -49,6 +49,7 @@ namespace VVVV.DX11.Nodes
             if (this.FLayerIn.PluginIO.IsConnected)
             {
                 bool current = settings.ResetCounter;
+                settings.ResetCounter = this.FInReset[0];
 
                 this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
 
