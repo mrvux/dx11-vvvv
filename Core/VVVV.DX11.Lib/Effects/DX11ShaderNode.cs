@@ -86,6 +86,9 @@ namespace VVVV.DX11.Nodes.Layers
         [Output("Technique Valid")]
         protected ISpread<bool> FOutTechniqueValid;
 
+        [Output("Custom Semantics", Visibility=PinVisibility.OnlyInspector)]
+        protected ISpread<string> FoutCS;
+
         #endregion
 
 
@@ -119,6 +122,8 @@ namespace VVVV.DX11.Nodes.Layers
                 inAttr.DefaultEnumEntry = defaultenum;
                 inAttr.Order = 1000;
                 this.FInTechnique = this.FFactory.CreateDiffSpread<EnumEntry>(inAttr);
+
+                this.FoutCS.AssignFrom(this.varmanager.GetCustomData());
             }
             else
             {
@@ -126,6 +131,7 @@ namespace VVVV.DX11.Nodes.Layers
                 {
                     this.FHost.UpdateEnum(this.TechniqueEnumId, shader.TechniqueNames[0], shader.TechniqueNames);
                     this.varmanager.UpdateShaderPins();
+                    this.FoutCS.AssignFrom(this.varmanager.GetCustomData());
                 }
             }
 

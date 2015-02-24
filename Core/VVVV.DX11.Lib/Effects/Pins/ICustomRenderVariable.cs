@@ -18,6 +18,16 @@ namespace VVVV.DX11.Lib.Effects
             this.Name = var.Description.Name;
             this.TypeName = var.GetVariableType().Description.TypeName;
             this.Semantic = var.Description.Semantic;
+            var ha = var.GetAnnotationByName("help");
+
+            if (ha != null)
+            {
+                this.Help = ha.AsString().GetString();
+            }
+            else
+            {
+                this.Help = "";
+            }
         }
 
         public DX11CustomRenderVariable(string name, string typename, string semantic)
@@ -40,6 +50,12 @@ namespace VVVV.DX11.Lib.Effects
         }
 
         public string Semantic
+        {
+            get;
+            set;
+        }
+
+        public string Help
         {
             get;
             set;

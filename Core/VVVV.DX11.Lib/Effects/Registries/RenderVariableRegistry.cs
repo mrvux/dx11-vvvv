@@ -59,7 +59,7 @@ namespace VVVV.DX11.Lib.Effects.Registries
             this.RegisterType("RWStructuredBuffer", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("AppendStructuredBuffer", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("ConsumeStructuredBuffer", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
-            
+            this.RegisterType("RWByteAddressBuffer", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
         }
     }
 }
