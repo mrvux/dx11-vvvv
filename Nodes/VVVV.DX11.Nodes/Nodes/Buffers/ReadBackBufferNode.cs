@@ -49,27 +49,26 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 
-                IDX11ReadableStructureBuffer b= this.FInput[0][this.AssignedContext];
+                foreach (IIOContainer sp in this.outspreads)
+                {
+                    ISpread s = (ISpread)sp.RawIOObject;
+                    s.SliceCount = 0;
+                }
 
-                if (b != null)
+                for (int j = 0; j < SpreadMax; j++)
                 {
 
+                    IDX11ReadableStructureBuffer b = this.FInput[j][this.AssignedContext];
 
-                    DX11StagingStructuredBuffer staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device
-                        , b.ElementCount, b.Stride);
-
-                    this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
-
-                    foreach (IIOContainer sp in this.outspreads)
+                    if (b != null)
                     {
-                        ISpread s = (ISpread)sp.RawIOObject;
-                        s.SliceCount = b.ElementCount;
-                    }
+                        DX11StagingStructuredBuffer staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device
+                            , b.ElementCount, b.Stride);
 
-                    DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
+                        this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
 
-                    for (int i = 0; i < b.ElementCount; i++)
-                    {
+                        DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
+
                         int cnt = 0;
                         foreach (string lay in layout)
                         {
@@ -77,61 +76,77 @@ namespace VVVV.DX11.Nodes
                             {
                                 case "float":
                                     ISpread<float> spr = (ISpread<float>)this.outspreads[cnt].RawIOObject;
-                                    spr[i] = ds.Read<float>();
+                                    float[] vecArray = ds.ReadRange<float>(b.ElementCount);
+                                    spr.AddRange(vecArray);
                                     break;
                                 case "float2":
                                     ISpread<Vector2> spr2 = (ISpread<Vector2>)this.outspreads[cnt].RawIOObject;
-                                    spr2[i] = ds.Read<Vector2>();
+                                    Vector2[] vecArray2 = ds.ReadRange<Vector2>(b.ElementCount);
+                                    spr2.AddRange(vecArray2);
                                     break;
                                 case "float3":
                                     ISpread<Vector3> spr3 = (ISpread<Vector3>)this.outspreads[cnt].RawIOObject;
-                                    spr3[i] = ds.Read<Vector3>();
+                                    Vector3[] vecArray3 = ds.ReadRange<Vector3>(b.ElementCount);
+                                    spr3.AddRange(vecArray3);
                                     break;
                                 case "float4":
                                     ISpread<Vector4> spr4 = (ISpread<Vector4>)this.outspreads[cnt].RawIOObject;
-                                    spr4[i] = ds.Read<Vector4>();
+                                    Vector4[] vecArray4 = ds.ReadRange<Vector4>(b.ElementCount);
+                                    spr4.AddRange(vecArray4);                                        
                                     break;
                                 case "float4x4":
                                     ISpread<Matrix> sprm = (ISpread<Matrix>)this.outspreads[cnt].RawIOObject;
-                                    sprm[i] = ds.Read<Matrix>();
+                                    Matrix[] mArray = ds.ReadRange<Matrix>(b.ElementCount);
+                                    sprm.AddRange(mArray);
                                     break;
                                 case "int":
                                     ISpread<int> spri = (ISpread<int>)this.outspreads[cnt].RawIOObject;
-                                    spri[i] = ds.Read<int>();
+                                    int[] iArray = ds.ReadRange<int>(b.ElementCount);
+                                    spri.AddRange(iArray);
                                     break;
                                 case "uint":
                                     ISpread<uint> sprui = (ISpread<uint>)this.outspreads[cnt].RawIOObject;
-                                    sprui[i] = ds.Read<uint>();
+                                    uint[] uiArray = ds.ReadRange<uint>(b.ElementCount);
+                                    sprui.AddRange(uiArray);
                                     break;
                                 case "uint2":
                                     ISpread<Vector2> sprui2 = (ISpread<Vector2>)this.outspreads[cnt].RawIOObject;
-                                    uint ui1 = ds.Read<uint>();
-                                    uint ui2 = ds.Read<uint>();
-                                    sprui2[i] = new Vector2(ui1, ui2);
+                                    uint[] ui2Array = ds.ReadRange<uint>(b.ElementCount * 2);
+                                    Vector2[] vA = new Vector2[b.ElementCount];
+                                    for (int i = 0; i < ui2Array.Length; i++)
+                                    {
+                                        vA[i] = new Vector2(ui2Array[ i * 2 ], 
+                                                            ui2Array[(i * 2) + 1] );
+                                    }                                        
+                                    sprui2.AddRange(vA);
                                     break;
                                 case "uint3":
                                     ISpread<Vector3> sprui3 = (ISpread<Vector3>)this.outspreads[cnt].RawIOObject;
-                                    uint ui31 = ds.Read<uint>();
-                                    uint ui32 = ds.Read<uint>();
-                                    uint ui33 = ds.Read<uint>();
-                                    sprui3[i] = new Vector3(ui31, ui32, ui33);
+                                    uint[] ui3Array = ds.ReadRange<uint>(b.ElementCount * 3);
+                                    Vector3[] vA3 = new Vector3[b.ElementCount];
+                                    for (int i = 0; i < vA3.Length; i++)
+                                    {
+                                        vA3[i] = new Vector3(   ui3Array[ i * 3 ], 
+                                                                ui3Array[(i * 3) + 1], 
+                                                                ui3Array[(i * 3) + 2]);
+                                    }                                        
+                                    sprui3.AddRange(vA3);
                                     break;
                             }
                             cnt++;
                         }
 
+                        staging.UnMap(this.AssignedContext.CurrentDeviceContext);
+
+                        staging.Dispose();
                     }
-
-                    staging.UnMap(this.AssignedContext.CurrentDeviceContext);
-
-                    staging.Dispose();
-                }
-                else
-                {
-                    foreach (IIOContainer sp in this.outspreads)
+                    else
                     {
-                        ISpread s = (ISpread)sp.RawIOObject;
-                        s.SliceCount = 0;
+                        foreach (IIOContainer sp in this.outspreads)
+                        {
+                            ISpread s = (ISpread)sp.RawIOObject;
+                            s.SliceCount = 0;
+                        }
                     }
                 }
             }
