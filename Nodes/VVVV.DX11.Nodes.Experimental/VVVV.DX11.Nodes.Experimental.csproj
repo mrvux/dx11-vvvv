@@ -7,7 +7,7 @@
     <ProjectGuid>{C8C37C3D-8133-49C1-B227-EE4CFD216FFB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VVVV.DX11.Nodes.Experimental</RootNamespace>
+    <RootNamespace>VVVV.DX11.Nodes</RootNamespace>
     <AssemblyName>VVVV.DX11.Nodes.Experimental</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\plugins\experimental\</OutputPath>
   </PropertyGroup>
@@ -21,9 +21,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DX11RenderFormNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
@@ -41,6 +38,9 @@
       <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DX11RenderFormNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
