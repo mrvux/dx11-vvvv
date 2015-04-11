@@ -41,6 +41,9 @@ namespace VVVV.MSKinect.Nodes
         [Output("Joint Position")]
         private ISpread<Vector3> FOutJointPosition;
 
+        [Output("Joint Position RGB")]
+        private ISpread<Vector2> FOutJointPositionRGB;
+
         [Output("Joint Orientation")]
         private ISpread<Quaternion> FOutJointOrientation;
 
@@ -114,6 +117,7 @@ namespace VVVV.MSKinect.Nodes
                     this.FOutJointPosition.SliceCount = cnt * 25;
                     this.FOutJointState.SliceCount = cnt * 25;
                     this.FOutJointID.SliceCount = cnt * 25;
+                    this.FOutJointPositionRGB.SliceCount = cnt * 25;
                     this.FOutJointOrientation.SliceCount = cnt * 25;
                     this.FOutFrameNumber[0] = this.frameid;
 
@@ -127,6 +131,7 @@ namespace VVVV.MSKinect.Nodes
                         this.FOutPosition[i] = new Vector3(ce.Position.X, ce.Position.Y, ce.Position.Z);
                         this.FOutUserIndex[i] = (int)sk.TrackingId;
 
+
                         Vector4 clip = Vector4.Zero;
                         clip.X = Convert.ToSingle(sk.ClippedEdges.HasFlag(FrameEdges.Left));
                         clip.Y = Convert.ToSingle(sk.ClippedEdges.HasFlag(FrameEdges.Right));
@@ -137,12 +142,17 @@ namespace VVVV.MSKinect.Nodes
 
                         foreach (Joint joint in sk.Joints.Values)
                         {
+
+                            var jrgb = this.runtime.Runtime.CoordinateMapper.MapCameraPointToColorSpace(joint.Position);
+
                             Microsoft.Kinect.Vector4 bo = sk.JointOrientations[joint.JointType].Orientation;
                             this.FOutJointID[jc] = joint.JointType.ToString();
                             this.FOutJointPosition[jc] = new Vector3(joint.Position.X, joint.Position.Y, joint.Position.Z);
 
                             this.FOutJointOrientation[jc] = new Quaternion(bo.X, bo.Y, bo.Z, bo.W);
                             this.FOutJointState[jc] = joint.TrackingState.ToString();
+
+                            this.FOutJointPositionRGB[jc] = new Vector2(jrgb.X, jrgb.Y);
                             jc++;
                         }
                     }
