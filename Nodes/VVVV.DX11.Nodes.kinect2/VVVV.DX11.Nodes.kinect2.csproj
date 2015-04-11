@@ -31,6 +31,10 @@
     <Reference Include="Microsoft.Kinect.VisualGestureBuilder">
       <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.VisualGestureBuilder.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\kgp\src\KGP.Core\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -43,6 +47,9 @@
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
     <Compile Include="KinectBodySplitNode.cs" />
+    <Compile Include="KinectDepthTextureNodeRaw.cs" />
+    <Compile Include="KinectBodyIndexRawTextureNode.cs" />
+    <Compile Include="KinectRayTextureNode.cs" />
     <Compile Include="KinectDepthColorTextureNode.cs" />
     <Compile Include="KinectColorDepthTextureNode.cs" />
     <Compile Include="KinectColorTextureNode.cs" />
@@ -52,6 +59,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="KinectGestureNode.cs" />
+    <Compile Include="KinectSkelectionGestureNode.cs" />
+    <Compile Include="KinectSkeletonNodeClose.cs" />
+    <Compile Include="KinectSkeletonStatusNode.cs" />
+    <Compile Include="KinectClosestNode.cs" />
     <Compile Include="KinectWorldTextureNode.cs" />
     <Compile Include="KinectIRTextureNode.cs" />
     <Compile Include="KinectDepthTextureNode.cs">
@@ -64,8 +75,30 @@
     <Compile Include="KinectSkeletonNode.cs" />
     <Compile Include="Lib\BodyExtensionMethods.cs" />
     <Compile Include="Lib\ClosestBodySelector.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Gesture.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\GestureController.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\GestureEnumTypes.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\GestureEventArgs.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\IRelativeGestureSegment.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\JoinedHandsSegment.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\Menu\MenuSegments.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeLeft\SwipeLeftSegment1.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeLeft\SwipeLeftSegment2.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeLeft\SwipeLeftSegment3.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeRight\SwipeRightSegment1.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeRight\SwipeRightSegment2.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\SwipeRight\SwipeRightSegment3.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\WaveLeftSegments.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\WaveRightSegments.cs" />
+    <Compile Include="Lib\Fizbin.Kinect.Gestures\Segments\ZoomSegments.cs" />
     <Compile Include="Lib\FuncBodySelector.cs" />
     <Compile Include="Lib\IBodySelector.cs" />
+    <Compile Include="Lib\Net\PlayerStreamerNode.cs" />
+    <Compile Include="Lib\Net\WorldStreamerNode.cs" />
+    <Compile Include="Lib\Snappy\Snappy32.cs" />
+    <Compile Include="Lib\Snappy\Snappy64.cs" />
+    <Compile Include="Lib\Snappy\SnappyCodec.cs" />
+    <Compile Include="Lib\Snappy\SnappyStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
