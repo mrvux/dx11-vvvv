@@ -26,7 +26,6 @@
     <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
-    <Compile Include="Nodes\Buffers\ScanNode.cs" />
     <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinAdvancedNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentZNode.cs" />
