@@ -54,13 +54,16 @@ namespace VVVV.DX11.Nodes.Nodes.Text
             if (this.FFormat.IsChanged || this.FMaxHeight.IsChanged || this.FMaxWidth.IsChanged 
                 || this.FText.IsChanged || this.FTextAlign.IsChanged || this.FParaAlign.IsChanged)
             {
-                this.FOutput.SliceCount = SpreadMax;
-
+                //first dispose old outputs
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
                     if (this.FOutput[i] != null) { this.FOutput[i].Dispose(); }
                 }
-
+                
+                //then set new slicecount
+                this.FOutput.SliceCount = SpreadMax;
+                
+                //then create new outputs
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
