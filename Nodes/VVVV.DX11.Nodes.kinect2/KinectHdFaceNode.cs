@@ -10,6 +10,8 @@ using Microsoft.Kinect;
 using Vector4 = SlimDX.Vector4;
 using Quaternion = SlimDX.Quaternion;
 using Microsoft.Kinect.Face;
+using VVVV.DX11;
+using FeralTic.DX11.Resources;
 
 namespace VVVV.MSKinect.Nodes
 {
@@ -48,6 +50,9 @@ namespace VVVV.MSKinect.Nodes
         [Output("Indices")]
         private ISpread<uint> FOutIndices;
 
+        [Output("Geometry")]
+        private ISpread<DX11Resource<DX11IndexOnlyGeometry>> FOutGeom;
+
 
         [Output("Frame Number", IsSingle = true)]
         private ISpread<long> FOutFrameNumber;
@@ -61,7 +66,6 @@ namespace VVVV.MSKinect.Nodes
 
         private FaceModel faceModel = new FaceModel();
         private FaceAlignment faceAlignment = new FaceAlignment();
-//private HighDefinitionFaceFrameResult[] lastResults = null;
 
         private bool FInvalidate = false;
 
@@ -71,6 +75,8 @@ namespace VVVV.MSKinect.Nodes
         private int frameid = -1;
 
         private FaceModelBuilder faceModelBuilder = null;
+
+        private uint[] faceIndices;
 
         public KinectHDFaceNode()
         {
@@ -96,6 +102,7 @@ namespace VVVV.MSKinect.Nodes
                 var vertices = this.faceModel.CalculateVerticesForAlignment(this.faceAlignment);
                 this.FOutVertices.SliceCount = vertices.Count;
 
+                this.faceIndices = this.faceModel.TriangleIndices.ToArray();
                 this.FOutIndices.SliceCount = this.faceModel.TriangleIndices.Count;
                 this.FOutIndices.AssignFrom(this.faceModel.TriangleIndices);
                 this.first = false;
@@ -117,8 +124,6 @@ namespace VVVV.MSKinect.Nodes
                             this.faceFrameSources[i] = new HighDefinitionFaceFrameSource(this.runtime.Runtime);
                             this.faceFrameReaders[i] = this.faceFrameSources[i].OpenReader();
                             this.faceFrameReaders[i].FrameArrived += this.faceReader_FrameArrived;
-
-                            
                         }
 
                         this.faceModelBuilder = this.faceFrameSources[0].OpenModelBuilder(FaceModelBuilderAttributes.None);

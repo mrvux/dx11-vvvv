@@ -18,49 +18,24 @@ using Microsoft.Kinect;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "Player", 
+    [PluginInfo(Name = "BodyIndex", 
 	            Category = "Kinect2", 
 	            Version = "Microsoft", 
 	            Author = "vux", 
 	            Tags = "DX11, texture",
 	            Help = "")]
-    public class KinectPlayeTextureNode : KinectBaseTextureNode
+    public class KinectBodyIndexTextureNode : KinectBaseTextureNode
     {
-        private int[] playerimage;
         private byte[] rawdepth;
 
-        private int backcolor;
-        private int[] colors = new int[9];
-
-        [Input("Back Color", DefaultColor = new double[] { 0, 0, 0, 0 })]
-        private IDiffSpread<RGBAColor> FInBgColor;
-
-        [Input("Player Color", DefaultColor = new double[] { 1, 0, 0, 0 })]
-        private IDiffSpread<RGBAColor> FInPlayerColor;
-
-        public KinectPlayeTextureNode()
+        public KinectBodyIndexTextureNode()
         {
-            this.playerimage = new int[512 * 424];
             this.rawdepth = new byte[512 * 424];
         }
 
         protected override void OnEvaluate()
         {
-            if (this.FInBgColor.IsChanged)
-            {
-                this.backcolor = this.FInBgColor[0].Color.ToArgb();
-                this.FInvalidate = true;
-            }
 
-            if (this.FInPlayerColor.IsChanged)
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    this.colors[i] = this.FInPlayerColor[i].Color.ToArgb();
-                }
-
-                this.FInvalidate = true;
-            }
         }
 
         protected override int Width
@@ -75,14 +50,14 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override SlimDX.DXGI.Format Format
         {
-            get { return SlimDX.DXGI.Format.B8G8R8A8_UNorm; }
+            get { return SlimDX.DXGI.Format.R8_UInt; }
         }
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
             lock (m_lock)
             {
-                texture.WriteData<int>(this.playerimage);
+                texture.WriteData<byte>(this.rawdepth);
             }      
         }
 
@@ -96,12 +71,9 @@ namespace VVVV.DX11.Nodes.MSKinect
             this.runtime.BodyFrameReady -= DepthFrameReady;
         }
 
-
         private void DepthFrameReady(object sender, BodyIndexFrameArrivedEventArgs e)
         {
             BodyIndexFrame frame = e.FrameReference.AcquireFrame();
-            int bg = this.backcolor;
-
             if (frame != null)
             {
                 this.FInvalidate = true;
@@ -109,14 +81,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                 lock (m_lock)
                 {
                     frame.CopyFrameDataToArray(this.rawdepth);
-                    for (int i16 = 0; i16 < 512 * 424; i16++)
-                    {
-                        byte player = rawdepth[i16];
-                        this.playerimage[i16] = player == 255 ? bg : this.colors[player % 6];
-
-                    }
                 }
-
                 frame.Dispose();
             }
         }

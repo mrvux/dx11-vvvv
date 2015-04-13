@@ -39,6 +39,9 @@ namespace VVVV.MSKinect.Nodes
         [Output("Points Color")]
         private ISpread<ISpread<Vector2>> FOutPointsColor;
 
+        [Output("Points World")]
+        private ISpread<ISpread<Vector3>> FOutPointsWorld;
+
         [Output("Orientation")]
         private ISpread<Quaternion> FOutOrientation;
 
@@ -177,6 +180,7 @@ namespace VVVV.MSKinect.Nodes
             this.FOutLeftEyeClosed.SliceCount = results.Count;
             this.FOutHappy.SliceCount = results.Count;
             this.FOutEngaged.SliceCount = results.Count;
+            this.FOutPointsWorld.SliceCount = results.Count;
 
             for (int i = 0; i < results.Count; i++)
             {
@@ -214,7 +218,9 @@ namespace VVVV.MSKinect.Nodes
             this.FOutSizeColor[slice] = size;
 
             this.FOutPointsColor[slice].SliceCount = res.FacePointsInColorSpace.Count;
+            this.FOutPointsWorld[slice].SliceCount = res.FacePointsInColorSpace.Count;
             var pointRef = this.FOutPointsColor[slice];
+            var wRef = this.FOutPointsWorld[slice];
             for (int i = 0; i < res.FacePointsInColorSpace.Count; i++)
             {
                 var pt = res.FacePointsInColorSpace[(FacePointType)i];

@@ -62,6 +62,9 @@ namespace VVVV.MSKinect.Nodes
         [Output("DepthRange (cm)" )]
         ISpread<Vector2D> FDepthrange;
 
+        [Output("Intrinsics")]
+        ISpread<CameraIntrinsics> intrinsics;
+
         private KinectRuntime runtime = new KinectRuntime();
 
         private bool haskinect = false;
@@ -154,12 +157,13 @@ namespace VVVV.MSKinect.Nodes
 
                 this.FDepthrange[0] = new Vector2D( (double)this.runtime.Runtime.DepthFrameSource.DepthMinReliableDistance,
                                                     (double)this.runtime.Runtime.DepthFrameSource.DepthMaxReliableDistance);
+
+                this.intrinsics[0] = this.runtime.Runtime.CoordinateMapper.GetDepthCameraIntrinsics();
             }
 
             this.FOutKCnt[0] = 1; // KinectSensor.KinectSensors.Count;
                        
         }
-
         public void Dispose()
         {
             if (this.runtime != null)
