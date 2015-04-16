@@ -26,9 +26,13 @@
     <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
+    <Compile Include="Nodes\Geometry\DispatchIndirectBufferNode.cs" />
     <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
+    <Compile Include="Nodes\Geometry\IndexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinAdvancedNode.cs" />
+    <Compile Include="Nodes\Geometry\NullIndirectBufferDrawer.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentZNode.cs" />
+    <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPixelViewportNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerStencilRefNode.cs" />

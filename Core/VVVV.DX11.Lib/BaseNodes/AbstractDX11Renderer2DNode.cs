@@ -92,6 +92,7 @@ namespace VVVV.DX11
 
         protected abstract void OnDispose();
 
+
         protected virtual IDX11RWResource GetMainTarget(DX11RenderContext device) { return null; }
 
         //protected virtual DX11Texture2D GetLastBuffer() { return null; }
@@ -139,6 +140,15 @@ namespace VVVV.DX11
             this.updateddevices.Add(context);
         }
 
+        protected virtual void DoClear(DX11RenderContext context)
+        {
+            if (this.FInClear[0])
+            {
+                this.renderers[context].Clear(this.FInBgColor[0]);
+            }
+        }
+
+
         #region Render
         public void Render(DX11RenderContext context)
         {
@@ -175,10 +185,7 @@ namespace VVVV.DX11
                         this.depthmanager.Clear(context);
                     }
 
-                    if (this.FInClear[0])
-                    {
-                        renderer.Clear(this.FInBgColor[0]);
-                    }
+                    this.DoClear(context);
 
                     if (this.FInLayer.PluginIO.IsConnected)
                     {

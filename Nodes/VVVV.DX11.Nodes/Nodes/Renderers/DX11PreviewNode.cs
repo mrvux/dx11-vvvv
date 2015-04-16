@@ -71,19 +71,6 @@ namespace VVVV.DX11.Nodes.Renderers
              this.ctrl.Dock = DockStyle.Fill;
              this.ctrl.Resize += new EventHandler(ctrl_Resize);
              this.ctrl.BackColor = System.Drawing.Color.Black;
-
-             this.ctrl.PreviewKeyDown += new PreviewKeyDownEventHandler(ctrl_PreviewKeyDown);
-             this.ctrl.KeyDown += new KeyEventHandler(ctrl_KeyDown);
-         }
-
-         void ctrl_KeyDown(object sender, KeyEventArgs e)
-         {
-
-         }
-
-         void ctrl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-         {
- 
          }
 
          public bool IsEnabled

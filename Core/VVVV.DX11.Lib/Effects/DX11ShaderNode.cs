@@ -416,6 +416,9 @@ namespace VVVV.DX11.Nodes.Layers
 
                                     if (settings.DepthOnly) { ctx.PixelShader.Set(null); }
 
+                                    if (settings.PostPassAction != null) { settings.PostPassAction(context); }
+                                    
+
                                     objectsettings.Geometry.Draw();
                                     shaderdata.ShaderInstance.CleanUp();
                                 }
@@ -425,6 +428,11 @@ namespace VVVV.DX11.Nodes.Layers
                         if (multistate)
                         {
                             context.RenderStateStack.Pop();
+                        }
+
+                        if (settings.PostShaderAction != null)
+                        {
+                            settings.PostShaderAction(context);
                         }
                     }
 

@@ -66,6 +66,10 @@ namespace VVVV.DX11
         /// </summary>
         public int ViewportCount { get; set; }
 
+        public Action<DX11RenderContext> PostPassAction { get; set; }
+
+        public Action<DX11RenderContext> PostShaderAction { get; set; }
+
         /// <summary>
         /// If true, asks the shader to keep current pipeline and not set other shader to null,
         /// this can be useful if your shader provides pixel/geometry shader and you want the node to provide a vs only
