@@ -142,6 +142,17 @@ namespace VVVV.DX11
         }
         #endregion
 
+        protected override void DoClear(DX11RenderContext context)
+        {
+            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
+            {
+                if (this.FInClear[i])
+                {
+                    context.CurrentDeviceContext.ClearRenderTargetView(this.FOutBuffers[i][context].RTV, this.FInBgColor[i]);
+                }
+            }
+        }
+
         #region Before Render
         protected override void BeforeRender(DX11GraphicsRenderer renderer, DX11RenderContext context)
         {
