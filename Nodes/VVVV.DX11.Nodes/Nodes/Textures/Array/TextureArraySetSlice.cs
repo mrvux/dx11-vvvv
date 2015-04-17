@@ -56,7 +56,7 @@ namespace VVVV.DX11.Nodes
 
             if (this.rtarr == null)
             {
-                this.rtarr = new DX11RenderTextureArray(this.context, w, h, d, format);
+                this.rtarr = new DX11RenderTextureArray(this.context, w, h, d, format, true, 1);
             }
 
             this.shader.SelectTechnique("Render");
