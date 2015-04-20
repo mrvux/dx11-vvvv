@@ -27,7 +27,7 @@ namespace VVVV.MSKinect.Nodes
         private ISpread<int> FOutCount;
 
         [Output("User Index")]
-        private ISpread<int> FOutUserIndex;
+        private ISpread<string> FOutUserIndex;
 
         [Output("Position")]
         private ISpread<Vector3> FOutPosition;
@@ -129,7 +129,7 @@ namespace VVVV.MSKinect.Nodes
 
                         Joint ce = sk.Joints[JointType.SpineBase];
                         this.FOutPosition[i] = new Vector3(ce.Position.X, ce.Position.Y, ce.Position.Z);
-                        this.FOutUserIndex[i] = (int)sk.TrackingId;
+                        this.FOutUserIndex[i] = sk.TrackingId.ToString();
 
 
                         Vector4 clip = Vector4.Zero;

@@ -18,16 +18,16 @@ using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    [PluginInfo(Name = "RawDepth", 
+    [PluginInfo(Name = "RawPlayer", 
 	            Category = "Kinect2", 
 	            Version = "Microsoft", 
 	            Author = "flateric", 
 	            Tags = "DX11, texture",
 	            Help = "Returns a 16bit depthmap from the Kinects depth camera. Raw texture, not samplable")]
-    public class KinectDepthTextureNodeRaw : KinectBaseTextureNode
+    public class KinectPlayerTextureNodeRaw : KinectBaseTextureNode
     {
-        private IntPtr depthread;
-        private IntPtr depthwrite;
+        private IntPtr bodyread;
+        private IntPtr bodywrite;
 
         private SlimDX.DXGI.Format format;
         private int width;
@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes.MSKinect
         private bool first = true;
 
         [ImportingConstructor()]
-        public KinectDepthTextureNodeRaw(IPluginHost host)
+        public KinectPlayerTextureNodeRaw(IPluginHost host)
         {
             this.InitBuffers();
         }
@@ -46,11 +46,11 @@ namespace VVVV.DX11.Nodes.MSKinect
             this.width = 512;
             this.height = 424;
 
-            this.depthread = Marshal.AllocHGlobal(512 * 424 * 2);
-            this.depthwrite = Marshal.AllocHGlobal(512 * 424 * 2);
+            this.bodyread = Marshal.AllocHGlobal(512 * 424);
+            this.bodywrite = Marshal.AllocHGlobal(512 * 424);
         }
 
-        private void DepthFrameReady(object sender, DepthFrameArrivedEventArgs e)
+        private void BodyFrameReady(object sender, BodyIndexFrameArrivedEventArgs e)
         {
             var frame = e.FrameReference.AcquireFrame();
 
@@ -60,10 +60,10 @@ namespace VVVV.DX11.Nodes.MSKinect
                 {
                     lock (m_lock)
                     {
-                        frame.CopyFrameDataToIntPtr(this.depthwrite, 512 * 424 * 2);
-                        IntPtr swap = this.depthread;
-                        this.depthread = this.depthwrite;
-                        this.depthwrite = swap;
+                        frame.CopyFrameDataToIntPtr(this.bodywrite, 512 * 424);
+                        IntPtr swap = this.bodyread;
+                        this.bodyread = this.bodywrite;
+                        this.bodywrite = swap;
                     }
 
                     this.FInvalidate = true;
@@ -84,31 +84,31 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override SlimDX.DXGI.Format Format
         {
-            get { return SlimDX.DXGI.Format.R16_UInt; }
+            get { return SlimDX.DXGI.Format.R8_UInt; }
         }
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
             lock (m_lock)
             {
-                texture.WriteData(this.depthread, 512 * 424 * 2);
+                texture.WriteData(this.bodyread, 512 * 424);
             }
         }
 
         protected override void OnRuntimeConnected()
         {
-            this.runtime.DepthFrameReady += DepthFrameReady;
+            this.runtime.BodyFrameReady += BodyFrameReady;
         }
 
         protected override void OnRuntimeDisconnected()
         {
-            this.runtime.DepthFrameReady -= DepthFrameReady;
+            this.runtime.BodyFrameReady -= BodyFrameReady;
         }
 
         protected override void Disposing()
         {
-            Marshal.FreeHGlobal(this.depthread);
-            Marshal.FreeHGlobal(depthwrite);
+            Marshal.FreeHGlobal(this.bodyread);
+            Marshal.FreeHGlobal(bodywrite);
         }
     }
 }
