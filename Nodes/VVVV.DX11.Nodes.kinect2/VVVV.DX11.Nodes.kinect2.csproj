@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
     <Compile Include="KinectBodyIndexRawTextureNode.cs" />
-    <Compile Include="KinectPlayerTextureNodeRaw.cs" />
     <Compile Include="KinectDepthTextureNodeRaw.cs" />
     <Compile Include="KinectHdFaceBufferNode.cs" />
     <Compile Include="KinectRayTextureNode.cs" />
