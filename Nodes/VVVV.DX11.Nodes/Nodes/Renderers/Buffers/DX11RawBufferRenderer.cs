@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+
 using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
+
 using SlimDX;
-using VVVV.Utils.VMath;
-
-using VVVV.DX11.Lib.Devices;
 using SlimDX.Direct3D11;
-using System.ComponentModel.Composition;
-using VVVV.Hosting.Pins;
-using VVVV.DX11.Internals.Helpers;
-using VVVV.DX11.Internals;
-using VVVV.DX11.Internals.Effects;
 
-using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11.Queries;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
-using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
@@ -39,6 +32,9 @@ namespace VVVV.DX11.Nodes
 
         [Input("Allow IndexBuffer", DefaultValue = 0, Order = 13)]
         protected IDiffSpread<bool> FInIBO;
+
+        [Input("Allow Argument Buffer", DefaultValue = 0, Order = 14)]
+        protected IDiffSpread<bool> FInABO;
 
         [Input("Enabled", DefaultValue = 1, Order = 15)]
         protected ISpread<bool> FInEnabled;
@@ -81,7 +77,7 @@ namespace VVVV.DX11.Nodes
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            reset = this.FInSize.IsChanged || this.FInVBO.IsChanged || this.FInIBO.IsChanged;
+            reset = this.FInSize.IsChanged || this.FInVBO.IsChanged || this.FInIBO.IsChanged || this.FInABO.IsChanged;
 
             if (this.FOutBuffers[0] == null)
             {
@@ -97,6 +93,7 @@ namespace VVVV.DX11.Nodes
                 this.size = this.FInSize[0];
                 this.flags.AllowIndexBuffer = this.FInIBO[0];
                 this.flags.AllowVertexBuffer = this.FInVBO[0];
+                this.flags.AllowArgumentBuffer = this.FInABO[0];
             }
         }
 
