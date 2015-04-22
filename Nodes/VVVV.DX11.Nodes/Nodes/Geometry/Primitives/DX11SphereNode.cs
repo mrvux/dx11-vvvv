@@ -29,10 +29,10 @@ namespace VVVV.DX11.Nodes
         [Input("Cycles Y", DefaultValue = 1.0f)]
         protected IDiffSpread<float> FCyclesY;
 
-        [Input("Resolution X", DefaultValue = 15)]
+        [Input("Resolution X", DefaultValue = 15, MinValue = 2)]
         protected IDiffSpread<int> FResX;
 
-        [Input("Resolution Y", DefaultValue = 15)]
+        [Input("Resolution Y", DefaultValue = 15, MinValue = 2)]
         protected IDiffSpread<int> FResY;
 
 

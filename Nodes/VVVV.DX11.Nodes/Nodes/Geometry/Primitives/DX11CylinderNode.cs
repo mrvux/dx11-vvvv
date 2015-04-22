@@ -31,10 +31,10 @@ namespace VVVV.DX11.Nodes
         [Input("Center Y", DefaultValue = 1.0)]
         protected IDiffSpread<bool> FInCenterY;
 
-        [Input("Resolution X", DefaultValue = 15)]
+        [Input("Resolution X", DefaultValue = 15, MinValue = 2)]
         protected IDiffSpread<int> FInResX;
 
-        [Input("Resolution Y", DefaultValue = 1)]
+        [Input("Resolution Y", DefaultValue = 1, MinValue = 1)]
         protected IDiffSpread<int> FInResY;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)

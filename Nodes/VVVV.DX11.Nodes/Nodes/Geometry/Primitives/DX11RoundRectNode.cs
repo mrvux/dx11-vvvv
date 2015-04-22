@@ -26,7 +26,7 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Center", DefaultValue = 1)]
         protected IDiffSpread<bool> FInCenter;
 
-        [Input("Corner Resolution", DefaultValue = 20)]
+        [Input("Corner Resolution", DefaultValue = 20, MinValue = 0)]
         protected IDiffSpread<int> FInRes;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)

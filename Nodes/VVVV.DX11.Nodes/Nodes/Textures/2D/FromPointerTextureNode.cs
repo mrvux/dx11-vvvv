@@ -18,7 +18,7 @@ namespace VVVV.DX11.Nodes.Textures
     public class PointerTextureNode : IPluginEvaluate, IDX11ResourceProvider
     {
         [Input("Pointer", AsInt=true)]
-        protected IDiffSpread<long> FPointer;
+        protected IDiffSpread<uint> FPointer;
 
         [Output("Texture")]
         protected Pin<DX11Resource<DX11Texture2D>> FTextureOutput;
@@ -71,7 +71,9 @@ namespace VVVV.DX11.Nodes.Textures
 
                     try
                     {
-                        Texture2D tex = context.Device.OpenSharedResource<Texture2D>(new IntPtr(this.FPointer[i]));
+                        int p = unchecked((int) this.FPointer[i]);
+                        IntPtr share = new IntPtr(p);
+                        Texture2D tex = context.Device.OpenSharedResource<Texture2D>(share);
                         ShaderResourceView srv = new ShaderResourceView(context.Device, tex);
 
                         DX11Texture2D resource = DX11Texture2D.FromTextureAndSRV(context, tex, srv);
