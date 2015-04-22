@@ -32,7 +32,7 @@ namespace VVVV.DX11.Nodes
         [Input("Z", DefaultValue = 0.5)]
         protected IDiffSpread<float> FInZ;
 
-        [Input("Resolution", DefaultValue = 20)]
+        [Input("Resolution", DefaultValue = 20, MinValue = 2)]
         protected IDiffSpread<int> FInRes;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)

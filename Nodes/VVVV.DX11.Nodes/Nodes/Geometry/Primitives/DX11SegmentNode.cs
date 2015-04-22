@@ -32,7 +32,7 @@ namespace VVVV.DX11.Nodes
         [Input("Flat Texture", DefaultValue = 1)]
         protected IDiffSpread<bool> FInFlat;
 
-        [Input("Resolution", DefaultValue = 20)]
+        [Input("Resolution", DefaultValue = 20, MinValue = 3)]
         protected IDiffSpread<int> FInRes;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)

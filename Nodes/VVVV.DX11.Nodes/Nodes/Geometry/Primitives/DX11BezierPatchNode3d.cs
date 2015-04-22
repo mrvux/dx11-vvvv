@@ -35,10 +35,10 @@ namespace VVVV.DX11.Nodes
             this.FPInInCtrlPts.SetSubType3D(double.MinValue, double.MaxValue, 0.01, 0, 0,0, false, false, false);
 
             this.FHost.CreateValueInput("Control Point Resolution", 2, null, TSliceMode.Dynamic, TPinVisibility.True, out this.FPinInCtrlRes);
-            this.FPinInCtrlRes.SetSubType2D(double.MinValue, double.MaxValue, 1, 2, 2, false, false, true);
+            this.FPinInCtrlRes.SetSubType2D(1, double.MaxValue, 1, 2, 2, false, false, true);
 
             this.FHost.CreateValueInput("Grid Resolution", 2, null, TSliceMode.Dynamic, TPinVisibility.True, out this.FPInInRes);
-            this.FPInInRes.SetSubType2D(double.MinValue, double.MaxValue, 1, 2, 2, false, false, true);
+            this.FPInInRes.SetSubType2D(2, double.MaxValue, 1, 2, 2, false, false, true);
 
             this.FHost.CreateValueInput("Mesh Count", 1, null, TSliceMode.Dynamic, TPinVisibility.True, out this.FPinInMeshCount);
             this.FPinInMeshCount.SetSubType(double.MinValue, double.MaxValue, 1, 1, false, false, true);
