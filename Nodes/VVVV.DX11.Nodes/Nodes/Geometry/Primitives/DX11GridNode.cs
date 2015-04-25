@@ -24,10 +24,10 @@ namespace VVVV.DX11.Nodes
         [Input("Size", DefaultValues = new double[] { 1, 1 })]
         protected IDiffSpread<Vector2> FSize;
 
-        [Input("Resolution X", DefaultValue=2)]
+        [Input("Resolution X", DefaultValue=2, MinValue = 2)]
         protected IDiffSpread<int> FResX;
 
-        [Input("Resolution Y", DefaultValue = 2)]
+        [Input("Resolution Y", DefaultValue = 2, MinValue = 2)]
         protected IDiffSpread<int> FResY;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
