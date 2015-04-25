@@ -17,7 +17,7 @@ using FeralTic.DX11.Utils;
 
 namespace VVVV.DX11.Nodes.Bullet
 {
-	[PluginInfo(Name = "SoftBody", Category = "Bullet",Version="EX9.Geometry",
+	[PluginInfo(Name = "SoftBody", Category = "Bullet",Version="DX11.Geometry",
 		Help = "Gets a soft body data as mesh", Author = "vux")]
 	public class BulletGetSoftBodyMesh : IPluginEvaluate,IDX11ResourceProvider
 	{
