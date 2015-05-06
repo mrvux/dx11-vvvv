@@ -184,7 +184,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FInVsync;
 
         [Input("Buffer Count", Visibility = PinVisibility.OnlyInspector, DefaultValue=1, IsSingle=true)]
-        protected ISpread<int> FInBufferCount;
+        protected IDiffSpread<int> FInBufferCount;
 
         [Input("Do Not Wait", Visibility = PinVisibility.OnlyInspector, IsSingle=true)]
         protected ISpread<bool> FInDNW;
