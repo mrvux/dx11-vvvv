@@ -86,13 +86,25 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\..\Dependencies\x64\Kinect2\Kinect20.Face.dll">
+      <Link>Kinect20.Face.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\x64\Kinect2\Kinect20.Fusion.dll">
+      <Link>Kinect20.Fusion.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\x64\Kinect2\Kinect20.VisualGestureBuilder.dll">
+      <Link>Kinect20.VisualGestureBuilder.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(KINECTSDK20_DIR)Redist\Face\x64\NuiDatabase" "$(OutputPath)\NuiDatabase" /S /R /Y /I</PostBuildEvent>
-    <PostBuildEvent>xcopy "$(KINECTSDK20_DIR)Redist\VGB\x64\vgbtechs" "$(OutputPath)\vgbtechs" /S /R /Y /I</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(KINECTSDK20_DIR)Redist\Face\x64\NuiDatabase" "$(OutputPath)\NuiDatabase" /S /R /Y /I
+xcopy "$(KINECTSDK20_DIR)Redist\VGB\x64\vgbtechs" "$(OutputPath)\vgbtechs" /S /R /Y /I</PostBuildEvent>
   </PropertyGroup>
-
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
