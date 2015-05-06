@@ -31,6 +31,12 @@
     <Reference Include="Microsoft.Kinect.VisualGestureBuilder">
       <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.VisualGestureBuilder.dll</HintPath>
     </Reference>
+    <Reference Include="PreposeGestures">
+      <HintPath>..\..\Dependencies\x64\Kinect2\Prepose\PreposeGestures.dll</HintPath>
+    </Reference>
+    <Reference Include="PreposeGesturesFrameReader">
+      <HintPath>..\..\Dependencies\x64\Kinect2\Prepose\PreposeGesturesFrameReader.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -44,6 +50,8 @@
     <Compile Include="KinectBaseTextureNode.cs" />
     <Compile Include="KinectBodyIndexRawTextureNode.cs" />
     <Compile Include="KinectDepthTextureNodeRaw.cs" />
+    <Compile Include="KinectPreposeGestureStatusNode.cs" />
+    <Compile Include="KinectPreposeGestureNode.cs" />
     <Compile Include="KinectHdFaceBufferNode.cs" />
     <Compile Include="KinectRayTextureNode.cs" />
     <Compile Include="KinectDepthColorTextureNode.cs" />
