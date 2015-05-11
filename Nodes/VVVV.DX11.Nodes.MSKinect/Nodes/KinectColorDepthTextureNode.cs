@@ -116,8 +116,10 @@ namespace VVVV.DX11.Nodes.MSKinect
                 {
                     if (FRelativeLookup[0])
                     {
-                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - i % 640, 0, 640, 0, 1, TMapMode.Float);
-                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - VMath.Abs(i / 640), 0, 480, 0, 1, TMapMode.Float);
+                        int stepX = (640 / this.width);
+                        int stepY = (480 / this.height);
+                        this.colorimage[i * 2] = (float)VMath.Map(colpoints[i].X - (i * stepX) % 640, 0, 640, 0, 1, TMapMode.Float);
+                        this.colorimage[i * 2 + 1] = (float)VMath.Map(colpoints[i].Y - (i * stepX * stepY / 640), 0, 480, 0, 1, TMapMode.Float);
                     }
                     else
                     {
