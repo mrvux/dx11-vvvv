@@ -29,6 +29,9 @@ namespace VVVV.MSKinect.Nodes
         [Output("User Index")]
         private ISpread<string> FOutUserIndex;
 
+        [Output("Short Index")]
+        private ISpread<int> FOutShortIndex;
+
         [Output("Position")]
         private ISpread<Vector3> FOutPosition;
 
@@ -93,17 +96,19 @@ namespace VVVV.MSKinect.Nodes
                 if (this.lastframe != null)
                 {
                     List<Body> skels = new List<Body>();
+                    List<int> indices = new List<int>();
                     float z = float.MaxValue;
                     int id = -1;
 
                     lock (m_lock)
                     {
 
-                        foreach (Body sk in this.lastframe)
+                        for (int i = 0; i < this.lastframe.Length; i++)
                         {
-                            if (sk.IsTracked)
+                            if (this.lastframe[i].IsTracked)
                             {
-                                skels.Add(sk);
+                                skels.Add(this.lastframe[i]);
+                                indices.Add(i);
                             }
                         }
                     }
@@ -113,6 +118,7 @@ namespace VVVV.MSKinect.Nodes
 
                     this.FOutPosition.SliceCount = cnt;
                     this.FOutUserIndex.SliceCount = cnt;
+                    this.FOutShortIndex.SliceCount = cnt;
                     this.FOutClipped.SliceCount = cnt;
                     this.FOutJointPosition.SliceCount = cnt * 25;
                     this.FOutJointState.SliceCount = cnt * 25;
@@ -130,7 +136,7 @@ namespace VVVV.MSKinect.Nodes
                         Joint ce = sk.Joints[JointType.SpineBase];
                         this.FOutPosition[i] = new Vector3(ce.Position.X, ce.Position.Y, ce.Position.Z);
                         this.FOutUserIndex[i] = sk.TrackingId.ToString();
-
+                        this.FOutShortIndex[i] = indices[i];
 
                         Vector4 clip = Vector4.Zero;
                         clip.X = Convert.ToSingle(sk.ClippedEdges.HasFlag(FrameEdges.Left));
