@@ -13,13 +13,18 @@ namespace VVVV.DX11.Lib.Effects.Registries
 
     public class StandardShaderPinRegistry : ShaderPinRegistry
     {
-        public StandardShaderPinRegistry()
+        public StandardShaderPinRegistry() 
         {
-            //Basic scalar/vector types
+            //Basic scalar/vector types 
             this.RegisterType("int", (var) => new IntShaderPin());
             this.RegisterType("int2", (var) => new Int2ShaderPin());
             this.RegisterType("int3", (var) => new Int3ShaderPin());
             this.RegisterType("int4", (var) => new Int4ShaderPin());
+
+            this.RegisterType("uint", (var) => new IntShaderPin());
+            this.RegisterType("uint2", (var) => new Int2ShaderPin());
+            this.RegisterType("uint3", (var) => new Int3ShaderPin());
+            this.RegisterType("uint4", (var) => new Int4ShaderPin());
 
             this.RegisterType("bool", (var) => new BoolShaderPin());
 
