@@ -25,6 +25,7 @@ namespace VVVV.DX11.Nodes
         private IValueIn FPInInRes;
         private IValueIn FPinInCtrlRes;
         private IValueIn FPinInMeshCount;
+        private IValueIn FPinInAbsolute;
 
         private IValueOut FPinOutHelpers;
         private IValueOut FOutPatchId;
@@ -50,6 +51,9 @@ namespace VVVV.DX11.Nodes
             this.FHost.CreateValueInput("Mesh Count", 1, null, TSliceMode.Dynamic, TPinVisibility.True, out this.FPinInMeshCount);
             this.FPinInMeshCount.SetSubType(double.MinValue, double.MaxValue, 1, 1, false, false, true);
 
+            this.FHost.CreateValueInput("Absolute Position", 1, null, TSliceMode.Single, TPinVisibility.True, out this.FPinInAbsolute);
+            this.FPinInAbsolute.SetSubType(0, 1, 1, 0, false, true, false);
+
             this.FHost.CreateValueOutput("Helpers", 2, null, TSliceMode.Dynamic, TPinVisibility.True, out this.FPinOutHelpers);
             this.FPinOutHelpers.SetSubType2D(double.MinValue, double.MaxValue, 0.01, 0, 0, false, false, false);
             this.FPinOutHelpers.Order = 20;
@@ -66,7 +70,7 @@ namespace VVVV.DX11.Nodes
             this.FInvalidate = false;
 
             if (this.FPInInCtrlPts.PinIsChanged || this.FPInInRes.PinIsChanged 
-                || this.FPinInMeshCount.PinIsChanged || this.FPinInCtrlRes.PinIsChanged)
+                || this.FPinInMeshCount.PinIsChanged || this.FPinInCtrlRes.PinIsChanged || this.FPinInAbsolute.PinIsChanged)
             {
                 this.FVertex.Clear();
                 this.FIndices.Clear();
@@ -82,6 +86,10 @@ namespace VVVV.DX11.Nodes
 
                 int patchcnt = (int)mc;
 
+                double dabs;
+                this.FPinInAbsolute.GetValue(0, out dabs);
+
+                bool useAbsolute = dabs >= 0.5;
 
                 int ctrlidx = 0;
 
@@ -177,12 +185,23 @@ namespace VVVV.DX11.Nodes
                             float[] bu = BernsteinBasis.ComputeBasis(CresX -1,tu1);
                             float[] bv = BernsteinBasis.ComputeBasis(CresY -1,tv1);
 
-
-                            for (int ck = 0; ck < ctrls.Count; ck++)
+                            if (useAbsolute)
                             {
-                                carr[ck].X = x + ctrls[ck].X;
-                                carr[ck].Y = y + ctrls[ck].Y;
+                                for (int ck = 0; ck < ctrls.Count; ck++)
+                                {
+                                    carr[ck].X = ctrls[ck].X;
+                                    carr[ck].Y = ctrls[ck].Y;
+                                }
                             }
+                            else
+                            {
+                                for (int ck = 0; ck < ctrls.Count; ck++)
+                                {
+                                    carr[ck].X = x + ctrls[ck].X;
+                                    carr[ck].Y = y + ctrls[ck].Y;
+                                }
+                            }
+
 
                             Vector3 vp = this.EvaluateBezier(carr, bu, bv, CresX, CresY);
 
