@@ -20,6 +20,9 @@ namespace VVVV.Assimp.Nodes
         [Input("Duration")]
         protected IDiffSpread<double> FInDuration;
 
+        [Input("Absolute Time")]
+        protected IDiffSpread<bool> FInAbsoluteTime;
+
         [Output("Node Name")]
         protected ISpread<string> FOutName;
 
@@ -59,7 +62,7 @@ namespace VVVV.Assimp.Nodes
                         double t = this.FInTime[i];
                         double duration = this.FInDuration[i];
 
-                        double dt = t * duration;
+                        double dt = this.FInAbsoluteTime[0] ? t : t * duration;
 
                         this.FOutPos[i] = this.InterpolatePosition(dt, chan);
                         this.FOutScale[i] = this.InterpolateScale(dt, chan);
