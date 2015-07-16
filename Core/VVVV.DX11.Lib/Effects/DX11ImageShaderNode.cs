@@ -117,6 +117,9 @@ namespace VVVV.DX11.Nodes.Layers
         [Input("Default Size",DefaultValues= new double[] {256,256 },Visibility= PinVisibility.OnlyInspector)]
         protected ISpread<Vector2> FInSize;
 
+        [Input("Mips On Last Pass", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInMipLastPass;
+
         [Input("Custom Semantics", Order = 5000, Visibility = PinVisibility.OnlyInspector)]
         protected Pin<IDX11RenderSemantic> FInSemantics;
 
@@ -380,6 +383,7 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         ImageShaderPass pi = this.varmanager.passes[j];
                         EffectPass pass = tech.GetPassByIndex(j);
+                        bool isLastPass = j == tech.Description.PassCount - 1;
 
                         for (int kiter = 0; kiter < pi.IterationCount; kiter++)
                         {
@@ -399,7 +403,7 @@ namespace VVVV.DX11.Nodes.Layers
                             {
                                 fmt = pi.Format;
                             }
-                            bool mips = pi.Mips;
+                            bool mips = pi.Mips || (isLastPass && FInMipLastPass[i]);
 
                             int w, h;
                             if (j == 0)
@@ -546,7 +550,7 @@ namespace VVVV.DX11.Nodes.Layers
                             }
 
                             //Generate mips if applicable
-                            if (pi.Mips) { ctx.GenerateMips(rt.SRV); }
+                            if (mips) { ctx.GenerateMips(rt.SRV); }
 
                             if (!pi.KeepTarget)
                             {
