@@ -339,16 +339,16 @@ namespace VVVV.DX11.Nodes.Layers
                             else
                             {
                                 initial = context.DefaultTextures.WhiteTexture;
-                                wi = (int)this.FInSize[0].X;
-                                he = (int)this.FInSize[0].Y;
+                                wi = (int)this.FInSize[i].X;
+                                he = (int)this.FInSize[i].Y;
                             }
                         }
                     }
                     else
                     {
                         initial = context.DefaultTextures.WhiteTexture;
-                        wi = (int)this.FInSize[0].X;
-                        he = (int)this.FInSize[0].Y;
+                        wi = (int)this.FInSize[i].X;
+                        he = (int)this.FInSize[i].Y;
                     }
                     #endregion
 
