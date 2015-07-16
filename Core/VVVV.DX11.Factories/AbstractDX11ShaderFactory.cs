@@ -117,13 +117,12 @@ namespace VVVV.DX11.Factories
                 using (var sr = new StreamReader(filename))
                 {
                 	var code = sr.ReadToEnd();
-                	//remove comments: between (* and *)
-                	code = Regex.Replace(code, @"/\*.*?\*/", "", RegexOptions.Singleline);
-                	//remove comments: from // to lineend
-                	code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
-                    
+                    //remove comments: from // to lineend
+                    code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
+                    //remove comments: between (* and *)
+                    code = Regex.Replace(code, @"/\*.*?\*/", "", RegexOptions.Singleline);
                     //if the code contains now contains "technique10 " or "technique11 " this must be a dx11 effect
-					if (code.Contains("technique10 ") || code.Contains("technique11 "))
+                    if (code.Contains("technique10 ") || code.Contains("technique11 "))
                 		isDX11 = true;
             	}
             	
