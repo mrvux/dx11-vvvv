@@ -51,6 +51,7 @@ namespace VVVV.DX11.Nodes.Renderers
          DX11Resource<DX11SwapChain> swapchain = new DX11Resource<DX11SwapChain>();
 
          private bool resized;
+         private int spreadMax;
 
          public RGBAColor BackgroundColor
          {
@@ -105,7 +106,7 @@ namespace VVVV.DX11.Nodes.Renderers
                  context.CurrentDeviceContext.ClearRenderTargetView(this.swapchain[context].RTV,new SlimDX.Color4(0,0,0,0));
              }
 
-             if (this.FIn.PluginIO.IsConnected && this.FEnabled[0])
+             if (this.FIn.PluginIO.IsConnected && this.spreadMax > 0 && this.FEnabled[0])
              {
                  int id = this.FIndex[0];
                  if (this.FIn[id].Contains(context))
@@ -233,6 +234,7 @@ namespace VVVV.DX11.Nodes.Renderers
          public void Evaluate(int SpreadMax)
          {
              this.FOutCtrl[0] = this.ctrl;
+            this.spreadMax = SpreadMax;
          }
     }
 }
