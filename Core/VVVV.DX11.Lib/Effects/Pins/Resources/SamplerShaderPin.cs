@@ -38,7 +38,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
             }
             else
             {
-                shaderinstance.Effect.GetVariableByName(this.Name).AsConstantBuffer().UndoSetConstantBuffer();
+                shaderinstance.Effect.GetVariableByName(this.Name).AsSampler().UndoSetSamplerState(0);
             }
 
             
