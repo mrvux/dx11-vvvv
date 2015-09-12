@@ -278,6 +278,7 @@ namespace VVVV.DX11.Nodes
         private bool FInvalidateSwapChain;
         private bool FResized = false;
         private DX11RenderContext primary;
+        private bool FirstFrame = true;
         #endregion
 
         #region Evaluate
@@ -326,11 +327,15 @@ namespace VVVV.DX11.Nodes
                     {
                         if (this.FInFullScreen[0])
                         {
+                            // if the pin is true we want to give it priority over the component mode set in the patch. also in the first frame.
                             hde.SetComponentMode(n2, ComponentMode.Fullscreen);
                         }
                         else
                         {
-                            hde.SetComponentMode(n2, ComponentMode.InAWindow);
+                            // checking for first frame is necessary. the pin will always report to be changed in the very first frame.
+                            // however in the first frame we want to respect the component mode that is saved in the patch
+                            if (!FirstFrame)
+                                hde.SetComponentMode(n2, ComponentMode.InAWindow);
                         }
                     }
                 }
@@ -376,6 +381,7 @@ namespace VVVV.DX11.Nodes
                     tcnt++;
                 }
             }
+            FirstFrame = false;
         }
         #endregion
 
