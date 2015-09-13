@@ -39,11 +39,13 @@ namespace VVVV.DX11.Lib.Effects.Registries
             
             //Textures
             this.RegisterType("Texture1D", (var) => new Texture1DShaderPin());
+            this.RegisterType("Texture1DArray", (var) => new Texture1DShaderPin());
             this.RegisterType("Texture2D", (var) => new Texture2DShaderPin());
             this.RegisterType("Texture3D", (var) => new Texture3DShaderPin());
             this.RegisterType("Texture2DMS", (var) => new Texture2DShaderPin());
             this.RegisterType("Texture2DArray", (var) => new Texture2DShaderPin());
             this.RegisterType("TextureCube", (var) => new TextureCubeShaderPin());
+            this.RegisterType("TextureCubeArray", (var) => new TextureCubeShaderPin());
             
             //Sampler
             this.RegisterType("SamplerState", (var) => new SamplerShaderPin());
