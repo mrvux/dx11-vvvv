@@ -35,6 +35,9 @@ namespace VVVV.Assimp.Nodes
         [Output("Rotation Values")]
         protected ISpread<ISpread<Quaternion>> FOutRotationValues;
 
+        
+
+
         public void Evaluate(int SpreadMax)
         {
             if (this.FInChannels.IsChanged)
@@ -81,7 +84,6 @@ namespace VVVV.Assimp.Nodes
                         this.FOutRotationTime[i][j] = chan.RotationKeys[j].Time;
                         this.FOutRotationValues[i][j] = chan.RotationKeys[j].Value;
                     }
-
                 }
             }
         }

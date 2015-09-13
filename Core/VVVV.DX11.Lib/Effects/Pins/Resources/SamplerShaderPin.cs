@@ -31,25 +31,14 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             if (this.pin.PluginIO.IsConnected)
             {
-                if (this.pin.IsChanged)
+                using (var state = SamplerState.FromDescription(shaderinstance.RenderContext.Device, this.pin[slice]))
                 {
-                    if (this.state != null) { this.state.Dispose(); this.state = null; }
+                    shaderinstance.SetByName(this.Name, state);
                 }
-
-                if (this.state == null || this.state.Disposed)
-                {
-                    this.state = SamplerState.FromDescription(shaderinstance.RenderContext.Device, this.pin[0]);
-                }
-                shaderinstance.SetByName(this.Name, this.state);  
             }
             else
             {
-                if (this.state != null) 
-                { 
-                    this.state.Dispose(); 
-                    this.state = null;
-                    shaderinstance.SetByName(this.Name, this.state);  
-                }
+                shaderinstance.Effect.GetVariableByName(this.Name).AsSampler().UndoSetSamplerState(0);
             }
 
             

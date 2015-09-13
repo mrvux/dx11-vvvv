@@ -33,6 +33,8 @@ namespace VVVV.DX11.Nodes
 
         protected override int GetSpreadMax(int spreadmax)
         {
+            if (spreadmax == 0)
+                return 0;
             if (this.FVerts.SliceCount == 0 || this.FLoop.SliceCount == 0) { return 0; }
 
             return Math.Max(this.FVerts.SliceCount, this.FLoop.SliceCount);
