@@ -42,6 +42,8 @@
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dArrayRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\Touch\TouchStateJoin.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
     <Compile Include="Nodes\RenderStates\SamplerStatePresetNode.cs" />
@@ -200,9 +202,8 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\GenerateDispatch1D.fx" />
   </ItemGroup>
-  <PropertyGroup> 
-     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent> 
-  </PropertyGroup> 
-
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
