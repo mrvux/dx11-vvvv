@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes.Assimp
 {
-    [PluginInfo(Name="Mesh",Category="Geometry Split",Version="Assimp",Author="vux,flateric")]
+    [PluginInfo(Name="Mesh", Category="DX11.Geometry", Version= "Split Assimp", Author="vux, flateric")]
     public unsafe class AssimpMeshSplitNode : IPluginEvaluate
     {
         [DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
