@@ -324,27 +324,23 @@ namespace VVVV.DX11.Nodes.Layers
                     && this.spmax > 0 && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, settings))
                     || this.FInApplyOnly[0])
                 {
-                    string[] techniqueNames = this.FShader.TechniqueNames;
+                    this.OnBeginQuery(context);
 
-                    if (settings.PrefferedTechnique == "" && this.techniqueindex != this.FInTechnique[0].Index)
+                    //Select preferred technique if available
+                    if (settings.PreferredTechniques.Count == 0 && this.techniqueindex != this.FInTechnique[0].Index)
                     {
                         this.techniqueindex = this.FInTechnique[0].Index;
                         this.techniquechanged = true;
                     }
-                    else if (settings.PrefferedTechnique != "" && settings.PrefferedTechnique != techniqueNames[this.techniqueindex])
+                    else if (settings.PreferredTechniques.Count > 0)
                     {
-                        for (int i = 0; i < techniqueNames.Length; ++i)
+                        int i = settings.GetPreferredTechnique(this.FShader);
+                        if (i != this.techniqueindex)
                         {
-                            if (techniqueNames[i] == settings.PrefferedTechnique)
-                            {
-                                this.techniqueindex = i;
-                                this.techniquechanged = true;
-                                break;
-                            }
+                            this.techniqueindex = i;
+                            this.techniquechanged = true;
                         }
                     }
-                    
-                    this.OnBeginQuery(context);
 
                     //Need to build input layout
                     if (this.FGeometry.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)

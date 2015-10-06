@@ -56,15 +56,11 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FLayerIn.PluginIO.IsConnected)
                 {
-                    string prevTechnique = settings.PrefferedTechnique;
-                    if (settings.PrefferedTechnique == "")
-                    {
-                        settings.PrefferedTechnique = FTechnique[0].Trim();
-                    }
+                    settings.PreferredTechniques.Add(FTechnique[0].Trim().ToLower());
 
                     this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
 
-                    settings.PrefferedTechnique = prevTechnique;
+                    settings.PreferredTechniques.RemoveAt(settings.PreferredTechniques.Count - 1);
                 }
             }
         }
