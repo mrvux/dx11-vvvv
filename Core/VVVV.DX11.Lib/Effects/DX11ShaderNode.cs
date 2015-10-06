@@ -68,7 +68,7 @@ namespace VVVV.DX11.Nodes.Layers
         protected Matrix* mworld;
         protected int mworldcount;
 
-        //private int techniqueindex;
+        private int techniqueindex;
 
         #endregion
 
@@ -162,6 +162,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (this.FInTechnique.IsChanged)
             {
+                this.techniqueindex = this.FInTechnique[0].Index;
                 this.techniquechanged = true;
             }
             
@@ -323,12 +324,32 @@ namespace VVVV.DX11.Nodes.Layers
                     && this.spmax > 0 && this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, settings))
                     || this.FInApplyOnly[0])
                 {
+                    string[] techniqueNames = this.FShader.TechniqueNames;
+
+                    if (settings.PrefferedTechnique == "" && this.techniqueindex != this.FInTechnique[0].Index)
+                    {
+                        this.techniqueindex = this.FInTechnique[0].Index;
+                        this.techniquechanged = true;
+                    }
+                    else if (settings.PrefferedTechnique != "" && settings.PrefferedTechnique != techniqueNames[this.techniqueindex])
+                    {
+                        for (int i = 0; i < techniqueNames.Length; ++i)
+                        {
+                            if (techniqueNames[i] == settings.PrefferedTechnique)
+                            {
+                                this.techniqueindex = i;
+                                this.techniquechanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    
                     this.OnBeginQuery(context);
 
                     //Need to build input layout
                     if (this.FGeometry.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                     {
-                        shaderdata.Update(this.FInTechnique[0].Index, 0, this.FGeometry);
+                        shaderdata.Update(this.techniqueindex, 0, this.FGeometry);
                         this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
 

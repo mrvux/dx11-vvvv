@@ -35,6 +35,7 @@
     <Compile Include="Nodes\Geometry\RawBufferAsGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerDispatcherNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPixelViewportNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerStencilRefNode.cs" />
