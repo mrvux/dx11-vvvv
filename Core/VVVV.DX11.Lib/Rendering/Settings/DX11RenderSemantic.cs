@@ -27,9 +27,9 @@ namespace VVVV.DX11.Lib.Rendering
         public T Data { get; set; }
 
         /// <summary>
-        /// Type allowed for the variable
+        /// Types allowed for the variable
         /// </summary>
-        public string TypeName { get; protected set; }
+        public string[] TypeNames { get; protected set; }
 
         /// <summary>
         /// Semantic name
@@ -52,10 +52,13 @@ namespace VVVV.DX11.Lib.Rendering
         {
             foreach (IDX11CustomRenderVariable variable in variables)
             {
-                if (variable.TypeName == this.TypeName && variable.Semantic == this.Semantic)
+                foreach(string typeName in this.TypeNames)
                 {
-                    this.ApplyVariable(variable.Name, instance);
-                    return true;
+                    if(variable.TypeName == typeName && variable.Semantic == this.Semantic)
+                    {
+                        this.ApplyVariable(variable.Name, instance);
+                        return true;
+                    }
                 }
             }
             //Not bound
