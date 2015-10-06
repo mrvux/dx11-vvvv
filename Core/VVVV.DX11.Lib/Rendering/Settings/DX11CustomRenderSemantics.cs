@@ -61,7 +61,7 @@ namespace VVVV.DX11.Lib.Rendering
     public class Texture2dRenderSemantic : DX11RenderSemantic<DX11Texture2D>
     {
         public Texture2dRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { TypeNames = new string[] { "Texture2D", "Texture2DMS", "Texture2DArray", "Texture2DMSArray" }; }
-        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null && this.Data.Description.ArraySize == 1 ? this.Data.SRV : null); }
     }
 
     public class Texture2dArrayRenderSemantic : DX11RenderSemantic<DX11Texture2D>
