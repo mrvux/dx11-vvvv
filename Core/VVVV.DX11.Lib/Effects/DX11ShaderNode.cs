@@ -335,6 +335,10 @@ namespace VVVV.DX11.Nodes.Layers
                     else if (settings.PreferredTechniques.Count > 0)
                     {
                         int i = settings.GetPreferredTechnique(this.FShader);
+                        if (i == -1)
+                        {
+                            i = this.FInTechnique[0].Index;
+                        }
                         if (i != this.techniqueindex)
                         {
                             this.techniqueindex = i;
