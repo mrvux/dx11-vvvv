@@ -36,6 +36,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Input("Position", AsInt=true)]
         protected IDiffSpread<Vector2> FInPosition;
 
+        [Input("Size", AsInt = true, DefaultValues = new double[] {400,300 })]
+        protected IDiffSpread<Vector2> FInSize;
+
         [Input("TopMost")]
         protected IDiffSpread<bool> FInTopMost;
 
@@ -109,6 +112,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             //this.form.ResizeEnd += form_ResizeEnd;
             this.invalidate = true;
             this.form.Show();
+            this.form.ShowIcon = false;
 
            
             /*this.form.Resize += DX11RendererNode_Resize;
@@ -142,10 +146,15 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.FInvalidateSwapChain = true;
             }
 
-            if (this.FInPosition.IsChanged)
+            if (this.FInPosition.IsChanged || this.FInSize.IsChanged)
             {
                 this.form.Left = (int)this.FInPosition[0].X;
                 this.form.Top = (int)this.FInPosition[0].Y;
+
+                this.form.Width = (int)this.FInSize[0].X;
+                this.form.Height = (int)this.FInSize[0].Y;
+
+                this.FInvalidateSwapChain = true;
             }
 
             this.updateddevices.Clear();
