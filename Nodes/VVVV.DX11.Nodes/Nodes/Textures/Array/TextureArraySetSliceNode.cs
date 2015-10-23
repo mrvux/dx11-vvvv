@@ -47,7 +47,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FWrite;
 
         [Output("Texture Array", IsSingle = true)]
-        protected ISpread<DX11Resource<DX11Texture2D>> FOutTB;
+        protected ISpread<DX11Resource<DX11RenderTextureArray>> FOutTB;
 
         private TextureArraySetSlice generator;
 
@@ -55,7 +55,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FOutTB[0] == null)
             {
-                this.FOutTB[0] = new DX11Resource<DX11Texture2D>();
+                this.FOutTB[0] = new DX11Resource<DX11RenderTextureArray>();
             }
         }
 
