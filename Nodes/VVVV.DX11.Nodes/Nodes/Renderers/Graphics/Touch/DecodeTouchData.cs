@@ -11,16 +11,16 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics.Touch
     public class DecodeTouchDataNode : IPluginEvaluate
     {
         [Input("Touch Data")]
-        Pin<TouchData> FInData;
+        protected Pin<TouchData> FInData;
 
         [Output("Id")]
-        ISpread<int> FTouchId;
+        protected ISpread<int> FTouchId;
 
         [OutputAttribute("Position")]
-        ISpread<Vector2> FOutPos;
+        protected ISpread<Vector2> FOutPos;
 
         [OutputAttribute("Is New")]
-        ISpread<bool> FOutNew;
+        protected ISpread<bool> FOutNew;
 
         public void Evaluate(int SpreadMax)
         {

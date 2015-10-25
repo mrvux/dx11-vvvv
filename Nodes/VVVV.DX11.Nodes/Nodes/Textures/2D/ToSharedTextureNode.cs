@@ -28,8 +28,6 @@ namespace VVVV.DX11.Nodes.Textures
         [Output("Pointer",IsSingle=true, AsInt=true)]
         protected ISpread<long> FPointer;
 
-        private bool FRendered = false;
-        private bool FUpdated = false;
         private Texture2D tex = null;
         private SlimDX.DXGI.Resource SharedResource = null;
 
@@ -120,13 +118,6 @@ namespace VVVV.DX11.Nodes.Textures
         {
             this.FPointer[i] = 0;
         }
-
-        public void Prepare()
-        {
-            this.FUpdated = false;
-            this.FRendered = false;
-        }
-
 
         public void Dispose()
         {

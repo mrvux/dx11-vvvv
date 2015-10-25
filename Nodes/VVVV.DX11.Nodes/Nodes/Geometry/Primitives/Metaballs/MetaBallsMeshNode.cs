@@ -63,7 +63,6 @@ namespace VVVV.Nodes
         protected ISpread<DX11Resource<DX11IndexedGeometry>> FGeom;
 
         DataStream sVx;
-        DataStream sIx;
 
         //private Dictionary<Device, Mesh> FDeviceMeshes = new Dictionary<Device, Mesh>();
 

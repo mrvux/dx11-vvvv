@@ -31,8 +31,6 @@ namespace VVVV.DX11.Nodes.Geometry
         [Output("Counter Buffer")]
         protected ISpread<DX11Resource<IDX11StructuredBuffer>> FOutCounter;
 
-        bool invalidate = false;
-
         private DX11ShaderInstance generateShader;
         private DispatchIndirectBuffer dispatchBuffer;
         private DX11RawBuffer countBuffer;
@@ -41,8 +39,6 @@ namespace VVVV.DX11.Nodes.Geometry
 
         public void Evaluate(int SpreadMax)
         {
-            invalidate = false;
-
             if (FInArgBuffer.PluginIO.IsConnected)
             {
                 if (this.FOutGeom.SliceCount == 0)
