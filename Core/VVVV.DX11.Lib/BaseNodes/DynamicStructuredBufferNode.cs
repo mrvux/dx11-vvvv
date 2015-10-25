@@ -139,7 +139,7 @@ namespace VVVV.DX11.Nodes
                         b.WriteData(this.FInData.Stream.Buffer,0, this.FInData.SliceCount);
                     }
                 } 
-                catch (Exception ex)
+                catch
                 {
 
                 }

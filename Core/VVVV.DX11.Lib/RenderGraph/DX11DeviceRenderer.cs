@@ -288,7 +288,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 foreach (DX11OutputPin outpin in node.OutputPins)
                 {
                     //Call destroy
-                    IDX11ResourceProvider provider = outpin.ParentNode.Instance<IDX11ResourceProvider>();
+                    IDX11ResourceProvider provider = outpin.ParentNode.Interfaces.ResourceProvider;
 
                     try
                     {

@@ -303,7 +303,6 @@ namespace VVVV.DX11.Nodes.Layers
             DX11ObjectRenderSettings or = new DX11ObjectRenderSettings();
 
             int wi, he;
-            bool preserve = false;
             DX11ResourcePoolEntry<DX11RenderTarget2D> preservedtarget = null;
             
             for (int i = 0; i < this.spmax; i++)
@@ -551,7 +550,6 @@ namespace VVVV.DX11.Nodes.Layers
 
                             if (!pi.KeepTarget)
                             {
-                                preserve = false;
                                 rtlist.Add(rt);
                                 lastrt = rt;
                                 lasttmp = elem;
@@ -560,7 +558,6 @@ namespace VVVV.DX11.Nodes.Layers
                             }
                             else
                             {
-                                preserve = true;
                                 preservedtarget = elem;
                             }
 
