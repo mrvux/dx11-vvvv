@@ -84,7 +84,7 @@ namespace VVVV.DX11.Nodes
 
         public void Render(DX11RenderContext context)
         {
-            if (!this.FInLayer.PluginIO.IsConnected && this.AllowEmptyLayer == false) { return; }
+            if (!this.FInLayer.IsConnected && this.AllowEmptyLayer == false) { return; }
 
             if (this.rendereddevices.Contains(context)) { return; }
 

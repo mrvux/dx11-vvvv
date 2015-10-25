@@ -187,7 +187,7 @@ namespace VVVV.DX11
 
                     this.DoClear(context);
 
-                    if (this.FInLayer.PluginIO.IsConnected)
+                    if (this.FInLayer.IsConnected)
                     {
 
                         int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
