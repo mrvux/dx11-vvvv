@@ -355,11 +355,11 @@ namespace VVVV.DX11.Nodes.Layers
                     DX11RenderSettings r = new DX11RenderSettings();
                     r.RenderWidth = wi;
                     r.RenderHeight = he;
-                    if (this.FInSemantics.PluginIO.IsConnected)
+                    if (this.FInSemantics.IsConnected)
                     {
                         r.CustomSemantics.AddRange(this.FInSemantics.ToArray());
                     }
-                    if (this.FInResSemantics.PluginIO.IsConnected)
+                    if (this.FInResSemantics.IsConnected)
                     {
                         r.ResourceSemantics.AddRange(this.FInResSemantics.ToArray());
                     }
@@ -456,7 +456,7 @@ namespace VVVV.DX11.Nodes.Layers
                             DX11RenderTarget2D rt = elem.Element;
 
 
-                            if (this.FDepthIn.PluginIO.IsConnected && pi.UseDepth)
+                            if (this.FDepthIn.IsConnected && pi.UseDepth)
                             {
                                 context.RenderTargetStack.Push(this.FDepthIn[0][context], true, elem.Element);
                             }
@@ -526,7 +526,7 @@ namespace VVVV.DX11.Nodes.Layers
                             this.BindPassIndexSemantic(shaderdata.ShaderInstance.Effect, j);
                             this.BindPassIterIndexSemantic(shaderdata.ShaderInstance.Effect, kiter);
 
-                            if (this.FDepthIn.PluginIO.IsConnected)
+                            if (this.FDepthIn.IsConnected)
                             {
                                 if (this.FDepthIn[0].Contains(context))
                                 {
