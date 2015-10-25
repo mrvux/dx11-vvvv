@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutBuffer[0][context] = rb;
             }
 
-            if (this.FInBuffer.PluginIO.IsConnected)
+            if (this.FInBuffer.IsConnected)
             {
                 UnorderedAccessView uav = this.FInBuffer[0][context].UAV;
                 ctx.CopyStructureCount(uav, this.FOutBuffer[0][context].Buffer, 0);
