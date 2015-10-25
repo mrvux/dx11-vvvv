@@ -14,8 +14,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 {
     public class SamplerShaderPin : AbstractShaderV2Pin<SamplerDescription>
     {
-        private SamplerState state;
-
         protected override void ProcessAttribute(InputAttribute attr, EffectVariable var)
         {
             attr.IsSingle = true;
