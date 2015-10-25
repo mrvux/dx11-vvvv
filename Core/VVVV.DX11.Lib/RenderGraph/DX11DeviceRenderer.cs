@@ -138,7 +138,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                         //In case node has been deleted, we already called dispose
                         if (this.graph.Nodes.Contains(unused.ParentNode))
                         {
-                            IDX11ResourceProvider provider = unused.ParentNode.Instance<IDX11ResourceProvider>();
+                            IDX11ResourceProvider provider = unused.ParentNode.Interfaces.ResourceProvider;
                             provider.Destroy(unused.PluginIO, this.context, false);
                         }
 
