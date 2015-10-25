@@ -20,7 +20,7 @@ namespace VVVV.DX11.Nodes
     public unsafe class DynamicTexture2DNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Import()]
-        ILogger logger;
+        protected ILogger logger;
 
         [Input("Width", DefaultValue = 1,AutoValidate=false)]
         protected ISpread<int> FInWidth;
