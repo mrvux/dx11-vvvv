@@ -16,6 +16,7 @@ namespace VVVV.DX11.RenderGraph.Model
         private readonly IDX11MultiResourceProvider multiResourceProvider;
         private readonly IDX11LayerProvider layerProvider;
         private readonly IDX11ResourceDataRetriever dataRetriever;
+        private readonly IDX11UpdateBlocker updateBlocker;
 
         public DX11NodeInterfaces(IInternalPluginHost hoster)
         {
@@ -26,6 +27,7 @@ namespace VVVV.DX11.RenderGraph.Model
             this.multiResourceProvider = this.IsAssignable<IDX11MultiResourceProvider>() ? this.Instance<IDX11MultiResourceProvider>() : null;
             this.layerProvider = this.IsAssignable<IDX11LayerProvider>() ? this.Instance<IDX11LayerProvider>() : null;
             this.dataRetriever = this.IsAssignable<IDX11ResourceDataRetriever>() ? this.Instance<IDX11ResourceDataRetriever>() : null;
+            this.updateBlocker = this.IsAssignable<IDX11UpdateBlocker>() ? this.Instance<IDX11UpdateBlocker>() : null;
         }
 
         public bool IsResourceProvider
@@ -58,6 +60,11 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.dataRetriever != null; }
         }
 
+        public bool IsUpdateBlocker
+        {
+            get { return this.updateBlocker != null; }
+        }
+
         public IDX11ResourceProvider ResourceProvider
         {
             get { return this.rendererProvider; }
@@ -86,6 +93,11 @@ namespace VVVV.DX11.RenderGraph.Model
         public IDX11ResourceDataRetriever DataRetriever
         {
             get { return this.dataRetriever; }
+        }
+
+        public IDX11UpdateBlocker UpdateBlocker
+        {
+            get { return this.updateBlocker; }
         }
 
         private T Instance<T>()
