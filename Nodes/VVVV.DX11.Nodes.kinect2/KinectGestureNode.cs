@@ -105,7 +105,8 @@ namespace VVVV.DX11.Nodes.Kinect2
                     this.gesturenames.SliceCount = (int)this.database.AvailableGesturesCount;
                     this.gesturetype.SliceCount = this.gesturenames.SliceCount;
                     this.gesturedetected.SliceCount = this.gesturenames.SliceCount;
-                    this.gestureconfidence.SliceCount = this.gestureconfidence.SliceCount;
+                    this.gestureconfidence.SliceCount = this.gesturenames.SliceCount;
+                    this.gestureprogress.SliceCount = this.gesturenames.SliceCount;
 
                     int cnt = 0;
                     foreach (Gesture g in database.AvailableGestures)
@@ -135,6 +136,7 @@ namespace VVVV.DX11.Nodes.Kinect2
 
                     if (discreteResults != null)
                     {
+                        int i = 0;
                         // we only have one gesture in this source object, but you can get multiple gestures
                         foreach (Gesture gesture in this.vgbFrameSource.Gestures)
                         {
@@ -145,10 +147,11 @@ namespace VVVV.DX11.Nodes.Kinect2
 
                                 if (result != null)
                                 {
-                                    this.gesturedetected[0] = result.Detected;
-                                    this.gestureconfidence[0] = result.Confidence;
+                                    this.gesturedetected[i] = result.Detected;
+                                    this.gestureconfidence[i] = result.Confidence;
                                 }
                             }
+                            i++;
                         }
                     }
 
@@ -156,6 +159,7 @@ namespace VVVV.DX11.Nodes.Kinect2
 
                     if (continuousResults != null)
                     {
+                        int i = 0;
                         // we only have one gesture in this source object, but you can get multiple gestures
                         foreach (Gesture gesture in this.vgbFrameSource.Gestures)
                         {
@@ -166,9 +170,10 @@ namespace VVVV.DX11.Nodes.Kinect2
 
                                 if (result != null)
                                 {
-                                    this.gestureprogress[0] = result.Progress;
+                                    this.gestureprogress[i] = result.Progress;
                                 }
                             }
+                            i++;
                         }
                     }
 
