@@ -13,7 +13,7 @@ namespace VVVV.DX11.Lib.Effects.Registries
             this.RegisterType("bool", (var) => new BoolArrayShaderPin());
             this.RegisterType("float", (var) => new FloatArrayShaderPin());
             this.RegisterType("int", (var) => new IntArrayShaderPin());
-
+            this.RegisterType("float2", (var) => new Float2ArrayShaderPin());
             this.RegisterType("float3", (var) => new Float3ArrayShaderPin());
             this.RegisterType("float4", (var) => { if (var.IsColor()) { return new ColorArrayShaderPin(); } else { return new Float4ArrayShaderPin(); } });
            

@@ -28,7 +28,7 @@ namespace VVVV.DX11
             this.ObjectValidators = new List<IDX11ObjectValidator>();
             this.ResourceSemantics = new List<DX11Resource<IDX11RenderSemantic>>();
             this.RenderSpace = new DX11RenderSpace();
-            this.PrefferedTechnique = "";
+            this.PreferredTechniques = new List<string>();
             this.ViewportCount = 1;
             this.ViewportIndex = 0;
             this.RenderHint = eRenderHint.Forward;
@@ -76,6 +76,8 @@ namespace VVVV.DX11
         /// </summary>
         public bool PreserveShaderStages { get; set; }
 
+        public List<string> PreferredTechniques { get; set; }
+
         public List<IDX11RenderSemantic> CustomSemantics { get; set; }
 
         public List<DX11Resource<IDX11RenderSemantic>> ResourceSemantics { get; set; }
@@ -112,6 +114,24 @@ namespace VVVV.DX11
             return true;
         }
 
+        public int GetPreferredTechnique(DX11Effect shader)
+        {
+            string[] techniqueNames = shader.TechniqueNames;
+
+            foreach (string pref in this.PreferredTechniques)
+            {
+                for (int i = 0; i < techniqueNames.Length; ++i)
+                {
+                    if (techniqueNames[i].ToLower() == pref)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
+        }
+
         /// <summary>
         /// How many draw calls this shader is gonna do
         /// </summary>
@@ -137,7 +157,5 @@ namespace VVVV.DX11
         public int CounterValue { get; set; }
 
         public bool DepthOnly { get; set; }
-
-        public string PrefferedTechnique { get; set; }
     }
 }

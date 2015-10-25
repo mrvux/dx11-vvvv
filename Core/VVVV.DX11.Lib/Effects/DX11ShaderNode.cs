@@ -68,7 +68,7 @@ namespace VVVV.DX11.Nodes.Layers
         protected Matrix* mworld;
         protected int mworldcount;
 
-        //private int techniqueindex;
+        private int techniqueindex;
 
         #endregion
 
@@ -162,6 +162,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (this.FInTechnique.IsChanged)
             {
+                this.techniqueindex = this.FInTechnique[0].Index;
                 this.techniquechanged = true;
             }
             
@@ -325,10 +326,30 @@ namespace VVVV.DX11.Nodes.Layers
                 {
                     this.OnBeginQuery(context);
 
+                    //Select preferred technique if available
+                    if (settings.PreferredTechniques.Count == 0 && this.techniqueindex != this.FInTechnique[0].Index)
+                    {
+                        this.techniqueindex = this.FInTechnique[0].Index;
+                        this.techniquechanged = true;
+                    }
+                    else if (settings.PreferredTechniques.Count > 0)
+                    {
+                        int i = settings.GetPreferredTechnique(this.FShader);
+                        if (i == -1)
+                        {
+                            i = this.FInTechnique[0].Index;
+                        }
+                        if (i != this.techniqueindex)
+                        {
+                            this.techniqueindex = i;
+                            this.techniquechanged = true;
+                        }
+                    }
+
                     //Need to build input layout
                     if (this.FGeometry.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                     {
-                        shaderdata.Update(this.FInTechnique[0].Index, 0, this.FGeometry);
+                        shaderdata.Update(this.techniqueindex, 0, this.FGeometry);
                         this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
                         this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
 
