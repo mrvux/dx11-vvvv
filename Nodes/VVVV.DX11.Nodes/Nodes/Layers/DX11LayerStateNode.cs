@@ -58,11 +58,11 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     bool popstate = false;
 
-                    if (this.FInState.PluginIO.IsConnected)
+                    if (this.FInState.IsConnected)
                     {
                         context.RenderStateStack.Push(this.FInState[0]);
                         popstate = true;

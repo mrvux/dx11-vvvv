@@ -58,7 +58,7 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.FEnabled[0])
             {
                 List<IDX11ObjectValidator> valids = new List<IDX11ObjectValidator>();
-                if (this.FInVal.PluginIO.IsConnected)
+                if (this.FInVal.IsConnected)
                 {
                     for (int i = 0; i < this.FInVal.SliceCount; i++)
                     {
@@ -74,7 +74,7 @@ namespace VVVV.DX11.Nodes.Layers
                     }
                 }
 
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
                 }

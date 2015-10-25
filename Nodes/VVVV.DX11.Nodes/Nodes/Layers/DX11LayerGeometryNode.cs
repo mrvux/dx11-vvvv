@@ -60,9 +60,9 @@ namespace VVVV.DX11.Nodes
             IDX11Geometry g = settings.Geometry;
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
-                    if (this.FInGeometry.PluginIO.IsConnected)
+                    if (this.FInGeometry.IsConnected)
                     {
                         settings.Geometry = this.FInGeometry[0][context];
                     }

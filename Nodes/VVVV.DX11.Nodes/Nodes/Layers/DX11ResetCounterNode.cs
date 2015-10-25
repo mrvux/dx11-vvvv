@@ -46,7 +46,7 @@ namespace VVVV.DX11.Nodes
 
         public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
         {
-            if (this.FLayerIn.PluginIO.IsConnected)
+            if (this.FLayerIn.IsConnected)
             {
                 bool current = settings.ResetCounter;
                 settings.ResetCounter = this.FInReset[0];
