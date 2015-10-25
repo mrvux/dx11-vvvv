@@ -29,7 +29,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
-            if (this.pin.PluginIO.IsConnected)
+            if (this.pin.IsConnected)
             {
                 using (var state = SamplerState.FromDescription(shaderinstance.RenderContext.Device, this.pin[slice]))
                 {
