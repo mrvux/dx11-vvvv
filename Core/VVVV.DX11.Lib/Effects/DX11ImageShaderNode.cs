@@ -125,9 +125,6 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Input("Resource Semantics", Order = 5001, Visibility = PinVisibility.OnlyInspector)]
         protected Pin<DX11Resource<IDX11RenderSemantic>> FInResSemantics;
-
-        [Input("Iteration Count", Order = 5002, Visibility = PinVisibility.OnlyInspector, DefaultValue = 1)]
-        protected ISpread<int> FIter;
         #endregion
 
         #region Output Pins
