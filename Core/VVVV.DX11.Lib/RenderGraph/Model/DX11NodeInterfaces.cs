@@ -15,6 +15,7 @@ namespace VVVV.DX11.RenderGraph.Model
         private readonly IDX11RenderWindow renderWindow;
         private readonly IDX11MultiResourceProvider multiResourceProvider;
         private readonly IDX11LayerProvider layerProvider;
+        private readonly IDX11ResourceDataRetriever dataRetriever;
 
         public DX11NodeInterfaces(IInternalPluginHost hoster)
         {
@@ -24,6 +25,37 @@ namespace VVVV.DX11.RenderGraph.Model
             this.renderWindow = this.IsAssignable<IDX11RenderWindow>() ? this.Instance<IDX11RenderWindow>() : null;
             this.multiResourceProvider = this.IsAssignable<IDX11MultiResourceProvider>() ? this.Instance<IDX11MultiResourceProvider>() : null;
             this.layerProvider = this.IsAssignable<IDX11LayerProvider>() ? this.Instance<IDX11LayerProvider>() : null;
+            this.dataRetriever = this.IsAssignable<IDX11ResourceDataRetriever>() ? this.Instance<IDX11ResourceDataRetriever>() : null;
+        }
+
+        public bool IsResourceProvider
+        {
+            get { return this.rendererProvider != null; }
+        }
+
+        public bool IsRendererProvider
+        {
+            get { return this.rendererProvider != null; }
+        }
+
+        public bool IsRenderWindow
+        {
+            get { return this.renderWindow != null; }
+        }
+
+        public bool IsMultiResourceProvider
+        {
+            get { return this.multiResourceProvider != null; }
+        }
+
+        public bool IsLayerProvider
+        {
+            get { return this.layerProvider != null; }
+        }
+
+        public bool IsDataRetriever
+        {
+            get { return this.dataRetriever != null; }
         }
 
         public IDX11ResourceProvider ResourceProvider
@@ -49,6 +81,11 @@ namespace VVVV.DX11.RenderGraph.Model
         public IDX11LayerProvider LayerProvider
         {
             get { return this.layerProvider; }
+        }
+
+        public IDX11ResourceDataRetriever DataRetriever
+        {
+            get { return this.dataRetriever; }
         }
 
         private T Instance<T>()
