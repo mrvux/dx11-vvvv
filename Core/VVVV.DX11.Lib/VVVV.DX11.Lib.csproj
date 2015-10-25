@@ -42,6 +42,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseNodes\ReadBackStructNode.cs" />
+    <Compile Include="Devices\Allocators\DX11AllAdapterDeviceManager.cs" />
     <Compile Include="Devices\Allocators\DX11AutoAdapterDeviceManager.cs" />
     <Compile Include="Devices\Allocators\DX11PerMonitorDeviceManager.cs" />
     <Compile Include="Devices\Allocators\DX11PerAdapterDeviceManager.cs" />
