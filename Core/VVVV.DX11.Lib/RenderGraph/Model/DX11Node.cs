@@ -26,6 +26,9 @@ namespace VVVV.DX11.RenderGraph.Model
             this.HdeNode = hdeNode;
             this.Name = hdeNode.GetNodeInfo().Systemname;
             this.Hoster = (IPluginHost)hdeNode;
+
+            IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
+            this.Interfaces = new DX11NodeInterfaces(iip);
         }
 
         public DX11Node(INode hdeNode,IPluginHost hoster)
@@ -36,10 +39,15 @@ namespace VVVV.DX11.RenderGraph.Model
             this.HdeNode = hdeNode;
             this.Name = hdeNode.GetNodeInfo().Systemname;
             this.Hoster = hoster;
+
+            IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
+            this.Interfaces = new DX11NodeInterfaces(iip);
         }
 
         public IPluginHost Hoster { get; protected set; }
         public INode HdeNode { get; protected set; }
+        public DX11NodeInterfaces Interfaces { get; private set; }
+
         public string Name { get; set; }
         public string DescriptiveName
         {
@@ -70,7 +78,7 @@ namespace VVVV.DX11.RenderGraph.Model
             return null;
         }
 
-
+        [Obsolete("Node will cache their interfaces in the future, in order to avoid COM apartment, Use Interfaces property instead")]
         public T Instance<T>()
         {
             IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
@@ -86,6 +94,7 @@ namespace VVVV.DX11.RenderGraph.Model
             }
         }
 
+        [Obsolete("Node will cache their interfaces in the future, in order to avoid COM apartment, Use Interfaces property instead")]
         public bool IsAssignable<T>()
         {
             IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
