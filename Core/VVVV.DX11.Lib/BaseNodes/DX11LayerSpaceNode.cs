@@ -59,7 +59,7 @@ namespace VVVV.DX11.Nodes
 
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     Matrix view = settings.View;
                     Matrix projection = settings.Projection;

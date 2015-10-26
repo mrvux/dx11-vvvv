@@ -71,7 +71,7 @@ namespace VVVV.DX11.Nodes
             IDX11Geometry g = settings.Geometry;
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     IDX11Geometry geom = settings.Geometry;
 

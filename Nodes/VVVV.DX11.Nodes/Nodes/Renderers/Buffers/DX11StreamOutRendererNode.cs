@@ -159,6 +159,11 @@ namespace VVVV.DX11.Nodes
 
                 ctx.StreamOutput.SetTargets(null);
 
+                if (this.EndQuery != null)
+                {
+                    this.EndQuery(context);
+                }
+
             }
         }
 

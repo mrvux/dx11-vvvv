@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     List<IDX11RenderSemantic> semantics = new List<IDX11RenderSemantic>();
                     if (this.FInSemantics.PluginIO.IsConnected)
@@ -71,7 +71,7 @@ namespace VVVV.DX11.Nodes
 
 
                     List<DX11Resource<IDX11RenderSemantic>> ressemantics = new List<DX11Resource<IDX11RenderSemantic>>();
-                    if (this.FInResSemantics.PluginIO.IsConnected)
+                    if (this.FInResSemantics.IsConnected)
                     {
                         ressemantics.AddRange(this.FInResSemantics);
                         settings.ResourceSemantics.AddRange(ressemantics);

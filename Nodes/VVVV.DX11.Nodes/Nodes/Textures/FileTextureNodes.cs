@@ -119,7 +119,7 @@ namespace VVVV.DX11.Nodes
     {
 
         [Output("Size", AsInt = true, Order = 400)]
-        ISpread<Vector2> size;
+        protected ISpread<Vector2> size;
 
         [Output("Format", Order = 401)]
         protected ISpread<SlimDX.DXGI.Format> format;

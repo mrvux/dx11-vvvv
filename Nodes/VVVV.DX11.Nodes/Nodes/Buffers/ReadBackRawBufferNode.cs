@@ -48,7 +48,7 @@ namespace VVVV.DX11.Nodes
         #region IPluginEvaluate Members
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 

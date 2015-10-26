@@ -264,7 +264,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             bool popstate = false;
 
-            bool multistate = this.FInState.PluginIO.IsConnected && this.FInState.SliceCount > 1;
+            bool multistate = this.FInState.IsConnected && this.FInState.SliceCount > 1;
 
             if (this.FInEnabled[0])
             {
@@ -473,7 +473,7 @@ namespace VVVV.DX11.Nodes.Layers
                 context.RenderStateStack.Apply();
             }
 
-            if (this.FInLayer.PluginIO.IsConnected && this.FInEnabled[0])
+            if (this.FInLayer.IsConnected && this.FInEnabled[0])
             {
                 this.FInLayer[0][context].Render(this.FInLayer.PluginIO, context, settings);
             }

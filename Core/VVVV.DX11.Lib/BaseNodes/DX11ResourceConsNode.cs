@@ -39,7 +39,7 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FInputs[i].IOObject.IsChanged)
                 {
-                    if (this.FInputs[i].IOObject.PluginIO.IsConnected)
+                    if (this.FInputs[i].IOObject.IsConnected)
                     {
                         this.FOutput[i].SliceCount = this.FInputs[i].IOObject.SliceCount;
                         this.FOutput[i] = this.FInputs[i].IOObject;

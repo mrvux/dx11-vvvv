@@ -25,7 +25,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FIn.PluginIO.IsConnected)
+            if (this.FIn.IsConnected)
             {
                 this.FOutBuffer.SliceCount = SpreadMax;
                 for (int i = 0; i < this.FIn.SliceCount; i++)

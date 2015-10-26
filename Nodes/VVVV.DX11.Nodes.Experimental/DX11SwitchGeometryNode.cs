@@ -1,26 +1,29 @@
-﻿using System;
+﻿using FeralTic.DX11;
+using FeralTic.DX11.Resources;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
-using System.ComponentModel.Composition;
-using VVVV.PluginInterfaces.V2;
-using VVVV.DX11.Lib;
 using VVVV.PluginInterfaces.V1;
-using VVVV.Hosting.Pins;
-using VVVV.DX11.Lib.Devices;
-using FeralTic.Resources;
+using VVVV.PluginInterfaces.V2;
+using VVVV.Utils.VMath;
 
 namespace VVVV.DX11.Nodes
 {
-    public class ConsNonNilNode<T> : IPluginEvaluate, IPartImportsSatisfiedNotification
+    [PluginInfo(Name = "Switch", Category = "DX11.IndexedGeometry", Version = "2d", Author = "vux")]
+    public class SwitchGeometryNode : IPluginEvaluate, IDX11ResourceProvider, IPartImportsSatisfiedNotification
     {
+        [Input("Switch", Order = -5, IsSingle=true)]
+        protected ISpread<int> FInSwitch;
+
         [Config("Input Count", DefaultValue = 2, MinValue = 2)]
         protected IDiffSpread<int> FInputCount;
 
         [Output("Output")]
-        protected ISpread<ISpread<T>> FOutput;
+        protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutput;
 
-        private List<IIOContainer<Pin<T>>> FInputs = new List<IIOContainer<Pin<T>>>();
+        private List<IIOContainer<Pin<DX11Resource<DX11IndexedGeometry>>>> FInputs = new List<IIOContainer<Pin<DX11Resource<DX11IndexedGeometry>>>>();
 
         [Import()]
         protected IPluginHost FHost;
@@ -30,23 +33,27 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.FOutput.SliceCount = this.FInputs.Count;
+            //
 
-            for (int i = 0; i < FInputs.Count; i++)
+            for (int i = 0; i < SpreadMax; i++)
             {
-                if (this.FInputs[i].IOObject.IsChanged)
-                {
-                    if (this.FInputs[i].IOObject.IsConnected)
-                    {
-                        this.FOutput[i].SliceCount = this.FInputs[i].IOObject.SliceCount;
-                        this.FOutput[i] = this.FInputs[i].IOObject;
-                    }
-                    else
-                    {
-                        this.FOutput[i].SliceCount = 0;
-                    }
-                }
+                int idx = VMath.Zmod(FInSwitch[i], FInputs.Count);
+
+                this.FOutput.SliceCount = FInputs[idx].IOObject.SliceCount;
+
+                var pin = FInputs[idx].IOObject;
+
+                this.FOutput[i] = pin.PluginIO.IsConnected ? pin[i] : new DX11Resource<DX11IndexedGeometry>();
             }
+        }
+
+        public void Update(IPluginIO pin, DX11RenderContext context)
+        {
+        }
+
+        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        {
+
         }
 
         #region Set Inputs
@@ -63,7 +70,7 @@ namespace VVVV.DX11.Nodes
                         //attr.IsSingle = true;
                         attr.CheckIfChanged = true;
                         //Create new layer Pin
-                        IIOContainer<Pin<T>> newlayer = this.FIOFactory.CreateIOContainer<Pin<T>>(attr);
+                        IIOContainer<Pin<DX11Resource<DX11IndexedGeometry>>> newlayer = this.FIOFactory.CreateIOContainer<Pin<DX11Resource<DX11IndexedGeometry>>>(attr);
                         newlayer.IOObject.SliceCount = 1;
                         this.FInputs.Add(newlayer);
                     }

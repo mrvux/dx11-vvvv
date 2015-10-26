@@ -83,7 +83,7 @@ namespace VVVV.DX11.Nodes
         
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
-            if (this.FTextureOutput.SliceCount == 0 || !FTexIn.IsConnected) { return; }
+            if (this.FTextureOutput.SliceCount == 0 || !FTexIn.IsConnected || !FTexIn[0].Contains(context)) { return; }
 
             if (FTexIn.IsConnected)
             {

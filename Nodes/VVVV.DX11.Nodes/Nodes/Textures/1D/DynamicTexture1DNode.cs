@@ -20,7 +20,7 @@ namespace VVVV.DX11.Nodes
     public class DynamicTexture1DNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Import()]
-        ILogger logger;
+        protected ILogger logger;
 
         [Config("Suppress Warning", DefaultValue = 0)]
         protected ISpread<bool> FSuppressWarning;

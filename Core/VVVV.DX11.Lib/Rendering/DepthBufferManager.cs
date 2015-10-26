@@ -189,7 +189,7 @@ namespace VVVV.DX11.Lib.Rendering
         {
             if (this.currentmode == eDepthBufferMode.ReadOnly)
             {
-                if (this.depthinputpin.IOObject.PluginIO.IsConnected)
+                if (this.depthinputpin.IOObject.IsConnected)
                 {
                     return this.depthinputpin.IOObject[0][context];
                 }
@@ -207,7 +207,7 @@ namespace VVVV.DX11.Lib.Rendering
 
             if (this.currentmode == eDepthBufferMode.ReadOnly)
             {
-                if (this.depthinputpin.IOObject.PluginIO.IsConnected)
+                if (this.depthinputpin.IOObject.IsConnected)
                 {
                     return this.depthinputpin.IOObject[0][context].ReadOnlyDSV;
                 }

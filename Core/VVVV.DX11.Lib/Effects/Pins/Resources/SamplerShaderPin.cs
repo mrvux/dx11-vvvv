@@ -14,8 +14,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 {
     public class SamplerShaderPin : AbstractShaderV2Pin<SamplerDescription>
     {
-        private SamplerState state;
-
         protected override void ProcessAttribute(InputAttribute attr, EffectVariable var)
         {
             attr.IsSingle = true;
@@ -29,7 +27,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
-            if (this.pin.PluginIO.IsConnected)
+            if (this.pin.IsConnected)
             {
                 using (var state = SamplerState.FromDescription(shaderinstance.RenderContext.Device, this.pin[slice]))
                 {

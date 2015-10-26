@@ -222,7 +222,6 @@ namespace VVVV.DX11.Nodes
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
 
-        string oldbbformat = "";
         #endregion
 
         #region Output Pins

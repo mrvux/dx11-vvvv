@@ -11,7 +11,11 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11
 {
+
+    [Obsolete("This does access IPluginIO, which fails in case of multi core access, this will be removed in next release, use RenderTaskDelegate instead")]
     public delegate void RenderDelegate<T>(IPluginIO pin, DX11RenderContext context, T settings);
+
+    public delegate void RenderTaskDelegate<T>(IPluginIO pin, DX11RenderContext context, T settings);
 
     public class DX11BaseLayer<T> : IDX11Resource
     {

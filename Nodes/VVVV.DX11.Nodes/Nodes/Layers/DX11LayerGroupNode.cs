@@ -129,7 +129,7 @@ namespace VVVV.DX11.Nodes
                 {
                     bool popstate = false;
 
-                    if (this.FInState.PluginIO.IsConnected)
+                    if (this.FInState.IsConnected)
                     {
                         context.RenderStateStack.Push(this.FInState[0]);
                         popstate = true;
@@ -144,7 +144,7 @@ namespace VVVV.DX11.Nodes
 
 
                     List<DX11Resource<IDX11RenderSemantic>> ressemantics = new List<DX11Resource<IDX11RenderSemantic>>();
-                    if (this.FInResSemantics.PluginIO.IsConnected)
+                    if (this.FInResSemantics.IsConnected)
                     {
                         ressemantics.AddRange(this.FInResSemantics);
                         settings.ResourceSemantics.AddRange(ressemantics);
@@ -152,7 +152,7 @@ namespace VVVV.DX11.Nodes
 
 
                     List<IDX11ObjectValidator> valids = new List<IDX11ObjectValidator>();
-                    if (this.FInVal.PluginIO.IsConnected)
+                    if (this.FInVal.IsConnected)
                     {
                         for (int i = 0; i < this.FInVal.SliceCount; i++)
                         {
@@ -177,7 +177,7 @@ namespace VVVV.DX11.Nodes
                     
                     foreach (IIOContainer<Pin<DX11Resource<DX11Layer>>> dxpin in this.FLayers)
                     {
-                        if (dxpin.IOObject.PluginIO.IsConnected)
+                        if (dxpin.IOObject.IsConnected)
                         {
                             try
                             {

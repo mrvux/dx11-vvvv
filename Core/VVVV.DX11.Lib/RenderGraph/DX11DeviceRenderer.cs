@@ -138,7 +138,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                         //In case node has been deleted, we already called dispose
                         if (this.graph.Nodes.Contains(unused.ParentNode))
                         {
-                            IDX11ResourceProvider provider = unused.ParentNode.Instance<IDX11ResourceProvider>();
+                            IDX11ResourceProvider provider = unused.ParentNode.Interfaces.ResourceProvider;
                             provider.Destroy(unused.PluginIO, this.context, false);
                         }
 
@@ -164,9 +164,9 @@ namespace VVVV.DX11.Lib.RenderGraph
             if (this.processed.Contains(node)) { return; }
 
             //Node can block processing and do early graph cut
-            if (node.IsAssignable<IDX11UpdateBlocker>())
+            if (node.Interfaces.IsUpdateBlocker)
             {
-                if (!node.Instance<IDX11UpdateBlocker>().Enabled) 
+                if (!node.Interfaces.UpdateBlocker.Enabled) 
                 {
                     //Add to processed list and early exit on branch.
                     this.processed.Add(node);
@@ -194,13 +194,13 @@ namespace VVVV.DX11.Lib.RenderGraph
                     {
                         DX11Node source = parent.ParentNode;
 
-                        IDX11ResourceProvider provider = source.Instance<IDX11ResourceProvider>();
+                        IDX11ResourceProvider provider = source.Interfaces.ResourceProvider;
 
                         try
                         {
                             provider.Update(parent.PluginIO, this.context);
 
-                            if (source.IsAssignable<IDX11MultiResourceProvider>())
+                            if (source.Interfaces.IsMultiResourceProvider)
                             {
                                 if (this.DoNotDestroy == false)
                                 {
@@ -243,11 +243,11 @@ namespace VVVV.DX11.Lib.RenderGraph
             }
 
             //Render if renderer
-            if (node.IsAssignable<IDX11RendererProvider>())
+            if (node.Interfaces.IsRendererProvider)
             {
                 try
                 {
-                    IDX11RendererProvider provider = node.Instance<IDX11RendererProvider>();
+                    IDX11RendererProvider provider = node.Interfaces.RendererProvider;
                     provider.Render(this.context);
                 }
                 catch (Exception ex)
@@ -271,7 +271,7 @@ namespace VVVV.DX11.Lib.RenderGraph
 
             foreach (DX11Node n in this.graph.Nodes)
             {
-                if (n.IsAssignable<IDX11RendererProvider>())
+                if (n.Interfaces.IsRendererProvider)
                 {
                     renderers.Add(n);
                 }
@@ -288,7 +288,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 foreach (DX11OutputPin outpin in node.OutputPins)
                 {
                     //Call destroy
-                    IDX11ResourceProvider provider = outpin.ParentNode.Instance<IDX11ResourceProvider>();
+                    IDX11ResourceProvider provider = outpin.ParentNode.Interfaces.ResourceProvider;
 
                     try
                     {

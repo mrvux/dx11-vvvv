@@ -42,6 +42,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseNodes\ReadBackStructNode.cs" />
+    <Compile Include="Devices\Allocators\DX11AllAdapterDeviceManager.cs" />
+    <Compile Include="Devices\Allocators\DX11AutoAdapterDeviceManager.cs" />
+    <Compile Include="Devices\Allocators\DX11PerMonitorDeviceManager.cs" />
+    <Compile Include="Devices\Allocators\DX11PerAdapterDeviceManager.cs" />
     <Compile Include="Devices\DX11DeviceAllocator.cs" />
     <Compile Include="Devices\DX11DeviceManager.cs" />
     <Compile Include="Devices\DX11DisplayManager.cs" />
@@ -104,6 +108,7 @@
     <Compile Include="RenderGraph\Model\DX11InputPin.cs" />
     <Compile Include="RenderGraph\Model\DX11Link.cs" />
     <Compile Include="RenderGraph\Model\DX11Node.cs" />
+    <Compile Include="RenderGraph\Model\DX11NodeInterfaces.cs" />
     <Compile Include="RenderGraph\Model\DX11OutputPin.cs" />
     <Compile Include="RenderGraph\Model\DX11Pin.cs" />
     <Compile Include="RenderGraph\Pins\DX11ResourceConnectionHandler.cs" />

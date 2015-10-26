@@ -55,11 +55,11 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "PixelBillBoard", Category = "DX11.Layer", Version = "")]
     public class PixelBillBoardNode : AbstractDX11LayerSpaceNode
     {
-	    [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)] 
-		private ISpread<Matrix> FTransformIn;
+	    [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<Matrix> FTransformIn;
 
         [Input("Double Scale", IsSingle = true, Order = 50)]
-        private ISpread<bool> FDoubleScale;
+        protected ISpread<bool> FDoubleScale;
         
 		protected override void UpdateSettings(DX11RenderSettings settings)
         {
@@ -75,13 +75,13 @@ namespace VVVV.DX11.Nodes
     public class AspectRatioNode : AbstractDX11LayerSpaceNode
     {
         [Input("Transform In", IsSingle = true)]
-        private ISpread<Matrix> FTransformIn;
+        protected ISpread<Matrix> FTransformIn;
 
         [Input("Uniform Scale", DefaultValue=1, IsSingle = true)]
-        ISpread<float> FScale;
+        protected ISpread<float> FScale;
 
         [Input("Alignment", DefaultEnumEntry = "FitIn", EnumName = "AspectRatioAlignment", IsSingle = true)]
-        ISpread<EnumEntry> FAlign;
+        protected ISpread<EnumEntry> FAlign;
 
         protected override void UpdateSettings(DX11RenderSettings settings)
         {

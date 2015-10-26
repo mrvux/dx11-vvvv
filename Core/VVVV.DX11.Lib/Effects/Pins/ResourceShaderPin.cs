@@ -32,7 +32,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
-            if (this.pin.PluginIO.IsConnected)
+            if (this.pin.IsConnected)
             {
                 shaderinstance.SetByName(this.Name, this.GetSRV(shaderinstance.RenderContext, slice));
             }

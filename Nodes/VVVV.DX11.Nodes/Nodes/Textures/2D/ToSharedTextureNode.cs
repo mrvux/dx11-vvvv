@@ -20,16 +20,14 @@ namespace VVVV.DX11.Nodes.Textures
     public class ToSharedTextureNode : IPluginEvaluate, IDX11ResourceDataRetriever, IDisposable
     {
         [Import()]
-        IPluginHost FHost;
+        protected IPluginHost FHost;
 
         [Input("Texture In", IsSingle=true)]
-        Pin<DX11Resource<DX11Texture2D>> FTextureIn;
+        protected Pin<DX11Resource<DX11Texture2D>> FTextureIn;
 
         [Output("Pointer",IsSingle=true, AsInt=true)]
-        ISpread<long> FPointer;
+        protected ISpread<long> FPointer;
 
-        private bool FRendered = false;
-        private bool FUpdated = false;
         private Texture2D tex = null;
         private SlimDX.DXGI.Resource SharedResource = null;
 
@@ -120,13 +118,6 @@ namespace VVVV.DX11.Nodes.Textures
         {
             this.FPointer[i] = 0;
         }
-
-        public void Prepare()
-        {
-            this.FUpdated = false;
-            this.FRendered = false;
-        }
-
 
         public void Dispose()
         {
