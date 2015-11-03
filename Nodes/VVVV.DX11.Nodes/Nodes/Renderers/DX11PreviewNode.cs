@@ -106,10 +106,10 @@ namespace VVVV.DX11.Nodes.Renderers
                  context.CurrentDeviceContext.ClearRenderTargetView(this.swapchain[context].RTV,new SlimDX.Color4(0,0,0,0));
              }
 
-             if (this.FIn.PluginIO.IsConnected && this.spreadMax > 0 && this.FEnabled[0])
+             if (this.FIn.IsConnected && this.spreadMax > 0 && this.FEnabled[0])
              {
                  int id = this.FIndex[0];
-                 if (this.FIn[id].Contains(context))
+                 if (this.FIn[id].Contains(context) && this.FIn[id][context] != null)
                  {
                      context.RenderTargetStack.Push(this.swapchain[context]);
                      var rs = new DX11RenderState();
