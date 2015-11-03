@@ -41,6 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DX11RenderFormNode.cs" />
+    <Compile Include="DX11RenderFullScreenForm.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DX11RenderFullScreenTest.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DX11SwitchGeometryNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
