@@ -264,22 +264,6 @@ namespace VVVV.DX11.Lib.RenderGraph
         }
         #endregion
 
-        #region Find Renderers
-        private List<DX11Node> FindRenderers()
-        {
-            List<DX11Node> renderers = new List<DX11Node>();
-
-            foreach (DX11Node n in this.graph.Nodes)
-            {
-                if (n.Interfaces.IsRendererProvider)
-                {
-                    renderers.Add(n);
-                }
-            }
-            return renderers;
-        }
-        #endregion
-
         #region Dispose
         public void Dispose()
         {

@@ -79,7 +79,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
             {
                 DX11Node vn = new DX11Node(node.InternalCOMInterf);
 
-                this.graph.Nodes.Add(vn);
+                this.graph.AddNode(vn);
 
                 //If force updater, register event
                 if (node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>())
@@ -114,7 +114,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
                 {
                     this.ProcessRemovedPin(pin);
                 }
-                this.graph.Nodes.Remove(vn);
+                this.graph.RemoveNode(vn);
                 return true;
             }
             return false;
