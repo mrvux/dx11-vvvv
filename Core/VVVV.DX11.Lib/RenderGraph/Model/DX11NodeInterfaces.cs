@@ -32,7 +32,7 @@ namespace VVVV.DX11.RenderGraph.Model
 
         public bool IsResourceProvider
         {
-            get { return this.rendererProvider != null; }
+            get { return this.resourceProvider != null; }
         }
 
         public bool IsRendererProvider
@@ -67,7 +67,7 @@ namespace VVVV.DX11.RenderGraph.Model
 
         public IDX11ResourceProvider ResourceProvider
         {
-            get { return this.rendererProvider; }
+            get { return this.resourceProvider; }
         }
 
         public IDX11RendererProvider RendererProvider

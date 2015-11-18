@@ -198,11 +198,11 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 6,DefaultValue=1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
+        [Input("Clear Depth Value", Order = 9, DefaultValue = 1)]
+        protected ISpread<float> FInClearDepthValue;
+
         [Input("AA Samples per Pixel", DefaultEnumEntry="1",EnumName="DX11_AASamples")]
         protected IDiffSpread<EnumEntry> FInAASamplesPerPixel;
-
-        /*[Input("AA Quality", Order = 8)]
-        protected IDiffSpread<int> FInAAQuality;*/
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
@@ -340,24 +340,6 @@ namespace VVVV.DX11.Nodes
                 }
             }
 
-            /*if (this.FInFullScreen.IsChanged)
-            {
-                if (this.FInFullScreen[0])
-                {
-                    string path;
-                    this.FHost.GetNodePath(false, out path);
-                    INode2 n2 = hde.GetNodeFromPath(path);
-                    hde.SetComponentMode(n2, ComponentMode.Fullscreen);
-                }
-                else
-                {
-                    string path;
-                    this.FHost.GetNodePath(false, out path);
-                    INode2 n2 = hde.GetNodeFromPath(path);
-                    hde.SetComponentMode(n2, ComponentMode.InAWindow);
-                }
-            }*/
-
             this.FOutKState[0] = new KeyboardState(this.FKeys);
             this.FOutMouseState[0] = MouseState.Create(this.FMousePos.x, this.FMousePos.y, this.FMouseButtons.x > 0.5f, this.FMouseButtons.y > 0.5f, this.FMouseButtons.z> 0.5f, false, false, this.wheel);
             this.FOutBackBufferSize[0] = new Vector2D(this.Width, this.Height);
@@ -438,7 +420,7 @@ namespace VVVV.DX11.Nodes
                     {
                         if (this.FInDepthBuffer[0])
                         {
-                            this.depthmanager.Clear(context);
+                            this.depthmanager.Clear(context, this.FInClearDepthValue[0]);
                         }
                     }
 

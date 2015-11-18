@@ -51,6 +51,9 @@ namespace VVVV.DX11
         [Input("Enable Depth Buffer", Order = 9,DefaultValue=1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
+        [Input("Clear Depth Value", Order = 9, DefaultValue = 1)]
+        protected ISpread<float> FInClearDepthValue;
+
         [Input("View", Order = 10)]
         protected IDiffSpread<Matrix> FInView;
 
@@ -182,7 +185,7 @@ namespace VVVV.DX11
 
                     if (this.FInClearDepth[0] && this.FInDepthBuffer[0])
                     {
-                        this.depthmanager.Clear(context);
+                        this.depthmanager.Clear(context, this.FInClearDepthValue[0]);
                     }
 
                     this.DoClear(context);
