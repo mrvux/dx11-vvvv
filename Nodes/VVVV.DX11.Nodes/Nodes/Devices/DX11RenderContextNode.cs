@@ -147,7 +147,16 @@ namespace VVVV.DX11.Nodes
                     this.FOutThisFrame[i] = renderer.ThisFramePins;
                     this.FOutNodeCount[i] = renderer.Graph.Nodes.Count;
                     this.FOutProcessedCount[i] = renderer.ProcessedNodes;
-                    this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
+
+                    int featureLevel = (int)ctx.FeatureLevel;
+                    if (featureLevel == 45312)
+                    {
+                        this.FOutFeatureLevel[i] = "Level_11_1";
+                    }
+                    else
+                    {
+                        this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
+                    }
                     this.FOUCS[i] = ctx.ComputeShaderSupport;
  
                     if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.BgraSupport)) { flags.Add(DeviceCreationFlags.BgraSupport);}
