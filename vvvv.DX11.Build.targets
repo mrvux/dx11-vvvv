@@ -2,9 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="vvvv.DX11.References.targets" />
   <PropertyGroup>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+	  <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
