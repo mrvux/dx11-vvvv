@@ -90,10 +90,10 @@ namespace VVVV.DX11.Nodes.Layers
 
         #region Output Pins
 
-        [Output("Geometry Out", IsSingle=true)]
+        [Output("Geometry Out")]
         protected ISpread<DX11Resource<IDX11Geometry>> FOut;
 
-        [Output("Buffer Out", IsSingle = true)]
+        [Output("Buffer Out")]
         protected ISpread<DX11Resource<DX11RawBuffer>> FOutBuffer;
 
         [Output("Technique Valid")]
