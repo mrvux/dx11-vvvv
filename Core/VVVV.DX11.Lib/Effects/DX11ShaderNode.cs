@@ -400,12 +400,14 @@ namespace VVVV.DX11.Nodes.Layers
                         this.orderedObjectSettings.Clear();
                         for (int i = 0; i < this.spmax; i++)
                         {
-                            DX11ObjectRenderSettings objectSettings = new DX11ObjectRenderSettings();
-                            objectsettings.DrawCallIndex = i;
-                            objectsettings.Geometry = null;
-                            objectsettings.IterationCount = 1;
-                            objectsettings.IterationIndex = 0;
-                            objectsettings.WorldTransform = this.mworld[i % this.mworldcount];
+                            DX11ObjectRenderSettings objSettings = new DX11ObjectRenderSettings();
+                            objSettings.DrawCallIndex = i;
+                            objSettings.Geometry = null;
+                            objSettings.IterationCount = 1;
+                            objSettings.IterationIndex = 0;
+                            objSettings.WorldTransform = this.mworld[i % this.mworldcount];
+
+                            this.orderedObjectSettings.Add(objSettings);
                         }
 
                         orderedSlices = settings.LayerOrder.Reorder(settings, orderedObjectSettings);
