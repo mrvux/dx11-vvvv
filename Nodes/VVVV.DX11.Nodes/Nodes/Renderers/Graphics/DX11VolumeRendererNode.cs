@@ -27,7 +27,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Texture Size", Order = 5, DefaultValues = new double[] { 32, 32,8 })]

@@ -30,7 +30,7 @@ namespace VVVV.DX11
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1,IsSingle=true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Clear", DefaultValue = 1, Order = 6)]

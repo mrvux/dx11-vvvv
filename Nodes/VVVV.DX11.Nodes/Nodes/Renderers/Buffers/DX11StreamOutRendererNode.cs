@@ -29,7 +29,7 @@ namespace VVVV.DX11.Nodes
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Vertex Size", Order = 8, DefaultValue = 12)]
