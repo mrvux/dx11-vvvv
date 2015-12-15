@@ -41,6 +41,7 @@
     <Compile Include="Nodes\Layers\DX11LayerStencilRefNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerOrderNode.cs" />
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
+    <Compile Include="Nodes\Layers\Order\LayerGetSliceOrderNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
@@ -204,6 +205,7 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\GenerateDispatch1D.fx" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
   </PropertyGroup>
