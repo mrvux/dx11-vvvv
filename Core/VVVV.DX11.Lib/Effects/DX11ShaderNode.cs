@@ -51,6 +51,8 @@ namespace VVVV.DX11.Nodes.Layers
         private bool geomconnected;
         private bool stateconnected;
 
+        private List<DX11ObjectRenderSettings> orderedObjectSettings = new List<DX11ObjectRenderSettings>();
+
         #region Default Input Pins
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
@@ -391,47 +393,64 @@ namespace VVVV.DX11.Nodes.Layers
                     //IDX11Geometry drawgeom = null;
                     objectsettings.Geometry = null;
                     DX11Resource<IDX11Geometry> pg = null;
+                    bool doOrder = false;
+                    List<int> orderedSlices = null;
+                    if (settings.LayerOrder != null && settings.LayerOrder.Enabled)
+                    {
+                        this.orderedObjectSettings.Clear();
+                        for (int i = 0; i < this.spmax; i++)
+                        {
+                            DX11ObjectRenderSettings objectSettings = new DX11ObjectRenderSettings();
+                            objectsettings.DrawCallIndex = i;
+                            objectsettings.Geometry = null;
+                            objectsettings.IterationCount = 1;
+                            objectsettings.IterationIndex = 0;
+                            objectsettings.WorldTransform = this.mworld[i % this.mworldcount];
+                        }
 
-                    
+                        orderedSlices = settings.LayerOrder.Reorder(settings, orderedObjectSettings);
+                        doOrder = true;
+                    }
 
                     for (int i = 0; i < this.spmax; i++)
                     {
+                        int idx = doOrder ? orderedSlices[i] : i;
                         if (multistate)
                         {
-                            context.RenderStateStack.Push(this.FInState[i]);
+                            context.RenderStateStack.Push(this.FInState[idx]);
                         }
 
-                        if (shaderdata.IsLayoutValid(i) || settings.Geometry != null)
+                        if (shaderdata.IsLayoutValid(idx) || settings.Geometry != null)
                         {
-                            objectsettings.IterationCount = this.FIter[i];
+                            objectsettings.IterationCount = this.FIter[idx];
 
                             for (int k = 0; k < objectsettings.IterationCount; k++)
                             {
                                 objectsettings.IterationIndex = k;
                                 if (settings.Geometry == null)
                                 {
-                                    if (this.FGeometry[i] != pg)
+                                    if (this.FGeometry[idx] != pg)
                                     {
-                                        pg = this.FGeometry[i];
+                                        pg = this.FGeometry[idx];
 
                                         objectsettings.Geometry = pg[context];
 
-                                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, i);
+                                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
                                     }
                                 }
                                 else
                                 {
                                     objectsettings.Geometry = settings.Geometry;
-                                    shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, i);
+                                    shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
                                 }
 
                                 //Prepare settings
-                                objectsettings.DrawCallIndex = i;
-                                objectsettings.WorldTransform = this.mworld[i % this.mworldcount];
+                                objectsettings.DrawCallIndex = idx;
+                                objectsettings.WorldTransform = this.mworld[idx % this.mworldcount];
 
                                 if (settings.ValidateObject(objectsettings))
                                 {
-                                    this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, this.objectsettings, i);
+                                    this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, this.objectsettings, idx);
 
                                     shaderdata.ApplyPass(ctx);
 
@@ -456,9 +475,7 @@ namespace VVVV.DX11.Nodes.Layers
                             settings.PostShaderAction(context);
                         }
                     }
-
                     this.OnEndQuery(context);
-                    
                 }
                 //this.query.End();
             }

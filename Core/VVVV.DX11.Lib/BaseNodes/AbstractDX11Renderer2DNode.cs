@@ -98,8 +98,6 @@ namespace VVVV.DX11
 
         protected virtual IDX11RWResource GetMainTarget(DX11RenderContext device) { return null; }
 
-        //protected virtual DX11Texture2D GetLastBuffer() { return null; }
-
         public bool IsEnabled
         {
             get { return this.FInEnabled[0]; }
