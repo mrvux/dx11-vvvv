@@ -18,7 +18,7 @@ namespace VVVV.DX11.Nodes.Layers
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Order", Order = 5001, IsSingle=true)]
-        protected Pin<IDX11ObjectValidator> FInVal;
+        protected Pin<IDX11LayerOrder> FInVal;
 
         [Input("Enabled",DefaultValue=1, Order = 100000)]
         protected IDiffSpread<bool> FEnabled;
@@ -55,7 +55,7 @@ namespace VVVV.DX11.Nodes.Layers
                 IDX11LayerOrder currentOrder = settings.LayerOrder;
                 if (this.FInVal.IsConnected)
                 {
-                    settings.LayerOrder = currentOrder;
+                    settings.LayerOrder = this.FInVal[0];
                 }
 
                 if (this.FLayerIn.IsConnected)

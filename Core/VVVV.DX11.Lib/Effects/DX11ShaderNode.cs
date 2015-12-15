@@ -412,7 +412,14 @@ namespace VVVV.DX11.Nodes.Layers
                         doOrder = true;
                     }
 
-                    for (int i = 0; i < this.spmax; i++)
+                    int drawCount = doOrder ? orderedSlices.Count : this.spmax;
+
+                    if (this.spmax == 0)
+                    {
+                        drawCount = 0;
+                    }
+
+                    for (int i = 0; i < drawCount; i++)
                     {
                         int idx = doOrder ? orderedSlices[i] : i;
                         if (multistate)
