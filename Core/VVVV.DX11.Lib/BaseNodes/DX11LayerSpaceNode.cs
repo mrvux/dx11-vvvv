@@ -68,7 +68,11 @@ namespace VVVV.DX11.Nodes
 
                     this.UpdateSettings(settings);
 
-                    this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    for (int i = 0; i < this.FLayerIn.SliceCount;i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
+                        
 
                     settings.View = view;
                     settings.Projection = projection;
@@ -78,7 +82,10 @@ namespace VVVV.DX11.Nodes
             }
             else
             {
-                this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                {
+                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                }
             }
         }
 

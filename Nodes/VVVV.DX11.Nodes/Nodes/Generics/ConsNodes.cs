@@ -34,6 +34,6 @@ namespace VVVV.DX11.Nodes
     public class ConsValidatorNode : ConsNonNilNode<IDX11ObjectValidator> { }
 
     [PluginInfo(Name = "Cons", Category = "DX11.Layer", Version = "", Author = "vux")]
-    public class ConsValidatorNode : DX11ResourceConsNode<DX11Layer> { }
+    public class ConsLayerNode : DX11ResourceConsNode<DX11Layer> { }
 
 }

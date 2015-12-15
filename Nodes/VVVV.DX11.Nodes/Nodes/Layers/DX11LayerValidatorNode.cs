@@ -76,7 +76,10 @@ namespace VVVV.DX11.Nodes.Layers
 
                 if (this.FLayerIn.IsConnected)
                 {
-                    this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
                 }
 
                 foreach (IDX11ObjectValidator v in valids)

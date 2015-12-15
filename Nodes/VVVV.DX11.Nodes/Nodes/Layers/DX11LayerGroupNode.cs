@@ -181,7 +181,10 @@ namespace VVVV.DX11.Nodes
                         {
                             try
                             {
-                                dxpin.IOObject[0][context].Render(dxpin.IOObject.PluginIO, context, settings);
+                                for (int i = 0; i < dxpin.IOObject.SliceCount; i++)
+                                {
+                                    dxpin.IOObject[i][context].Render(dxpin.IOObject.PluginIO, context, settings);
+                                }
                             }
                             catch
                             { }
