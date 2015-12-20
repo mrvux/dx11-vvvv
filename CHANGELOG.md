@@ -32,7 +32,7 @@ ChangeLog
 * [Core] Render windows are now cached (better performances when using lot of nodes)
 * [Nodes] FrustrumTest (DX11.Validator) fix (reversed bounding box)
 * [General] Updated to framework 4.5
-* [Nodes] Info (DX11) can report for a Feature Level 11.1 device if possible
+* [Nodes] Info (DX11) can report for a Feature Level 11.1 device if possible, also updates on first frame.
 * [Core] Stream out (gsfx) output Nil if input is Nil
 * [Core] Uav counter can also be set for pipeline writes
 * [Nodes] Add Cons (DX11.layer)
@@ -43,4 +43,5 @@ ChangeLog
 * [Core] Now integrates SharpDX 3 in the build, since it's required for some features
 * [Core] Use SharpDX to build DirectWrite font family enumeration
 * [Nodes] TextFormat (DirectWrite) now uses DirectWrite enumeration, which fixes issue when sometimes font was not found and reverting to default
+* [Core] Device is now created with Feature Level 11.1 if possible (Win8 and ATI , Nvidia 900+  only)
  
