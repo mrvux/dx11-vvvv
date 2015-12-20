@@ -28,7 +28,6 @@
     <Compile Include="TextLayer\FontSizeNode.cs" />
     <Compile Include="TextLayer\FontWeightNode.cs" />
     <Compile Include="TextLayer\FontStyleNode.cs" />
-    <Compile Include="TextLayer\ITextStyler.cs" />
     <Compile Include="TextLayer\TextStyleBaseNode.cs" />
     <Compile Include="TextLayoutAdvancedNode.cs" />
     <Compile Include="TextLayoutMetricsNode.cs" />
@@ -37,6 +36,11 @@
     <Compile Include="TextRangeNode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
+      <Project>{71c0786d-2640-4e39-aa7b-83602f36f3a3}</Project>
+      <Name>VVVV.DX11.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
       <Project>{c6ee17bb-1f48-44ea-8131-d299bc57748c}</Project>
       <Name>VVVV.DX11.Lib</Name>

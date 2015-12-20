@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VVVV.Nodes.DirectWrite
+namespace VVVV.Core.DirectWrite
 {
     public interface ITextStyler
     {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VVVV.Core.DirectWrite;
 using VVVV.DX11.Nodes;
 using VVVV.PluginInterfaces.V2;
 

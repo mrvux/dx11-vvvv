@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VVVV.Core.DirectWrite;
 using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Nodes.DirectWrite.TextLayer

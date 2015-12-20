@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using VVVV.Core.DirectWrite;
 using VVVV.Nodes.DirectWrite;
 using VVVV.PluginInterfaces.V2;
 using DWriteFactory = SlimDX.DirectWrite.Factory;
