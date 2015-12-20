@@ -48,7 +48,6 @@ private:
 	[Input("Size", Order = 5, DefaultValue=32)]
     ISpread<float>^ FInSize;
 
-	[Input("Color", Order = 6)]
     ISpread<SlimDX::Color4>^ FInColor;
 
 	[Input("Horizontal Align", EnumName = "HorizontalAlign", Order = 7)]

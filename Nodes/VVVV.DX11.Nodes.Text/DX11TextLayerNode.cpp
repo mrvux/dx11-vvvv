@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "DX11TextLayerNode.h"
 
+using namespace FeralTic::Utils;
+
 namespace VVVV { namespace Nodes { namespace DX11 {
 
 DX11TextLayerNode::DX11TextLayerNode(IIOFactory^ factory)
@@ -9,6 +11,12 @@ DX11TextLayerNode::DX11TextLayerNode(IIOFactory^ factory)
 	factory->PluginHost->CreateTransformInput("Transform In",TSliceMode::Dynamic,TPinVisibility::True,this->FInTr);
 	this->FInTr->Order = 1;
 	this->fontrenderers = gcnew	Dictionary<DX11RenderContext^,IntPtr>();
+
+	InputAttribute^ colorAttribute = gcnew InputAttribute("Color");
+	colorAttribute->Order = 6;
+	colorAttribute->DefaultColor = MagicNumberUtils::WhiteDefault();
+
+	this-> FInColor = IOFactoryExtensions::CreateSpread<SlimDX::Color4>(this->iofactory, colorAttribute, true);
 }
 
 void DX11TextLayerNode::Evaluate(int SpreadMax)
