@@ -44,4 +44,5 @@ ChangeLog
 * [Core] Use SharpDX to build DirectWrite font family enumeration
 * [Nodes] TextFormat (DirectWrite) now uses DirectWrite enumeration, which fixes issue when sometimes font was not found and reverting to default
 * [Core] Device is now created with Feature Level 11.1 if possible (Win8 and ATI , Nvidia 900+  only)
- 
+* [Core] Effect compiler now uses SharpDX, which allows to use latest version of D3D Compiler available on the OS
+* [Nodes] Add various Text Styler nodes, to allow to set specific font size/weight or family within the same text layout
