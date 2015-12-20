@@ -82,6 +82,7 @@ namespace VVVV.DX11.Factories
             this.displaymanager = new DX11DisplayManager();
 
             this.DirectWriteFactory = new DWriteFactory(SlimDX.DirectWrite.FactoryType.Shared);
+            DirectWriteFontUtils.SetFontEnum(this.hdehost, this.DirectWriteFactory);
 
             string[] args = Environment.GetCommandLineArgs();
 

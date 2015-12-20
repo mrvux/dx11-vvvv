@@ -12,7 +12,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
     [PluginInfo(Name="TextFormat", Category="DirectWrite")]
     public class TextFormatNode : IPluginEvaluate ,IDisposable
     {
-        [Input("Font", EnumName = "SystemFonts")]
+        [Input("Font", EnumName = "DirectWrite_Font_Families")]
         protected IDiffSpread<EnumEntry> FFontInput;
 
         [Input("Font Size", DefaultValue = 12)]
@@ -54,6 +54,11 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 this.FOutput.SliceCount = SpreadMax;
                 for (int i = 0; i < SpreadMax; i++)
                 {
+                    string familyName = this.FFontInput[i].Name;
+
+                    var fc = this.dwFactory.GetSystemFontCollection(false);
+                    bool exists;
+                    int idx = fc.FindFamilyName(this.FFontInput[i].Name, out exists);
                     this.FOutput[i] = new TextFormat(this.dwFactory,this.FFontInput[i].Name, this.FWeight[i], this.FStyle[i], this.FStretch[i], FSize[i], "");
                     this.FOutput[i].WordWrapping = this.FWordWrap[i];
                 }

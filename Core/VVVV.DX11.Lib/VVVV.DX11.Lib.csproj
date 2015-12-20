@@ -12,6 +12,18 @@
     <OutputPath>$(OutputPath)\core\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpDX, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\mixed\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\mixed\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\mixed\SharpDX.DXGI.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -128,6 +140,7 @@
     <Compile Include="Rendering\Validators\DX11SliceValidator.cs" />
     <Compile Include="Rendering\Validators\DX11SliceValidatorSpreaded.cs" />
     <Compile Include="Rendering\ViewPortManager.cs" />
+    <Compile Include="Utils\DirectWriteFontUtils.cs" />
     <Compile Include="Utils\InputLayoutFactory.cs" />
   </ItemGroup>
   <ItemGroup>
