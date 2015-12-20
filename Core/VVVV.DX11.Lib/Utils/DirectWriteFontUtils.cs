@@ -26,6 +26,7 @@ namespace VVVV.DX11.Lib
                     familyNames.Add(family.FamilyNames.GetString(0));
                 }
             }
+            familyNames.Sort();
             host.UpdateEnum("DirectWrite_Font_Families", "Arial", familyNames.ToArray());
         }
     }
