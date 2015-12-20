@@ -7,25 +7,25 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Nodes.DirectWrite.TextLayer
 {
-    [PluginInfo(Name = "FontStyle", Category = "DirectWrite", Version = "Styles", Tags = "layout,text", Author = "vux")]
-    public class FontStyleNode : TextStyleBaseNode
+    [PluginInfo(Name = "FontWeight", Category = "DirectWrite", Version = "Styles", Tags = "layout,text", Author = "vux")]
+    public class FontWeightNode : TextStyleBaseNode
     {
-        [Input("Style")]
-        protected IDiffSpread<FontStyle> style;
+        [Input("Weight")]
+        protected IDiffSpread<FontWeight> style;
 
-        private class FontStyler : TextStyleBase
+        private class FontWeighter : TextStyleBase
         {
-            public FontStyle Style;
+            public FontWeight Style;
 
             protected override void DoApply(TextLayout layout, TextRange range)
             {
-                layout.SetFontStyle(this.Style, range);
+                layout.SetFontWeight(this.Style, range);
             }
         }
 
         protected override TextStyleBaseNode.TextStyleBase CreateStyle(int slice)
         {
-            return new FontStyler()
+            return new FontWeighter()
             {
                 Style = style[slice]
             };

@@ -9,7 +9,7 @@ using DWriteFactory = SlimDX.DirectWrite.Factory;
 
 namespace VVVV.DX11.Nodes.Nodes.Text
 {
-    [PluginInfo(Name="TextFormat", Category="DirectWrite")]
+    [PluginInfo(Name = "TextFormat", Category = "DirectWrite", Author = "vux")]
     public class TextFormatNode : IPluginEvaluate ,IDisposable
     {
         [Input("Font", EnumName = "DirectWrite_Font_Families")]

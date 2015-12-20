@@ -10,7 +10,7 @@ using DWriteFactory = SlimDX.DirectWrite.Factory;
 
 namespace VVVV.DX11.Nodes.Nodes.Text
 {
-    [PluginInfo(Name = "TextLayout", Category = "DirectWrite", Version="Advanced")]
+    [PluginInfo(Name = "TextLayout", Category = "DirectWrite", Version = "Advanced", Author = "vux")]
     public class TextLayoutAdvancedNode : IPluginEvaluate, IDisposable
     {
         [Input("Text")]

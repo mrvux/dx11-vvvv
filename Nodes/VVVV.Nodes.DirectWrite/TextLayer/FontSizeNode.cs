@@ -7,20 +7,29 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Nodes.DirectWrite.TextLayer
 {
-    [PluginInfo(Name = "FontSize", Category = "DirectWrite", Tags = "layout,text")]
-    public class FontSizeNode : BaseTextLayoutRangeFuncNode
+    [PluginInfo(Name = "FontSize", Category = "DirectWrite",Version="Styles", Tags = "layout,text")]
+    public class FontSizeNode : TextStyleBaseNode
     {
         [Input("Size", DefaultValue = 32)]
-        IDiffSpread<float> size;
+        protected IDiffSpread<float> size;
 
-        protected override bool IsChanged()
+        private class FontSize : TextStyleBase
         {
-            return base.IsChanged() || size.IsChanged;
+            public float Size;
+
+            protected override void DoApply(TextLayout layout, TextRange range)
+            {
+                layout.SetFontSize(this.Size, range);
+            }
         }
 
-        protected override void Apply(TextLayout layout, bool enable, int slice)
+        protected override TextStyleBaseNode.TextStyleBase CreateStyle(int slice)
         {
-            var res = layout.SetFontSize(size[slice], new TextRange(ffrom[slice], fto[slice]));
+            return new FontSize()
+            {
+                Size = size[slice]
+            };
         }
     }
 }
+

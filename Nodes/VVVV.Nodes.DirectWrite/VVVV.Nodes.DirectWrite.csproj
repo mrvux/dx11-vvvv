@@ -23,21 +23,32 @@
     <Compile Include="HitTestTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextFormatNode.cs" />
+    <Compile Include="TextLayer\FontFamilyNode.cs" />
+    <Compile Include="TextLayer\ConsFontStylers.cs" />
+    <Compile Include="TextLayer\FontSizeNode.cs" />
+    <Compile Include="TextLayer\FontWeightNode.cs" />
+    <Compile Include="TextLayer\FontStyleNode.cs" />
+    <Compile Include="TextLayer\ITextStyler.cs" />
+    <Compile Include="TextLayer\TextStyleBaseNode.cs" />
+    <Compile Include="TextLayoutAdvancedNode.cs" />
     <Compile Include="TextLayoutMetricsNode.cs" />
     <Compile Include="TextLayoutNode.cs" />
     <Compile Include="TextPositionNode.cs" />
     <Compile Include="TextRangeNode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
+      <Project>{c6ee17bb-1f48-44ea-8131-d299bc57748c}</Project>
+      <Name>VVVV.DX11.Lib</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
       <Project>{9ead0f44-e6aa-4363-be4d-d944c1d35044}</Project>
       <Name>FeralTic</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TextLayer\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
