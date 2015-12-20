@@ -23,7 +23,7 @@ public ref class DX11TextLayerNode : public IPluginEvaluate,IDX11LayerProvider
 {
 public:
 	[ImportingConstructor()]
-	DX11TextLayerNode(IIOFactory^ factory);
+	DX11TextLayerNode(IIOFactory^ factory, SlimDX::DirectWrite::Factory^ dwFactory);
 	virtual void Evaluate(int SpreadMax);
 	virtual void Update(IPluginIO^ pin, DX11RenderContext^ OnDevice);
 	virtual void Destroy(IPluginIO^ pin, DX11RenderContext^ OnDevice, bool force);
@@ -72,6 +72,7 @@ private:
 	int spmax;
 
 	IIOFactory^ iofactory;
+	SlimDX::DirectWrite::Factory^ dwFactory;
 };
 
 }}}

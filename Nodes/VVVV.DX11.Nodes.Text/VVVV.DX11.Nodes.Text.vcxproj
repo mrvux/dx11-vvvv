@@ -143,16 +143,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColorStylerNode.h" />
     <ClInclude Include="DX11TextLayerAdvNode.h" />
     <ClInclude Include="DX11TextLayerNode.h" />
+    <ClInclude Include="FontWrapperFactory.h" />
     <ClInclude Include="FW1FontWrapper.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="ColorStylerNode.cpp" />
     <ClCompile Include="DX11TextLayerAdvNode.cpp" />
     <ClCompile Include="DX11TextLayerNode.cpp" />
+    <ClCompile Include="FontWrapperFactory.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
