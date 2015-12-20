@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using VVVV.Nodes.DirectWrite;
 using VVVV.PluginInterfaces.V2;
 using DWriteFactory = SlimDX.DirectWrite.Factory;
 
 namespace VVVV.DX11.Nodes.Nodes.Text
 {
-    [PluginInfo(Name = "TextLayout", Category = "DirectWrite")]
-    public class TextLayoutNode : IPluginEvaluate, IDisposable
+    [PluginInfo(Name = "TextLayout", Category = "DirectWrite", Version="Advanced")]
+    public class TextLayoutAdvancedNode : IPluginEvaluate, IDisposable
     {
         [Input("Text")]
         protected IDiffSpread<string> FText;
@@ -30,13 +31,20 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         [Input("Maximum Height", DefaultValue = 50)]
         protected IDiffSpread<float> FMaxHeight;
 
+        [Input("Styles")]
+        protected ISpread<ISpread<ITextStyler>> textStyles;
+
+        [Input("Apply", IsBang=true)]
+        protected ISpread<bool> apply;
+
         [Output("Output")]
         protected ISpread<TextLayout> FOutput;
 
         private DWriteFactory dwFactory;
+        private bool first = true;
 
         [ImportingConstructor()]
-        public TextLayoutNode(DWriteFactory dwFactory)
+        public TextLayoutAdvancedNode(DWriteFactory dwFactory)
         {
             this.dwFactory = dwFactory;
         }
@@ -49,8 +57,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 return;
             }
 
-            if (this.FFormat.IsChanged || this.FMaxHeight.IsChanged || this.FMaxWidth.IsChanged 
-                || this.FText.IsChanged || this.FTextAlign.IsChanged || this.FParaAlign.IsChanged)
+            if (this.apply[0] || this.first)
             {
                 //first dispose old outputs
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
@@ -67,9 +74,19 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                     var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
                     tl.TextAlignment = this.FTextAlign[i];
                     tl.ParagraphAlignment = this.FParaAlign[i];
+                    var styles = textStyles[0];
+                    for (int j = 0; j <styles.SliceCount; j++)
+                    {
+                        if (styles[j] != null)
+                        {
+                            styles[j].Apply(tl);
+                        }
+                    }
+                    
                     this.FOutput[i] = tl;
                 }
             }
+            this.first = false;
         }
 
         public void Dispose()
