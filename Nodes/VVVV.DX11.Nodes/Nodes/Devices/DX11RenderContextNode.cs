@@ -13,6 +13,7 @@ using FeralTic.DX11.Queries;
 using VVVV.DX11.Lib.Devices;
 using VVVV.DX11.Lib.RenderGraph;
 using SlimDX.Direct3D11;
+using FeralTic.Utils;
 
 
 namespace VVVV.DX11.Nodes
@@ -88,7 +89,6 @@ namespace VVVV.DX11.Nodes
             {
                 DX11GlobalDevice.OnBeginRender += new EventHandler(DX11GlobalDevice_OnBeginRender);
                 DX11GlobalDevice.OnEndRender += new EventHandler(DX11GlobalDevice_OnEndRender);
-                first = false;
             }
 
             if (this.FInClear[0])
@@ -107,7 +107,7 @@ namespace VVVV.DX11.Nodes
                 }
             }
 
-            if (this.FInRefresh[0])
+            if (this.FInRefresh[0] || first)
             {
                 List<DX11RenderContext> ctxlist = DX11GlobalDevice.DeviceManager.RenderContexts;
 
@@ -149,7 +149,7 @@ namespace VVVV.DX11.Nodes
                     this.FOutProcessedCount[i] = renderer.ProcessedNodes;
 
                     int featureLevel = (int)ctx.FeatureLevel;
-                    if (featureLevel == 45312)
+                    if (featureLevel == MagicNumberUtils.FeatureLevel11_1)
                     {
                         this.FOutFeatureLevel[i] = "Level_11_1";
                     }
@@ -180,6 +180,8 @@ namespace VVVV.DX11.Nodes
                 this.FOutPLCount[0] = DX11GlobalDevice.PendingLinksCount;
                 this.FOutPPCount[0] = DX11GlobalDevice.PendingPinsCount;
             }
+
+            first = false;
         }
 
         void DX11GlobalDevice_OnEndRender(object sender, EventArgs e)
