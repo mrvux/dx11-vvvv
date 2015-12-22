@@ -46,3 +46,7 @@ ChangeLog
 * [Core] Device is now created with Feature Level 11.1 if possible (Win8 and ATI , Nvidia 900+  only)
 * [Core] Effect compiler now uses SharpDX, which allows to use latest version of D3D Compiler available on the OS
 * [Nodes] Add various Text Styler nodes, to allow to set specific font size/weight or family within the same text layout
+* [Nodes] Text color is now white by default
+* [Core] Cache Font renderer and factory, instead of having one instance per node (save memory for spritesheets and faster load)
+* [Nodes] Color is now available as a text styler.
+* [Nodes] Add BC4 format for BlockWriter
