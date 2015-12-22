@@ -6,11 +6,6 @@
 namespace VVVV {
 	namespace Nodes {
 		namespace DX11 {
-
-			ColorStylerNode::ColorStylerNode()
-			{
-			}
-
 		}
 	}
 }
