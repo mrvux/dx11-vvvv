@@ -50,3 +50,4 @@ ChangeLog
 * [Core] Cache Font renderer and factory, instead of having one instance per node (save memory for spritesheets and faster load)
 * [Nodes] Color is now available as a text styler.
 * [Nodes] Add BC4 format for BlockWriter
+* [Shaders] Default shaders now have 2 techniques, one for using texture and one without, also rearranged cbuffer layouts for better performaances
