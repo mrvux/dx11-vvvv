@@ -9,15 +9,19 @@ using VVVV.PluginInterfaces.V1;
 
 using FeralTic.DX11;
 using SlimDX.Direct3D11;
+using SlimDX;
 
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name="ViewportArray",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerViewportArrayNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    [PluginInfo(Name="Scissor",Category="DX11.Layer",Version="", Author="vux")]
+    public class DX11LayerScissorNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
     {
-        [Input("Viewports")]
-        protected Pin<Viewport> FInViewports;
+        [Input("Position")]
+        protected ISpread<Vector2> FInPosition;
+
+        [Input("Size")]
+        protected ISpread<Vector2> FInSize;
 
         [Input("Layer In", AutoValidate = false)]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -28,6 +32,8 @@ namespace VVVV.DX11.Nodes
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> FOutLayer;
 
+        private System.Drawing.Rectangle[] rectangles = new System.Drawing.Rectangle[0];
+
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
@@ -35,6 +41,22 @@ namespace VVVV.DX11.Nodes
             if (this.FEnabled[0])
             {
                 this.FLayerIn.Sync();
+            }
+
+            if (rectangles.Length != SpreadMax)
+            {
+                rectangles = new System.Drawing.Rectangle[SpreadMax];
+            }
+
+            for (int i = 0; i < SpreadMax; i++)
+            {
+                int px ,py,sx,sy;
+                px = (int)FInPosition[i].X;
+                py = (int)FInPosition[i].Y;
+                sx = (int)FInSize[i].X;
+                sy = (int)FInSize[i].Y;
+
+                rectangles[i] = new System.Drawing.Rectangle(px, py, sx, sy);
             }
         }
 
@@ -59,15 +81,11 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FEnabled[0])
             {
+                var rect = context.CurrentDeviceContext.Rasterizer.GetScissorRectangles();
                 if (this.FLayerIn.IsConnected)
                 {
-                    bool enabled = this.FInViewports.PluginIO.IsConnected;
-                    if (enabled)
-                    {
-                        context.CurrentDeviceContext.Rasterizer.SetViewports(this.FInViewports.ToArray());
-                    }
-
-                    Exception exp = null;
+                    
+                    context.CurrentDeviceContext.Rasterizer.SetScissorRectangles(this.rectangles);
                     try
                     {
                         for (int i = 0; i < this.FLayerIn.SliceCount; i++)
@@ -75,20 +93,9 @@ namespace VVVV.DX11.Nodes
                             this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        exp = ex;
-                    }
                     finally
                     {
-                        if (enabled)
-                        {
-                            context.RenderTargetStack.Apply();
-                        }
-                    }
-                    if (exp != null)
-                    {
-                        throw exp;
+                        context.CurrentDeviceContext.Rasterizer.SetScissorRectangles(rect);
                     }
                 }
             }
