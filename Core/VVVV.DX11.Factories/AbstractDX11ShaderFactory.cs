@@ -219,7 +219,7 @@ namespace VVVV.DX11.Factories
         private void ParseErrors(string e,FXProject project, DX11Effect shader)
         {
             string filePath = project.LocalPath;
-            var compilerResults = ShaderCompilerErrorParser.ParseCompilerResult(e, filePath);
+            var compilerResults = ShaderCompilerErrorParser.ParseCompilerResult(e,project.LocalPath, filePath);
 
             //Add some extra error from reflection
             if (shader.IsCompiled)
