@@ -175,7 +175,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         }
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -224,7 +224,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
         }
         #endregion
@@ -300,7 +300,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         {
             Device device = context.Device;
 
-            if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
+            if (!this.updateddevices.Contains(context)) { this.Update(context); }
 
             if (this.rendereddevices.Contains(context)) { return; }
 

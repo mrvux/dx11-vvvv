@@ -34,12 +34,12 @@ namespace VVVV {
 				}
 			}
 
-			void DX11TextLayerAdvNode::Update(IPluginIO^ pin, DX11RenderContext^ context)
+			void DX11TextLayerAdvNode::Update(DX11RenderContext^ context)
 			{
 				if (!this->FOutLayer[0]->Contains(context))
 				{
 					this->FOutLayer[0][context] = gcnew DX11Layer();
-					this->FOutLayer[0][context]->Render = gcnew RenderDelegate<DX11RenderSettings^>(this, &DX11TextLayerAdvNode::Render);
+					this->FOutLayer[0][context]->Render = gcnew RenderTaskDelegate<DX11RenderSettings^>(this, &DX11TextLayerAdvNode::Render);
 				}
 
 				if (!this->fontrenderers->ContainsKey(context))
@@ -50,7 +50,7 @@ namespace VVVV {
 			}
 
 
-			void DX11TextLayerAdvNode::Destroy(IPluginIO^ pin, DX11RenderContext^ context, bool force)
+			void DX11TextLayerAdvNode::Destroy(DX11RenderContext^ context, bool force)
 			{
 				if (this->FOutLayer[0]->Contains(context))
 				{
@@ -58,7 +58,7 @@ namespace VVVV {
 				}
 			}
 
-			void DX11TextLayerAdvNode::Render(IPluginIO^ pin, DX11RenderContext^ context, DX11RenderSettings^ settings)
+			void DX11TextLayerAdvNode::Render(DX11RenderContext^ context, DX11RenderSettings^ settings)
 			{
 				if (this->FInEnabled[0] && this->FLayout->PluginIO->IsConnected)
 				{

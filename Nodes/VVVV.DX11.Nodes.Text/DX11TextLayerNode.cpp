@@ -32,12 +32,12 @@ void DX11TextLayerNode::Evaluate(int SpreadMax)
 	}
 }
 
-void DX11TextLayerNode::Update(IPluginIO^ pin, DX11RenderContext^ context)
+void DX11TextLayerNode::Update(DX11RenderContext^ context)
 {
     if (!this->FOutLayer[0]->Contains(context))
     {
 		this->FOutLayer[0][context] = gcnew DX11Layer();
-        this->FOutLayer[0][context]->Render = gcnew RenderDelegate<DX11RenderSettings^>(this,&DX11TextLayerNode::Render);
+		this->FOutLayer[0][context]->Render = gcnew RenderTaskDelegate<DX11RenderSettings^>(this, &DX11TextLayerNode::Render);
     }
 
 	if (!this->fontrenderers->ContainsKey(context))
@@ -48,7 +48,7 @@ void DX11TextLayerNode::Update(IPluginIO^ pin, DX11RenderContext^ context)
 }
 
 
-void DX11TextLayerNode::Destroy(IPluginIO^ pin, DX11RenderContext^ context, bool force)
+void DX11TextLayerNode::Destroy(DX11RenderContext^ context, bool force)
 {
     if (this->FOutLayer[0]->Contains(context))
     {
@@ -56,7 +56,7 @@ void DX11TextLayerNode::Destroy(IPluginIO^ pin, DX11RenderContext^ context, bool
 	}
 }
 
-void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11RenderSettings^ settings)
+void DX11TextLayerNode::Render(DX11RenderContext^ context, DX11RenderSettings^ settings)
 {
 	if (this->FInEnabled[0])
 	{

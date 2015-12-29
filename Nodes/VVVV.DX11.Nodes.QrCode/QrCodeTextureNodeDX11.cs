@@ -31,7 +31,7 @@ namespace VVVV.Nodes
                 Author="vux",Credits="vvvv group",
                 Help = "Encodes a string to be displayed as a QR code symbol on a texture. QR code is trademarked by Denso Wave, Inc.", Tags = "")]
     #endregion PluginInfo
-    public class DX11_TextureQRCodeNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class DX11_TextureQRCodeNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Text", DefaultString = "vvvv")]
         public IDiffSpread<string> FText;
@@ -110,7 +110,7 @@ namespace VVVV.Nodes
                 return null;
         }
 
-        public void Update(IPluginIO pin, FeralTic.DX11.DX11RenderContext context)
+        public void Update(FeralTic.DX11.DX11RenderContext context)
         {
             for (int i = 0; i < this.FTextureOut.SliceCount; i++)
             {
@@ -139,7 +139,7 @@ namespace VVVV.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, FeralTic.DX11.DX11RenderContext context, bool force)
+        public void Destroy(FeralTic.DX11.DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FTextureOut.SliceCount; i++)
             {

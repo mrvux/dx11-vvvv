@@ -22,7 +22,7 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Author = "vux", 
 	            Tags = "DX11, kinect",
 	            Help = "Returns a line-based skeleton geometry")]
-    public class KinectSkeletonIndicesMeshNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class KinectSkeletonIndicesMeshNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Output("Output", IsSingle = true)]
         Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutput;
@@ -81,7 +81,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             respin[0][context] = geom;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutput[0].Contains(context))
             {
@@ -93,7 +93,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {

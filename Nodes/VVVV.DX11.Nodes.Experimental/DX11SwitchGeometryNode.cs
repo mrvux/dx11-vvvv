@@ -12,7 +12,7 @@ using VVVV.Utils.VMath;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Switch", Category = "DX11.IndexedGeometry", Version = "2d", Author = "vux")]
-    public class SwitchGeometryNode : IPluginEvaluate, IDX11ResourceProvider, IPartImportsSatisfiedNotification
+    public class SwitchGeometryNode : IPluginEvaluate, IDX11ResourceHost, IPartImportsSatisfiedNotification
     {
         [Input("Switch", Order = -5, IsSingle=true)]
         protected ISpread<int> FInSwitch;
@@ -47,11 +47,11 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }
