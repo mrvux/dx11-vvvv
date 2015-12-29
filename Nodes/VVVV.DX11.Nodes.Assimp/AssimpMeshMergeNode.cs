@@ -53,7 +53,7 @@ namespace VVVV.DX11.Nodes.Assimp
     }
 
     [PluginInfo(Name="MergeMesh",Category="DX11.Geometry",Version="Assimp",Author="vux,flateric")]
-    public unsafe class AssimpMeshMergeNode : IPluginEvaluate,IDisposable,IDX11ResourceProvider
+    public unsafe class AssimpMeshMergeNode : IPluginEvaluate,IDisposable,IDX11ResourceHost
     {
         [Input("Scene",IsSingle=true)]
         protected IDiffSpread<AssimpScene> FInScene;
@@ -230,7 +230,7 @@ namespace VVVV.DX11.Nodes.Assimp
             return cnt;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
 
             if (this.FInvalidate || !this.FOutGeom[0].Contains(context))
@@ -361,7 +361,7 @@ namespace VVVV.DX11.Nodes.Assimp
             }          
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (this.FOutGeom[0] != null) { this.FOutGeom[0].Dispose(context); }
             if (this.FOutBuffer[0] != null) { this.FOutBuffer[0].Dispose(context); }
