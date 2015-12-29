@@ -39,7 +39,7 @@ namespace VVVV.DX11.Nodes.Layers
 
 
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
-    public unsafe class DX11ShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11LayerProvider, IPartImportsSatisfiedNotification
+    public unsafe class DX11ShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11LayerHost, IPartImportsSatisfiedNotification
     {
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
         
@@ -222,7 +222,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutLayer[0].Data.ContainsKey(context))
             {
@@ -246,7 +246,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutLayer[0].Dispose(context);
 
@@ -259,7 +259,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Render
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
@@ -501,7 +501,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (this.FInLayer.IsConnected && this.FInEnabled[0])
             {
-                this.FInLayer[0][context].Render(this.FInLayer.PluginIO, context, settings);
+                this.FInLayer[0][context].Render(context, settings);
             }
             
         }

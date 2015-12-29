@@ -10,22 +10,20 @@ namespace VVVV.DX11.RenderGraph.Model
     public class DX11NodeInterfaces
     {
         private readonly IInternalPluginHost hoster;
-        private readonly IDX11ResourceProvider resourceProvider;
-        private readonly IDX11RendererProvider rendererProvider;
+        private readonly IDX11ResourceHost resourceProvider;
+        private readonly IDX11RendererHost rendererProvider;
         private readonly IDX11RenderWindow renderWindow;
-        private readonly IDX11MultiResourceProvider multiResourceProvider;
-        private readonly IDX11LayerProvider layerProvider;
+        private readonly IDX11LayerHost layerProvider;
         private readonly IDX11ResourceDataRetriever dataRetriever;
         private readonly IDX11UpdateBlocker updateBlocker;
 
         public DX11NodeInterfaces(IInternalPluginHost hoster)
         {
             this.hoster = hoster;
-            this.resourceProvider = this.IsAssignable<IDX11ResourceProvider>() ? this.Instance<IDX11ResourceProvider>() : null;
-            this.rendererProvider = this.IsAssignable<IDX11RendererProvider>() ? this.Instance<IDX11RendererProvider>() : null;
+            this.resourceProvider = this.IsAssignable<IDX11ResourceHost>() ? this.Instance<IDX11ResourceHost>() : null;
+            this.rendererProvider = this.IsAssignable<IDX11RendererHost>() ? this.Instance<IDX11RendererHost>() : null;
             this.renderWindow = this.IsAssignable<IDX11RenderWindow>() ? this.Instance<IDX11RenderWindow>() : null;
-            this.multiResourceProvider = this.IsAssignable<IDX11MultiResourceProvider>() ? this.Instance<IDX11MultiResourceProvider>() : null;
-            this.layerProvider = this.IsAssignable<IDX11LayerProvider>() ? this.Instance<IDX11LayerProvider>() : null;
+            this.layerProvider = this.IsAssignable<IDX11LayerHost>() ? this.Instance<IDX11LayerHost>() : null;
             this.dataRetriever = this.IsAssignable<IDX11ResourceDataRetriever>() ? this.Instance<IDX11ResourceDataRetriever>() : null;
             this.updateBlocker = this.IsAssignable<IDX11UpdateBlocker>() ? this.Instance<IDX11UpdateBlocker>() : null;
         }
@@ -45,11 +43,6 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.renderWindow != null; }
         }
 
-        public bool IsMultiResourceProvider
-        {
-            get { return this.multiResourceProvider != null; }
-        }
-
         public bool IsLayerProvider
         {
             get { return this.layerProvider != null; }
@@ -65,12 +58,12 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.updateBlocker != null; }
         }
 
-        public IDX11ResourceProvider ResourceProvider
+        public IDX11ResourceHost ResourceProvider
         {
             get { return this.resourceProvider; }
         }
 
-        public IDX11RendererProvider RendererProvider
+        public IDX11RendererHost RendererProvider
         {
             get { return this.rendererProvider; }
         }
@@ -80,12 +73,7 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.renderWindow; }
         }
 
-        public IDX11MultiResourceProvider MultiResourceProvider
-        {
-            get { return this.multiResourceProvider; }
-        }
-
-        public IDX11LayerProvider LayerProvider
+        public IDX11LayerHost LayerProvider
         {
             get { return this.layerProvider; }
         }

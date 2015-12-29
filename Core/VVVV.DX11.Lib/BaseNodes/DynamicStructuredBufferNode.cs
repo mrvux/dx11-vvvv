@@ -15,7 +15,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    public class DynamicStructBuffer<T> : IPluginEvaluate, IDX11ResourceProvider,IPartImportsSatisfiedNotification, IDisposable where T : struct
+    public class DynamicStructBuffer<T> : IPluginEvaluate, IDX11ResourceHost,IPartImportsSatisfiedNotification, IDisposable where T : struct
     {
         [Import()]
         protected IIOFactory iofactory;
@@ -87,7 +87,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.spreadmax == 0) { return; }
 
@@ -159,7 +159,7 @@ namespace VVVV.DX11.Nodes
 
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (force || !this.FKeep[0])
             {
