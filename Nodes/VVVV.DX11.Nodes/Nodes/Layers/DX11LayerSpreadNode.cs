@@ -12,7 +12,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes.Layers
 {
     [PluginInfo(Name="Spread",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerSpreadNode : IPluginEvaluate, IDX11LayerProvider
+    public class DX11LayerSpreadNode : IPluginEvaluate, IDX11LayerHost
     {
         private class SliceRenderer : IDX11LayerOrder
         {
@@ -25,16 +25,13 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FLayerIn = layer;
             }
 
-            public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+            public void Render(DX11RenderContext context, DX11RenderSettings settings)
             {
                 IDX11LayerOrder currentOrder = settings.LayerOrder;
                 settings.LayerOrder = this;
                 if (this.FLayerIn.IsConnected)
                 {
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                    }
+                    this.FLayerIn.RenderParents(context, settings);
                 }
                 settings.LayerOrder = currentOrder;
             }
@@ -81,9 +78,9 @@ namespace VVVV.DX11.Nodes.Layers
         }
 
 
-        #region IDX11ResourceProvider Members
+        #region IDX11ResourceHost Members
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FEnabled[0])
             {
@@ -105,19 +102,16 @@ namespace VVVV.DX11.Nodes.Layers
 
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutLayer[0].Dispose(context);
         }
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.FLayerIn.IsConnected)
             {
-                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                {
-                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                }
+                this.FLayerIn.RenderParents(context, settings);
             }
         }
 

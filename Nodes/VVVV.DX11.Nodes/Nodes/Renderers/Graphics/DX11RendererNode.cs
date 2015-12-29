@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor
+    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererHost, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -385,7 +385,7 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
             
-            if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
+            if (!this.updateddevices.Contains(context)) { this.Update(context); }
 
             if (this.rendereddevices.Contains(context)) { return; }
 
@@ -493,10 +493,7 @@ namespace VVVV.DX11.Nodes
 
 
             //Call render on all layers
-            for (int j = 0; j < this.FInLayer.SliceCount; j++)
-            {
-                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-            }
+            this.FInLayer.RenderParents(context, settings);
 
             if (viewportpop)
             {
@@ -505,7 +502,7 @@ namespace VVVV.DX11.Nodes
         }
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -559,7 +556,7 @@ namespace VVVV.DX11.Nodes
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             //if (this.FDepthManager != null) { this.FDepthManager.Dispose(); }
 

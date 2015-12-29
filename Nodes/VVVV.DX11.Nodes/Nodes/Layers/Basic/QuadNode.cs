@@ -18,7 +18,7 @@ using FeralTic.DX11.Geometry;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Quad", Category = "DX11.Layer", Author = "vux")]
-    public class DX11QuadLayerNode : IPluginEvaluate, IDX11LayerProvider, IDX11Queryable
+    public class DX11QuadLayerNode : IPluginEvaluate, IDX11LayerHost, IDX11Queryable
     {
         [Input("Render State")]
         protected Pin<DX11RenderState> FInState;
@@ -79,8 +79,8 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        #region IDX11ResourceProvider Members
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        #region IDX11ResourceHost Members
+        public void Update(DX11RenderContext context)
         {
             if (quadshader == null)
             {
@@ -117,7 +117,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutLayer[0].Dispose(context);
         }
@@ -307,7 +307,7 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.spmax > 0)
             {

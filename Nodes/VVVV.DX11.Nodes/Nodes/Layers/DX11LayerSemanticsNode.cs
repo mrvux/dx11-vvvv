@@ -12,7 +12,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Semantics",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerSemanticsNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerSemanticsNode : IPluginEvaluate, IDX11LayerHost, IDX11UpdateBlocker
     {
         [Input("Layer In", AutoValidate = false)]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -40,9 +40,9 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        #region IDX11ResourceProvider Members
+        #region IDX11ResourceHost Members
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutLayer[0].Contains(context))
             {
@@ -51,12 +51,12 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutLayer[0].Dispose(context);
         }
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.FEnabled[0])
             {
@@ -77,10 +77,7 @@ namespace VVVV.DX11.Nodes
                         settings.ResourceSemantics.AddRange(ressemantics);
                     }
 
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                    }
+                    this.FLayerIn.RenderParents(context, settings);
 
                     foreach (IDX11RenderSemantic semantic in semantics)
                     {

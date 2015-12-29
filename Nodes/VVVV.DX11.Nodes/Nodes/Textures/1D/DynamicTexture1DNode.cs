@@ -17,7 +17,7 @@ using VVVV.Core.Logging;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "DynamicTexture", Category = "DX11.Texture", Version = "1d", Author = "vux")]
-    public class DynamicTexture1DNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class DynamicTexture1DNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Import()]
         protected ILogger logger;
@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInvalidate)
             {
@@ -118,7 +118,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(DX11RenderContext OnDevice, bool force)
         {
         }
 

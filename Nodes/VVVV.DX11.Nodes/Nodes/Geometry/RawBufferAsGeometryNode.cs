@@ -12,7 +12,7 @@ using SlimDX;
 namespace VVVV.DX11.Nodes.Geometry
 {
     [PluginInfo(Name = "AsGeometry", Category = "DX11.Buffer", Version = "Advanced", Author = "vux", Help = "Allows to set a raw buffer as drawing geometry by relocation memory addresses")]
-    public class RawBufferAsGeometryNode : IPluginEvaluate, IDX11ResourceProvider
+    public class RawBufferAsGeometryNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", IsSingle = true)]
         protected Pin<DX11Resource<IDX11Buffer>> inputBuffer;
@@ -61,7 +61,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.rawGeometry == null)
             {
@@ -93,7 +93,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
        
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }

@@ -20,7 +20,7 @@ using VVVV.DX11.Lib.Rendering;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "SetSlice", Category = "DX11.Texture2D", Version = "", Author="vux")]
-    public class TextureArraySetSliceNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class TextureArraySetSliceNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Texture In", IsSingle = true)]
         protected Pin<DX11Resource<DX11Texture2D>> FTexIn;
@@ -59,12 +59,12 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (this.generator != null) { this.generator.Dispose(); this.generator = null; }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (generator == null) { generator = new TextureArraySetSlice(context); }
 

@@ -17,7 +17,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "NullGeometry", Category = "DX11.Drawer", Version = "", Author = "vux")]
-    public class DX11NullDrawerNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class DX11NullDrawerNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Vertex Count", DefaultValue=1, MinValue=1)]
         protected IDiffSpread<int> FInVertexCount;
@@ -55,7 +55,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -77,7 +77,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (this.FOutput[0].Contains(context)) { this.FOutput[0].Dispose(context); }
         }

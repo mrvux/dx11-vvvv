@@ -26,7 +26,7 @@ using FeralTic.DX11.Queries;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Renderer", Category = "DX11",Version="Texture1dArray", Author = "vux")]
-    public class DX11Texture1dArrayRendererNode : IDX11RendererProvider, IPluginEvaluate, IDisposable, IDX11Queryable
+    public class DX11Texture1dArrayRendererNode : IDX11RendererHost, IPluginEvaluate, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
@@ -96,7 +96,7 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -119,7 +119,7 @@ namespace VVVV.DX11.Nodes
             //Just in case
             if (!this.updateddevices.Contains(context))
             {
-                this.Update(null, context);
+                this.Update(context);
             }
 
             if (this.rendereddevices.Contains(context)) { return; }
@@ -155,7 +155,7 @@ namespace VVVV.DX11.Nodes
                     {
                         try
                         {
-                            this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+                            this.FInLayer[j][context].Render(context, settings);
                         }
                         catch (Exception ex)
                         {
@@ -173,7 +173,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutTexture[0].Dispose(context);
         }

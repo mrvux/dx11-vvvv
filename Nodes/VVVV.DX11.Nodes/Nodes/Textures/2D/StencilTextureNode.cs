@@ -15,7 +15,7 @@ namespace VVVV.DX11.Nodes
         AutoEvaluate = true,
         Author = "vux",
         Warnings = "")]
-    public class StencilTextureNode : IPluginEvaluate, IDX11ResourceProvider
+    public class StencilTextureNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Depth Stencil In", IsSingle = true)]
         protected Pin<DX11Resource<DX11DepthStencil>> FTextureInput;
@@ -37,7 +37,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FTextureInput.PluginIO.IsConnected)
             {
@@ -49,7 +49,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }

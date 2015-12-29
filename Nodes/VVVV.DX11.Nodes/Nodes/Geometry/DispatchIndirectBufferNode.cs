@@ -17,7 +17,7 @@ using FeralTic.Resources.Geometry;
 namespace VVVV.DX11.Nodes.Geometry
 {
     [PluginInfo(Name = "DispatchIndirect", Category = "DX11.Drawer", Version = "Buffer", Author = "vux")]
-    public class DispatchIndirectDrawerBufferNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class DispatchIndirectDrawerBufferNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Argument Buffer",IsSingle = true)]
         protected Pin<DX11Resource<IDX11Buffer>> FInArgBuffer;
@@ -52,7 +52,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FOutGeom.SliceCount == 0) { return; }
 
@@ -81,7 +81,7 @@ namespace VVVV.DX11.Nodes.Geometry
             context.CurrentDeviceContext.CopySubresourceRegion(this.FInArgBuffer[0][context].Buffer, 0, region, argBuffer, 0, 0, 0, 0);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(DX11RenderContext OnDevice, bool force)
         {
         }
 

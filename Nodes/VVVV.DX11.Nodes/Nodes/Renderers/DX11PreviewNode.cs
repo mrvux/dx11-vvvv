@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes.Renderers
 {
      [PluginInfo(Name = "Preview", Category = "DX11.Texture", Author = "vux", AutoEvaluate = true,
         InitialWindowHeight = 300, InitialWindowWidth = 400, InitialBoxWidth = 400, InitialBoxHeight = 300, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11PreviewNode :IDX11RendererProvider, 
+    public class DX11PreviewNode :IDX11RendererHost, 
          IDisposable,
          IPluginEvaluate, 
          IDX11RenderWindow, 
@@ -134,7 +134,7 @@ namespace VVVV.DX11.Nodes.Renderers
              }  
          }
 
-         public void Update(IPluginIO pin, DX11RenderContext context)
+         public void Update(DX11RenderContext context)
          {
              if (this.lasthandle != this.Handle)
              {
@@ -157,7 +157,7 @@ namespace VVVV.DX11.Nodes.Renderers
              }
          }
 
-         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+         public void Destroy(DX11RenderContext context, bool force)
          {
              this.swapchain.Dispose(context);
          }

@@ -24,7 +24,7 @@ using System.IO;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer Advanced", Author = "vux", AutoEvaluate = false)]
-    public class DX11AdvancedBufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
+    public class DX11AdvancedBufferRendererNode : IPluginEvaluate, IDX11RendererHost, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
@@ -118,7 +118,7 @@ namespace VVVV.DX11.Nodes
             //Just in case
             if (!this.updateddevices.Contains(context))
             {
-                this.Update(null, context);
+                this.Update(context);
             }
 
 
@@ -162,11 +162,7 @@ namespace VVVV.DX11.Nodes
                     }
 
                    // this.rwbuffersemantic.Data = this.FOutBuffers[0][context];
-
-                    for (int j = 0; j < this.FInLayer.SliceCount; j++)
-                    {
-                        this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-                    }
+                    this.FInLayer.RenderParents(context, settings);
                 }
 
                 if (this.EndQuery != null)
@@ -176,7 +172,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.updateddevices.Contains(context)) { return; }
             if (reset || !this.FOutBuffers[0].Contains(context))
@@ -193,7 +189,7 @@ namespace VVVV.DX11.Nodes
             this.updateddevices.Add(context);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(DX11RenderContext OnDevice, bool force)
         {
             //this.DisposeBuffers(OnDevice.Device);
         }

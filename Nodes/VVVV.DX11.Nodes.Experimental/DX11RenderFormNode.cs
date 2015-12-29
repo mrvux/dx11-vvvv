@@ -21,7 +21,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 {
     [PluginInfo(Name="Renderer",Category="DX11", Version="Form", Author="vux",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererProvider
+    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererHost
     {
         #region Input Pins
         IPluginHost FHost;
@@ -338,7 +338,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     //Call render on all layers
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
-                        this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+                        this.FInLayer[j][context].Render(context, settings);
                     }
                 }
                 renderer.CleanTargets();
