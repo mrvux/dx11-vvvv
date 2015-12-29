@@ -53,3 +53,4 @@ ChangeLog
 * [Shaders] Default shaders now have 2 techniques, one for using texture and one without, also rearranged cbuffer layouts for better performances
 * [Nodes] Add Scissor (DX11.Layer) node
 * [Girlpower] Many new help patches added 
+* [Girpower] Add example on how to use reverse depth, and another example to view depth error margins with different formats/techniques
