@@ -42,6 +42,7 @@
     <Compile Include="Resources\DX11Resource.cs" />
     <Compile Include="Resources\IDX11ResourceDataProvider.cs" />
     <Compile Include="Resources\IDX11ResourceDataSink.cs" />
+    <Compile Include="Utils\LayerPinExtentionsMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
