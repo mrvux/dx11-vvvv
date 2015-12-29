@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-# Upcoming
+# 0.6 [Release 29/12/2015]
 
 * [Nodes]Fix Buffer count from ISpread to IDiffSpread in Renderer (DX11), this was causing resources and depth buffer to be recreated every frame (bad performances).
 * [Build] Build now properly copy all kinect dependencies
