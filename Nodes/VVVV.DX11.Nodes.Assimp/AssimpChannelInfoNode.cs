@@ -6,7 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using SlimDX;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "Info", Category = "Assimp", Version ="AnimationChannel", Author = "vux,flateric")]
     public class AssimpChannelInfoNode : IPluginEvaluate

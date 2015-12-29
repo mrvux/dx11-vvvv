@@ -6,7 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using SlimDX;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name="ParentNode",Category="Assimp", Version="",Author="vux,flateric")]
     public class AssimpParentWorldNode : IPluginEvaluate

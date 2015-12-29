@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using VVVV.Utils.VMath;
 using AssimpNet;
 
-namespace VVVV.DX11.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     public static class MatExt
     {

@@ -12,7 +12,7 @@ using SlimDX.Direct3D11;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 
-namespace VVVV.DX11.Nodes.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name="Mesh",Category="DX11.Geometry",Version="Assimp",Author="vux,flateric")]
     public class AssimpMeshNode : IPluginEvaluate,IDisposable,IDX11ResourceProvider

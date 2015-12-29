@@ -14,7 +14,7 @@ using FeralTic.DX11;
 using FeralTic.DX11.Geometry;
 using System.Runtime.InteropServices;
 
-namespace VVVV.DX11.Nodes.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct Pos3Norm3Tex2InstanceVertex

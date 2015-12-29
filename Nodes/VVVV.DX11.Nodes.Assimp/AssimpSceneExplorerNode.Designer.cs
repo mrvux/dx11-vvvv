@@ -1,4 +1,4 @@
-﻿namespace VVVV.DX11.Nodes.Assimp
+﻿namespace VVVV.DX11.Nodes.AssetImport
 {
     partial class AssimpSceneExplorerNode
     {
