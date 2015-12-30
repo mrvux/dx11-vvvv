@@ -14,25 +14,25 @@ namespace VVVV.DX11.Nodes.Text
     [PluginInfo(Name = "TextLayout", Category = "DirectWrite", Version = "Advanced", Author = "vux")]
     public class TextLayoutAdvancedNode : IPluginEvaluate, IDisposable
     {
-        [Input("Text")]
-        protected IDiffSpread<string> FText;
+        [Input("Text", AutoValidate = false)]
+        protected ISpread<string> FText;
 
-        [Input("Format", CheckIfChanged=true)]
+        [Input("Format", AutoValidate=false)]
         protected Pin<TextFormat> FFormat;
 
-        [Input("Text Alignment")]
-        protected IDiffSpread<SharpDX.DirectWrite.TextAlignment> FTextAlign;
+        [Input("Text Alignment", AutoValidate = false)]
+        protected ISpread<SharpDX.DirectWrite.TextAlignment> FTextAlign;
 
-        [Input("Paragraph Alignment")]
-        protected IDiffSpread<ParagraphAlignment> FParaAlign;
+        [Input("Paragraph Alignment", AutoValidate = false)]
+        protected ISpread<ParagraphAlignment> FParaAlign;
 
-        [Input("Maximum Width", DefaultValue=100)]
-        protected IDiffSpread<float> FMaxWidth;
+        [Input("Maximum Width", DefaultValue = 100, AutoValidate = false)]
+        protected ISpread<float> FMaxWidth;
 
-        [Input("Maximum Height", DefaultValue = 50)]
-        protected IDiffSpread<float> FMaxHeight;
+        [Input("Maximum Height", DefaultValue = 50, AutoValidate = false)]
+        protected ISpread<float> FMaxHeight;
 
-        [Input("Styles")]
+        [Input("Styles", AutoValidate=false)]
         protected ISpread<ISpread<ITextStyler>> textStyles;
 
         [Input("Apply", IsBang=true)]
@@ -60,12 +60,20 @@ namespace VVVV.DX11.Nodes.Text
 
             if (this.apply[0] || this.first)
             {
+                this.FText.Sync();
+                this.FTextAlign.Sync();
+                this.FParaAlign.Sync();
+                this.FMaxHeight.Sync();
+                this.FMaxWidth.Sync();
+                this.FFormat.Sync();
+                this.textStyles.Sync();
+
                 //first dispose old outputs
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
                     if (this.FOutput[i] != null) { this.FOutput[i].Dispose(); }
                 }
-                
+
                 //then set new slicecount
                 this.FOutput.SliceCount = SpreadMax;
                 

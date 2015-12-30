@@ -1,6 +1,14 @@
 ChangeLog
 =========
 
+# 0.6.1 [Release 30/12/2015]
+* [Nodes] Add PairKerning (DirectWrite Styles) Node
+* [Nodes] Add Spacing (DirectWrite Styles) Node
+* [Nodes] Add Typography (DirectWrite Styles) Node
+* [Nodes] TextLayout (and advanced version) now use sharpDX enum for text alignment, to allow Justified spacing. Please note this is windows8 +
+* [Core] Fix issue  with windows 7/8 not picking right version of compiler (slimdx picks latest dx11 runtime but compiler does not offer this feature)
+* [Nodes] Fix issue that could happen on DynamicTexture (Color) deletion (user:mhusinsky)
+
 # 0.6 [Release 29/12/2015]
 
 * [Nodes]Fix Buffer count from ISpread to IDiffSpread in Renderer (DX11), this was causing resources and depth buffer to be recreated every frame (bad performances).
