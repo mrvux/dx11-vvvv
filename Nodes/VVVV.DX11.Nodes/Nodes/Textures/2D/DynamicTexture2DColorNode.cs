@@ -119,7 +119,13 @@ namespace VVVV.DX11.Nodes
         #region IDisposable Members
         public void Dispose()
         {
-            this.FTextureOutput[0].Dispose();
+            if (this.FTextureOutput.SliceCount > 0)
+            {
+                if (this.FTextureOutput[0] != null)
+                {
+                    this.FTextureOutput[0].Dispose();
+                }
+            }
         }
         #endregion
     }
