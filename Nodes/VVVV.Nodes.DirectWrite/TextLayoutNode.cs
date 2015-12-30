@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         protected Pin<TextFormat> FFormat;
 
         [Input("Text Alignment")]
-        protected IDiffSpread<TextAlignment> FTextAlign;
+        protected IDiffSpread<SharpDX.DirectWrite.TextAlignment> FTextAlign;
 
         [Input("Paragraph Alignment")]
         protected IDiffSpread<ParagraphAlignment> FParaAlign;
@@ -65,7 +65,8 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
-                    tl.TextAlignment = this.FTextAlign[i];
+                    var align = (int)this.FTextAlign[i];
+                    tl.TextAlignment = (TextAlignment)align;
                     tl.ParagraphAlignment = this.FParaAlign[i];
                     this.FOutput[i] = tl;
                 }

@@ -11,6 +11,14 @@
     <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\Dependencies\mixed\SharpDX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1">
+      <HintPath>..\..\Dependencies\mixed\SharpDX.Direct2D1.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -23,6 +31,8 @@
     <Compile Include="HitTestTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextFormatNode.cs" />
+    <Compile Include="TextLayer\SpacingNode.cs" />
+    <Compile Include="TextLayer\PairKerningNode.cs" />
     <Compile Include="TextLayer\FontTypographyNode.cs" />
     <Compile Include="TextLayer\FontFamilyNode.cs" />
     <Compile Include="TextLayer\ConsFontStylers.cs" />
