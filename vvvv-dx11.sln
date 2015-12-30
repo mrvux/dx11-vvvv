@@ -27,6 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeralTic", "FeralTic\Core\F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3FB4F6F-CCA5-4A35-9899-1564D70C35AB}"
 	ProjectSection(SolutionItems) = preProject
+		CHANGELOG.md = CHANGELOG.md
 		deploy.targets = deploy.targets
 		vvvv.DX11.Build.targets = vvvv.DX11.Build.targets
 		vvvv.DX11.References.targets = vvvv.DX11.References.targets

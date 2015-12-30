@@ -1,6 +1,10 @@
 ChangeLog
 =========
 
+# Upcoming
+* [Nodes] GetSoftBodyBuffer (Bullet) clean resources on deletion
+* [Nodes] SoftBody (Bullet Geometry) clean resources on deletion
+
 # 0.6.1 [Release 30/12/2015]
 * [Nodes] Add PairKerning (DirectWrite Styles) Node
 * [Nodes] Add Spacing (DirectWrite Styles) Node

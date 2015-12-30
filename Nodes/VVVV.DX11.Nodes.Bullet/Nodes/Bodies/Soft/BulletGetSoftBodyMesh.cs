@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes.Bullet
 {
 	[PluginInfo(Name = "SoftBody", Category = "Bullet",Version="DX11.Geometry",
 		Help = "Gets a soft body data as mesh", Author = "vux")]
-	public class BulletGetSoftBodyMesh : IPluginEvaluate,IDX11ResourceProvider
+	public class BulletGetSoftBodyMesh : IPluginEvaluate,IDX11ResourceProvider, System.IDisposable
 	{
 		[Input("Bodies")]
         protected ISpread<SoftBody> FBodies;
@@ -170,7 +170,22 @@ namespace VVVV.DX11.Nodes.Bullet
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
-                this.FOutput[i].Dispose(context);
+                if (this.FOutput[i] != null)
+                {
+                    this.FOutput[i].Dispose(context);
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            for (int i = 0; i < this.FOutput.SliceCount; i++)
+            {
+                if (this.FOutput[i] != null)
+                {
+                    this.FOutput[i].Dispose();
+                    this.FOutput[i] = null;
+                }
             }
         }
     }
