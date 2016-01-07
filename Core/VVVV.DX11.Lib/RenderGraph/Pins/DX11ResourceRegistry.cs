@@ -86,7 +86,7 @@ namespace VVVV.Nodes
 
                 Type restype = t.GetGenericArguments()[0];
                 Type fulltype = typeof(DX11Resource<>).MakeGenericType(restype);
-                var stream = Activator.CreateInstance(typeof(DX11ResourceOutputStream<,>).MakeGenericType(fulltype,restype), container.RawIOObject) as IOutStream;
+                var stream = Activator.CreateInstance(typeof(DX11ResourceOutputStream<,>).MakeGenericType(fulltype,restype), container.RawIOObject, false) as IOutStream;
                 return IOContainer.Create(context, stream, container);
             }
 

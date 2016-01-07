@@ -381,9 +381,14 @@ namespace VVVV.DX11.Nodes.Layers
                         popstate = true;
                     }
 
+                    ShaderPipelineState pipelineState = null;
                     if (!settings.PreserveShaderStages)
                     {
                         shaderdata.ResetShaderStages(ctx);
+                    }
+                    else
+                    {
+                        pipelineState = new ShaderPipelineState(context);
                     }
 
                     settings.DrawCallCount = spmax; //Set number of draw calls
@@ -484,6 +489,13 @@ namespace VVVV.DX11.Nodes.Layers
                             settings.PostShaderAction(context);
                         }
                     }
+
+                    if (pipelineState != null)
+                    {
+                        pipelineState.Restore(context);
+                    }
+
+
                     this.OnEndQuery(context);
                 }
                 //this.query.End();
