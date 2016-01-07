@@ -13,9 +13,12 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name="PreservePipeline",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerPreservePipelineNode : IPluginEvaluate, IDX11LayerProvider
+    [PluginInfo(Name="PassApply",Category="DX11.Layer",Version="", Author="vux")]
+    public class DX11LayerPassApplyNode : IPluginEvaluate, IDX11LayerProvider
     {
+        [Input("Pass Layer In")]
+        protected Pin<DX11Resource<DX11Layer>> FPassLayerIn;
+
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
@@ -27,7 +30,10 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
+            if (this.FOutLayer[0] == null) 
+            { 
+                this.FOutLayer[0] = new DX11Resource<DX11Layer>(); 
+            }
         }
 
 
@@ -52,8 +58,17 @@ namespace VVVV.DX11.Nodes
             
             if (this.FEnabled[0])
             {
-                bool bck = settings.PreserveShaderStages;
-                settings.PreserveShaderStages = true;
+                if (this.FPassLayerIn.IsConnected)
+                {
+                    var hint = settings.RenderHint;
+                    settings.RenderHint = eRenderHint.ApplyOnly;
+                    for (int i = 0; i < this.FPassLayerIn.SliceCount; i++)
+                    {
+                        this.FPassLayerIn[i][context].Render(this.FPassLayerIn.PluginIO, context, settings);
+                    }
+                    settings.RenderHint = hint;
+                }
+
                 if (this.FLayerIn.IsConnected)
                 {
                     for (int i = 0; i < this.FLayerIn.SliceCount; i++)
@@ -61,7 +76,6 @@ namespace VVVV.DX11.Nodes
                         this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
                     }
                 }
-                settings.PreserveShaderStages = bck;
             }
             else
             {

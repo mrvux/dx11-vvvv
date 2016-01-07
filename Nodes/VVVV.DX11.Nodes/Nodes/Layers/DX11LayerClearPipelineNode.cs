@@ -13,8 +13,8 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name="PreservePipeline",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerPreservePipelineNode : IPluginEvaluate, IDX11LayerProvider
+    [PluginInfo(Name="ClearPipeline",Category="DX11.Layer",Version="", Author="vux")]
+    public class DX11LayerClearPipelineNode : IPluginEvaluate, IDX11LayerProvider
     {
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -52,28 +52,15 @@ namespace VVVV.DX11.Nodes
             
             if (this.FEnabled[0])
             {
-                bool bck = settings.PreserveShaderStages;
-                settings.PreserveShaderStages = true;
-                if (this.FLayerIn.IsConnected)
-                {
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                    }
-                }
-                settings.PreserveShaderStages = bck;
+                context.CleanShaderStages();
             }
-            else
+            if (this.FLayerIn.IsConnected)
             {
-                if (this.FLayerIn.IsConnected)
+                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
                 {
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                    }
+                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
                 }
             }
-            
         }
 
         #endregion

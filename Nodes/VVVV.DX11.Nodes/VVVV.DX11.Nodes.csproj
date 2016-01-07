@@ -35,6 +35,8 @@
     <Compile Include="Nodes\Geometry\RawBufferAsGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerDispatcherNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerApplyOnlyNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPreservePipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerScissorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSpreadNode.cs" />
@@ -209,7 +211,6 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\GenerateDispatch1D.fx" />
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
   </PropertyGroup>
