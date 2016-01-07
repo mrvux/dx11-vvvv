@@ -123,6 +123,7 @@
     <Compile Include="RenderGraph\Model\DX11NodeInterfaces.cs" />
     <Compile Include="RenderGraph\Model\DX11OutputPin.cs" />
     <Compile Include="RenderGraph\Model\DX11Pin.cs" />
+    <Compile Include="RenderGraph\Pins\DX11SingleResourceConnectionHandler.cs" />
     <Compile Include="RenderGraph\Pins\DX11ResourceConnectionHandler.cs" />
     <Compile Include="RenderGraph\Pins\DX11ResourceInputPin.cs" />
     <Compile Include="RenderGraph\Pins\DX11ResourceOutputPin.cs" />
