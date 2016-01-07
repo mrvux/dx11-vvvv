@@ -12,7 +12,7 @@ using VVVV.DX11.Effects;
 
 namespace VVVV.DX11
 {
-    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector }
+    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector, ApplyOnly }
 
 
     public partial class DX11RenderSettings
