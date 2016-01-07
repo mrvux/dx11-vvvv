@@ -270,6 +270,31 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (this.FInEnabled[0])
             {
+                //In that case we do not care about geometry, but only apply pass for globals
+                if (settings.RenderHint == eRenderHint.ApplyOnly)
+                {
+                    DX11ShaderData sdata = this.deviceshaderdata[context];
+                    this.varmanager.SetGlobalSettings(sdata.ShaderInstance, settings);
+                    this.varmanager.ApplyGlobal(sdata.ShaderInstance);
+
+                    DX11ObjectRenderSettings oset = new DX11ObjectRenderSettings();
+                    oset.DrawCallIndex = 0;
+                    oset.Geometry = null;
+                    oset.IterationCount = 1;
+                    oset.IterationIndex = 0;
+                    oset.WorldTransform = this.mworld[0 % this.mworldcount];
+                    this.varmanager.ApplyPerObject(context, sdata.ShaderInstance, oset, 0);
+                    sdata.ApplyPass(ctx);
+
+
+                    if (this.FInLayer.IsConnected)
+                    {
+                        this.FInLayer[0][context].Render(this.FInLayer.PluginIO, context, settings);
+                    }
+
+                    return;
+                }
+
                 if (settings.RenderHint == eRenderHint.Collector)
                 {
                     if (this.FGeometry.PluginIO.IsConnected)
