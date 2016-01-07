@@ -14,7 +14,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="PreservePipeline",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerPreservePipelineNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerPreservePipelineNode : IPluginEvaluate, IDX11LayerProvider
     {
         [Input("Layer In", AutoValidate = false)]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -82,10 +82,5 @@ namespace VVVV.DX11.Nodes
         }
 
         #endregion
-
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 }
