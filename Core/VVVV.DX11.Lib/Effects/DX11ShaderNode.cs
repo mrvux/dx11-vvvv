@@ -91,6 +91,10 @@ namespace VVVV.DX11.Nodes.Layers
         [Output("Custom Semantics", Visibility=PinVisibility.OnlyInspector)]
         protected ISpread<string> FoutCS;
 
+        [Output("Shader Signature", Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<DX11Resource<DX11Shader>> FOutShader;
+
+
         #endregion
 
 
@@ -179,6 +183,7 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.FOutLayer[0] == null)
             {
                 this.FOutLayer[0] = new DX11Resource<DX11Layer>();
+                this.FOutShader[0] = new DX11Resource<DX11Shader>();
             }
 
             if (this.FInvalidate)
@@ -241,6 +246,14 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.shaderupdated)
             {
                 shaderdata.SetEffect(this.FShader);
+                this.FOutShader[0][context] = new DX11Shader(shaderdata.ShaderInstance);
+            }
+            else
+            {
+                if (!this.FOutShader[0].Contains(context))
+                {
+                    this.FOutShader[0][context] = new DX11Shader(shaderdata.ShaderInstance);
+                }
             }
         }
         #endregion
