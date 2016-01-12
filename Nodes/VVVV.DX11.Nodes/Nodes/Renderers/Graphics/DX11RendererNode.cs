@@ -168,7 +168,7 @@ namespace VVVV.DX11.Nodes
         [Import()]
         protected ILogger logger;
 
-        [Input("Layers", Order=1,IsSingle = true)]
+        [Input("Layers", Order=1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Clear",DefaultValue=1,Order = 2)]

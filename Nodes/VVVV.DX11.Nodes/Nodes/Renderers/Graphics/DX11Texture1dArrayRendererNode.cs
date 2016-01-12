@@ -32,7 +32,7 @@ namespace VVVV.DX11.Nodes
 
         IDiffSpread<EnumEntry> FInFormat;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Width", DefaultValue = 256, Order = 5)]

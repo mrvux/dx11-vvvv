@@ -51,6 +51,8 @@ namespace VVVV.DX11.Nodes.Layers
         private bool geomconnected;
         private bool stateconnected;
 
+        private List<DX11ObjectRenderSettings> orderedObjectSettings = new List<DX11ObjectRenderSettings>();
+
         #region Default Input Pins
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
@@ -88,6 +90,10 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Output("Custom Semantics", Visibility=PinVisibility.OnlyInspector)]
         protected ISpread<string> FoutCS;
+
+        [Output("Shader Signature", Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<DX11Resource<DX11Shader>> FOutShader;
+
 
         #endregion
 
@@ -177,6 +183,7 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.FOutLayer[0] == null)
             {
                 this.FOutLayer[0] = new DX11Resource<DX11Layer>();
+                this.FOutShader[0] = new DX11Resource<DX11Shader>();
             }
 
             if (this.FInvalidate)
@@ -239,6 +246,14 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.shaderupdated)
             {
                 shaderdata.SetEffect(this.FShader);
+                this.FOutShader[0][context] = new DX11Shader(shaderdata.ShaderInstance);
+            }
+            else
+            {
+                if (!this.FOutShader[0].Contains(context))
+                {
+                    this.FOutShader[0][context] = new DX11Shader(shaderdata.ShaderInstance);
+                }
             }
         }
         #endregion
@@ -268,6 +283,31 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (this.FInEnabled[0])
             {
+                //In that case we do not care about geometry, but only apply pass for globals
+                if (settings.RenderHint == eRenderHint.ApplyOnly)
+                {
+                    DX11ShaderData sdata = this.deviceshaderdata[context];
+                    this.varmanager.SetGlobalSettings(sdata.ShaderInstance, settings);
+                    this.varmanager.ApplyGlobal(sdata.ShaderInstance);
+
+                    DX11ObjectRenderSettings oset = new DX11ObjectRenderSettings();
+                    oset.DrawCallIndex = 0;
+                    oset.Geometry = null;
+                    oset.IterationCount = 1;
+                    oset.IterationIndex = 0;
+                    oset.WorldTransform = this.mworld[0 % this.mworldcount];
+                    this.varmanager.ApplyPerObject(context, sdata.ShaderInstance, oset, 0);
+                    sdata.ApplyPass(ctx);
+
+
+                    if (this.FInLayer.IsConnected)
+                    {
+                        this.FInLayer[0][context].Render(this.FInLayer.PluginIO, context, settings);
+                    }
+
+                    return;
+                }
+
                 if (settings.RenderHint == eRenderHint.Collector)
                 {
                     if (this.FGeometry.PluginIO.IsConnected)
@@ -379,9 +419,14 @@ namespace VVVV.DX11.Nodes.Layers
                         popstate = true;
                     }
 
+                    ShaderPipelineState pipelineState = null;
                     if (!settings.PreserveShaderStages)
                     {
                         shaderdata.ResetShaderStages(ctx);
+                    }
+                    else
+                    {
+                        pipelineState = new ShaderPipelineState(context);
                     }
 
                     settings.DrawCallCount = spmax; //Set number of draw calls
@@ -391,47 +436,73 @@ namespace VVVV.DX11.Nodes.Layers
                     //IDX11Geometry drawgeom = null;
                     objectsettings.Geometry = null;
                     DX11Resource<IDX11Geometry> pg = null;
-
-                    
-
-                    for (int i = 0; i < this.spmax; i++)
+                    bool doOrder = false;
+                    List<int> orderedSlices = null;
+                    if (settings.LayerOrder != null && settings.LayerOrder.Enabled)
                     {
-                        if (multistate)
+                        this.orderedObjectSettings.Clear();
+                        for (int i = 0; i < this.spmax; i++)
                         {
-                            context.RenderStateStack.Push(this.FInState[i]);
+                            DX11ObjectRenderSettings objSettings = new DX11ObjectRenderSettings();
+                            objSettings.DrawCallIndex = i;
+                            objSettings.Geometry = null;
+                            objSettings.IterationCount = 1;
+                            objSettings.IterationIndex = 0;
+                            objSettings.WorldTransform = this.mworld[i % this.mworldcount];
+
+                            this.orderedObjectSettings.Add(objSettings);
                         }
 
-                        if (shaderdata.IsLayoutValid(i) || settings.Geometry != null)
+                        orderedSlices = settings.LayerOrder.Reorder(settings, orderedObjectSettings);
+                        doOrder = true;
+                    }
+
+                    int drawCount = doOrder ? orderedSlices.Count : this.spmax;
+
+                    if (this.spmax == 0)
+                    {
+                        drawCount = 0;
+                    }
+
+                    for (int i = 0; i < drawCount; i++)
+                    {
+                        int idx = doOrder ? orderedSlices[i] : i;
+                        if (multistate)
                         {
-                            objectsettings.IterationCount = this.FIter[i];
+                            context.RenderStateStack.Push(this.FInState[idx]);
+                        }
+
+                        if (shaderdata.IsLayoutValid(idx) || settings.Geometry != null)
+                        {
+                            objectsettings.IterationCount = this.FIter[idx];
 
                             for (int k = 0; k < objectsettings.IterationCount; k++)
                             {
                                 objectsettings.IterationIndex = k;
                                 if (settings.Geometry == null)
                                 {
-                                    if (this.FGeometry[i] != pg)
+                                    if (this.FGeometry[idx] != pg)
                                     {
-                                        pg = this.FGeometry[i];
+                                        pg = this.FGeometry[idx];
 
                                         objectsettings.Geometry = pg[context];
 
-                                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, i);
+                                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
                                     }
                                 }
                                 else
                                 {
                                     objectsettings.Geometry = settings.Geometry;
-                                    shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, i);
+                                    shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
                                 }
 
                                 //Prepare settings
-                                objectsettings.DrawCallIndex = i;
-                                objectsettings.WorldTransform = this.mworld[i % this.mworldcount];
+                                objectsettings.DrawCallIndex = idx;
+                                objectsettings.WorldTransform = this.mworld[idx % this.mworldcount];
 
                                 if (settings.ValidateObject(objectsettings))
                                 {
-                                    this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, this.objectsettings, i);
+                                    this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, this.objectsettings, idx);
 
                                     shaderdata.ApplyPass(ctx);
 
@@ -457,8 +528,13 @@ namespace VVVV.DX11.Nodes.Layers
                         }
                     }
 
+                    if (pipelineState != null)
+                    {
+                        pipelineState.Restore(context);
+                    }
+
+
                     this.OnEndQuery(context);
-                    
                 }
                 //this.query.End();
             }

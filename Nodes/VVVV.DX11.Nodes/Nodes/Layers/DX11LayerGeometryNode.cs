@@ -67,7 +67,10 @@ namespace VVVV.DX11.Nodes
                         settings.Geometry = this.FInGeometry[0][context];
                     }
 
-                    this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
                 }
             }
             settings.Geometry = g;

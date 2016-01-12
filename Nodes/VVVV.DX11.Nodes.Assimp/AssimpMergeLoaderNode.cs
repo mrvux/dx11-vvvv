@@ -12,7 +12,7 @@ using SlimDX;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 
-namespace VVVV.DX11.Nodes.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "Geometry", Category = "DX11", Version = "Assimp.Merge", Author = "vux,flateric")]
     public class AssimpSimpleLoaderMergeNode : IPluginEvaluate, IDisposable, IDX11ResourceProvider

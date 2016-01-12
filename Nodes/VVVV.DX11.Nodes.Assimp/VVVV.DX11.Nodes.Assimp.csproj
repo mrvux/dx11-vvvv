@@ -31,7 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssimpAnimationNode.cs" />
-    <Compile Include="AssimpAnimationTreeBufferNode.cs" />
     <Compile Include="AssimpBoneWrapper.cs" />
     <Compile Include="AssimpCameraTransformNode.cs" />
     <Compile Include="AssimpChannelAnimNode.cs" />
@@ -43,7 +42,9 @@
     <Compile Include="AssimpMeshMergeNode.cs" />
     <Compile Include="AssimpMeshSplitNode.cs" />
     <Compile Include="AssimpMeshNode.cs" />
-    <Compile Include="AssimpSceneExplorerNode.cs" />
+    <Compile Include="AssimpSceneExplorerNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="AssimpSceneExplorerNode.Designer.cs">
       <DependentUpon>AssimpSceneExplorerNode.cs</DependentUpon>
     </Compile>

@@ -38,4 +38,47 @@ namespace VVVV.DX11
     public class DX11Layer : DX11BaseLayer<DX11RenderSettings>
     {
     }
+
+    public class DX11Shader: IDX11Resource
+    {
+        public DX11ShaderInstance Shader
+        {
+            get;
+            private set;
+        }
+
+        public DX11Shader(DX11ShaderInstance instance)
+        {
+            this.Shader = instance;
+        }
+
+        public void Dispose()
+        {
+            //Owned, do nothing
+        }
+    }
+
+    public class DX11Layout : IDX11Resource
+    {
+        public InputLayout Layout
+        {
+            get;
+            private set;
+        }
+
+        public DX11Layout(InputLayout layout)
+        {
+            this.Layout = layout;
+        }
+
+        public void Dispose()
+        {
+            if (this.Layout != null)
+            {
+                this.Layout.Dispose();
+                this.Layout = null;
+            }
+            
+        }
+    }
 }

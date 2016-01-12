@@ -36,10 +36,6 @@ namespace VVVV.DX11.Nodes
         [Input("Instance Resource Offset", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<int> FInInstOffset;
 
-        //[Input("Enabled")]
-        //IDiffSpread<bool> FInEnabled;
-
-
         [Output("Geometry Out")]
         protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutGeom;
 

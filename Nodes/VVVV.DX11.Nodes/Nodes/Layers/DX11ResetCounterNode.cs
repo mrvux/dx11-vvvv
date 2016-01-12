@@ -51,7 +51,10 @@ namespace VVVV.DX11.Nodes
                 bool current = settings.ResetCounter;
                 settings.ResetCounter = this.FInReset[0];
 
-                this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                {
+                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                }
 
                 settings.ResetCounter = current;
             }

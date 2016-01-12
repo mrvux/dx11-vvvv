@@ -7,29 +7,28 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Nodes.DirectWrite.TextLayer
 {
-    [PluginInfo(Name = "Style", Category = "DirectWrite", Tags = "layout,text")]
-    public class FontStyleNode : BaseTextLayoutRangeFuncNode
+    [PluginInfo(Name = "FontStyle", Category = "DirectWrite", Version = "Styles", Tags = "layout,text", Author = "vux")]
+    public class FontStyleNode : TextStyleBaseNode
     {
         [Input("Style")]
         protected IDiffSpread<FontStyle> style;
 
-        [Input("Weight")]
-        protected IDiffSpread<FontWeight> w;
-
-        [Input("Stretch")]
-        protected IDiffSpread<FontStretch> s;
-
-        protected override bool IsChanged()
+        private class FontStyler : TextStyleBase
         {
-            return base.IsChanged() || style.IsChanged || w.IsChanged || s.IsChanged;
+            public FontStyle Style;
+
+            protected override void DoApply(TextLayout layout, TextRange range)
+            {
+                layout.SetFontStyle(this.Style, range);
+            }
         }
 
-        protected override void Apply(TextLayout layout, bool enable, int slice)
+        protected override TextStyleBaseNode.TextStyleBase CreateStyle(int slice)
         {
-
-            var res = layout.SetFontStyle(this.style[slice], new TextRange(ffrom[slice], fto[slice]));
-            layout.SetFontWeight(this.w[slice], new TextRange(ffrom[slice], fto[slice]));
-            layout.SetFontStretch(this.s[slice], new TextRange(ffrom[slice], fto[slice]));
+            return new FontStyler()
+            {
+                Style = style[slice]
+            };
         }
     }
 }

@@ -81,7 +81,7 @@ namespace VVVV.DX11.Nodes
                     while (this.FInputCount[0] > FLayers.Count)
                     {
                         InputAttribute attr = new InputAttribute("Layer " + Convert.ToString(this.FLayers.Count + 1));
-                        attr.IsSingle = true;
+                        attr.IsSingle = false;
                         attr.CheckIfChanged = true;
                         attr.AutoValidate = false;
                         //Create new layer Pin
@@ -181,7 +181,10 @@ namespace VVVV.DX11.Nodes
                         {
                             try
                             {
-                                dxpin.IOObject[0][context].Render(dxpin.IOObject.PluginIO, context, settings);
+                                for (int i = 0; i < dxpin.IOObject.SliceCount; i++)
+                                {
+                                    dxpin.IOObject[i][context].Render(dxpin.IOObject.PluginIO, context, settings);
+                                }
                             }
                             catch
                             { }

@@ -9,7 +9,7 @@ using DWriteFactory = SlimDX.DirectWrite.Factory;
 
 namespace VVVV.DX11.Nodes.Nodes.Text
 {
-    [PluginInfo(Name = "TextLayout", Category = "DirectWrite")]
+    [PluginInfo(Name = "TextLayout", Category = "DirectWrite", Author = "vux")]
     public class TextLayoutNode : IPluginEvaluate, IDisposable
     {
         [Input("Text")]
@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         protected Pin<TextFormat> FFormat;
 
         [Input("Text Alignment")]
-        protected IDiffSpread<TextAlignment> FTextAlign;
+        protected IDiffSpread<SharpDX.DirectWrite.TextAlignment> FTextAlign;
 
         [Input("Paragraph Alignment")]
         protected IDiffSpread<ParagraphAlignment> FParaAlign;
@@ -29,8 +29,6 @@ namespace VVVV.DX11.Nodes.Nodes.Text
 
         [Input("Maximum Height", DefaultValue = 50)]
         protected IDiffSpread<float> FMaxHeight;
-
-
 
         [Output("Output")]
         protected ISpread<TextLayout> FOutput;
@@ -67,7 +65,8 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
-                    tl.TextAlignment = this.FTextAlign[i];
+                    var align = (int)this.FTextAlign[i];
+                    tl.TextAlignment = (TextAlignment)align;
                     tl.ParagraphAlignment = this.FParaAlign[i];
                     this.FOutput[i] = tl;
                 }

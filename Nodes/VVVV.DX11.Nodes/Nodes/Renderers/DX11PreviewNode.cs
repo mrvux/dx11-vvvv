@@ -14,6 +14,7 @@ using VVVV.DX11.Lib.Devices;
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VColor;
+using SlimDX.Direct3D11;
 
 namespace VVVV.DX11.Nodes.Renderers
 {
@@ -41,6 +42,9 @@ namespace VVVV.DX11.Nodes.Renderers
          
          [Input("Background Color", DefaultColor=new double[] { 0.5, 0.5, 0.5, 1 }, IsSingle = true)]
          protected ISpread<RGBAColor> FInBgColor;
+
+         [Input("Sampler State")]
+         protected Pin<SamplerDescription> FInSamplerState;
 
          [Input("Enabled",DefaultValue=1)]
          protected ISpread<bool> FEnabled;
@@ -123,6 +127,20 @@ namespace VVVV.DX11.Nodes.Renderers
                      context.CleanShaderStages();
                                                    
                      context.Primitives.FullTriVS.GetVariableBySemantic("TEXTURE").AsResource().SetResource(this.FIn[id][context].SRV);
+
+                     EffectSamplerVariable samplervariable = context.Primitives.FullTriVS.GetVariableByName("linSamp").AsSampler();
+                     SamplerState state = null;
+                     if (this.FInSamplerState.IsConnected)
+                     {
+
+                         state = SamplerState.FromDescription(context.Device, this.FInSamplerState[0]);
+                         samplervariable.SetSamplerState(0, state);
+                     }
+                     else
+                     {
+                         samplervariable.UndoSetSamplerState(0);
+                     }
+
                      context.Primitives.FullScreenTriangle.Bind(null);
                      context.Primitives.ApplyFullTri();
                      context.Primitives.FullScreenTriangle.Draw();
@@ -130,6 +148,8 @@ namespace VVVV.DX11.Nodes.Renderers
                      context.RenderStateStack.Pop();
                      context.RenderTargetStack.Pop();
                      context.CleanUpPS();
+                     samplervariable.UndoSetSamplerState(0); //undo as can be used in other places
+                     state.Dispose();
                  }
              }  
          }

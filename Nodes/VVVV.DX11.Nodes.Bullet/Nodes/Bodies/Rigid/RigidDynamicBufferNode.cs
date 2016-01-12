@@ -29,9 +29,6 @@ namespace VVVV.DX11.Nodes.Bullet
         [Output("Body Transforms")]
         protected ISpread<DX11Resource<DX11DynamicStructuredBuffer<Matrix>>> FOutBody;
 
-        /*[Output("Shape Transforms")]
-        ISpread<DX11Resource<DX11DynamicStructuredBuffer<Matrix>>> FOutShape;*/
-
         public void Evaluate(int SpreadMax)
         {
             if (this.FBodies.PluginIO.IsConnected)

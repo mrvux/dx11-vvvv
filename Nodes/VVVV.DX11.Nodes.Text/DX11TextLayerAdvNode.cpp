@@ -1,6 +1,10 @@
 #include "StdAfx.h"
 #include "DX11TextLayerAdvNode.h"
 
+#include "FontWrapperFactory.h"
+
+using namespace FeralTic::Utils;
+
 namespace VVVV {
 	namespace Nodes {
 		namespace DX11 {
@@ -12,6 +16,12 @@ namespace VVVV {
 				factory->PluginHost->CreateTransformInput("Transform In", TSliceMode::Dynamic, TPinVisibility::True, this->FInTr);
 				this->FInTr->Order = 1;
 				this->fontrenderers = gcnew	Dictionary<DX11RenderContext^, IntPtr>();
+
+				InputAttribute^ colorAttribute = gcnew InputAttribute("Color");
+				colorAttribute->Order = 6;
+				colorAttribute->DefaultColor = MagicNumberUtils::WhiteDefault();
+
+				this->FInColor = IOFactoryExtensions::CreateSpread<SlimDX::Color4>(this->iofactory, colorAttribute, true);
 			}
 
 			void DX11TextLayerAdvNode::Evaluate(int SpreadMax)
@@ -34,26 +44,7 @@ namespace VVVV {
 
 				if (!this->fontrenderers->ContainsKey(context))
 				{
-					FW1_FONTWRAPPERCREATEPARAMS createParams = { 0 };
-					createParams.SheetMipLevels = 5;
-					createParams.AnisotropicFiltering = TRUE;
-					createParams.DefaultFontParams.pszFontFamily = L"Arial";
-					createParams.DefaultFontParams.FontWeight = DWRITE_FONT_WEIGHT_NORMAL;
-					createParams.DefaultFontParams.FontStyle = DWRITE_FONT_STYLE_NORMAL;
-					createParams.DefaultFontParams.FontStretch = DWRITE_FONT_STRETCH_NORMAL;
-
-
-					IFW1Factory *pFW1Factory;
-					FW1CreateFactory(FW1_VERSION, &pFW1Factory);
-					ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
-
-					IFW1FontWrapper* pw;
-
-					IDWriteFactory* dw = (IDWriteFactory*)this->dwFactory->ComPointer.ToPointer();
-
-					pFW1Factory->CreateFontWrapper(dev, dw, &createParams, &pw);
-					pFW1Factory->Release();
-
+					IFW1FontWrapper* pw = FontWrapperFactory::GetWrapper(context, this->dwFactory);
 					this->fontrenderers->Add(context, IntPtr(pw));
 				}
 			}

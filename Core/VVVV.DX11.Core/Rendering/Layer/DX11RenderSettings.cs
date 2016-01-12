@@ -12,7 +12,7 @@ using VVVV.DX11.Effects;
 
 namespace VVVV.DX11
 {
-    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector }
+    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector, ApplyOnly }
 
 
     public partial class DX11RenderSettings
@@ -27,6 +27,7 @@ namespace VVVV.DX11
             this.CustomSemantics = new List<IDX11RenderSemantic>();
             this.ObjectValidators = new List<IDX11ObjectValidator>();
             this.ResourceSemantics = new List<DX11Resource<IDX11RenderSemantic>>();
+            this.LayerOrder = null;
             this.RenderSpace = new DX11RenderSpace();
             this.PreferredTechniques = new List<string>();
             this.ViewportCount = 1;
@@ -83,6 +84,8 @@ namespace VVVV.DX11
         public List<DX11Resource<IDX11RenderSemantic>> ResourceSemantics { get; set; }
 
         public List<IDX11ObjectValidator> ObjectValidators { get; set; }
+
+        public IDX11LayerOrder LayerOrder { get; set; }
 
         public bool ValidateObject(DX11ObjectRenderSettings obj)
         {

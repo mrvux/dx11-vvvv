@@ -17,6 +17,7 @@ namespace FeralTic.DX11.Resources
         BC1 = SlimDX.DXGI.Format.BC1_UNorm,
         BC2 = SlimDX.DXGI.Format.BC2_UNorm,
         BC3 = SlimDX.DXGI.Format.BC3_UNorm,
+        BC4 = SlimDX.DXGI.Format.BC4_UNorm,
         BC7 = SlimDX.DXGI.Format.BC7_UNorm,
         BC6S = SlimDX.DXGI.Format.BC6_SFloat16,
         BC6U = SlimDX.DXGI.Format.BC6_UFloat16,

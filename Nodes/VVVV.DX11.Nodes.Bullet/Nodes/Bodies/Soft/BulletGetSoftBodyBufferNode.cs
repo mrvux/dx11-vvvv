@@ -17,7 +17,7 @@ namespace VVVV.DX11.Nodes.Bullet
 {
     [PluginInfo(Name = "GetSoftBodyBuffer", Category = "Bullet",
         Help = "Gets some info about a soft body", Author = "vux")]
-    public class BulletGetSoftBodyBufferNode : IPluginEvaluate, IDX11ResourceProvider
+    public class BulletGetSoftBodyBufferNode : IPluginEvaluate, IDX11ResourceProvider, System.IDisposable
     {
         [Input("Bodies")]
         protected ISpread<SoftBody> FBodies;
@@ -84,7 +84,26 @@ namespace VVVV.DX11.Nodes.Bullet
 
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
         {
+            if (this.FOutNodes.SliceCount > 0)
+            {
+                if (this.FOutNodes[0] != null)
+                {
+                    this.FOutNodes[0].Dispose(context);
+                    this.FOutNodes[0] = null;
+                }
+            }
+        }
 
+        public void Dispose()
+        {
+            if (this.FOutNodes.SliceCount > 0)
+            {
+                if (this.FOutNodes[0] != null)
+                {
+                    this.FOutNodes[0].Dispose();
+                    this.FOutNodes[0] = null;
+                }
+            }
         }
     }
 }

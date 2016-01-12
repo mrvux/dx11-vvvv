@@ -7,7 +7,7 @@ using AssimpNet;
 using SlimDX;
 using VVVV.Utils.VColor;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "Material", Category = "Assimp", Author = "vux,flateric")]
     public class AssimpMaterialNode : IPluginEvaluate

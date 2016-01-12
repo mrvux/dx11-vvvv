@@ -25,6 +25,7 @@
     <Compile Include="NodeInterfaces\IDX11RenderWindow.cs" />
     <Compile Include="NodeInterfaces\IDX11ResourceDataRetriever.cs" />
     <Compile Include="NodeInterfaces\IDX11UpdateBlocker.cs" />
+    <Compile Include="NodeInterfaces\IDirectWriteTextStyler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Layer\DX11Layer.cs" />
     <Compile Include="Rendering\Layer\DX11RenderObject.cs" />
@@ -35,6 +36,7 @@
     <Compile Include="NodeInterfaces\IDX11RendererProvider.cs" />
     <Compile Include="NodeInterfaces\IDX11ResourceProvider.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSpace.cs" />
+    <Compile Include="Rendering\Layer\IDX11LayerOrder.cs" />
     <Compile Include="Rendering\Layer\IDX11ObjectValidator.cs" />
     <Compile Include="Rendering\Layer\DX11ObjectRenderSettings.cs" />
     <Compile Include="Rendering\Layer\IDX11RenderSemantic.cs" />

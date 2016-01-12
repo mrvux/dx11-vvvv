@@ -64,7 +64,10 @@ namespace VVVV.DX11.Nodes
 
                     context.CurrentDeviceContext.OutputMerger.DepthStencilReference = this.FInReference[0];
 
-                    this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
 
                     context.CurrentDeviceContext.OutputMerger.DepthStencilReference = currentRef;
 

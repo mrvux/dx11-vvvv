@@ -13,7 +13,7 @@ using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 using System.Runtime.InteropServices;
 
-namespace VVVV.DX11.Nodes.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name="Mesh",Category="Geometry Split",Version="Assimp",Author="vux,flateric")]
     public unsafe class AssimpMeshSplitNode : IPluginEvaluate

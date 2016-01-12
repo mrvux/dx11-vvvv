@@ -7,12 +7,20 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Nodes.DirectWrite.TextLayer
 {
-    [PluginInfo(Name = "UnderLine", Category = "DirectWrite", Tags = "layout,text")]
-    public class UnderLine : BaseTextLayoutRangeFuncNode
+    [PluginInfo(Name = "UnderLine", Category = "DirectWrite",Version="Styles", Tags = "layout,text")]
+    public class UnderLineNode : TextStyleBaseNode
     {
-        protected override void Apply(TextLayout layout, bool enable, int slice)
+        private class Underliner : TextStyleBase
         {
-            var res = layout.SetUnderline(enable, new TextRange(ffrom[slice], fto[slice]));
+            protected override void DoApply(TextLayout layout, TextRange range)
+            {
+                layout.SetUnderline(true, range);
+            }
+        }
+
+        protected override TextStyleBaseNode.TextStyleBase CreateStyle(int slice)
+        {
+            return new Underliner();
         }
     }
 }

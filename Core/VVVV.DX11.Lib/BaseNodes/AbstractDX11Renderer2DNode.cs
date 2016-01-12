@@ -30,7 +30,7 @@ namespace VVVV.DX11
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1,IsSingle=true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Clear", DefaultValue = 1, Order = 6)]
@@ -97,8 +97,6 @@ namespace VVVV.DX11
 
 
         protected virtual IDX11RWResource GetMainTarget(DX11RenderContext device) { return null; }
-
-        //protected virtual DX11Texture2D GetLastBuffer() { return null; }
 
         public bool IsEnabled
         {

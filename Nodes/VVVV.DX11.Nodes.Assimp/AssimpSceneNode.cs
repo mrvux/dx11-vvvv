@@ -8,7 +8,7 @@ using System.IO;
 using VVVV.Core.Logging;
 using System.ComponentModel.Composition;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "SceneFile", Category = "DX11.Geometry", Version = "Assimp", Author = "vux,flateric")]
     public class AssimpSceneNode : IPluginEvaluate, IDisposable

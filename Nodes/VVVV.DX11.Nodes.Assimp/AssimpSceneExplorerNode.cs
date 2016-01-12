@@ -10,7 +10,7 @@ using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using SlimDX;
 
-namespace VVVV.DX11.Nodes.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     public class AssimpTreeNode : TreeNode
     {

@@ -7,20 +7,30 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Nodes.DirectWrite.TextLayer
 {
-    [PluginInfo(Name = "FontFamily", Category = "DirectWrite", Tags = "layout,text")]
-    public class FontFamilyNode : BaseTextLayoutRangeFuncNode
+    [PluginInfo(Name = "FontFamily", Category = "DirectWrite",Version="Styles", Tags = "layout,text", Author="vux")]
+    public class FontFamilyNode : TextStyleBaseNode
     {
-        [Input("Font", EnumName = "SystemFonts")]
+        [Input("Font", EnumName = "DirectWrite_Font_Families")]
         protected IDiffSpread<EnumEntry> FFontInput;
 
-        protected override bool IsChanged()
+        private class FontFamilyStyle : TextStyleBase
         {
-            return base.IsChanged() || FFontInput.IsChanged;
+            public string Name;
+
+            protected override void DoApply(TextLayout layout, TextRange range)
+            {
+                layout.SetFontFamilyName(Name, range);
+            }
         }
 
-        protected override void Apply(TextLayout layout, bool enable, int slice)
+        protected override TextStyleBaseNode.TextStyleBase CreateStyle(int slice)
         {
-            var res = layout.SetFontFamilyName(this.FFontInput[slice].Name, new TextRange(ffrom[slice], fto[slice]));
+            return new FontFamilyStyle()
+            {
+                Name = FFontInput[slice]
+            };
         }
     }
 }
+
+

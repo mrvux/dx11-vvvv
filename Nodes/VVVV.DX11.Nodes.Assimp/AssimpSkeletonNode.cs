@@ -7,9 +7,8 @@ using VVVV.PluginInterfaces.V1;
 using VVVV.SkeletonInterfaces;
 using System.ComponentModel.Composition;
 using AssimpNet;
-using VVVV.DX11.Assimp;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "Skeleton",
                 Category = "Skeleton",
