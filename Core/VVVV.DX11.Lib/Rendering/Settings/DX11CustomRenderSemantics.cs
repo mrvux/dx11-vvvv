@@ -112,6 +112,12 @@ namespace VVVV.DX11.Lib.Rendering
         protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.UAV : null); }
     }
 
+    public class BufferRenderSemantic : DX11RenderSemantic<IDX11ReadableResource>
+    {
+        public BufferRenderSemantic(string semantic, bool mandatory) : base(semantic, mandatory) { TypeNames = new string[] { "ByteAddressBuffer" }; }
+        protected override void ApplyVariable(string name, DX11ShaderInstance instance) { instance.SetByName(name, this.Data != null ? this.Data.SRV : null); }
+    }
+
     //
 
     public class AppendStructuredBufferRenderSemantic : DX11RenderSemantic<IDX11RWResource>
