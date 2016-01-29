@@ -52,6 +52,40 @@ namespace VVVV.DX11
             this.Shader = instance;
         }
 
+        public void ApplyShaders(DX11RenderContext context)
+        {
+            var vsV = Shader.CurrentTechnique.GetPassByIndex(0).VertexShaderDescription.Variable;
+            if (vsV.IsValid)
+            {
+                context.CurrentDeviceContext.VertexShader.Set(vsV.AsShader().GetVertexShader(0));
+            }
+
+            var hsV = Shader.CurrentTechnique.GetPassByIndex(0).HullShaderDescription.Variable;
+            if (hsV.IsValid)
+            {
+                context.CurrentDeviceContext.HullShader.Set(hsV.AsShader().GetHullShader(0));
+            }
+
+            var dsV = Shader.CurrentTechnique.GetPassByIndex(0).DomainShaderDescription.Variable;
+            if (dsV.IsValid)
+            {
+                context.CurrentDeviceContext.DomainShader.Set(dsV.AsShader().GetDomainShader(0));
+            }
+
+            var gsV = Shader.CurrentTechnique.GetPassByIndex(0).GeometryShaderDescription.Variable;
+            if (gsV.IsValid)
+            {
+                context.CurrentDeviceContext.GeometryShader.Set(gsV.AsShader().GetGeometryShader(0));
+            }
+
+            var psV = Shader.CurrentTechnique.GetPassByIndex(0).PixelShaderDescription.Variable;
+            if (psV.IsValid)
+            {
+                context.CurrentDeviceContext.PixelShader.Set(psV.AsShader().GetPixelShader(0));
+            }
+
+        }
+
         public void Dispose()
         {
             //Owned, do nothing
