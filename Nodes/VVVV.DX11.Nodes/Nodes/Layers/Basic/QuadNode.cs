@@ -213,7 +213,7 @@ namespace VVVV.DX11.Nodes
                 qd.quadshader.SetBySemantic("WORLD", this.FInWorld[i]);
                 qd.quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
 
-                if (this.FInTexture[i].Contains(context))
+                if (this.FInTexture[i].Contains(context) && this.FInTexture[i][context] != null)
                 {
                     qd.texturevariable.SetResource(this.FInTexture[i][context].SRV);
                 }
@@ -279,7 +279,7 @@ namespace VVVV.DX11.Nodes
 
             this.BindBuffers(context);
 
-            if (this.FInTexture[0].Contains(context))
+            if (this.FInTexture[0].Contains(context) && this.FInTexture[0][context] != null)
             {
                 qd.texturevariable.SetResource(this.FInTexture[0][context].SRV);
             }
