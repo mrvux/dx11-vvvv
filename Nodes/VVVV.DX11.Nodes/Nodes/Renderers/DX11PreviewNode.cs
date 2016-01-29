@@ -149,7 +149,11 @@ namespace VVVV.DX11.Nodes.Renderers
                      context.RenderTargetStack.Pop();
                      context.CleanUpPS();
                      samplervariable.UndoSetSamplerState(0); //undo as can be used in other places
-                     state.Dispose();
+
+                     if (state != null)
+                     {
+                         state.Dispose();
+                     }
                  }
              }  
          }
