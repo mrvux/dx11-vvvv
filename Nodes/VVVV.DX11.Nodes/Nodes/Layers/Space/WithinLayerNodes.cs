@@ -60,6 +60,9 @@ namespace VVVV.DX11.Nodes
 
         [Input("Double Scale", IsSingle = true, Order = 50)]
         protected ISpread<bool> FDoubleScale;
+
+        [Input("Top Left", IsSingle = true, Order = 51)]
+        protected ISpread<bool> FTopLeft;
         
 		protected override void UpdateSettings(DX11RenderSettings settings)
         {
@@ -67,6 +70,14 @@ namespace VVVV.DX11.Nodes
 
             settings.View = Matrix.Identity;
             settings.Projection = Matrix.Scaling(f / settings.RenderWidth,f / settings.RenderHeight, 1.0f) * FTransformIn[0];
+
+            if (FTopLeft[0])
+            {
+                float tx = (float)settings.RenderWidth * 0.5f;
+                float ty = (float)settings.RenderHeight * 0.5f;
+                settings.Projection = Matrix.Translation(-tx, ty, 0.0f) * settings.Projection;
+            }
+
             settings.ViewProjection = settings.Projection;
         }
     }
@@ -91,7 +102,7 @@ namespace VVVV.DX11.Nodes
             float sx, sy;
 
             #region Build scale
-            if (FAlign[0].Name == "FitIn")
+            if (FAlign[0].Name == "FitOut")
             {
                 if (w > h)
                 {
@@ -104,7 +115,7 @@ namespace VVVV.DX11.Nodes
                     sy = w / h;
                 }
             }
-            else if (FAlign[0].Name == "FitOut")
+            else if (FAlign[0].Name == "FitIn")
             {
                 if (w > h)
                 {
