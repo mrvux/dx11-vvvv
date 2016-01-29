@@ -15,7 +15,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider
     {
         [Input("Layer In", AutoValidate = false)]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -93,11 +93,6 @@ namespace VVVV.DX11.Nodes
 
 
         #endregion
-
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 
 
