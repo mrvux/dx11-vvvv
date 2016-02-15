@@ -50,6 +50,7 @@ namespace VVVV.DX11.Nodes.Layers
         private int spmax = 0;
         private bool geomconnected;
         private bool stateconnected;
+        private bool invalidateShader = false;
 
         private List<DX11ObjectRenderSettings> orderedObjectSettings = new List<DX11ObjectRenderSettings>();
 
@@ -163,7 +164,12 @@ namespace VVVV.DX11.Nodes.Layers
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
+            if (this.shaderupdated)
+            {
+                this.FOutShader[0] = new DX11Resource<DX11Shader>();
+            }
             this.shaderupdated = false;
+
             this.spmax = this.CalculateSpreadMax();
 
             if (this.FInTechnique.IsChanged)
