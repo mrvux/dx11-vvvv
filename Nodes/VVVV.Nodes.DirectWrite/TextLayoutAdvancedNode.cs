@@ -74,11 +74,13 @@ namespace VVVV.DX11.Nodes.Text
                     if (this.FOutput[i] != null) { this.FOutput[i].Dispose(); }
                 }
 
+                var spMax = SpreadUtils.SpreadMax(this.FText, this.FTextAlign, this.FParaAlign, this.FMaxHeight, this.FMaxWidth, this.FFormat, this.textStyles);
+
                 //then set new slicecount
-                this.FOutput.SliceCount = SpreadMax;
+                this.FOutput.SliceCount = spMax;
                 
                 //then create new outputs
-                for (int i = 0; i < SpreadMax; i++)
+                for (int i = 0; i < spMax; i++)
                 {
                     var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
                     var align = (int)this.FTextAlign[i];
