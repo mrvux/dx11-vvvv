@@ -43,6 +43,7 @@
     <Compile Include="Nodes\Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPixelViewportNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerBlendFactorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerStencilRefNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerOrderNode.cs" />
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
@@ -54,6 +55,8 @@
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dArrayRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\Touch\TouchStateJoin.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11StencilReferenceStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11BlendFactorStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
     <Compile Include="Nodes\RenderStates\SamplerStatePresetNode.cs" />
     <Compile Include="Nodes\Textures\1D\InfoTexture1DNode.cs" />

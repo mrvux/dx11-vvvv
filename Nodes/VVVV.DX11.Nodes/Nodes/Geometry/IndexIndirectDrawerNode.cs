@@ -74,6 +74,17 @@ namespace VVVV.DX11.Nodes
                 DX11IndexedGeometry geom;
                 if (this.invalidate || (!this.FOutGeom[i].Contains(context)))
                 {
+                    if (this.FOutGeom[i].Contains(context))
+                    {
+                        var g = this.FOutGeom[i][context];
+                        DX11IndexedIndirectDrawer d = (DX11IndexedIndirectDrawer)g.Drawer;
+
+                        if (d != null)
+                        {
+                            d.IndirectArgs.Dispose();
+                        }
+                    }
+
                     geom = (DX11IndexedGeometry)this.FInGeom[i][context].ShallowCopy();
 
                     DX11IndexedIndirectDrawer ind = new DX11IndexedIndirectDrawer();
