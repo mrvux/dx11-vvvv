@@ -15,7 +15,7 @@ using SlimDX;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Scissor",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerScissorNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerScissorNode : IPluginEvaluate, IDX11LayerProvider
     {
         [Input("Position")]
         protected ISpread<Vector2> FInPosition;
@@ -84,7 +84,7 @@ namespace VVVV.DX11.Nodes
                 var rect = context.CurrentDeviceContext.Rasterizer.GetScissorRectangles();
                 if (this.FLayerIn.IsConnected)
                 {
-                    
+
                     context.CurrentDeviceContext.Rasterizer.SetScissorRectangles(this.rectangles);
                     try
                     {
@@ -99,13 +99,19 @@ namespace VVVV.DX11.Nodes
                     }
                 }
             }
+            else
+            {
+                if (this.FLayerIn.IsConnected)
+                {
+
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
+                }
+            }
         }
 
         #endregion
-
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 }
