@@ -14,7 +14,7 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "Switch", Category = "DX11.IndexedGeometry", Version = "2d", Author = "vux")]
     public class SwitchGeometryNode : IPluginEvaluate, IDX11ResourceProvider, IPartImportsSatisfiedNotification
     {
-        [Input("Switch", Order = -5, IsSingle=true)]
+        [Input("Switch", Order = -5)]
         protected ISpread<int> FInSwitch;
 
         [Config("Input Count", DefaultValue = 2, MinValue = 2)]
@@ -34,12 +34,12 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             //
-
+            this.FOutput.SliceCount = SpreadMax;
             for (int i = 0; i < SpreadMax; i++)
             {
                 int idx = VMath.Zmod(FInSwitch[i], FInputs.Count);
 
-                this.FOutput.SliceCount = FInputs[idx].IOObject.SliceCount;
+                
 
                 var pin = FInputs[idx].IOObject;
 
