@@ -49,6 +49,7 @@
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerZSortOrderNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerGetSliceOrderNode.cs" />
+    <Compile Include="Nodes\Layers\Space\ViewPortBillboardNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSlice.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSliceNode.cs" />
+    <Compile Include="Nodes\Validators\RemoveSliceValidatorNode.cs" />
     <Compile Include="ShaderUtils.cs" />
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
