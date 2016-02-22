@@ -135,6 +135,7 @@
     <Compile Include="Rendering\Settings\DX11RenderSemantic.cs" />
     <Compile Include="Rendering\Settings\DX11RenderSpace.cs" />
     <Compile Include="Rendering\ShaderPipelineState.cs" />
+    <Compile Include="Rendering\Validators\DX11RemoveSliceValidator.cs" />
     <Compile Include="Rendering\Validators\DX11ViewportValidator.cs" />
     <Compile Include="Rendering\Validators\DX11FrustrumValidator.cs" />
     <Compile Include="Rendering\Validators\DX11SelectValidator.cs" />
