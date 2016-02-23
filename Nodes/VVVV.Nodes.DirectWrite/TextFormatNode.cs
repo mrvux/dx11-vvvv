@@ -30,6 +30,15 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         [Input("Word Wrapping")]
         protected IDiffSpread<WordWrapping> FWordWrap;
 
+        [Input("Line Spacing Method")]
+        protected IDiffSpread<LineSpacingMethod> FMethod;
+
+        [Input("Line Spacing", DefaultValue = 12)]
+        protected IDiffSpread<float> FLineSpacing;
+
+        [Input("Baseline", DefaultValue = 12)]
+        protected IDiffSpread<int> FBaseLine;
+
         [Output("Output")]
         protected ISpread<TextFormat> FOutput;
 
@@ -44,7 +53,8 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         public void Evaluate(int SpreadMax)
         {
             if (this.FSize.IsChanged || this.FFontInput.IsChanged || this.FWeight.IsChanged 
-                || this.FStretch.IsChanged || this.FStyle.IsChanged || this.FWordWrap.IsChanged)
+                || this.FStretch.IsChanged || this.FStyle.IsChanged || this.FWordWrap.IsChanged
+                || this.FLineSpacing.IsChanged || this.FMethod.IsChanged || this.FBaseLine.IsChanged)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -61,6 +71,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                     int idx = fc.FindFamilyName(this.FFontInput[i].Name, out exists);
                     this.FOutput[i] = new TextFormat(this.dwFactory,this.FFontInput[i].Name, this.FWeight[i], this.FStyle[i], this.FStretch[i], FSize[i], "");
                     this.FOutput[i].WordWrapping = this.FWordWrap[i];
+                    this.FOutput[i].SetLineSpacing(this.FMethod[i], this.FLineSpacing[i], this.FBaseLine[i]);
                 }
             }
         }
