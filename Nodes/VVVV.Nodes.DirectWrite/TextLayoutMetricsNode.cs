@@ -31,6 +31,9 @@ namespace VVVV.DX11.Nodes
         [Output("Height")]
         protected ISpread<float> FHeight;
 
+        [Output("Line Count")]
+        protected ISpread<int> FLineCount;
+
         private DWriteFactory dwFactory;
 
         [ImportingConstructor()]
@@ -47,6 +50,7 @@ namespace VVVV.DX11.Nodes
                 this.FWidth.SliceCount = 0;
                 this.FTop.SliceCount = 0;
                 this.FHeight.SliceCount = 0;
+                this.FLineCount.SliceCount = 0;
                 return;
             }
 
@@ -56,15 +60,16 @@ namespace VVVV.DX11.Nodes
                 this.FTop.SliceCount = SpreadMax;
                 this.FWidth.SliceCount = SpreadMax;
                 this.FHeight.SliceCount = SpreadMax;
+                this.FLineCount.SliceCount = SpreadMax;
 
                 for (int i = 0; i < SpreadMax;i++)
                 {
                     var metrics = this.FInText[i].Metrics;
-
                     this.FLeft[i] = metrics.Left;
                     this.FTop[i] = metrics.Top;
                     this.FWidth[i] = metrics.Width;
                     this.FHeight[i] = metrics.Height;
+                    this.FLineCount[i] = metrics.LineCount;
                 }
 
             }
