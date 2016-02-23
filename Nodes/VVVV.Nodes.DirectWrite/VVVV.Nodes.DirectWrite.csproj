@@ -41,6 +41,7 @@
     <Compile Include="TextLayer\FontStyleNode.cs" />
     <Compile Include="TextLayer\TextStyleBaseNode.cs" />
     <Compile Include="TextLayoutAdvancedNode.cs" />
+    <Compile Include="TextLayoutClusterMetricsNode.cs" />
     <Compile Include="TextLayoutMetricsNode.cs" />
     <Compile Include="TextLayoutNode.cs" />
     <Compile Include="TextPositionNode.cs" />
