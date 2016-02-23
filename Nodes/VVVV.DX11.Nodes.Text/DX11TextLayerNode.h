@@ -36,7 +36,7 @@ private:
 	[Input("String",DefaultString="DX11", Order=0)]
     ISpread<System::String^>^ FInString;
 
-	[Input("Font", EnumName = "SystemFonts", Order = 2)]
+	[Input("Font", EnumName = "DirectWrite_Font_Families", Order = 2)]
 	ISpread<EnumEntry^>^ FFontInput;
 
 	[Input("Italic", Order = 3)]
