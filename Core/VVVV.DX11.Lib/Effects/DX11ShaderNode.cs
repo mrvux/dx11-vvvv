@@ -100,12 +100,14 @@ namespace VVVV.DX11.Nodes.Layers
 
         #region Set the shader instance
 
-        public override void SetShader(DX11Effect shader, bool isnew)
+        public override void SetShader(DX11Effect shader, bool isnew, string fileName)
         {
             this.FShader = shader;
 
             this.varmanager.SetShader(shader);
-
+            FOutPath.SliceCount = 1;
+            FOutPath[0] = fileName;
+            
             //Only set technique if new, otherwise do it on update/evaluate
             if (isnew)
             {
@@ -185,7 +187,8 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FOutLayer[0] = new DX11Resource<DX11Layer>();
                 this.FOutShader[0] = new DX11Resource<DX11Shader>();
             }
-
+            
+            
             if (this.FInvalidate)
             {
                 if (this.FShader.IsCompiled)

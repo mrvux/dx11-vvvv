@@ -28,6 +28,7 @@ using VVVV.DX11.Lib.RenderGraph.Listeners;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Shaders;
+using System.Linq;
 
 
 namespace VVVV.DX11.Factories
@@ -258,13 +259,13 @@ namespace VVVV.DX11.Factories
 
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
 
-                IDX11ShaderNodeWrapper shadernode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
-                shadernode.Source = nodeInfo;
-                shadernode.WantRecompile += new EventHandler(shadernode_WantRecompile);
+                IDX11ShaderNodeWrapper shaderNode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
+                shaderNode.Source = nodeInfo;
+                shaderNode.WantRecompile += new EventHandler(shadernode_WantRecompile);
 
-                shader = DX11Effect.FromString(code, FIncludeHandler,shadernode.Macros);
+                shader = DX11Effect.FromString(code, FIncludeHandler,shaderNode.Macros);
 
-                shadernode.SetShader(shader, true);
+                shaderNode.SetShader(shader, true, nodeInfo.Filename);
 
                 if (this.PluginCreated != null)
                 {
@@ -276,7 +277,8 @@ namespace VVVV.DX11.Factories
                 PluginContainer container = pluginHost.Plugin as PluginContainer;
                 var shaderNode = container.PluginBase as IDX11ShaderNodeWrapper;
                 shader = DX11Effect.FromString(code, FIncludeHandler, shaderNode.Macros);
-                shaderNode.SetShader(shader, false);
+
+                shaderNode.SetShader(shader, false,nodeInfo.Filename);
             }
 
             //now the effect is compiled in vvvv and we can access the errors
@@ -304,7 +306,7 @@ namespace VVVV.DX11.Factories
             string code = File.ReadAllText(wrp.Source.Filename);
 
             var shader = DX11Effect.FromString(code, FIncludeHandler,wrp.Macros);
-            wrp.SetShader(shader, false);
+            wrp.SetShader(shader, false, wrp.Source.Filename);
         }
 
         protected override bool DeleteNode(INodeInfo nodeInfo, IInternalPluginHost host)
