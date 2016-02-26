@@ -42,6 +42,9 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         [Output("Output")]
         protected ISpread<TextFormat> FOutput;
 
+        [Output("Is Valid")]
+        protected ISpread<bool> FValid;
+
         private DWriteFactory dwFactory;
 
         [ImportingConstructor()]
@@ -62,16 +65,30 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 }
 
                 this.FOutput.SliceCount = SpreadMax;
+                this.FValid.SliceCount = SpreadMax;
                 for (int i = 0; i < SpreadMax; i++)
                 {
-                    string familyName = this.FFontInput[i].Name;
+                    /*string familyName = this.FFontInput[i].Name;
 
                     var fc = this.dwFactory.GetSystemFontCollection(false);
                     bool exists;
-                    int idx = fc.FindFamilyName(this.FFontInput[i].Name, out exists);
-                    this.FOutput[i] = new TextFormat(this.dwFactory,this.FFontInput[i].Name, this.FWeight[i], this.FStyle[i], this.FStretch[i], FSize[i], "");
-                    this.FOutput[i].WordWrapping = this.FWordWrap[i];
-                    this.FOutput[i].SetLineSpacing(this.FMethod[i], this.FLineSpacing[i], this.FBaseLine[i]);
+                    int idx = fc.FindFamilyName(this.FFontInput[i].Name, out exists);*/
+
+                    try
+                    {
+                        TextFormat format = new TextFormat(this.dwFactory, this.FFontInput[i].Name, this.FWeight[i], this.FStyle[i], this.FStretch[i], FSize[i], "");
+                        format.WordWrapping = this.FWordWrap[i];
+                        format.SetLineSpacing(this.FMethod[i], this.FLineSpacing[i], this.FBaseLine[i]);
+                        this.FOutput[i] = format;
+                        this.FValid[i] = true;
+                    }
+                    catch
+                    {
+                        //Set default format
+                        TextFormat format = new TextFormat(this.dwFactory, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 16, "");
+                        this.FOutput[i] = format;
+                        this.FValid[i] = false;
+                    }
                 }
             }
         }
