@@ -90,7 +90,7 @@ namespace VVVV.DX11.Factories
             //compile shader
 
             var shader = DX11Effect.FromByteCode(nodeInfo.Filename);
-
+            
             //create or update plugin
             if (pluginHost.Plugin == null)
             {
@@ -103,8 +103,8 @@ namespace VVVV.DX11.Factories
 
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
 
-                IDX11ShaderNodeWrapper shadernode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
-                shadernode.SetShader(shader, true);
+                IDX11ShaderNodeWrapper shaderNode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
+                shaderNode.SetShader(shader, true, nodeInfo.Filename);
 
                 if (this.PluginCreated != null)
                 {
@@ -115,7 +115,7 @@ namespace VVVV.DX11.Factories
             {
                 PluginContainer container = pluginHost.Plugin as PluginContainer;
                 var shaderNode = container.PluginBase as IDX11ShaderNodeWrapper;
-                shaderNode.SetShader(shader, false);
+                shaderNode.SetShader(shader, false, nodeInfo.Filename);
             }
 
 

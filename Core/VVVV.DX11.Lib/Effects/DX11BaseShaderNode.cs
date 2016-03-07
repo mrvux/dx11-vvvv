@@ -22,7 +22,7 @@ namespace VVVV.DX11.Lib.Effects
 {
     public interface IDX11ShaderNodeWrapper
     {
-        void SetShader(DX11Effect shader, bool isnew);
+        void SetShader(DX11Effect shader, bool isnew, string fileName);
         ShaderMacro[] Macros { get; }
         event EventHandler WantRecompile;
         INodeInfo Source { get; set;}
@@ -55,6 +55,9 @@ namespace VVVV.DX11.Lib.Effects
 
         [Output("Query",Order=200, IsSingle=true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
+
+        [Output("Shader Path", Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<string> FOutPath;
 
         [Import()]
         protected ILogger FLogger;
@@ -102,7 +105,7 @@ namespace VVVV.DX11.Lib.Effects
             }
         }
 
-        public abstract void SetShader(DX11Effect shader, bool isnew);
+        public abstract void SetShader(DX11Effect shader, bool isnew, string fileName);
 
         protected void OnBeginQuery(DX11RenderContext context)
         {
