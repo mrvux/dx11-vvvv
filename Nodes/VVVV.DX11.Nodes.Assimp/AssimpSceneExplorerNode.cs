@@ -39,6 +39,9 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Input("Scene", IsSingle = true)]
         protected IDiffSpread<AssimpScene> FInScene;
 
+        [Output("Selected Node")]
+        protected ISpread<string> FOutSelectedNode;
+
         [Output("Mesh Id")]
         protected ISpread<int> FOutMeshId;
 
@@ -125,6 +128,7 @@ namespace VVVV.DX11.Nodes.AssetImport
 
                 this.FOutWorldTransform.SliceCount = transforms.Count;
                 this.FOutMeshId.SliceCount = meshes.Count;
+                FOutSelectedNode[0] = SelectedNode.Name;
                 for (int i = 0; i < meshes.Count;i++)
                 {
                     this.FOutWorldTransform[i] = transforms[i];
