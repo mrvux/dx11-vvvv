@@ -18,56 +18,52 @@ using VVVV.DX11.Lib.Rendering;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer Advanced", Author = "microdee", AutoEvaluate = false)]
-    public class DX11AdvancedStructuredBufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
+    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "RawBuffer Advanced", Author = "microdee", AutoEvaluate = false)]
+    public class DX11MultiRawBufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
         [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
-        [Input("Semantic", Order = 2, DefaultString = "UAV")]
-        protected IDiffSpread<string> FSemantic;
-        [Input("Bind SRV", Order = 3)]
-        protected IDiffSpread<bool> FBindSRV;
-        [Input("SRV Semantic", Order = 4, DefaultString = "SRV")]
-        protected IDiffSpread<string> FSRVSemantic;
-
-        [Input("Element Count", Order = 5, DefaultValue = 512)]
+        [Input("Size", Order = 8, DefaultValue = 512)]
         protected IDiffSpread<int> FInSize;
 
-        [Input("Stride", Order = 6, DefaultValue = 16)]
-        protected IDiffSpread<int> FInStride;
+        [Input("Semantic", Order = 9, DefaultString = "UAV")]
+        protected IDiffSpread<string> FSemantic;
+        [Input("Bind SRV", Order = 10)]
+        protected IDiffSpread<bool> FBindSRV;
+        [Input("SRV Semantic", Order = 11, DefaultString = "SRV")]
+        protected IDiffSpread<string> FSRVSemantic;
 
-        [Input("Buffer Mode", Order = 7, DefaultValue = 0)]
-        protected IDiffSpread<eDX11BufferMode> FInMode;
+        [Input("Allow VertexBuffer", DefaultValue = 0, Order = 12)]
+        protected IDiffSpread<bool> FInVBO;
 
-        [Input("Reset Counter", Order = 8, IsBang = true)]
-        protected IDiffSpread<bool> FInResetCounter;
+        [Input("Allow IndexBuffer", DefaultValue = 0, Order = 13)]
+        protected IDiffSpread<bool> FInIBO;
 
-        [Input("Reset Counter Value", Order = 9)]
-        protected IDiffSpread<int> FInResetCounterValue;
+        [Input("Allow Argument Buffer", DefaultValue = 0, Order = 14)]
+        protected IDiffSpread<bool> FInABO;
 
-        [Input("Enabled", DefaultValue = 1, Order = 10)]
+        [Input("Enabled", DefaultValue = 1, Order = 15)]
         protected ISpread<bool> FInEnabled;
 
-        [Input("View", Order = 11)]
+        [Input("View", Order = 16)]
         protected IDiffSpread<Matrix> FInView;
 
-        [Input("Projection", Order = 12)]
+        [Input("Projection", Order = 17)]
         protected IDiffSpread<Matrix> FInProjection;
 
         [Output("Buffers")]
-        protected ISpread<DX11Resource<IDX11RWStructureBuffer>> FOutBuffers;
+        protected ISpread<DX11Resource<DX11RawBuffer>> FOutBuffers;
 
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
         protected List<int> sizes = new List<int>();
-        protected List<int> strides = new List<int>();
         protected List<string> semantics = new List<string>();
         protected List<IDX11RenderSemantic> rsemantics = new List<IDX11RenderSemantic>();
-        // private List<DX11RawBufferFlags> flags = new List<DX11RawBufferFlags>();
+        private List<DX11RawBufferFlags> flags = new List<DX11RawBufferFlags>();
 
         protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
         protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
@@ -82,7 +78,7 @@ namespace VVVV.DX11.Nodes
         private DX11RenderSettings settings = new DX11RenderSettings();
 
         [ImportingConstructor()]
-        public DX11AdvancedStructuredBufferRendererNode(IPluginHost FHost)
+        public DX11MultiRawBufferRendererNode(IPluginHost FHost)
         {
 
         }
@@ -94,13 +90,13 @@ namespace VVVV.DX11.Nodes
 
             FOutBuffers.SliceCount = FSemantic.SliceCount;
 
-            reset = this.FInSize.IsChanged || FInMode.IsChanged || FInStride.IsChanged || this.FSemantic.IsChanged || FBindSRV.IsChanged || FSRVSemantic.IsChanged;
+            reset = this.FInSize.IsChanged || this.FInVBO.IsChanged || this.FInIBO.IsChanged || this.FInABO.IsChanged || this.FSemantic.IsChanged;
 
             for (int i = 0; i < FOutBuffers.SliceCount; i++)
             {
                 if (this.FOutBuffers[i] == null)
                 {
-                    this.FOutBuffers[i] = new DX11Resource<IDX11RWStructureBuffer>();
+                    this.FOutBuffers[i] = new DX11Resource<DX11RawBuffer>();
                     reset = true;
                 }
             }
@@ -108,20 +104,25 @@ namespace VVVV.DX11.Nodes
 
             for (int i = 0; i < FOutBuffers.SliceCount; i++)
             {
-                DX11Resource<IDX11RWStructureBuffer> res = this.FOutBuffers[i];
+                DX11Resource<DX11RawBuffer> res = this.FOutBuffers[i];
                 this.FOutBuffers[i] = res;
             }
 
             if (reset)
             {
                 sizes.Clear();
-                strides.Clear();
                 semantics.Clear();
+                flags.Clear();
                 for (int i = 0; i < FSemantic.SliceCount; i++)
                 {
                     sizes.Add(FInSize[i]);
-                    strides.Add(FInStride[i]);
                     semantics.Add(FSemantic[i]);
+
+                    DX11RawBufferFlags tflags = new DX11RawBufferFlags();
+                    tflags.AllowIndexBuffer = this.FInIBO[i];
+                    tflags.AllowVertexBuffer = this.FInVBO[i];
+                    tflags.AllowArgumentBuffer = this.FInABO[i];
+                    flags.Add(tflags);
                 }
             }
         }
@@ -160,25 +161,21 @@ namespace VVVV.DX11.Nodes
                 settings.View = this.FInView[0];
                 settings.Projection = this.FInProjection[0];
                 settings.ViewProjection = settings.View * settings.Projection;
+                settings.RenderWidth = 1;
+                settings.RenderHeight = 1;
+                settings.RenderDepth = 1;
                 settings.BackBuffer = null;
                 settings.CustomSemantics = rsemantics;
 
-                for (int i = 0; i < FSemantic.SliceCount; i++)
+                for (int i = 0; i < this.FInLayer.SliceCount; i++)
                 {
-                    settings.RenderWidth = sizes[i];
-                    settings.RenderHeight = sizes[i];
-                    settings.RenderDepth = sizes[i];
-
-                    if (FInResetCounter[i])
-                    {
-                        int[] resetval = { FInResetCounterValue[i] };
-                        var uavarray = new UnorderedAccessView[1] {FOutBuffers[i][context].UAV};
-                        context.CurrentDeviceContext.ComputeShader.SetUnorderedAccessViews(uavarray, 0, 1, resetval);
-                    }
+                    this.FInLayer[i][context].Render(this.FInLayer.PluginIO, context, settings);
                 }
-                FInLayer[0][context].Render(FInLayer.PluginIO, context, settings);
 
-                if(EndQuery != null) EndQuery.Invoke(context);
+                if (this.EndQuery != null)
+                {
+                    this.EndQuery(context);
+                }
             }
         }
 
@@ -199,17 +196,16 @@ namespace VVVV.DX11.Nodes
                 {
                     if (reset || !this.FOutBuffers[i].Contains(context))
                     {
-                        var mode = FInMode[i];
-                        DX11RWStructuredBuffer rb = new DX11RWStructuredBuffer(context.Device, this.sizes[i], strides[i], mode);
+                        DX11RawBuffer rb = new DX11RawBuffer(context.Device, this.sizes[i], this.flags[i]);
                         this.FOutBuffers[i][context] = rb;
 
-                        RWStructuredBufferRenderSemantic uavbs = new RWStructuredBufferRenderSemantic(FSemantic[i], false);
+                        RWBufferRenderSemantic uavbs = new RWBufferRenderSemantic(FSemantic[i], false);
                         uavbs.Data = this.FOutBuffers[i][context];
                         rsemantics.Add(uavbs);
 
                         if (FBindSRV[i])
                         {
-                            StructuredBufferRenderSemantic srvbs = new StructuredBufferRenderSemantic(FSRVSemantic[i], false);
+                            BufferRenderSemantic srvbs = new BufferRenderSemantic(FSRVSemantic[i], false);
                             srvbs.Data = this.FOutBuffers[i][context];
                             rsemantics.Add(srvbs);
                         }
