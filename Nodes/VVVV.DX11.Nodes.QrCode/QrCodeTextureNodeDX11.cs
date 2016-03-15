@@ -93,8 +93,12 @@ namespace VVVV.Nodes
             var qrCode = new QrCode();
             if (qrEncoder.TryEncode(FText[slice], out qrCode))
             {
-                using (var fore = new SolidBrush(FForeColor[slice].Color))
-                using (var back = new SolidBrush(FBackColor[slice].Color))
+                var fc = FForeColor[slice];
+                var bc = FBackColor[slice];
+                fc = new RGBAColor(fc.B, fc.G, fc.R, fc.A);
+                bc = new RGBAColor(bc.B, bc.G, bc.R, bc.A);
+                using (var fore = new SolidBrush(fc.Color))
+                using (var back = new SolidBrush(bc.Color))
                 {
                     var renderer = new GraphicsRenderer(new FixedModuleSize(FPixelSize[slice], FQuietZoneModules[slice]), fore, back);
                     DrawingSize dSize = renderer.SizeCalculator.GetSize(qrCode.Matrix.Width);
