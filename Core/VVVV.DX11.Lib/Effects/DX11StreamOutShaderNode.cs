@@ -105,8 +105,11 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Set the shader instance
-        public override void SetShader(DX11Effect shader, bool isnew)
+        public override void SetShader(DX11Effect shader, bool isnew, string fileName)
         {
+            FOutPath.SliceCount = 1;
+            FOutPath[0] = fileName;
+            
             if (isnew) { this.FShader = shader; }
 
             if (shader.IsCompiled)
