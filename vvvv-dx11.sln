@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeralTic", "FeralTic\Core\F
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VVVV.DX11.Nodes.Text", "Nodes\VVVV.DX11.Nodes.Text\VVVV.DX11.Nodes.Text.vcxproj", "{51469F38-9510-4A16-8998-67A55C386059}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.DX11.Nodes.DShow", "Nodes\VVVV.DX11.Nodes.DShow\VVVV.DX11.Nodes.DShow.csproj", "{6A0AFB1F-8219-4A08-85F7-B7F19B66AC16}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3FB4F6F-CCA5-4A35-9899-1564D70C35AB}"
 	ProjectSection(SolutionItems) = preProject
 		deploy.targets = deploy.targets
