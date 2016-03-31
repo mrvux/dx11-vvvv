@@ -136,7 +136,10 @@ namespace VVVV.DX11.Nodes.DShow
 		
 		public void Stop()
 		{
-			videoSource.SignalToStop();
+            videoSource.VideoSourceError -= VideoSourceError;
+            videoSource.UpdateBuffer -= UpdateBuffer;
+
+            videoSource.SignalToStop();
 			videoSource.WaitForStop();
 			
 			Dispose();
