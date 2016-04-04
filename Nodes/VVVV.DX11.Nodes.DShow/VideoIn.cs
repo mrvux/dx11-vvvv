@@ -136,10 +136,10 @@ namespace VVVV.DX11.Nodes.DShow
 		
 		public void Stop()
 		{
-            videoSource.VideoSourceError -= VideoSourceError;
-            videoSource.UpdateBuffer -= UpdateBuffer;
-
-            videoSource.SignalToStop();
+			videoSource.VideoSourceError -= VideoSourceError;
+			videoSource.UpdateBuffer -= UpdateBuffer;
+			
+			videoSource.SignalToStop();
 			videoSource.WaitForStop();
 			
 			Dispose();
@@ -216,6 +216,7 @@ namespace VVVV.DX11.Nodes.DShow
 		
 		private bool invalidateTexture;
 		private bool resetTexture;
+        private bool isNewFrame;
 		
 		private VideoInThread videoin;
 		private VideoCaptureDevice videoSource;
@@ -317,6 +318,8 @@ namespace VVVV.DX11.Nodes.DShow
 				}
 			}
 			
+            FOutIsNewFrame[0] = isNewFrame;
+            isNewFrame = false;
 			FOutIsValid[0] = (videoin != null && videoin.IsRunning());
 		}
 		
@@ -337,17 +340,16 @@ namespace VVVV.DX11.Nodes.DShow
 			FilterInfo filterInfo = videoDevices.Cast<FilterInfo>().ToList().Find(x => x.Name.Equals(FInDevice[0].Name));
 			if (filterInfo != null)
 			{
-				// videoSource
 				videoSource = new VideoCaptureDevice(filterInfo.MonikerString);
 				
-				// update enum
+				// update formats
 				videoFormatName = videoSource.VideoCapabilities.Select(x=>x.MediaType).Distinct().ToList();
 				//videoFormatName.Insert(0, "Default");
 				
 				List<VideoCapabilities> videoModeInfo = videoSource.VideoCapabilities.ToList().FindAll(y => y.MediaType.Equals(FInputs[0].IOObject[0].Name)).ToList();
 				if (videoModeInfo.Count > 0)
 				{
-					// update enum
+					// update resolutions
 					List<KeyValuePair<Tuple<int, int>, string>> resolution = videoModeInfo.Select(x => new KeyValuePair<Tuple<int, int>, string>(new Tuple<int, int>(x.FrameSize.Width, x.FrameSize.Height), x.FrameSize.Width + "x" + x.FrameSize.Height)).ToList();
 					resolutionName = resolution.Distinct().OrderBy(x => x.Key).Reverse().ToList().Select(x => x.Value).ToList();
 					//resolutionName.Insert(0, "Default");
@@ -428,6 +430,7 @@ namespace VVVV.DX11.Nodes.DShow
 		void videoin_OnFrameReady(object sender, EventArgs e)
 		{
 			invalidateTexture = true;
+            isNewFrame = true;
 		}
 		
 		private void StopCapture()
@@ -472,17 +475,20 @@ namespace VVVV.DX11.Nodes.DShow
 		
 		public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
 		{
-			if (this.FTextureOutput[0].Contains(context))
-			{
-				this.FTextureOutput[0].Dispose(context);
-			}
+            if (this.FTextureOutput[0] != null)
+            {
+                this.FTextureOutput[0].Dispose();
+            }
 		}
 		
 		public void Dispose()
 		{
 			StopCapture();
 			
-			this.FTextureOutput[0].Dispose();
+            if (this.FTextureOutput[0] != null)
+            {
+                this.FTextureOutput[0].Dispose();
+            }
 		}
 	}
 }
