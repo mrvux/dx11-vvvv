@@ -77,7 +77,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
 
             if (node.IsNodeAssignableFrom<N>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>())
             {
-                DX11Node vn = new DX11Node(node.InternalCOMInterf);
+                DX11Node vn = new DX11Node(node);
 
                 this.graph.AddNode(vn);
 

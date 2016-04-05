@@ -18,26 +18,18 @@ namespace VVVV.DX11.RenderGraph.Model
     /// </summary>
     public class DX11Node
     {
-        public DX11Node(INode hdeNode)
+        public DX11Node(INode2 hdeNode) : this(hdeNode, (IPluginHost)hdeNode.InternalCOMInterf)
         {
-            this.InputPins = new List<DX11InputPin>();
-            this.OutputPins = new List<DX11OutputPin>();
-
-            this.HdeNode = hdeNode;
-            this.Name = hdeNode.GetNodeInfo().Systemname;
-            this.Hoster = (IPluginHost)hdeNode;
-
-            IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
-            this.Interfaces = new DX11NodeInterfaces(iip);
         }
 
-        public DX11Node(INode hdeNode,IPluginHost hoster)
+        public DX11Node(INode2 hdeNode, IPluginHost hoster)
         {
             this.InputPins = new List<DX11InputPin>();
             this.OutputPins = new List<DX11OutputPin>();
 
-            this.HdeNode = hdeNode;
-            this.Name = hdeNode.GetNodeInfo().Systemname;
+            this.HdeNode2 = hdeNode;
+            this.HdeNode = hdeNode.InternalCOMInterf;
+            this.Name = hdeNode.NodeInfo.Systemname;
             this.Hoster = hoster;
 
             IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
@@ -46,6 +38,7 @@ namespace VVVV.DX11.RenderGraph.Model
 
         public IPluginHost Hoster { get; protected set; }
         public INode HdeNode { get; protected set; }
+        public INode2 HdeNode2 { get; private set; }
         public DX11NodeInterfaces Interfaces { get; private set; }
 
         public string Name { get; set; }
