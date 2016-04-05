@@ -9,7 +9,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\plugins\dshow\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SlimDX" />
