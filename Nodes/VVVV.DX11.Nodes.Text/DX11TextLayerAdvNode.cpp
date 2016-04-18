@@ -114,14 +114,14 @@ namespace VVVV {
 
 							context->RenderStateStack->Push(this->FStateIn[i]);
 
-							TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->Stream->Buffer->Length];
+							TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->SliceCount];
 							fw->DrawTextLayout(pContext, (IDWriteTextLayout*)tf->ComPointer.ToPointer(), 0, 0, color, NULL, tr, FW1_STATEPREPARED);
 
 							context->RenderStateStack->Pop();
 						}
 						else
 						{
-							TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->Stream->Buffer->Length];
+							TextLayout^ tf = this->FLayout->Stream->Buffer[i % this->FLayout->SliceCount];
 							fw->DrawTextLayout(pContext, (IDWriteTextLayout*)tf->ComPointer.ToPointer(), 0, 0, color, NULL, tr, 0);
 						}
 					}
