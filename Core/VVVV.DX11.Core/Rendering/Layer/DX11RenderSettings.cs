@@ -24,6 +24,7 @@ namespace VVVV.DX11
             this.Aspect = Matrix.Identity;
             this.Crop = Matrix.Identity;
             this.ViewProjection = Matrix.Identity;
+            this.RawProjection = Matrix.Identity;
             this.CustomSemantics = new List<IDX11RenderSemantic>();
             this.ObjectValidators = new List<IDX11ObjectValidator>();
             this.ResourceSemantics = new List<DX11Resource<IDX11RenderSemantic>>();
