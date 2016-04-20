@@ -20,6 +20,9 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Input("Recurse",DefaultValue=1)]
         protected IDiffSpread<bool> FInRecurse;
 
+        [Input("Include Self", DefaultValue = 1)]
+        protected IDiffSpread<bool> FInIncludeSelf;
+
         [Output("Name")]
         protected ISpread<string> FOutName;
 
@@ -36,7 +39,7 @@ namespace VVVV.DX11.Nodes.AssetImport
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInScene.IsChanged || this.FInRootNode.IsChanged || this.FInRecurse.IsChanged)
+            if (this.FInScene.IsChanged || this.FInRootNode.IsChanged || this.FInRecurse.IsChanged || this.FInIncludeSelf.IsChanged)
             {
                 if (this.FInScene[0] != null)
                 {
@@ -58,7 +61,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                             {
                                 if (this.FInRecurse[i])
                                 {
-                                    this.RecurseNodes(filterednodes, found);
+                                    this.RecurseNodes(filterednodes, found, this.FInIncludeSelf[i]);
                                 }
                                 else
                                 {
@@ -99,9 +102,12 @@ namespace VVVV.DX11.Nodes.AssetImport
             }
         }
 
-        private void RecurseNodes(List<AssimpNode> nodes, AssimpNode current)
+        private void RecurseNodes(List<AssimpNode> nodes, AssimpNode current, bool addcurrent = true)
         {
-            nodes.Add(current);
+            if (addcurrent)
+            {
+                nodes.Add(current);
+            }
             foreach (AssimpNode child in current.Children)
             {
                 RecurseNodes(nodes, child);
