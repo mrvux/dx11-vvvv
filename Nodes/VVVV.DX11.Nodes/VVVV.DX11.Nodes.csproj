@@ -59,6 +59,7 @@
     <Compile Include="Nodes\RenderStates\Advanced\DX11StencilReferenceStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11BlendFactorStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\RenderStatePresetNode.cs" />
     <Compile Include="Nodes\RenderStates\SamplerStatePresetNode.cs" />
     <Compile Include="Nodes\Textures\1D\InfoTexture1DNode.cs" />
     <Compile Include="Nodes\Textures\1D\WriterTexture1dNode.cs" />
