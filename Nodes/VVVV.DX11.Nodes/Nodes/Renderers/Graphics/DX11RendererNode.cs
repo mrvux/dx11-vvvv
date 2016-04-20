@@ -471,15 +471,8 @@ namespace VVVV.DX11.Nodes
             float ch = (float)this.ClientSize.Height;
 
             settings.ViewportIndex = i;
-            settings.View = this.FInView[i];
+            settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], this.FInAspect[i], this.FInCrop[i]);
 
-            Matrix proj = this.FInProjection[i];
-            Matrix aspect = Matrix.Invert(this.FInAspect[i]);
-            Matrix crop = Matrix.Invert(this.FInCrop[i]);
-
-
-            settings.Projection = proj * aspect * crop;
-            settings.ViewProjection = settings.View * settings.Projection;
             settings.BackBuffer = this.FOutBackBuffer[0][context];
             settings.RenderWidth = this.FOutBackBuffer[0][context].Resource.Description.Width;
             settings.RenderHeight = this.FOutBackBuffer[0][context].Resource.Description.Height;
