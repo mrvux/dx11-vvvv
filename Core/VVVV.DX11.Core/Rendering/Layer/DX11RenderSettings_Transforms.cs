@@ -46,8 +46,8 @@ namespace VVVV.DX11
             this.RawProjection = projection;
             this.Aspect = Matrix.Invert(aspect);
             this.Crop = Matrix.Invert(crop);
-
-            this.ViewProjection = this.View * this.Projection * this.Aspect * this.Crop;
+            this.Projection = this.RawProjection * this.Aspect * this.Crop;
+            this.ViewProjection = this.View * this.Projection;
         }
     }
 }
