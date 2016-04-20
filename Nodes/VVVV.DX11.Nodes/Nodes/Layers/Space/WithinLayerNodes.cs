@@ -17,11 +17,26 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "WithinProjection", Category = "DX11.Layer", Version = "")]
     public class WithinProjectionNode : AbstractDX11LayerSpaceNode
     {
+        [Input("Preserve Aspect", DefaultValue=0, IsSingle=true)]
+        protected ISpread<bool> FAspect;
+
+        [Input("Preserve Crop", DefaultValue = 0, IsSingle = true)]
+        protected ISpread<bool> FCrop;
+
         protected override void UpdateSettings(DX11RenderSettings settings)
         {
-            settings.Projection = Matrix.Identity;
             settings.View = Matrix.Identity;
-            settings.ViewProjection = Matrix.Identity;
+
+            settings.Projection = Matrix.Identity;
+            if (FAspect[0])
+            {
+                settings.Projection = settings.Aspect;
+            }
+            if (FCrop[0])
+            {
+                settings.Projection = settings.Projection * settings.Crop;
+            }
+            settings.ViewProjection = settings.View * settings.Projection;
         }
     }
 
