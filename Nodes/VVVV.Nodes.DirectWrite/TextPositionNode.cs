@@ -28,14 +28,6 @@ namespace VVVV.DX11.Nodes
         [Output("Position")]
         protected ISpread<Vector2> FPosition;
 
-        private DWriteFactory dwFactory;
-
-        [ImportingConstructor()]
-        public CaretPositionNode(DWriteFactory dwFactory)
-        {
-            this.dwFactory = dwFactory;
-        }
-
         public void Evaluate(int SpreadMax)
         {
             if (!FLayout.PluginIO.IsConnected)

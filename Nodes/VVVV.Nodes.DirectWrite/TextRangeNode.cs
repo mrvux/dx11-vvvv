@@ -44,14 +44,6 @@ namespace VVVV.DX11.Nodes
         [Output("Height")]
         protected ISpread<float> FHeight;
 
-        private DWriteFactory dwFactory;
-
-        [ImportingConstructor()]
-        public CaretRangeNode(DWriteFactory dwFactory)
-        {
-            this.dwFactory = dwFactory;
-        }
-
         public void Evaluate(int SpreadMax)
         {
             if (!FInLayout.PluginIO.IsConnected)
