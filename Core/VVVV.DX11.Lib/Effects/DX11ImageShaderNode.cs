@@ -323,7 +323,14 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         if (this.FInUseDefaultSize[0])
                         {
-                            initial = context.DefaultTextures.WhiteTexture;
+                            if (this.FIn[i][context] != null)
+                            {
+                                initial = this.FIn[i][context];
+                            }
+                            else
+                            {
+                                initial = context.DefaultTextures.WhiteTexture;
+                            }
                             wi = (int)this.FInSize[0].X;
                             he = (int)this.FInSize[0].Y;
                         }
