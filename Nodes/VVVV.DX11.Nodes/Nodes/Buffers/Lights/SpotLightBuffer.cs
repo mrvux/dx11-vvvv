@@ -75,7 +75,7 @@ namespace VVVV.Nodes.DX11
 
                 if (this.FView.PluginIO.IsConnected)
                 {
-                    buffer[i].Position = Vector3.Normalize(Vector3.TransformNormal(this.FPosition[i], this.FView[0]));
+                    buffer[i].Direction = Vector3.Normalize(Vector3.TransformNormal(this.FDirection[i], this.FView[0]));
                 }
                 else
                 {
