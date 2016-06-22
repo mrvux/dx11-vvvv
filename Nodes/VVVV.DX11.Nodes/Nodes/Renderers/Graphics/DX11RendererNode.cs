@@ -178,7 +178,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FInClearDepth;
 
         [Input("Background Color",DefaultColor=new double[] { 0,0,0,1 },Order=3)]
-        protected ISpread<RGBAColor> FInBgColor;
+        protected ISpread<Color4> FInBgColor;
 
         [Input("VSync",Visibility=PinVisibility.OnlyInspector, IsSingle=true)]
         protected ISpread<bool> FInVsync;
@@ -413,7 +413,7 @@ namespace VVVV.DX11.Nodes
                     if (this.FInClear[0])
                     {
                         //Remove Shader view if bound as is
-                        context.CurrentDeviceContext.ClearRenderTargetView(chain.RTV, this.FInBgColor[0].Color);
+                        context.CurrentDeviceContext.ClearRenderTargetView(chain.RTV, this.FInBgColor[0]);
                     }
 
                     if (this.FInClearDepth[0])
