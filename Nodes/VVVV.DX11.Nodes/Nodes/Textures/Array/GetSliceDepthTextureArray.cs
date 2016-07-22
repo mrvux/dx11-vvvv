@@ -46,7 +46,6 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FTexIn.IsConnected)
             {
-                //FTextureOutput.SliceCount = ArrayCount;
                 this.numSlicesOut = this.FIndex.SliceCount;
                 this.FTextureOutput.SliceCount = this.numSlicesOut;
 
@@ -103,14 +102,11 @@ namespace VVVV.DX11.Nodes
 
                         if (/*FIndex.IsChanged ||*/ descIn.Format != descOut.Format || descIn.Width != descOut.Width || descIn.Height != descOut.Height)
                         {
-                            //this.logger.Log(LogType.Message, "init slice " + i);
                             InitTexture(context, i, descIn);                           
                         }
                     }
                     else
                     {
-                        //InitTexture(context, i, descIn);  
-                        //this.FTextureOutput[i][context] = new DX11Texture2D();
                         this.FTextureOutput[i][context] = new DX11DepthStencil(context, FTexIn[0][context].Resource.Description.Width, FTexIn[0][context].Resource.Description.Height, FTexIn[0][context].Resource.Description.SampleDescription);
                     }
 
@@ -118,7 +114,6 @@ namespace VVVV.DX11.Nodes
 
                     if (this.FTextureOutput[i][context].Resource == null)
                     {
-                        //this.logger.Log(LogType.Message, "init slice " + i);
                         InitTexture(context, i, descIn);
                     }
 
@@ -128,19 +123,16 @@ namespace VVVV.DX11.Nodes
                     int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
                     int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
 
-                    //this.logger.Log(LogType.Message, "get slice " + slice + " into " + i);
                     context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
                 }
             }
         }
 
         private void InitTexture(DX11RenderContext context, int index, Texture2DDescription description)
-        //private void InitTexture(DX11RenderContext context, int index, DepthStencilStateDescription description)
         {
             this.FTextureOutput[index].Dispose(context);
             this.FTextureOutput[index] = new DX11Resource<DX11DepthStencil>();
             description.ArraySize = 1;
-            //this.FTextureOutput[index][context] = DX11Texture2D.FromDescription(context, description);
             this.FTextureOutput[index][context] = new DX11DepthStencil(context, description.Width, description.Height, description.SampleDescription);
         }
 
