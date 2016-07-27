@@ -194,6 +194,17 @@ namespace FeralTic.DX11.Resources
             public static extern void DeleteBlob(IntPtr blob);
         }
 
+        public static void SaveToFile(DX11RenderContext device, DX11Texture2D texture, string path, eImageFormat format)
+        {
+            long retcode = NativeMethods.SaveTextureToFile(device.Device.ComPointer, device.CurrentDeviceContext.ComPointer,
+                texture.Resource.ComPointer, path, (int)format);
+
+            if (retcode < 0)
+            {
+                throw new Exception("Failed to Save Texture");
+            }
+        }
+
         public static void SaveToFileCompressed(DX11RenderContext device, DX11Texture2D texture, string path, DdsBlockType blockType)
         {
             long retcode = NativeMethods.SaveCompressedTextureToFile(device.Device.ComPointer, device.CurrentDeviceContext.ComPointer,
