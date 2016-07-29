@@ -229,7 +229,6 @@ namespace VVVV.DX11.Nodes
                 if (threadContext.CurrentDeviceContext != null)
                 {
                     threadContext.CurrentDeviceContext.Dispose();
-                    threadContext.Dispose();
                 }
 
                 //try
