@@ -138,53 +138,26 @@ namespace VVVV.DX11.Nodes
 
                         try
                         {
-
-
-                            //DeviceContext threadContext = null;
-                            //threadContext = new DeviceContext(FContext.Device);
-                            //DX11RenderContext d = new DX11RenderContext();
-                            //SlimDX.Direct3D11.Device dd = new SlimDX.Direct3D11.Device(this.AssignedContext.Adapter);
-                            //DeviceContext threadContext = new DeviceContext(this.AssignedContext.Device);
+                            /*
                             DX11RenderContext threadContext = new DX11RenderContext(this.AssignedContext.Device);
-                            //DX11RenderContext threadContext = new DX11RenderContext(this.AssignedContext.Adapter, DeviceCreationFlags.Debug);
-
-
-                            //threadContext.Initialize();
 
                             Texture2D FBackSurface = new Texture2D(threadContext.Device, this.FTextureIn[i][this.AssignedContext].Description);
 
-                            //Texture2D FBackSurface = Texture2D.FromPointer(this.FTextureIn[i][this.AssignedContext].Resource.ComPointer);
-
-
-                            //Texture2D FBackSurface;
-                            //Texture2D FBackSurface = new Texture2D();
-                            //FBackSurface = DX11Texture2D.FromDescription(threadContext, this.FTextureIn[i][this.AssignedContext].Description);
-                            //threadContext.Device.ImmediateContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
-
-                            //threadContext.CurrentDeviceContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
-
-
-                            //this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
-
-                            // oooder
-
                             threadContext.CurrentDeviceContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
-
+                            */
                             //DX11Texture2D FBackSurface = DX11Texture2D.FromTextureAndSRV(threadContext, this.FTextureIn[i][this.AssignedContext].Resource, this.FTextureIn[i][this.AssignedContext].SRV);
 
 
                             if (FThreaded[0])
                             {
-                                bool ts;
-                                bool cs;
-                                threadContext.Device.CheckThreadingSupport(out ts, out cs);
-                                if (cs && ts)
-                                {
-                                    // working half-way:
-                                    // await Task.Run(() => TextureLoader.SaveToFile(threadContext, FBackSurface, FInPath[i], FInFormat[i]) );
+
+                                // working half-way:
+                                // await Task.Run(() => TextureLoader.SaveToFile(threadContext, FBackSurface, FInPath[i], FInFormat[i]) );
+
+                                saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
 
 
-                                    await Task.Run(() => saver(threadContext, FBackSurface, FInPath[i], FInFormat[i]));
+                                    await Task.Run(() => saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]));
 
                                     //try
                                     //{
@@ -203,14 +176,14 @@ namespace VVVV.DX11.Nodes
                                     //    }
                                     //}
 
-                                }
+                                
                                 
                             }
                             else
                             {
-                                TextureLoader.SaveToFile(threadContext,
-                                FBackSurface,
-                                FInPath[i], FInFormat[i]);
+                                //TextureLoader.SaveToFile(threadContext,
+                                //FBackSurface,
+                                //FInPath[i], FInFormat[i]);
                             }
 
                             // formerly:
@@ -240,11 +213,42 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        private void saver( DX11RenderContext threadContext, Texture2D FBackSurface, string path, eImageFormat format)
+        public void saver( DX11RenderContext assignedContext, DX11Texture2D textureIn, string path, eImageFormat format)
         {
 
+            DX11RenderContext threadContext = new DX11RenderContext(assignedContext.Device);
+            Texture2D FBackSurface = new Texture2D(threadContext.Device, textureIn.Description);
+            threadContext.CurrentDeviceContext.CopyResource(textureIn.Resource, FBackSurface);
 
-            TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
+            bool ts;
+            bool cs;
+            threadContext.Device.CheckThreadingSupport(out ts, out cs);
+            if (cs && ts)
+            {
+                TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
+                if (threadContext.CurrentDeviceContext != null)
+                {
+                    threadContext.CurrentDeviceContext.Dispose();
+                    threadContext.Dispose();
+                }
+
+                //try
+                //{
+                //    TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
+                //}
+                //catch (Exception e)
+                //{
+                //    //FLogger.Log(e);
+                //}
+                //finally
+                //{
+                //    if (threadContext.CurrentDeviceContext != null)
+                //    {
+                //        threadContext.CurrentDeviceContext.Dispose();
+                //    }
+                //}
+            }
+
         }
 
         #endregion
