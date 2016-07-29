@@ -146,7 +146,11 @@ namespace VVVV.DX11.Nodes
                 }
                 else
                 {
+                    ImageMetadata sdInfo = TextureLoader.LoadMetadataFromFile(path);
                     ImageLoadInformation info = ImageLoadInformation.FromDefaults();
+
+                    info.Format = sdInfo.Format;
+
                     if (this.FInNoMips[0])
                     {
                         info.MipLevels = 1;
@@ -185,11 +189,13 @@ namespace VVVV.DX11.Nodes
         {
             try
             {
+                ImageMetadata sdInfo = TextureLoader.LoadMetadataFromFile(path);
                 ImageInformation? info = ImageInformation.FromFile(path);
                 if (info.HasValue)
                 {
                     this.size[slice] = new Vector2(info.Value.Width, info.Value.Height);
-                    this.format[slice] = info.Value.Format;
+                    //this.format[slice] = info.Value.Format;
+                    this.format[slice] = sdInfo.Format;
                 }
                 else
                 {

@@ -14,6 +14,7 @@ using VVVV.Core.Logging;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace VVVV.DX11.Nodes
 {
@@ -28,6 +29,10 @@ namespace VVVV.DX11.Nodes
 
         [Input("Format")]
         protected ISpread<eImageFormat> FInFormat;
+        //protected ISpread<ImageFileFormat> FInFormat;
+
+        [Input("Threaded", IsSingle = true, DefaultBoolean = true)]
+        protected ISpread<bool> FThreaded;
 
         [Input("Create Folder", IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<bool> FCreateFolder;
@@ -52,12 +57,14 @@ namespace VVVV.DX11.Nodes
 
         public event DX11RenderRequestDelegate RenderRequest;
 
+        //List<Task> tasks = new List<Task>();
+
 
         #region IPluginEvaluate Members
 
-        public void Evaluate(int SpreadMax)
+        public async void Evaluate(int SpreadMax)
         {
-            this.FOutValid.SliceCount = 1;
+            this.FOutValid.SliceCount = SpreadMax;
 
             if (this.FTextureIn.PluginIO.IsConnected)
             {
@@ -66,10 +73,54 @@ namespace VVVV.DX11.Nodes
                 if (this.AssignedContext == null) { this.FOutValid.SliceCount = 0; return; }
                 //Do NOT cache this, assignment done by the host
 
+
+                
+                /*
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     if (this.FTextureIn[i].Contains(this.AssignedContext) && this.FInSave[i])
                     {
+                        tasks.Clear();
+
+                        FLogger.Log(LogType.Debug, "Task {0} adding:", i);
+
+                        Task t = Task.Run(() =>
+                                TextureLoader.SaveToFile(this.AssignedContext,
+                                this.FTextureIn[i][this.AssignedContext],
+                                this.FInPath[i], this.FInFormat[i])
+                            );
+                        tasks.Add(t);
+                        FLogger.Log(LogType.Debug, "Task {0} added:", i);
+                    }
+                }
+
+                if (tasks.Count > 0)
+                {
+                    try
+                    {
+                        Task.WaitAll(tasks.ToArray());
+
+                        foreach (Task t in tasks)
+                            FLogger.Log(LogType.Debug, "Task {0} Status: {1}", t.Id, t.Status);
+                    }
+                    catch (Exception e)
+                    {
+                        FLogger.Log(LogType.Debug, "Exception: " + e);
+                    }
+                    
+                }
+                */
+
+
+
+
+                
+                for (int i = 0; i < SpreadMax; i++)
+                {
+                    if (this.FTextureIn[i].Contains(this.AssignedContext) && this.FInSave[i])
+                    {
+                        //List<Task> tasks = new List<Task>();
+
                         if (this.FCreateFolder[0])
                         {
                             string path = Path.GetDirectoryName(this.FInPath[i]);
@@ -79,30 +130,121 @@ namespace VVVV.DX11.Nodes
                             }
                         }
 
+                        //await Task.Run(() => DoSave(i));
+
+
+                        
+
+
                         try
                         {
-                            TextureLoader.SaveToFile(this.AssignedContext,
-                                this.FTextureIn[i][this.AssignedContext],
-                                this.FInPath[i], this.FInFormat[i]);
-                            this.FOutValid[0] = true;
+
+
+                            //DeviceContext threadContext = null;
+                            //threadContext = new DeviceContext(FContext.Device);
+                            //DX11RenderContext d = new DX11RenderContext();
+                            //SlimDX.Direct3D11.Device dd = new SlimDX.Direct3D11.Device(this.AssignedContext.Adapter);
+                            //DeviceContext threadContext = new DeviceContext(this.AssignedContext.Device);
+                            DX11RenderContext threadContext = new DX11RenderContext(this.AssignedContext.Device);
+                            //DX11RenderContext threadContext = new DX11RenderContext(this.AssignedContext.Adapter, DeviceCreationFlags.Debug);
+
+
+                            //threadContext.Initialize();
+
+                            Texture2D FBackSurface = new Texture2D(threadContext.Device, this.FTextureIn[i][this.AssignedContext].Description);
+
+                            //Texture2D FBackSurface = Texture2D.FromPointer(this.FTextureIn[i][this.AssignedContext].Resource.ComPointer);
+
+
+                            //Texture2D FBackSurface;
+                            //Texture2D FBackSurface = new Texture2D();
+                            //FBackSurface = DX11Texture2D.FromDescription(threadContext, this.FTextureIn[i][this.AssignedContext].Description);
+                            //threadContext.Device.ImmediateContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
+
+                            //threadContext.CurrentDeviceContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
+
+
+                            //this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
+
+                            // oooder
+
+                            threadContext.CurrentDeviceContext.CopyResource(this.FTextureIn[i][this.AssignedContext].Resource, FBackSurface);
+
+                            //DX11Texture2D FBackSurface = DX11Texture2D.FromTextureAndSRV(threadContext, this.FTextureIn[i][this.AssignedContext].Resource, this.FTextureIn[i][this.AssignedContext].SRV);
+
+
+                            if (FThreaded[0])
+                            {
+                                bool ts;
+                                bool cs;
+                                threadContext.Device.CheckThreadingSupport(out ts, out cs);
+                                if (cs && ts)
+                                {
+                                    // working half-way:
+                                    // await Task.Run(() => TextureLoader.SaveToFile(threadContext, FBackSurface, FInPath[i], FInFormat[i]) );
+
+
+                                    await Task.Run(() => saver(threadContext, FBackSurface, FInPath[i], FInFormat[i]));
+
+                                    //try
+                                    //{
+                                    //    await Task.Run(() => saver(threadContext, FBackSurface, FInPath[i], FInFormat[i]));
+
+                                    //}
+                                    //catch (Exception e)
+                                    //{
+                                    //    FLogger.Log(e);
+                                    //}
+                                    //finally
+                                    //{
+                                    //    if (threadContext.CurrentDeviceContext != null)
+                                    //    {
+                                    //        threadContext.CurrentDeviceContext.Dispose();
+                                    //    }
+                                    //}
+
+                                }
+                                
+                            }
+                            else
+                            {
+                                TextureLoader.SaveToFile(threadContext,
+                                FBackSurface,
+                                FInPath[i], FInFormat[i]);
+                            }
+
+                            // formerly:
+                            // TextureLoader.SaveToFile(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], this.FInPath[i], this.FInFormat[i]);
+
+
+
+                            this.FOutValid[i] = true;
                         }
                         catch (Exception ex)
                         {
                             FLogger.Log(ex);
-                            this.FOutValid[0] = false;
+                            this.FOutValid[i] = false;
                         }
                     }
                     else
                     {
-                        this.FOutValid[0] = false;
+                        this.FOutValid[i] = false;
                     }
                 }
+
             }
             else
             {
                 this.FOutValid.SliceCount = 0;
 
             }
+        }
+
+        private void saver( DX11RenderContext threadContext, Texture2D FBackSurface, string path, eImageFormat format)
+        {
+
+
+            TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
         }
 
         #endregion
