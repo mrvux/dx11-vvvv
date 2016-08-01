@@ -153,6 +153,7 @@ namespace VVVV.Nodes.Recorder
                     FThread.Name = "Recorder";
                     FThread.Start();
 
+
                     //await System.Threading.Tasks.Task.Run( () => ThreadedFunction() );
 
                     //ThreadedFunction();
@@ -160,10 +161,14 @@ namespace VVVV.Nodes.Recorder
 
                 void ThreadedFunction()
                 {
-                    DeviceContext threadContext = null;
+                    //DeviceContext threadContext = null;
+                    DX11RenderContext threadContext = null;
                     try
                     {
-                        threadContext = new DeviceContext(FContext.Device);
+                        //threadContext = new DeviceContext(FContext.Device);
+                        threadContext = new DX11RenderContext(FContext.Device);
+                        threadContext.Initialize();
+
                         var folder = Path.GetDirectoryName(FFilename);
                         if (!Directory.Exists(folder))
                         {
@@ -177,9 +182,10 @@ namespace VVVV.Nodes.Recorder
                         //Texture2D.SaveTextureToFile(threadContext, FBackSurface, FFormat, FFilename);
 
                         // schreibt kein file:
-                        //TextureLoader.SaveToFile(threadContext, FBackSurface, FFilename, eImageFormat.Png);
+                        TextureLoader.SaveToFile(FContext, FBackSurface, FFilename, eImageFormat.Png);
 
-                        TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
+                        // exception:
+                        //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
 
                         
 
@@ -199,7 +205,7 @@ namespace VVVV.Nodes.Recorder
                     {
                         if (threadContext != null)
                         {
-                            threadContext.Dispose();
+                            //threadContext.Dispose();
                         }
                         CurrentState = State.Available;
                     }

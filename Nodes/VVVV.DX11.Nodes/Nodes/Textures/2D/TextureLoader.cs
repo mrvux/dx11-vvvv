@@ -246,6 +246,7 @@ namespace FeralTic.DX11.Resources
             }
         }
 
+
         public static void SaveToFileCompressed(DX11RenderContext device, DX11Texture2D texture, string path, DdsBlockType blockType)
         {
             long retcode = NativeMethods.SaveCompressedTextureToFile(device.Device.ComPointer, device.CurrentDeviceContext.ComPointer,
