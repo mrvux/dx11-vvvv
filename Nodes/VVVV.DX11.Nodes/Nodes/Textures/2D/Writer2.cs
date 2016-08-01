@@ -183,7 +183,9 @@ namespace VVVV.DX11.Nodes
                             }
                             else
                             {
-                                saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
+                                TextureLoader.SaveToFile(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
+
+                                //saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
 
                                 //TextureLoader.SaveToFile(threadContext,
                                 //FBackSurface,
@@ -271,10 +273,10 @@ namespace VVVV.DX11.Nodes
             {
                 (new FileIOPermission(FileIOPermissionAccess.Write, path)).Demand();
 
-                ImageFileFormat f = ImageFileFormat.Png;
-                Texture2D.ToFile(threadContext.CurrentDeviceContext, FBackSurface, f, path);
+                //ImageFileFormat f = ImageFileFormat.Png;
+                //Texture2D.ToFile(threadContext.CurrentDeviceContext, FBackSurface, f, path);
 
-                //TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
+                TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
 
                 //if (threadContext.CurrentDeviceContext != null)
                 //{

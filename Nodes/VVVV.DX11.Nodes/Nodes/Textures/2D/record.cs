@@ -153,14 +153,11 @@ namespace VVVV.Nodes.Recorder
                     FFormat = format;
 
 
-                    FThread = new Thread(ThreadedFunction);
-                    FThread.Name = "Recorder";
-                    FThread.Start();
+                    //FThread = new Thread(ThreadedFunction);
+                    //FThread.Name = "Recorder";
+                    //FThread.Start();
 
-
-                    //await System.Threading.Tasks.Task.Run( () => ThreadedFunction() );
-
-                    //ThreadedFunction();
+                    ThreadedFunction();
                 }
 
                 void ThreadedFunction()
