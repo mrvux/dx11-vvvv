@@ -8,6 +8,7 @@ using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
 
 using SlimDX.Direct3D11;
+using SlimDX.DXGI;
 
 using VVVV.Core.Logging;
 
@@ -15,6 +16,7 @@ using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using System.IO;
 using System.Threading.Tasks;
+using System.Security.Permissions;
 
 namespace VVVV.DX11.Nodes
 {
@@ -154,7 +156,7 @@ namespace VVVV.DX11.Nodes
                                 // working half-way:
                                 // await Task.Run(() => TextureLoader.SaveToFile(threadContext, FBackSurface, FInPath[i], FInFormat[i]) );
 
-                                saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
+                                //saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
 
 
                                     await Task.Run(() => saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]));
@@ -181,6 +183,8 @@ namespace VVVV.DX11.Nodes
                             }
                             else
                             {
+                                saver(this.AssignedContext, this.FTextureIn[i][this.AssignedContext], FInPath[i], FInFormat[i]);
+
                                 //TextureLoader.SaveToFile(threadContext,
                                 //FBackSurface,
                                 //FInPath[i], FInFormat[i]);
@@ -213,23 +217,69 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void saver( DX11RenderContext assignedContext, DX11Texture2D textureIn, string path, eImageFormat format)
+        
+
+        public async void saver( DX11RenderContext assignedContext, DX11Texture2D textureIn, string path, eImageFormat format)
         {
 
             DX11RenderContext threadContext = new DX11RenderContext(assignedContext.Device);
-            Texture2D FBackSurface = new Texture2D(threadContext.Device, textureIn.Description);
+            //DX11RenderContext threadContext = new DX11RenderContext(assignedContext.Adapter);
+
+            Texture2DDescription desc = textureIn.Description;
+            //desc.Usage = ResourceUsage.Staging;
+            //desc.CpuAccessFlags = CpuAccessFlags.Read;
+
+            //Texture2D FBackSurface;
+
+            //if (FBackSurface == null || FBackSurface.Description.Width != texture.Width || FBackSurface.Description.Height != texture.Height || context != FContext)
+            //{
+                //if (FBackSurface != null)
+                //{
+                //    FBackSurface.Dispose();
+                //}
+                var description = new Texture2DDescription()
+                {
+                    Width = textureIn.Width,
+                    Height = textureIn.Height,
+                    Format = textureIn.Format,
+                    MipLevels = 1,
+                    Usage = ResourceUsage.Staging,
+                    BindFlags = BindFlags.None,
+                    CpuAccessFlags = CpuAccessFlags.Read,
+                    SampleDescription = new SampleDescription(1, 0),
+                    ArraySize = 1
+                };
+
+            Texture2D FBackSurface = new Texture2D(assignedContext.Device, description);
+
+            //}
+            //Texture2D FBackSurface = new Texture2D(threadContext.Device, textureIn.Description);
+            //Texture2D FBackSurface = new Texture2D(threadContext.Device, desc);
+            //Texture2D FBackSurface;
             threadContext.CurrentDeviceContext.CopyResource(textureIn.Resource, FBackSurface);
+
+            //DeviceCreationFlags dcf =  threadContext.Device.CreationFlags;
+
+            // what's the difference?
+            //FBackSurface.AsSurface();
 
             bool ts;
             bool cs;
-            threadContext.Device.CheckThreadingSupport(out ts, out cs);
+            //threadContext.Device.CheckThreadingSupport(out ts, out cs);
+            threadContext.CurrentDeviceContext.Device.CheckThreadingSupport(out ts, out cs);
             if (cs && ts)
             {
-                TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
-                if (threadContext.CurrentDeviceContext != null)
-                {
-                    threadContext.CurrentDeviceContext.Dispose();
-                }
+                (new FileIOPermission(FileIOPermissionAccess.Write, path)).Demand();
+
+                ImageFileFormat f = ImageFileFormat.Png;
+                Texture2D.ToFile(threadContext.CurrentDeviceContext, FBackSurface, f, path);
+
+                //TextureLoader.SaveToFile(threadContext, FBackSurface, path, format);
+
+                //if (threadContext.CurrentDeviceContext != null)
+                //{
+                //    threadContext.CurrentDeviceContext.Dispose();
+                //}
 
                 //try
                 //{

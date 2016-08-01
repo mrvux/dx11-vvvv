@@ -63,6 +63,7 @@
     <Compile Include="Nodes\RenderStates\SamplerStatePresetNode.cs" />
     <Compile Include="Nodes\Textures\1D\InfoTexture1DNode.cs" />
     <Compile Include="Nodes\Textures\1D\WriterTexture1dNode.cs" />
+    <Compile Include="Nodes\Textures\2D\record.cs" />
     <Compile Include="Nodes\Textures\2D\TextureLoader.cs" />
     <Compile Include="Nodes\Textures\2D\Writer2.cs" />
     <Compile Include="Nodes\Textures\2D\WriterTextureCompressedNode.cs" />
