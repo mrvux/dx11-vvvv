@@ -149,6 +149,7 @@ namespace VVVV.Nodes.Recorder
                     FFilename = filename;
                     FFormat = format;
 
+
                     FThread = new Thread(ThreadedFunction);
                     FThread.Name = "Recorder";
                     FThread.Start();
@@ -182,7 +183,7 @@ namespace VVVV.Nodes.Recorder
                         //Texture2D.SaveTextureToFile(threadContext, FBackSurface, FFormat, FFilename);
 
                         // schreibt kein file:
-                        TextureLoader.SaveToFile(FContext, FBackSurface, FFilename, eImageFormat.Png);
+                        TextureLoader.SaveToFile(threadContext, FBackSurface, FFilename, eImageFormat.Png);
 
                         // exception:
                         //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
