@@ -145,6 +145,9 @@ namespace VVVV.Nodes.Recorder
                         FContext = context;
                     }
 
+
+                    //FBackSurface.AsSurface();
+
                     context.CurrentDeviceContext.CopyResource(texture.Resource, FBackSurface);
                     FFilename = filename;
                     FFormat = format;
@@ -167,7 +170,9 @@ namespace VVVV.Nodes.Recorder
                     try
                     {
                         //threadContext = new DeviceContext(FContext.Device);
+
                         threadContext = new DX11RenderContext(FContext.Device);
+                        //threadContext = new DX11RenderContext(FContext.Adapter);
                         threadContext.Initialize();
 
                         var folder = Path.GetDirectoryName(FFilename);
@@ -184,19 +189,12 @@ namespace VVVV.Nodes.Recorder
 
                         // schreibt kein file:
                         TextureLoader.SaveToFile(threadContext, FBackSurface, FFilename, eImageFormat.Png);
+                        //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
 
                         // exception:
                         //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
 
-                        
 
-                        //TextureLoader.SaveToFile(FContext, FBackSurface, FFilename, eImageFormat.Png);
-                        /*
-                        await System.Threading.Tasks.Task.Run(() =>
-                            //Texture2D.SaveTextureToFile(FContext.CurrentDeviceContext, FBackSurface, FFormat, FFilename)
-                            TextureLoader.SaveToFile(FContext, FBackSurface, FFilename, eImageFormat.Png)
-                        );
-                        */
                     }
                     catch (Exception e)
                     {
@@ -207,6 +205,7 @@ namespace VVVV.Nodes.Recorder
                         if (threadContext != null)
                         {
                             //threadContext.Dispose();
+                            //readContext.CleanUp();
                         }
                         CurrentState = State.Available;
                     }
