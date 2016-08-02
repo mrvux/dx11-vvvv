@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 using System.Runtime.InteropServices;
 
 using SlimDX;
-using SlimDX.Direct3D9;
+//using SlimDX.Direct3D9;
 using VVVV.Core.Logging;
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
@@ -44,6 +44,7 @@ namespace VVVV.Nodes.Recorder
     {
         class Instance : IDisposable
         {
+            /* Task
             class Task : IDX11ScheduledTask
             {
                 public DX11RenderContext Context
@@ -82,6 +83,7 @@ namespace VVVV.Nodes.Recorder
 
                 public event TaskStatusChangedDelegate StatusChanged;
             }
+            */
 
             class Saver : IDisposable
             {
@@ -97,8 +99,10 @@ namespace VVVV.Nodes.Recorder
                 Thread FThread;
                 string FFilename;
                 SlimDX.Direct3D11.ImageFileFormat FFormat;
-                Texture2D FBackSurface;
+                //Texture2D FBackSurface;
+                DX11StagingTexture2D FStaging;
                 FeralTic.DX11.DX11RenderContext FContext;
+                DX11Texture2D FTexture;
 
                 public State CurrentState { get; private set; }
 
@@ -115,7 +119,7 @@ namespace VVVV.Nodes.Recorder
                     CurrentState = State.Available;
                 }
 
-                public void Save(DX11Texture2D texture, FeralTic.DX11.DX11RenderContext context, string filename, SlimDX.Direct3D11.ImageFileFormat format)
+                public async void Save(DX11Texture2D texture, FeralTic.DX11.DX11RenderContext context, string filename, SlimDX.Direct3D11.ImageFileFormat format)
                 {
                     if (texture == null)
                     {
@@ -123,54 +127,82 @@ namespace VVVV.Nodes.Recorder
                     }
                     CurrentState = State.Saving;
 
-                    if (FBackSurface == null || FBackSurface.Description.Width != texture.Width || FBackSurface.Description.Height != texture.Height || context != FContext)
-                    {
-                        if (FBackSurface != null)
+                    //if (FBackSurface == null || FBackSurface.Description.Width != texture.Width || FBackSurface.Description.Height != texture.Height || context != FContext)
+                    if (FStaging == null || FStaging.Description.Width != texture.Width || FStaging.Description.Height != texture.Height || context != this.FContext)
                         {
-                            FBackSurface.Dispose();
+                            if (FStaging != null)
+                        {
+                            FStaging.Dispose();
                         }
-                        var description = new Texture2DDescription()
-                        {
-                            Width = texture.Width,
-                            Height = texture.Height,
-                            Format = texture.Format,
-                            MipLevels = 1,
-                            Usage = ResourceUsage.Staging,
-                            BindFlags = BindFlags.None,
-                            CpuAccessFlags = CpuAccessFlags.Read,
-                            SampleDescription = new SampleDescription(1, 0),
-                            ArraySize = 1
-                        };
-                        FBackSurface = new Texture2D(context.Device, description);
-                        FContext = context;
+                        //var description = new Texture2DDescription()
+                        //{
+                        //    Width = texture.Width,
+                        //    Height = texture.Height,
+                        //    Format = texture.Format,
+                        //    MipLevels = 1,
+                        //    Usage = ResourceUsage.Staging,
+                        //    BindFlags = BindFlags.None,
+                        //    CpuAccessFlags = CpuAccessFlags.Read,
+                        //    SampleDescription = new SampleDescription(1, 0),
+                        //    ArraySize = 1
+                        //};
+
+                        //FBackSurface = new Texture2D(context.Device, description);
+                        //FContext = context;
+                        //FTexture = texture;
                     }
 
+                    FContext = context;
+                    FTexture = texture;
 
-                    //FBackSurface.AsSurface();
+                    //FContext.CurrentDeviceContext.MapSubresource(FStaging.Resource, 0, 0, SlimDX.Direct3D11.MapMode.Read, SlimDX.Direct3D11.MapFlags.None);
 
-                    context.CurrentDeviceContext.CopyResource(texture.Resource, FBackSurface);
+
+
                     FFilename = filename;
                     FFormat = format;
-
 
                     //FThread = new Thread(ThreadedFunction);
                     //FThread.Name = "Recorder";
                     //FThread.Start();
 
-                    ThreadedFunction();
+
+
+
+                    await Task.Run(() =>
+                       ThreadedFunction()
+                    );
+
+
+                    //FStaging.UnLock();
+
+                    //ThreadedFunction();
                 }
 
                 void ThreadedFunction()
                 {
                     //DeviceContext threadContext = null;
-                    DX11RenderContext threadContext = null;
+                    //DX11RenderContext threadContext = null;
                     try
                     {
+                        DX11RenderContext threadedContext;
+                        threadedContext = new DX11RenderContext(FContext.Adapter);
+                        threadedContext.Initialize();
+
+                        FStaging = new DX11StagingTexture2D(threadedContext, FTexture.Width, FTexture.Height, FTexture.Format);
+                        FStaging.CopyFrom(FTexture);
+
+                        //FStaging = new DX11StagingTexture2D(threadedContext, texture.Width, texture.Height, texture.Format);
+                        //FStaging.CopyFrom(texture);
+
+                        //threadedContext.CurrentDeviceContext.CopyResource(FStaging.Resource, FStaging.Resource);
+
+
+
                         //threadContext = new DeviceContext(FContext.Device);
 
-                        threadContext = new DX11RenderContext(FContext.Device);
-                        //threadContext = new DX11RenderContext(FContext.Adapter);
-                        threadContext.Initialize();
+                        //threadContext = new DX11RenderContext(FContext.Device);
+                        //threadContext.Initialize();
 
                         var folder = Path.GetDirectoryName(FFilename);
                         if (!Directory.Exists(folder))
@@ -178,15 +210,36 @@ namespace VVVV.Nodes.Recorder
                             Directory.CreateDirectory(folder);
                         }
 
+                        FStaging.LockForRead();
+
                         // gain rights to write to file
                         //(new FileIOPermission(FileIOPermissionAccess.Write, FFilename)).Demand();
-
                         //Texture2D.SaveTextureToFile(FContext.CurrentDeviceContext, FBackSurface, FFormat, FFilename);
-                        //Texture2D.SaveTextureToFile(threadContext, FBackSurface, FFormat, FFilename);
+
+                        Texture2D.SaveTextureToFile(threadedContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
+                        //TextureLoader.SaveToFile(threadedContext, FStaging.Resource, FFilename, eImageFormat.Png);
+
+                        //SlimDX.Direct3D11.Resource.SaveTextureToFile(threadedContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
+                        //SlimDX.Direct3D11.Texture2D.ToFile(FContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
+
+                        /*
+                        MemoryStream ms = new MemoryStream();
+                        Texture2D.ToStream(threadedContext.CurrentDeviceContext, FStaging.Resource, ImageFileFormat.Png, ms);
+                        ms.Seek(0, SeekOrigin.Begin);
+
+                        Bitmap bm = new Bitmap(ms, PixelFormat.Format64bppArgb);
+                        bm.Save(FFilename, System.Drawing.Imaging.ImageFormat.Png);
+                        */
 
                         // schreibt kein file:
-                        TextureLoader.SaveToFile(threadContext, FBackSurface, FFilename, eImageFormat.Png);
-                        //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
+                        //TextureLoader.SaveToFile(threadContext, FStaging, FFilename, eImageFormat.Png);
+                        //TextureLoader.SaveToFile(FContext, FStaging, FFilename, eImageFormat.Png);
+                        //Texture2D.SaveTextureToFile(FContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
+
+
+                        FStaging.UnLock();
+                        
+
 
                         // exception:
                         //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
@@ -199,10 +252,17 @@ namespace VVVV.Nodes.Recorder
                     }
                     finally
                     {
-                        if (threadContext != null)
+                        if (FContext != null)
                         {
-                            //threadContext.Dispose();
-                            //readContext.CleanUp();
+                            //FContext.Dispose();
+                            //FStaging.UnLock();
+                        }
+
+                        if (FStaging != null)
+                        {
+                            //FStaging.UnLock();
+                            FStaging.Dispose();
+                            FStaging = null;
                         }
                         CurrentState = State.Available;
                     }
@@ -210,19 +270,19 @@ namespace VVVV.Nodes.Recorder
 
                 public void Dispose()
                 {
-                    if (FThread != null)
-                    {
-                        while (CurrentState != State.Available)
-                        {
-                            Thread.Sleep(1);
-                        }
-                        FThread.Join();
-                    }
-                    if (FBackSurface != null)
-                    {
-                        FBackSurface.Dispose();
-                        FBackSurface = null;
-                    }
+                    //if (FThread != null)
+                    //{
+                    //    while (CurrentState != State.Available)
+                    //    {
+                    //        Thread.Sleep(1);
+                    //    }
+                    //    FThread.Join();
+                    //}
+                    //if (FStaging != null)
+                    //{
+                    //    FStaging.Dispose();
+                    //    FStaging = null;
+                    //}
                 }
             }
 
@@ -248,6 +308,7 @@ namespace VVVV.Nodes.Recorder
                     }
                 }
 
+                // creates a new saver everytime (for now)
                 var newSaver = new Saver();
                 FSavers.Add(newSaver);
                 return newSaver;
@@ -277,8 +338,9 @@ namespace VVVV.Nodes.Recorder
             {
             }
         }
+        
         #region fields & pins
-#pragma warning disable 0649
+        #pragma warning disable 0649
         [Input("Input")]
         Pin<DX11Resource<DX11Texture2D>> FInTexture;
 
@@ -308,6 +370,7 @@ namespace VVVV.Nodes.Recorder
 
         Spread<Instance> FInstances = new Spread<Instance>();
 
+        #pragma warning restore 0649
         #endregion fields & pins
 
         // import host and hand it to base constructor
@@ -344,9 +407,7 @@ namespace VVVV.Nodes.Recorder
                 {
                     try
                     {
-                        //await System.Threading.Tasks.Task.Run(() =>
                         FInstances[i].WriteImage(FInTexture[i], this.AssignedContext, FInFilename[i], FInFormat[i]);
-                        //);
                         FOutStatus[i] = "OK";
                     }
                     catch (Exception e)
