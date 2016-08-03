@@ -99,10 +99,12 @@ namespace VVVV.Nodes.Recorder
                 Thread FThread;
                 string FFilename;
                 SlimDX.Direct3D11.ImageFileFormat FFormat;
-                //Texture2D FBackSurface;
-                DX11StagingTexture2D FStaging;
+
                 FeralTic.DX11.DX11RenderContext FContext;
                 DX11Texture2D FTexture;
+
+                
+
 
                 public State CurrentState { get; private set; }
 
@@ -119,7 +121,7 @@ namespace VVVV.Nodes.Recorder
                     CurrentState = State.Available;
                 }
 
-                public async void Save(DX11Texture2D texture, FeralTic.DX11.DX11RenderContext context, string filename, SlimDX.Direct3D11.ImageFileFormat format)
+                public void Save(DX11Texture2D texture, FeralTic.DX11.DX11RenderContext context, string filename, SlimDX.Direct3D11.ImageFileFormat format)
                 {
                     if (texture == null)
                     {
@@ -127,36 +129,20 @@ namespace VVVV.Nodes.Recorder
                     }
                     CurrentState = State.Saving;
 
-                    //if (FBackSurface == null || FBackSurface.Description.Width != texture.Width || FBackSurface.Description.Height != texture.Height || context != FContext)
-                    if (FStaging == null || FStaging.Description.Width != texture.Width || FStaging.Description.Height != texture.Height || context != this.FContext)
+                    if (FTexture == null || FTexture.Description.Width != texture.Width || FTexture.Description.Height != texture.Height || context != this.FContext)
                         {
-                            if (FStaging != null)
+                            if (FTexture != null)
                         {
-                            FStaging.Dispose();
+                            FTexture.Dispose();
                         }
-                        //var description = new Texture2DDescription()
-                        //{
-                        //    Width = texture.Width,
-                        //    Height = texture.Height,
-                        //    Format = texture.Format,
-                        //    MipLevels = 1,
-                        //    Usage = ResourceUsage.Staging,
-                        //    BindFlags = BindFlags.None,
-                        //    CpuAccessFlags = CpuAccessFlags.Read,
-                        //    SampleDescription = new SampleDescription(1, 0),
-                        //    ArraySize = 1
-                        //};
 
-                        //FBackSurface = new Texture2D(context.Device, description);
-                        //FContext = context;
-                        //FTexture = texture;
+                        FContext = context;
+                        FTexture = texture;
                     }
+
 
                     FContext = context;
                     FTexture = texture;
-
-                    //FContext.CurrentDeviceContext.MapSubresource(FStaging.Resource, 0, 0, SlimDX.Direct3D11.MapMode.Read, SlimDX.Direct3D11.MapFlags.None);
-
 
 
                     FFilename = filename;
@@ -166,61 +152,89 @@ namespace VVVV.Nodes.Recorder
                     //FThread.Name = "Recorder";
                     //FThread.Start();
 
+                    //await Task.Run(() =>
+                    //   ThreadedFunction()
+                    //);
 
 
-
-                    await Task.Run(() =>
-                       ThreadedFunction()
-                    );
-
-
-                    //FStaging.UnLock();
-
-                    //ThreadedFunction();
+                    ThreadedFunction();
                 }
+
+
 
                 void ThreadedFunction()
                 {
-                    //DeviceContext threadContext = null;
-                    //DX11RenderContext threadContext = null;
+
+                    //SlimDX.Direct3D11.Device threadedDevice = null;
+                    //DeviceContext threadedContext = null;
+                    //Texture2D threadedTexture = null;
+
+
+
                     try
                     {
-                        DX11RenderContext threadedContext;
-                        threadedContext = new DX11RenderContext(FContext.Adapter);
-                        threadedContext.Initialize();
+                        //SlimDX.Direct3D11.Device threadedDevice = new SlimDX.Direct3D11.Device(FContext.Adapter/*, DeviceCreationFlags.Debug*/);
+                        SlimDX.Direct3D11.Device threadedDevice = new SlimDX.Direct3D11.Device(DriverType.Hardware, DeviceCreationFlags.Debug);
 
-                        FStaging = new DX11StagingTexture2D(threadedContext, FTexture.Width, FTexture.Height, FTexture.Format);
-                        FStaging.CopyFrom(FTexture);
+                        DeviceContext  threadedContext = new DeviceContext(threadedDevice);
 
-                        //FStaging = new DX11StagingTexture2D(threadedContext, texture.Width, texture.Height, texture.Format);
-                        //FStaging.CopyFrom(texture);
+                        var desc = new Texture2DDescription()
+                        {
+                            Width = FTexture.Width,
+                            Height = FTexture.Height,
+                            Format = FTexture.Format,
+                            MipLevels = 1,
+                            Usage = ResourceUsage.Staging,
+                            BindFlags = BindFlags.None,
+                            //OptionFlags = ResourceOptionFlags.None,
+                            OptionFlags = ResourceOptionFlags.Shared,
+                            CpuAccessFlags = CpuAccessFlags.Read,
+                            SampleDescription = new SampleDescription(1, 0),
+                            ArraySize = 1
+                        };
 
-                        //threadedContext.CurrentDeviceContext.CopyResource(FStaging.Resource, FStaging.Resource);
+                        //Texture2D threadedTexture = new Texture2D(threadedDevice, desc);
+                        
+                        //threadedContext.CopyResource(FTexture.Resource, threadedTexture);
+
+                        //Surface s = threadedTexture.AsSurface();
+                        //s.Map(SlimDX.DXGI.MapFlags.Read);
 
 
+                        SlimDX.DXGI.Resource r = new SlimDX.DXGI.Resource(FTexture.Resource);
 
-                        //threadContext = new DeviceContext(FContext.Device);
+                        Texture2D tex2 = threadedDevice.OpenSharedResource<Texture2D>(r.SharedHandle);
 
-                        //threadContext = new DX11RenderContext(FContext.Device);
-                        //threadContext.Initialize();
+
+                        /*
+                        bool supportConcurrentRessources;
+                        bool supportCommandLists;
+                        threadedDevice.CheckThreadingSupport(out supportConcurrentRessources, out supportCommandLists);
+                        */
+
+
 
                         var folder = Path.GetDirectoryName(FFilename);
                         if (!Directory.Exists(folder))
                         {
                             Directory.CreateDirectory(folder);
                         }
+                        
+                        //gain rights to write to file
+                        (new FileIOPermission(FileIOPermissionAccess.Write, FFilename)).Demand();
 
-                        FStaging.LockForRead();
 
-                        // gain rights to write to file
-                        //(new FileIOPermission(FileIOPermissionAccess.Write, FFilename)).Demand();
-                        //Texture2D.SaveTextureToFile(FContext.CurrentDeviceContext, FBackSurface, FFormat, FFilename);
+                        // lock texture ??
+                        //var db = threadedContext.MapSubresource(threadedTexture, 0, 0, MapMode.Read, SlimDX.Direct3D11.MapFlags.None);
+                        //var canRead = db.Data.CanRead;
 
-                        Texture2D.SaveTextureToFile(threadedContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
-                        //TextureLoader.SaveToFile(threadedContext, FStaging.Resource, FFilename, eImageFormat.Png);
 
-                        //SlimDX.Direct3D11.Resource.SaveTextureToFile(threadedContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
-                        //SlimDX.Direct3D11.Texture2D.ToFile(FContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
+                        // which one is best? is there even adifference?
+                        //Result r = Texture2D.SaveTextureToFile(threadedContext, threadedTexture, FFormat, FFilename);
+
+                        //TextureLoader.SaveToFile(threadedContext, threadedTexture, FFilename, eImageFormat.Png);
+                        SlimDX.Direct3D11.Resource.SaveTextureToFile(threadedContext, tex2, FFormat, FFilename);
+                        //Result r = SlimDX.Direct3D11.Texture2D.ToFile(threadedContext, threadedTexture, FFormat, FFilename);
 
                         /*
                         MemoryStream ms = new MemoryStream();
@@ -231,18 +245,8 @@ namespace VVVV.Nodes.Recorder
                         bm.Save(FFilename, System.Drawing.Imaging.ImageFormat.Png);
                         */
 
-                        // schreibt kein file:
-                        //TextureLoader.SaveToFile(threadContext, FStaging, FFilename, eImageFormat.Png);
-                        //TextureLoader.SaveToFile(FContext, FStaging, FFilename, eImageFormat.Png);
-                        //Texture2D.SaveTextureToFile(FContext.CurrentDeviceContext, FStaging.Resource, FFormat, FFilename);
-
-
-                        FStaging.UnLock();
-                        
-
-
-                        // exception:
-                        //TextureLoader.SaveToFile(FContext.CurrentDeviceContext, FBackSurface, FFilename, eImageFormat.Png);
+                        // unlock texture
+                        //threadedContext.UnmapSubresource(threadedTexture, 0);
 
 
                     }
@@ -252,40 +256,40 @@ namespace VVVV.Nodes.Recorder
                     }
                     finally
                     {
-                        if (FContext != null)
-                        {
-                            //FContext.Dispose();
-                            //FStaging.UnLock();
-                        }
+                        //if (threadedContext != null)
+                        //{
+                        //    threadedContext.Dispose();
 
-                        if (FStaging != null)
-                        {
-                            //FStaging.UnLock();
-                            FStaging.Dispose();
-                            FStaging = null;
-                        }
+                        //}
+
+                        //if (threadedTexture != null)
+                        //{
+                        //    threadedTexture.Dispose();
+                        //    threadedTexture = null;
+                        //}
                         CurrentState = State.Available;
                     }
                 }
 
                 public void Dispose()
                 {
-                    //if (FThread != null)
+                    if (FThread != null)
+                    {
+                        while (CurrentState != State.Available) 
+                        {
+                            Thread.Sleep(1);
+                        }
+                        FThread.Join();
+                    }
+                    //if (threadedTexture != null)
                     //{
-                    //    while (CurrentState != State.Available)
-                    //    {
-                    //        Thread.Sleep(1);
-                    //    }
-                    //    FThread.Join();
-                    //}
-                    //if (FStaging != null)
-                    //{
-                    //    FStaging.Dispose();
-                    //    FStaging = null;
+                    //    threadedTexture.Dispose();
+                    //    threadedTexture = null;
                     //}
                 }
             }
 
+         
             List<Saver> FSavers = new List<Saver>();
 
             public Instance()
@@ -432,4 +436,6 @@ namespace VVVV.Nodes.Recorder
             FInstances.ResizeAndDispose(0);
         }
     }
+
+    
 }

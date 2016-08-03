@@ -222,5 +222,8 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
