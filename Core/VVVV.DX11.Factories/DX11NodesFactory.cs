@@ -137,6 +137,7 @@ namespace VVVV.DX11.Factories
             DX11GlobalDevice.RenderManager = this.rendermanager;
 
             this.BuildAAEnum();
+            this.RegisterStateEnums();
 		}
 
         void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
@@ -150,6 +151,21 @@ namespace VVVV.DX11.Factories
         {
             string[] aa = new string[] { "1", "2", "4", "8", "16", "32" };
             this.hdehost.UpdateEnum("DX11_AASamples", "1", aa);
+        }
+
+        private void RegisterStateEnums()
+        {
+            string[] enums = DX11SamplerStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11SamplerStates.Instance.EnumName, enums[0], enums);
+
+            enums = DX11BlendStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11BlendStates.Instance.EnumName, enums[0], enums);
+
+            enums = DX11DepthStencilStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11DepthStencilStates.Instance.EnumName, enums[0], enums);
+
+            enums = DX11RasterizerStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11RasterizerStates.Instance.EnumName, enums[0], enums);
         }
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)

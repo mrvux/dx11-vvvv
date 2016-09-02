@@ -24,14 +24,8 @@ namespace VVVV.DX11.Nodes
 
         protected override InputAttribute GetEnumPin()
         {
-            string[] enums = DX11RasterizerStates.Instance.StateKeys;
-
-            this.FHost.UpdateEnum(DX11RasterizerStates.Instance.EnumName, enums[0], enums);
-
             InputAttribute attr = new InputAttribute("Mode");
             attr.EnumName = DX11RasterizerStates.Instance.EnumName;
-            attr.DefaultEnumEntry = enums[0];
-
             return attr;
 
         }

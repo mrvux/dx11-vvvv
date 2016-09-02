@@ -31,24 +31,17 @@ namespace VVVV.DX11.Nodes
         [ImportingConstructor()]
         public DX11RenderStatePresetNode(IPluginHost host, IIOFactory iofactory)
         {
-            string[] enums = DX11SamplerStates.Instance.StateKeys;
-
-            host.UpdateEnum(DX11SamplerStates.Instance.EnumName, enums[0], enums);
-
             InputAttribute attr = new InputAttribute("Blend Mode");
             attr.EnumName = DX11BlendStates.Instance.EnumName;
-            attr.DefaultEnumEntry = enums[0];
             this.FInBlendPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
 
             attr = new InputAttribute("Rasterizer Mode");
             attr.EnumName = DX11RasterizerStates.Instance.EnumName;
-            attr.DefaultEnumEntry = enums[0];
             this.FInRasterPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
 
 
             attr = new InputAttribute("Depth Stencil Mode");
             attr.EnumName = DX11DepthStencilStates.Instance.EnumName;
-            attr.DefaultEnumEntry = enums[0];
             this.FInDepthPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
         }
 
