@@ -2,6 +2,9 @@ ChangeLog
 =========
 
 # Upcoming
+
+
+# 0.7 [Release 02/09/2016]
 * [Nodes] New DynamicTexture (DX11.Texture1d Color) node.
 * [Nodes] Blend (DX11.RenderState) now has a "Keep" preset.
 * [Nodes] All space layers had an issue when disabled.
