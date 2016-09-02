@@ -13,6 +13,8 @@ namespace VVVV.DX11.Validators
 
         public bool Enabled { get; set; }
 
+        public int ViewPortCount { get; set; }
+
         public void SetGlobalSettings(DX11RenderSettings settings)
         {
             this.settings = settings;
@@ -21,7 +23,7 @@ namespace VVVV.DX11.Validators
 
         public bool Validate(DX11ObjectRenderSettings obj)
         {
-            return obj.DrawCallIndex == settings.ViewportIndex;
+            return obj.DrawCallIndex % ViewPortCount == settings.ViewportIndex;
         }
 
         public void Reset()
