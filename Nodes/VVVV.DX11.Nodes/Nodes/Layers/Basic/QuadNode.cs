@@ -156,7 +156,7 @@ namespace VVVV.DX11.Nodes
             this.FOutLayer[0].Dispose(context);
         }
 
-        private void RenderBasic(DX11RenderContext context)
+        private void RenderBasic(DX11RenderContext context, DX11RenderSettings settings)
         {
             QuadShaderDeviceData qd = quaddata[context];
 
@@ -177,14 +177,19 @@ namespace VVVV.DX11.Nodes
                 qd.quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
 
                 qd.quadshader.ApplyPass(0);
+                if (settings.DepthOnly)
+                {
+                    context.CurrentDeviceContext.PixelShader.Set(null);
+                }
 
-                qd.quadgeometry.Draw();
+                    qd.quadgeometry.Draw();
 
                 if (popstate) { context.RenderStateStack.Pop(); }
             }
         }
 
-        private void RenderTextured(DX11RenderContext context)
+
+        private void RenderTextured(DX11RenderContext context, DX11RenderSettings settings)
         {
             QuadShaderDeviceData qd = quaddata[context];
             qd.quadshader.SelectTechnique("RenderTextured");
@@ -223,7 +228,10 @@ namespace VVVV.DX11.Nodes
                 }
 
                 qd.quadshader.ApplyPass(0);
-
+                if (settings.DepthOnly)
+                {
+                    context.CurrentDeviceContext.PixelShader.Set(null);
+                }
                 qd.quadgeometry.Draw();
 
                 if (popstate) { context.RenderStateStack.Pop(); }
@@ -231,7 +239,7 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        private void RenderInstanced(DX11RenderContext context)
+        private void RenderInstanced(DX11RenderContext context, DX11RenderSettings settings)
         {
             QuadShaderDeviceData qd = quaddata[context];
             bool popstate = false;
@@ -247,6 +255,10 @@ namespace VVVV.DX11.Nodes
             this.BindBuffers(context);
 
             qd.quadshader.ApplyPass(0);
+            if (settings.DepthOnly)
+            {
+                context.CurrentDeviceContext.PixelShader.Set(null);
+            }
 
             context.CurrentDeviceContext.DrawIndexedInstanced(qd.quadgeometry.IndexBuffer.IndicesCount, this.spmax, 0, 0, 0);
 
@@ -254,7 +266,7 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        private void RenderInstancedTextured(DX11RenderContext context)
+        private void RenderInstancedTextured(DX11RenderContext context, DX11RenderSettings settings)
         {
             QuadShaderDeviceData qd = quaddata[context];
             bool popstate = false;
@@ -289,6 +301,10 @@ namespace VVVV.DX11.Nodes
             }
 
             qd.quadshader.ApplyPass(0);
+            if (settings.DepthOnly)
+            {
+                context.CurrentDeviceContext.PixelShader.Set(null);
+            }
 
             context.CurrentDeviceContext.DrawIndexedInstanced(qd.quadgeometry.IndexBuffer.IndicesCount, this.spmax, 0, 0, 0);
 
@@ -369,22 +385,22 @@ namespace VVVV.DX11.Nodes
                     {
                         if (this.FInTexture.IsConnected)
                         {
-                            this.RenderTextured(context);
+                            this.RenderTextured(context, settings);
                         }
                         else
                         {
-                            this.RenderBasic(context);
+                            this.RenderBasic(context, settings);
                         }
                     }
                     else
                     {
                         if (this.FInTexture.IsConnected)
                         {
-                            this.RenderInstancedTextured(context);
+                            this.RenderInstancedTextured(context, settings);
                         }
                         else
                         {
-                            this.RenderInstanced(context);
+                            this.RenderInstanced(context, settings);
                         }
                     }
 
