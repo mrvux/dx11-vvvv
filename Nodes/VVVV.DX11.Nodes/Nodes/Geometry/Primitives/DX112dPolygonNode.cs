@@ -79,14 +79,13 @@ namespace VVVV.DX11.Nodes
 
                         verts[0].Position = new Vector4(Convert.ToSingle(cx / dblcount), Convert.ToSingle(cy / dblcount), 0, 1.0f);
                         verts[0].Normals = new Vector3(0, 0, 1);
-                        verts[0].TexCoords = new Vector2(0.5f, 0.5f);
 
                         double w = maxx - minx;
                         double h = maxy - miny;
-                        for (int j = 0; j < dblcount; j++)
+                        for (int j = 0; j <= dblcount; j++)
                         {
-                            verts[j+1].TexCoords = new Vector2(Convert.ToSingle((verts[j + 1].Position.X - minx) / w),
-                                 Convert.ToSingle((verts[j + 1].Position.Y - miny) / h));
+                            verts[j].TexCoords = new Vector2(Convert.ToSingle((verts[j].Position.X - minx) / w),
+                                 Convert.ToSingle((verts[j].Position.Y - miny) / h));
                         }
 
                         this.FVertex.Add(verts);
