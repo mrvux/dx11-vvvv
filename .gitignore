@@ -14,6 +14,8 @@ Deploy
 *.suo
 *.user
 *.sln.docstates
+vvvv-dx11.VC.db
+vvvv-dx11.VC.VC.opendb
 
 # Build results
 [Dd]ebug/
