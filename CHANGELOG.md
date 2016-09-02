@@ -2,6 +2,45 @@ ChangeLog
 =========
 
 # Upcoming
+* [Nodes] New DynamicTexture (DX11.Texture1d Color) node.
+* [Nodes] Blend (DX11.RenderState) now has a "Keep" preset.
+* [Nodes] All space layers had an issue when disabled.
+* [Nodes] Quad (DX11.Layer) now supports Depth only rendering.
+* [Nodes] ViewportIndex (DX11.Validator) has a cyclic option (user: sebl)
+* [Core] Text nodes are now built against Visual Studio 2015 (so visual c++ redist are now required)
+* [Nodes] Polygon (DX11.Geometry) center has correct UV (user:sebl)
+* [Nodes] Renderer (DX11) uses SlimDX color type instead of 4v native type to be consistent with rest of the pipeline (precision issue).
+* [Nodes] DynamicBuffer (DX11.SpotLight) was transforming position instead of direction.
+* [Core] Texture FX now make sure to ignore texture input when default size is on.
+* [Nodes] Within Projection has pins to allow to preserve aspect ratio/crop (so you can do all dx9 within equivalents).
+* [Nodes] new node RenderState (DX11), which sets all render state in a single node
+* [Core] Better render space handling, which allows more flexible usage at layer level.
+* [Nodes] Node (Assimp) now has a "Include self" pin.
+* [Nodes] Text (DX11.Layer Advanced) was crashing in case of Text layout count < Spreadmax, fixed.
+* [Nodes] SetSlice (DX11.TextureArray) mip level and slice is now fixed.
+* [Nodes] VideoIn (DX11 DShow) new node (user:gumilastik)
+* [Nodes] QR Code node color flip is now fixed.
+* [Nodes] Sampler state now has Mirror presets.
+* [Nodes] TextFormat (DirectWrite) now has a "Is valid" output pin.
+* [Nodes] LineMetrics (DirectWrite) new node.
+* [Nodes] TextLayoutMetrics (DirectWrite) has a line count output.
+* [Nodes] Add ClusterMetrics (DirectWrite) node.
+* [Nodes] TextFormat (DirectWrite) now has Line spacing options
+* [Nodes] Text nodes now use proper enum which is from DirectWrite
+* [Nodes] Add RemoveSlice (DX11.Validator)
+* [Nodes] Add ViewportBillBoard (DX11.layer)
+* [Nodes] IndexIndirect (DX11.Drawer) and VertexIndirect (DX11.Drawer) small memory leak fix.
+* [Nodes] TextLayout (DX11.Advanced) spead size fix (prevents crash).
+* [Nodes] Switch (DX11.Geometry) has spreadable input switch
+* [Core] Depth stencil reference and Blend factor are now part of render state.
+* [Nodes] Layer nodes for render space now just don't apply change if disabled, instead of blocking rendering.
+* [Nodes] AspectRatio (DX11.Layer) fitIn/FitOut mode was swapped.
+* [Nodes] Quad (DX11.Layer) was sometimes generating an error if fed a null texture.
+* [Nodes] Preview (DX11.Texture) now has a sampler pin.
+* [Nodes] Layer input in Group node is now Spreadable.
+* [Nodes] RenderSemantic (DX11.ByteAddressBuffer) new node.
+* [Core] Fix small memory leak on some specific type of buffers.
+* [Nodes] PassApply (DX11.Layer) new node.
 * [Nodes] GetSoftBodyBuffer (Bullet) clean resources on deletion
 * [Nodes] SoftBody (Bullet Geometry) clean resources on deletion
 
