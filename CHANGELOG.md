@@ -2,7 +2,12 @@ ChangeLog
 =========
 
 # Upcoming
+* [Core] All Depth formats are now working (64 bits version was not (even if rarely used)
+* [Nodes] Add Text (DX11.Geometry)
+* [Nodes] Add Renderer (DX11 TextureSpread), allows to render to multiple textures.
 
+# 0.7.1 [Release 04/09/2016]
+* [Core] Small fix as Layer base node had Autovalidate option set to false.
 
 # 0.7 [Release 02/09/2016]
 * [Nodes] New DynamicTexture (DX11.Texture1d Color) node.
