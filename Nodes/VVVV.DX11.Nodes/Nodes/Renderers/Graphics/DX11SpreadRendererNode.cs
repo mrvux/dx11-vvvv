@@ -108,7 +108,7 @@ namespace VVVV.DX11.Nodes
 
             ConfigAttribute dfAttr = new ConfigAttribute("Depth Buffer Format");
             dfAttr.EnumName = DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.DepthStencil);
-            dfAttr.DefaultEnumEntry = DX11EnumFormatHelper.NullDeviceFormats.GetAllowedFormats(FormatSupport.DepthStencil)[0];
+            dfAttr.DefaultEnumEntry = "D32_Float";
             dfAttr.IsSingle = true;
 
             this.depthformatpin = iofactory.CreateDiffSpread<EnumEntry>(dfAttr);
