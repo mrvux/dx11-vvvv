@@ -17,7 +17,7 @@ namespace VVVV.DX11.Nodes
 {
     public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Enabled",DefaultValue=1, Order = 100000)]
