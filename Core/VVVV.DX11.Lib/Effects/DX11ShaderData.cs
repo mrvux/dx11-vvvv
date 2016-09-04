@@ -46,6 +46,14 @@ namespace VVVV.DX11.Lib.Effects
 
         public DX11ShaderInstance ShaderInstance { get { return this.shaderinstance; } }
 
+        public int PassCount
+        {
+            get
+            {
+                return this.technique.Description.PassCount;
+            }
+        }
+
         public DX11ShaderData(DX11RenderContext context)
         {
             this.context = context;
@@ -216,9 +224,10 @@ namespace VVVV.DX11.Lib.Effects
         }
 
         #region Apply Pass
-        public void ApplyPass(DeviceContext ctx)
+        public void ApplyPass(DeviceContext ctx, int passIndex= 0)
         {
-            this.shaderinstance.ApplyPass(this.pass);
+            var cpass = this.technique.GetPassByIndex(passIndex);
+            this.shaderinstance.ApplyPass(cpass);
         }
         #endregion
     }

@@ -513,15 +513,18 @@ namespace VVVV.DX11.Nodes.Layers
                                 {
                                     this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, this.objectsettings, idx);
 
-                                    shaderdata.ApplyPass(ctx);
+                                    for (int ip = 0; ip < shaderdata.PassCount;ip++)
+                                    {
+                                        shaderdata.ApplyPass(ctx, ip);
 
-                                    if (settings.DepthOnly) { ctx.PixelShader.Set(null); }
+                                        if (settings.DepthOnly) { ctx.PixelShader.Set(null); }
 
-                                    if (settings.PostPassAction != null) { settings.PostPassAction(context); }
-                                    
+                                        if (settings.PostPassAction != null) { settings.PostPassAction(context); }
 
-                                    objectsettings.Geometry.Draw();
-                                    shaderdata.ShaderInstance.CleanUp();
+
+                                        objectsettings.Geometry.Draw();
+                                        shaderdata.ShaderInstance.CleanUp();
+                                    }
                                 }
                             }
                         }
