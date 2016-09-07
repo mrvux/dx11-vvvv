@@ -12,9 +12,9 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "PreferTechnique", Category = "DX11.Layer", Version = "", Author = "dotprodukt")]
-    public class DX11LayerPreferTechniqueNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerPreferTechniqueNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Technique", IsSingle = true)]
@@ -26,19 +26,10 @@ namespace VVVV.DX11.Nodes
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> FOutLayer;
 
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
 
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-
-            if (this.FEnabled[0])
-            {
-                this.FLayerIn.Sync();
-            }
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
@@ -54,7 +45,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     settings.PreferredTechniques.Add(FTechnique[0].Trim().ToLower());
 
@@ -64,6 +55,16 @@ namespace VVVV.DX11.Nodes
                     }
 
                     settings.PreferredTechniques.RemoveAt(settings.PreferredTechniques.Count - 1);
+                }
+            }
+            else
+            {
+                if (this.FLayerIn.IsConnected)
+                {
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
                 }
             }
         }

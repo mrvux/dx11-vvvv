@@ -12,9 +12,9 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes.Layers
 {
     [PluginInfo(Name="Validator",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerValidatorNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerValidatorNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Validators", Order = 5001)]
@@ -29,11 +29,6 @@ namespace VVVV.DX11.Nodes.Layers
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-
-            if (this.FEnabled[0])
-            {
-                this.FLayerIn.Sync();
-            }
         }
 
 
@@ -86,15 +81,19 @@ namespace VVVV.DX11.Nodes.Layers
                 {
                     settings.ObjectValidators.Remove(v);
                 }
-
+            }
+            else
+            {
+                if (this.FLayerIn.IsConnected)
+                {
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
+                }
             }
         }
 
         #endregion
-
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 }

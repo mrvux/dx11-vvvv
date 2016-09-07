@@ -13,12 +13,12 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="RenderState",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerStateNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerStateNode : IPluginEvaluate, IDX11LayerProvider
     {
         [Input("Render State", IsSingle = true)]
         protected Pin<DX11RenderState> FInState;
 
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Enabled",DefaultValue=1, Order = 100000)]
@@ -30,11 +30,6 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-
-            if (this.FEnabled[0])
-            {
-                this.FLayerIn.Sync();
-            }
         }
 
 
@@ -77,13 +72,19 @@ namespace VVVV.DX11.Nodes
 
                 }
             }
+            else
+            {
+                if (this.FLayerIn.IsConnected)
+                {
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
+                }
+            }
         }
 
         #endregion
 
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 }
