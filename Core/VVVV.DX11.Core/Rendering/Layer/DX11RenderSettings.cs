@@ -43,6 +43,12 @@ namespace VVVV.DX11
 
         public DX11RenderScene SceneDescriptor { get; set; }
 
+
+        /// <summary>
+        /// Arbitrary tag to set a custom object for this layer
+        /// </summary>
+        public object Tag { get; set; }
+
         /// <summary>
         /// Renderer Width
         /// </summary>
