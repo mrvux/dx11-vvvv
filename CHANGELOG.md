@@ -5,6 +5,7 @@ ChangeLog
 * [Core] All Depth formats are now working (64 bits version was not (even if rarely used)
 * [Nodes] Add Text (DX11.Geometry)
 * [Nodes] Add Renderer (DX11 TextureSpread), allows to render to multiple textures.
+* [Core] Standard shaders now support multi pass, with the following 2 restrictions: Vertex Input signatur must be the same on all passes (runtime with not validate other passes nor check for equality), and runtime does not reset stages (so make sure to set optional stages to 0).
 
 # 0.7.1 [Release 04/09/2016]
 * [Core] Small fix as Layer base node had Autovalidate option set to false.
