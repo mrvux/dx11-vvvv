@@ -57,6 +57,7 @@
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dArrayRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\Touch\TouchStateJoin.cs" />
+    <Compile Include="Nodes\RenderStates\Advanced\DX11TagNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11StencilReferenceStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11BlendFactorStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
