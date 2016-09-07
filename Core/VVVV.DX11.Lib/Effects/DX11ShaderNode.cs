@@ -289,6 +289,7 @@ namespace VVVV.DX11.Nodes.Layers
             bool popstate = false;
 
             bool multistate = this.FInState.IsConnected && this.FInState.SliceCount > 1;
+            bool stateConnected = this.FInState.IsConnected;
 
             if (this.FInEnabled[0])
             {
@@ -458,6 +459,7 @@ namespace VVVV.DX11.Nodes.Layers
                             objSettings.IterationCount = 1;
                             objSettings.IterationIndex = 0;
                             objSettings.WorldTransform = this.mworld[i % this.mworldcount];
+                            objSettings.RenderStateTag = stateConnected ? this.FInState[i].Tag : null;
 
                             this.orderedObjectSettings.Add(objSettings);
                         }
@@ -479,11 +481,13 @@ namespace VVVV.DX11.Nodes.Layers
                         if (multistate)
                         {
                             context.RenderStateStack.Push(this.FInState[idx]);
+                            
                         }
 
                         if (shaderdata.IsLayoutValid(idx) || settings.Geometry != null)
                         {
                             objectsettings.IterationCount = this.FIter[idx];
+                            objectsettings.RenderStateTag = this.FInState[idx].Tag;
 
                             for (int k = 0; k < objectsettings.IterationCount; k++)
                             {
