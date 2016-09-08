@@ -487,7 +487,7 @@ namespace VVVV.DX11.Nodes.Layers
                         if (shaderdata.IsLayoutValid(idx) || settings.Geometry != null)
                         {
                             objectsettings.IterationCount = this.FIter[idx];
-                            objectsettings.RenderStateTag = this.FInState[idx]?.Tag;
+                            objectsettings.RenderStateTag = this.FInState[idx] != null ? this.FInState[idx].Tag : null;
 
                             for (int k = 0; k < objectsettings.IterationCount; k++)
                             {
