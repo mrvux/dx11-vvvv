@@ -74,9 +74,6 @@ namespace VVVV.DX11.Nodes
         [Input("Crop", Order = 13, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<Matrix> FInCrop;
 
-        [Input("ViewPort", Order = 20)]
-        protected Pin<Viewport> FInViewPort;
-
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
@@ -202,8 +199,6 @@ namespace VVVV.DX11.Nodes
 
                 if (this.FInLayer.PluginIO.IsConnected)
                 {
-                    bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
-
                     int slicecount = target.ElemCnt;
                     if (this.FInBindTarget[0])
                     {
@@ -240,14 +235,6 @@ namespace VVVV.DX11.Nodes
                             else
                             {
                                 context.RenderTargetStack.Push(target.SliceRTV[i]);
-                            }
-
-                            if (viewportpop)
-                            {
-                                float cw = this.FInSize[i].X;
-                                float ch = this.FInSize[i].Y;
-
-                                context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
                             }
                         }
 
