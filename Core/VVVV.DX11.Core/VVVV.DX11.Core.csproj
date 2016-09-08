@@ -51,6 +51,28 @@
       <Name>FeralTic</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Dependencies\mixed\SharpDX.D3DCompiler.dll">
+      <Link>SharpDX.D3DCompiler.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\mixed\SharpDX.Direct2D1.dll">
+      <Link>SharpDX.Direct2D1.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\mixed\SharpDX.dll">
+      <Link>SharpDX.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\mixed\SharpDX.DXGI.dll">
+      <Link>SharpDX.DXGI.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\mixed\SharpDX.Mathematics.dll">
+      <Link>SharpDX.Mathematics.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
