@@ -246,7 +246,7 @@ namespace VVVV.DX11.Nodes
                     if (this.FInLayer.IsConnected)
                     {
                         settings.ViewportIndex = i;
-                        settings.ViewportCount = 1;
+                        settings.ViewportCount = sliceCount;
                         settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], this.FInAspect[i], this.FInCrop[i]);
 
                         settings.RenderWidth = target.Width;
