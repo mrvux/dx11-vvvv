@@ -5,7 +5,7 @@ DirectX11 Rendering within vvvv
 
 # Licensing
 
-vvvv dx11 nodes are released under the [GPLv2](https://www.gnu.org/licenses/gpl-2.0.html)
+vvvv dx11 nodes are released under a 3 clause BSD license (https://raw.githubusercontent.com/mrvux/dx11-vvvv/master/License.md)
 
 # How to build
 
