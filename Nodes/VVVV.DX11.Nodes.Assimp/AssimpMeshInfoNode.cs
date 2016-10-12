@@ -50,7 +50,7 @@ namespace VVVV.DX11.Nodes.AssetImport
 
                     for (int i = 0; i < this.FInMeshes.SliceCount; i++)
                     {
-                        AssimpMesh assimpmesh = this.FInMeshes[0];
+                        AssimpMesh assimpmesh = this.FInMeshes[i];
 
                         this.FOutMaterialIndex[i] = assimpmesh.MaterialIndex;
                         this.FOutBoundingMin[i] = assimpmesh.BoundingBox.Minimum;
