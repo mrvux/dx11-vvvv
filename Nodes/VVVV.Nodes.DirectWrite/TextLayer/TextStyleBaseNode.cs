@@ -43,7 +43,9 @@ namespace VVVV.Nodes.DirectWrite.TextLayer
 
         public void Evaluate(int SpreadMax)
         {
-             for (int i = 0; i < SpreadMax; i++)
+            this.styleOut.SliceCount = SpreadMax;
+
+            for (int i = 0; i < SpreadMax; i++)
              {
                  TextStyleBase ts = this.CreateStyle(i);
                  ts.Range = new TextRange(from[i], length[i]);
