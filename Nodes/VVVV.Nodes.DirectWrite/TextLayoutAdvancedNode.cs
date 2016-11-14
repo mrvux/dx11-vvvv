@@ -86,7 +86,7 @@ namespace VVVV.DX11.Nodes.Text
                     var align = (int)this.FTextAlign[i];
                     tl.TextAlignment = (TextAlignment)align;
                     tl.ParagraphAlignment = this.FParaAlign[i];
-                    var styles = textStyles[0];
+                    var styles = textStyles[i];
                     for (int j = 0; j <styles.SliceCount; j++)
                     {
                         if (styles[j] != null)
