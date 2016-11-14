@@ -43,7 +43,6 @@
     <Compile Include="TextLayer\FontWeightNode.cs" />
     <Compile Include="TextLayer\FontStyleNode.cs" />
     <Compile Include="TextLayer\TextStyleBaseNode.cs" />
-    <Compile Include="TextLayer\ZipTextStyle.cs" />
     <Compile Include="TextLayoutAdvancedNode.cs" />
     <Compile Include="TextLayoutClusterMetricsNode.cs" />
     <Compile Include="TextLayoutLineMetricsNode.cs" />
