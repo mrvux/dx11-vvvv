@@ -26,6 +26,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="VVVV.Nodes.Generic">
+      <HintPath>..\..\Dependencies\x86\VVVV.Nodes.Generic.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HitTestTextNode.cs" />
