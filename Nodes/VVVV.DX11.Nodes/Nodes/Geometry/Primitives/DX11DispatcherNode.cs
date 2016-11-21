@@ -17,7 +17,7 @@ using SlimDX.Direct3D11;
 namespace VVVV.DX11.Nodes.Geometry.Primitives
 {
     [PluginInfo(Name = "Dispatcher", Category = "DX11.Drawer", Version = "", Author = "vux")]
-    public class DX11DispatcherNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class DX11DispatcherNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Thread X", DefaultValue = 1, MinValue=0)]
         protected IDiffSpread<int> FInTX;
@@ -53,7 +53,7 @@ namespace VVVV.DX11.Nodes.Geometry.Primitives
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -78,19 +78,8 @@ namespace VVVV.DX11.Nodes.Geometry.Primitives
 
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            if (this.FOutput[0].Contains(context)) { this.FOutput[0].Dispose(context); }
-        }
-
-
-
-        public void Dispose()
-        {
-            if (this.FOutput[0] != null)
-            {
-                this.FOutput[0].Dispose();
-            }
         }
     }
 }

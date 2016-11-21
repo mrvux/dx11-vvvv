@@ -36,10 +36,7 @@ namespace VVVV.DX11.Nodes
                 this.FInvalidate = true;
 
                 //Dispose old
-                for (int i = 0; i < oldSpreadMax; i++)
-                {
-                    this.FOutput[i].Dispose();
-                }
+                this.FOutput.SafeDisposeAll();
 
                 this.FOutput.SliceCount = spm;
                 this.oldSpreadMax = spm;

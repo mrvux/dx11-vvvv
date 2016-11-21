@@ -47,7 +47,7 @@ using FeralTic.DX11.Utils;
 namespace VVVV.Nodes
 {
     [PluginInfo(Name="Metaballs",Category="DX11.Geometry",Author="vux,majortom")]
-    public class MetaballsMeshNode : IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public class MetaballsMeshNode : IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         #region field declaration
 
@@ -69,16 +69,11 @@ namespace VVVV.Nodes
         #endregion field declaration
 
         #region constructor/destructor
-
-
-
-        // Implementing IDisposable's Dispose method.
-        // Do not make this method virtual.
-        // A derived class should not be able to override this method.
         public void Dispose()
         {
-            this.FGeom[0].Dispose();
+            this.FGeom.SafeDisposeAll();
         }
+
         #region pin creation
 
         [ImportingConstructor()]
@@ -226,7 +221,7 @@ namespace VVVV.Nodes
         #endregion mainloop
 
         #region DXMesh
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FGeom[0].Contains(context)) { update = true; }
             if (update)
@@ -289,12 +284,12 @@ namespace VVVV.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FGeom[0].Dispose(context);
+            this.FGeom.SafeDisposeAll(context);
         }
 
-        public void UpdateResource(IPluginOut ForPin, Device OnDevice)
+        public void UpdateResource(Device OnDevice)
         {
 
             /*try

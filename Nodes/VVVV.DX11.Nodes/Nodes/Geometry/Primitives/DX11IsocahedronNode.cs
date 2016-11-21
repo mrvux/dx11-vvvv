@@ -19,20 +19,20 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "Isocahedron", Category = "DX11.Geometry", Version = "", Author = "vux")]
     public class DX11IsocahedronNode : DX11BasePrimitiveNode
     {
-        /*[Input("Size",DefaultValues= new double[] { 1,1,1})]
-        IDiffSpread<Vector3> FSize;*/
+        [Input("Radius",DefaultValue=1)]
+        protected IDiffSpread<float> FSize;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
             Isocahedron iso = new Isocahedron();
-            iso.Size = new Vector3(1, 1, 1);
+            iso.Radius = FSize[slice];
 
             return context.Primitives.Isocahedron(iso);
         }
 
         protected override bool Invalidate()
         {
-            return false;// this.FSize.IsChanged;
+            return this.FSize.IsChanged;
         }
     }
 }
