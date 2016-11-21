@@ -32,7 +32,7 @@ void DX11TextLayerNode::Evaluate(int SpreadMax)
 	}
 }
 
-void DX11TextLayerNode::Update(IPluginIO^ pin, DX11RenderContext^ context)
+void DX11TextLayerNode::Update(DX11RenderContext^ context)
 {
     if (!this->FOutLayer[0]->Contains(context))
     {
@@ -48,7 +48,7 @@ void DX11TextLayerNode::Update(IPluginIO^ pin, DX11RenderContext^ context)
 }
 
 
-void DX11TextLayerNode::Destroy(IPluginIO^ pin, DX11RenderContext^ context, bool force)
+void DX11TextLayerNode::Destroy(DX11RenderContext^ context, bool force)
 {
     if (this->FOutLayer[0]->Contains(context))
     {
@@ -56,7 +56,7 @@ void DX11TextLayerNode::Destroy(IPluginIO^ pin, DX11RenderContext^ context, bool
 	}
 }
 
-void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11RenderSettings^ settings)
+void DX11TextLayerNode::Render(DX11RenderContext^ context, DX11RenderSettings^ settings)
 {
 	if (this->FInEnabled[0])
 	{
@@ -77,7 +77,7 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 
 		SlimDX::Matrix* smp = (SlimDX::Matrix*)&tr[0];
 
-		bool applyState = this->FStateIn->PluginIO->IsConnected;
+		bool applyState = this->FStateIn->IsConnected;
 
 		for (int i = 0; i < this->spmax; i++)
 		{

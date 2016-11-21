@@ -19,14 +19,14 @@ using namespace System::ComponentModel::Composition;
 namespace VVVV { namespace Nodes { namespace DX11 {
 
 [PluginInfo(Name="Text",Author="vux",Category="DX11.Layer",Version="")]
-public ref class DX11TextLayerNode : public IPluginEvaluate,IDX11LayerProvider
+public ref class DX11TextLayerNode : public IPluginEvaluate,IDX11LayerHost
 {
 public:
 	[ImportingConstructor()]
 	DX11TextLayerNode(IIOFactory^ factory, SlimDX::DirectWrite::Factory^ dwFactory);
 	virtual void Evaluate(int SpreadMax);
-	virtual void Update(IPluginIO^ pin, DX11RenderContext^ OnDevice);
-	virtual void Destroy(IPluginIO^ pin, DX11RenderContext^ OnDevice, bool force);
+	virtual void Update(DX11RenderContext^ OnDevice);
+	virtual void Destroy(DX11RenderContext^ OnDevice, bool force);
 private:
 	ITransformIn^ FInTr;
 
@@ -66,7 +66,7 @@ private:
 	[Output("Layer", IsSingle=true)]
     ISpread<DX11Resource<DX11Layer^>^>^ FOutLayer;
 
-	void Render(IPluginIO^ pin,DX11RenderContext^ ctx, DX11RenderSettings^ settings);
+	void Render(DX11RenderContext^ ctx, DX11RenderSettings^ settings);
 
 	Dictionary<DX11RenderContext^,IntPtr>^ fontrenderers;
 	int spmax;
