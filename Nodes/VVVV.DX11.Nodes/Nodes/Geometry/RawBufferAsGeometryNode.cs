@@ -62,7 +62,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.rawGeometry.Contains(context))
             {
@@ -93,7 +93,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
        
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }

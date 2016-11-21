@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceHost IDisposable
+    public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceHost, IDisposable
     {
          [DllImport("msvcrt.dll", SetLastError = false)]
         protected static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
