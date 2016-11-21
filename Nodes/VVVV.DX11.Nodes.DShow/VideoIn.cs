@@ -164,7 +164,7 @@ namespace VVVV.DX11.Nodes.DShow
 	[PluginInfo(Name = "VideoIn", AutoEvaluate = true, Category = "DX11", Version = "DShow",  Author = "vux,gumilastik", Help = "")]
 	#endregion PluginInfo
 	  
-	public class VideoInNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable, IPartImportsSatisfiedNotification
+	public class VideoInNode : IPluginEvaluate, IDX11ResourceHost, IDisposable, IPartImportsSatisfiedNotification
 	{
 		#region fields & pins
 		[Input("Device", EnumName = "VideoIn_Device", Order = 0)]
@@ -441,7 +441,7 @@ namespace VVVV.DX11.Nodes.DShow
 			}
 		}
 		
-		public void Update(IPluginIO pin, DX11RenderContext context)
+		public void Update(DX11RenderContext context)
 		{
 			if (videoin != null && videoin.IsRunning())
 			{
@@ -473,22 +473,16 @@ namespace VVVV.DX11.Nodes.DShow
 		}
 		
 		
-		public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+		public void Destroy(DX11RenderContext context, bool force)
 		{
-            if (this.FTextureOutput[0] != null)
-            {
-                this.FTextureOutput[0].Dispose();
-            }
+            this.FTextureOutput.SafeDisposeAll(context);
 		}
 		
 		public void Dispose()
 		{
 			StopCapture();
-			
-            if (this.FTextureOutput[0] != null)
-            {
-                this.FTextureOutput[0].Dispose();
-            }
-		}
+
+            this.FTextureOutput.SafeDisposeAll();
+        }
 	}
 }
