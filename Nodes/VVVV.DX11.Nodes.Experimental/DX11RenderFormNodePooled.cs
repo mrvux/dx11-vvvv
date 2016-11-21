@@ -184,6 +184,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             {
                 if (this.swapchain != null) { this.swapchain.Dispose(); }
                 this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, this.FInFlipSequential[0]);
+                this.FInvalidateSwapChain = false;
             }
 
             if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(this.FHost, context); }
