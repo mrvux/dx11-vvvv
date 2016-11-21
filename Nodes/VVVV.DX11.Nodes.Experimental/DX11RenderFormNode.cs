@@ -21,7 +21,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 {
     [PluginInfo(Name="Renderer",Category="DX11", Version="Form", Author="vux",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererProvider
+    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererHost
     {
         #region Input Pins
         IPluginHost FHost;
@@ -175,7 +175,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         }
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -224,7 +224,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
         }
         #endregion
@@ -300,7 +300,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         {
             Device device = context.Device;
 
-            if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
+            if (!this.updateddevices.Contains(context)) { this.Update(context); }
 
             if (this.rendereddevices.Contains(context)) { return; }
 
@@ -338,7 +338,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     //Call render on all layers
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
-                        this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+                        this.FInLayer[j][context].Render(context, settings);
                     }
                 }
                 renderer.CleanTargets();

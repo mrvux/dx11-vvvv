@@ -12,7 +12,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "PreferTechnique", Category = "DX11.Layer", Version = "", Author = "dotprodukt")]
-    public class DX11LayerPreferTechniqueNode : IPluginEvaluate, IDX11LayerProvider
+    public class DX11LayerPreferTechniqueNode : IPluginEvaluate, IDX11LayerHost
     {
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -32,7 +32,7 @@ namespace VVVV.DX11.Nodes
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutLayer[0].Contains(context))
             {
@@ -41,7 +41,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.FEnabled[0])
             {
@@ -49,10 +49,7 @@ namespace VVVV.DX11.Nodes
                 {
                     settings.PreferredTechniques.Add(FTechnique[0].Trim().ToLower());
 
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                    }
+                    this.FLayerIn.RenderAll(context, settings);
 
                     settings.PreferredTechniques.RemoveAt(settings.PreferredTechniques.Count - 1);
                 }
@@ -61,15 +58,12 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FLayerIn.IsConnected)
                 {
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                    }
+                    this.FLayerIn.RenderAll(context, settings);
                 }
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutLayer[0].Dispose(context);
         }

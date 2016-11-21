@@ -15,7 +15,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider
+    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerHost
     {
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -34,7 +34,7 @@ namespace VVVV.DX11.Nodes
 
         #region IDX11ResourceProvider Members
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutLayer[0].Contains(context))
             {
@@ -43,12 +43,12 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FOutLayer[0].Dispose(context);
+            this.FOutLayer.SafeDisposeAll(context);
         }
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.FLayerIn.SliceCount == 0) { return; }
 
@@ -65,7 +65,7 @@ namespace VVVV.DX11.Nodes
 
                     for (int i = 0; i < this.FLayerIn.SliceCount;i++)
                     {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                        this.FLayerIn[i][context].Render(context, settings);
                     }
                         
 
@@ -79,7 +79,7 @@ namespace VVVV.DX11.Nodes
             {
                 for (int i = 0; i < this.FLayerIn.SliceCount; i++)
                 {
-                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    this.FLayerIn[i][context].Render(context, settings);
                 }
             }
         }

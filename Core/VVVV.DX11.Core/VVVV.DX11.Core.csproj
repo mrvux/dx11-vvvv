@@ -29,6 +29,7 @@
     <Compile Include="NodeInterfaces\SingleOutputAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Layer\DX11Layer.cs" />
+    <Compile Include="Rendering\Layer\DX11LayerExtensions.cs" />
     <Compile Include="Rendering\Layer\DX11RenderObject.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSettings.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSettings_Transforms.cs" />
@@ -42,6 +43,7 @@
     <Compile Include="Rendering\Layer\DX11ObjectRenderSettings.cs" />
     <Compile Include="Rendering\Layer\IDX11RenderSemantic.cs" />
     <Compile Include="Resources\DX11Resource.cs" />
+    <Compile Include="Resources\DX11ResourceExtensions.cs" />
     <Compile Include="Resources\IDX11ResourceDataProvider.cs" />
     <Compile Include="Resources\IDX11ResourceDataSink.cs" />
   </ItemGroup>
