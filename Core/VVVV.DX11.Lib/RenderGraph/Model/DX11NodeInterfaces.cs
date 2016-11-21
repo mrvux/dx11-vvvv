@@ -15,9 +15,7 @@ namespace VVVV.DX11.RenderGraph.Model
         private readonly IDX11UpdateBlocker updateBlocker;
 
         //Obsolete ones to remove
-        private readonly IDX11MultiResourceProvider multiResourceProvider;
         private readonly IDX11ResourceProvider resourceProvider;
-        private readonly IDX11RendererProvider rendererProvider;
 
         private readonly IDX11LayerHost layerHost;
         private readonly IDX11ResourceHost resourceHost;
@@ -32,8 +30,6 @@ namespace VVVV.DX11.RenderGraph.Model
             this.updateBlocker = this.IsAssignable<IDX11UpdateBlocker>() ? this.Instance<IDX11UpdateBlocker>() : null;
 
             this.resourceProvider = this.IsAssignable<IDX11ResourceProvider>() ? this.Instance<IDX11ResourceProvider>() : null;
-            this.rendererProvider = this.IsAssignable<IDX11RendererProvider>() ? this.Instance<IDX11RendererProvider>() : null;
-            this.multiResourceProvider = this.IsAssignable<IDX11MultiResourceProvider>() ? this.Instance<IDX11MultiResourceProvider>() : null;
             this.resourceHost = this.IsAssignable<IDX11ResourceHost>() ? this.Instance<IDX11ResourceHost>() : null;
             this.rendererHost = this.IsAssignable<IDX11RendererHost>() ? this.Instance<IDX11RendererHost>() : null;
             this.layerHost = this.IsAssignable<IDX11LayerHost>() ? this.Instance<IDX11LayerHost>() : null;
@@ -42,11 +38,6 @@ namespace VVVV.DX11.RenderGraph.Model
         public bool IsResourceProvider
         {
             get { return this.resourceProvider != null; }
-        }
-
-        public bool IsRendererProvider
-        {
-            get { return this.rendererProvider != null; }
         }
 
         public bool IsResourceHost
@@ -69,11 +60,6 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.renderWindow != null; }
         }
 
-        public bool IsMultiResourceProvider
-        {
-            get { return this.multiResourceProvider != null; }
-        }
-
         public bool IsDataRetriever
         {
             get { return this.dataRetriever != null; }
@@ -89,19 +75,9 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.renderWindow; }
         }
 
-        public IDX11MultiResourceProvider MultiResourceProvider
-        {
-            get { return this.multiResourceProvider; }
-        }
-
         public IDX11ResourceProvider ResourceProvider
         {
             get { return this.resourceProvider; }
-        }
-
-        public IDX11RendererProvider RendererProvider
-        {
-            get { return this.rendererProvider; }
         }
 
         public IDX11LayerHost LayerHost

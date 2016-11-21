@@ -205,23 +205,13 @@ namespace VVVV.DX11.Lib.RenderGraph
                             if (source.Interfaces.IsResourceProvider)
                             {
                                 source.Interfaces.ResourceProvider.Update(parent.PluginIO, this.context);
-                                if (source.Interfaces.IsMultiResourceProvider)
+
+                                if (this.DoNotDestroy == false)
                                 {
-                                    if (this.DoNotDestroy == false)
+                                    //Mark all output pins as processed
+                                    foreach (DX11OutputPin outpin in source.OutputPins)
                                     {
-                                        //Mark all output pins as processed
-                                        foreach (DX11OutputPin outpin in source.OutputPins)
-                                        {
-                                            this.thisframepins.Add(outpin);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.DoNotDestroy == false)
-                                    {
-                                        //Mark output pin as used this frame
-                                        this.thisframepins.Add(parent);
+                                        this.thisframepins.Add(outpin);
                                     }
                                 }
                             }
@@ -260,14 +250,10 @@ namespace VVVV.DX11.Lib.RenderGraph
             }
 
             //Render if renderer
-            if (node.Interfaces.IsRendererProvider || node.Interfaces.IsRendererHost)
+            if (node.Interfaces.IsRendererHost)
             {
                 try
                 {
-                    if (node.Interfaces.IsRendererProvider)
-                    {
-                        node.Interfaces.RendererProvider.Render(this.context);
-                    }
                     if (node.Interfaces.IsRendererHost)
                     {
                         node.Interfaces.RendererHost.Render(this.context);

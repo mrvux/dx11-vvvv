@@ -12,7 +12,7 @@ using System.ComponentModel.Composition;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "WindowTesterForm", Category = "DX11", Author = "vux", AutoEvaluate = true, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11RenderFullScreenTest : Control, IPluginEvaluate, IDX11RendererProvider, IDX11RenderWindow
+    public class DX11RenderFullScreenTest : Control, IPluginEvaluate, IDX11RendererHost, IDX11RenderWindow
     {
         [Import()]
         private INode node;
