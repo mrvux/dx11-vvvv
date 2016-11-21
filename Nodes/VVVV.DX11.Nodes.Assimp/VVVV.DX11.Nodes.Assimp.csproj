@@ -25,7 +25,7 @@
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\AssimpNet.dll</HintPath>
     </Reference>
     <Reference Include="VVVV.Utils3rdParty">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils3rdParty.dll</HintPath>
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Utils3rdParty.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -42,9 +42,7 @@
     <Compile Include="AssimpMeshMergeNode.cs" />
     <Compile Include="AssimpMeshSplitNode.cs" />
     <Compile Include="AssimpMeshNode.cs" />
-    <Compile Include="AssimpSceneExplorerNode.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="AssimpSceneExplorerNode.cs" />
     <Compile Include="AssimpSceneExplorerNode.Designer.cs">
       <DependentUpon>AssimpSceneExplorerNode.cs</DependentUpon>
     </Compile>
