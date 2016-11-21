@@ -153,11 +153,11 @@ namespace VVVV.DX11.Lib.RenderGraph
                 return;
             }
 
-            foreach (IDX11RenderStartPoint window in this.FindRenderStartPoints())
+            foreach (DX11Node window in this.FindRenderStartPoints())
             {
                 try
                 {
-                    window.Present();
+                    window.Interfaces.RenderStartPoint.Present();
                 }
                 catch (Exception ex)
                 {
