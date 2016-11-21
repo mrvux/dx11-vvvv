@@ -42,7 +42,7 @@ namespace VVVV.DX11.Factories
         private IDX11RenderContextManager devicemanager;
         private DX11RenderManager rendermanager;
 
-        private DX11GraphBuilder<IDX11ResourceProvider> graphbuilder;
+        private DX11GraphBuilder graphbuilder;
         private ILogger logger;
 
         [Export]
@@ -129,7 +129,7 @@ namespace VVVV.DX11.Factories
                 this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
             }
 
-           this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
+           this.graphbuilder = new DX11GraphBuilder(hdehost, reg);
            this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
            this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder,this.logger);
 

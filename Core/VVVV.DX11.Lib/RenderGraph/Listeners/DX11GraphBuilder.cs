@@ -32,7 +32,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         DX11Graph Graph { get; }
     }
 
-    public class DX11GraphBuilder<N> : AbstractHdeNodeListener, IDX11GraphBuilder
+    public class DX11GraphBuilder : AbstractHdeNodeListener, IDX11GraphBuilder
     {
         private DX11Graph graph;
 
@@ -75,7 +75,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         protected override bool ProcessAddedNode(INode2 node)
         {
 
-            if (node.IsNodeAssignableFrom<N>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>())
+            if (node.IsNodeAssignableFrom<IDX11ResourceProvider>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>() || node.IsNodeAssignableFrom<IDX11ResourceHost>())
             {
                 DX11Node vn = new DX11Node(node);
 
@@ -84,7 +84,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
                 //If force updater, register event
                 if (node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>())
                 {
-                    IDX11ResourceDataRetriever updater = vn.Instance<IDX11ResourceDataRetriever>();
+                    IDX11ResourceDataRetriever updater = vn.Interfaces.DataRetriever;
                     updater.RenderRequest += OnRenderRequest;
                 }
 

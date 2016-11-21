@@ -71,39 +71,6 @@ namespace VVVV.DX11.RenderGraph.Model
             return null;
         }
 
-        [Obsolete("Node will cache their interfaces in the future, in order to avoid COM apartment, Use Interfaces property instead")]
-        public T Instance<T>()
-        {
-            IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
-           
-            if (iip.Plugin is PluginContainer)
-            {
-                PluginContainer plugin = (PluginContainer)iip.Plugin;
-                return (T)plugin.PluginBase;
-            }
-            else
-            {
-                return (T)iip.Plugin;
-            }
-        }
-
-        [Obsolete("Node will cache their interfaces in the future, in order to avoid COM apartment, Use Interfaces property instead")]
-        public bool IsAssignable<T>()
-        {
-            IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
-
-            if (iip.Plugin is PluginContainer)
-            {
-                PluginContainer plugin = (PluginContainer)iip.Plugin;
-                return typeof(T).IsAssignableFrom(plugin.PluginBase.GetType());
-            }
-            else
-            {
-                return typeof(T).IsAssignableFrom(iip.Plugin.GetType());
-            }
-  
-        }
-
         public bool RemovePin(string name, PinDirection direction)
         {
             if (direction == PinDirection.Input)
