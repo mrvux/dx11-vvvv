@@ -60,6 +60,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Input("Rate", Visibility = PinVisibility.OnlyInspector,DefaultValue=30)]
         protected ISpread<int> FInRate;
 
+        [Input("Flip Sequential", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInFlipSequential;
+
         [Input("Background Color", DefaultColor = new double[] { 0, 0, 0, 1 }, Order = 3)]
         protected ISpread<RGBAColor> FInBgColor;
 
@@ -141,7 +144,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.SetBorder();
             }
 
-            if (this.FInResize[0])
+            if (this.FInResize[0] || this.FInRate.IsChanged || this.FInFlipSequential.IsChanged)
             {
                 this.FInvalidateSwapChain = true;
             }
@@ -186,7 +189,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             if (this.FResized || this.FInvalidateSwapChain || this.swapchain == null)
             {
                 if (this.swapchain != null) { this.swapchain.Dispose(); }
-                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1);
+                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, this.FInFlipSequential[0]);
             }
 
             if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(this.FHost, context); }

@@ -192,6 +192,12 @@ namespace VVVV.DX11.Nodes
         [Input("Show Cursor", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInShowCursor;
 
+        [Input("Refresh Rate", DefaultValue = 60, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<int> FInRefreshRate;
+
+        [Input("Flip Sequential", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInFlipSequential;
+
         [Input("Fullscreen", Order = 5)]
         protected IDiffSpread<bool> FInFullScreen;
 
@@ -308,7 +314,7 @@ namespace VVVV.DX11.Nodes
                 this.depthmanager.FormatChanged = false; //Clear flag ok
             }
             
-            if (FInAASamplesPerPixel.IsChanged || this.FInBufferCount.IsChanged)
+            if (FInAASamplesPerPixel.IsChanged || this.FInBufferCount.IsChanged || this.FInFlipSequential.IsChanged || this.FInRefreshRate.IsChanged)
             {
                 this.depthmanager.NeedReset = true;
                 this.FInvalidateSwapChain = true;
@@ -518,8 +524,8 @@ namespace VVVV.DX11.Nodes
                     sd.Count = maxlevels;
                 }
 
-                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, 60,
-                    this.FInBufferCount[0]);
+                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, this.FInRefreshRate[0],
+                    this.FInBufferCount[0], this.FInFlipSequential[0]);
 
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
