@@ -219,18 +219,15 @@ namespace VVVV.DX11
                                 context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
                             }
 
-                            //Call render on all layers
-                            for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                            try
                             {
-                                try
-                                {
-                                    this.FInLayer[j][context].Render(context, settings);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
+                                this.FInLayer.RenderAll(context, settings);
                             }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+
 
                             if (viewportpop)
                             {
@@ -239,11 +236,8 @@ namespace VVVV.DX11
                         }
                     }
 
-
                     //Post render
                     this.AfterRender(renderer, context);
-
-
                 }
                 catch (Exception ex)
                 {

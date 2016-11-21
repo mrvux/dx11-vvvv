@@ -99,10 +99,11 @@ namespace VVVV.DX11.Nodes
 
                 this.PreRender(context, rs);
 
-                for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                if (this.FInLayer.IsConnected)
                 {
-                    this.FInLayer[j][context].Render(context, rs);
+                    this.FInLayer.RenderAll(context, rs);
                 }
+
 
                 this.PostRender(context);
             }
