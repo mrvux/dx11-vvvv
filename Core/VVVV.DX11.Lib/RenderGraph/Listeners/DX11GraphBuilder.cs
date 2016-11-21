@@ -128,9 +128,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
 
             if (pin.Direction == PinDirection.Input && io != null && pin.Type.StartsWith("DX11Resource"))
             {
-                DX11InputPin vop = new DX11InputPin(vn);
-                vop.HdePin = pin.InternalCOMInterf;
-                vop.PluginIO = io;
+                DX11InputPin vop = new DX11InputPin(vn, pin.InternalCOMInterf, io);
 
                 //We only register event on input pin (more than enough to build graph)
                 pin.Connected += pin_Connected;
@@ -154,9 +152,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
 
             if (pin.Direction == PinDirection.Output && io != null && pin.Type.StartsWith("DX11Resource"))
             {
-                DX11OutputPin vop = new DX11OutputPin(vn);
-                vop.HdePin = pin.InternalCOMInterf;
-                vop.PluginIO = io;
+                DX11OutputPin vop = new DX11OutputPin(vn, pin.InternalCOMInterf, io);
             }
         }
 

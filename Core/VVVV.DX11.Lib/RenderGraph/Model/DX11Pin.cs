@@ -10,15 +10,17 @@ namespace VVVV.DX11.RenderGraph.Model
 {
     public class DX11Pin
     {
-        public DX11Pin(DX11Node parentnode)
+        public DX11Pin(DX11Node parentnode, IPin hdePin, IPluginIO pluginIO)
         {
             this.ParentNode = parentnode;
+            this.HdePin = hdePin;
+            this.PluginIO = pluginIO;
         }
 
         public string Name { get { return this.HdePin.Name; } }
         public DX11Node ParentNode { get; private set; }
-        public IPin HdePin { get; set; }
-        public IPluginIO PluginIO { get; set; }
+        public IPin HdePin { get; private set; }
+        public IPluginIO PluginIO { get; private set; }
 
 
 
