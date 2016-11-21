@@ -21,6 +21,8 @@ namespace VVVV.DX11.RenderGraph.Model
         private readonly IDX11ResourceHost resourceHost;
         private readonly IDX11RendererHost rendererHost;
 
+        private readonly IDX11RenderStartPoint renderStartPoint;
+
         public DX11NodeInterfaces(IInternalPluginHost hoster)
         {
             this.hoster = hoster;
@@ -33,11 +35,17 @@ namespace VVVV.DX11.RenderGraph.Model
             this.resourceHost = this.IsAssignable<IDX11ResourceHost>() ? this.Instance<IDX11ResourceHost>() : null;
             this.rendererHost = this.IsAssignable<IDX11RendererHost>() ? this.Instance<IDX11RendererHost>() : null;
             this.layerHost = this.IsAssignable<IDX11LayerHost>() ? this.Instance<IDX11LayerHost>() : null;
+            this.renderStartPoint = this.IsAssignable<IDX11RenderStartPoint>() ? this.Instance<IDX11RenderStartPoint>() : null;
         }
 
         public bool IsResourceProvider
         {
             get { return this.resourceProvider != null; }
+        }
+
+        public bool IsRenderStartPoint
+        {
+            get { return this.renderStartPoint != null; }
         }
 
         public bool IsResourceHost
@@ -103,6 +111,12 @@ namespace VVVV.DX11.RenderGraph.Model
         public IDX11UpdateBlocker UpdateBlocker
         {
             get { return this.updateBlocker; }
+        }
+
+
+        public IDX11RenderStartPoint RenderStartPoint
+        {
+            get { return this.renderStartPoint; }
         }
 
         private T Instance<T>()

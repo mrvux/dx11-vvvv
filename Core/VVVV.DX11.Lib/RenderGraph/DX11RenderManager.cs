@@ -25,7 +25,7 @@ namespace VVVV.DX11.Lib.RenderGraph
         private ILogger logger;
         private IDX11GraphBuilder gb;
 
-        private List<IDX11RenderWindow> oldwindows = new List<IDX11RenderWindow>();
+        private List<DX11Node> oldwindows = new List<DX11Node>();
 
         public bool Enabled { get; set; }
 
@@ -81,15 +81,15 @@ namespace VVVV.DX11.Lib.RenderGraph
         public void Reset()
         {
             
-            List<IDX11RenderWindow> windows = this.FindRenderWindows();
-            foreach (IDX11RenderWindow win in windows)
+            List<DX11Node> windows = this.FindRenderWindows();
+            foreach (DX11Node win in windows)
             {
-                this.allocator.AddRenderWindow(win);
+                this.allocator.AddRenderWindow(win.Interfaces.RenderWindow);
             }
 
-            foreach (IDX11RenderWindow old in this.oldwindows)
+            foreach (DX11Node old in this.oldwindows)
             {
-                if (!windows.Contains(old)) { this.allocator.RemoveRenderWindow(old); }
+                if (!windows.Contains(old)) { this.allocator.RemoveRenderWindow(old.Interfaces.RenderWindow); }
             }
 
             this.allocator.Reallocate();
@@ -137,7 +137,8 @@ namespace VVVV.DX11.Lib.RenderGraph
 
             foreach (DX11RenderContext dev in this.RenderGraphs.Keys)
             {
-                this.RenderGraphs[dev].Render(this.FindRenderWindows(dev));
+                var renderWindows = this.FindRenderStartPoints(dev);
+                this.RenderGraphs[dev].Render(renderWindows);
                 this.RenderGraphs[dev].EndFrame();
             }
         }
@@ -152,7 +153,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 return;
             }
 
-            foreach (IDX11RenderWindow window in this.FindRenderWindows())
+            foreach (IDX11RenderStartPoint window in this.FindRenderStartPoints())
             {
                 try
                 {
@@ -171,15 +172,13 @@ namespace VVVV.DX11.Lib.RenderGraph
             }
         }
 
-        #region Find Renderers
-        private List<DX11Node> FindRenderWindows(DX11RenderContext device)
+        private List<DX11Node> FindRenderWindows()
         {
             List<DX11Node> renderers = new List<DX11Node>();
-
             foreach (DX11Node n in this.graph.RenderWindows)
             {
                 IDX11RenderWindow window = n.Interfaces.RenderWindow;
-                if (window.RenderContext == device && window.IsVisible)
+                if (window.Enabled)
                 {
                     renderers.Add(n);
                 }
@@ -187,26 +186,34 @@ namespace VVVV.DX11.Lib.RenderGraph
             return renderers;
         }
 
-        private List<IDX11RenderWindow> FindRenderWindows()
+        private List<DX11Node> FindRenderStartPoints()
         {
-            List<IDX11RenderWindow> renderers = new List<IDX11RenderWindow>();
-
-            foreach (DX11Node n in this.graph.RenderWindows)
+            List<DX11Node> renderers = new List<DX11Node>();
+            foreach (DX11Node n in this.graph.RenderStartPoints)
             {
 
-                IDX11RenderWindow window = n.Interfaces.RenderWindow;
-                //We only care about the window in case it's visible
-
-                if (window.IsVisible)
+                IDX11RenderStartPoint window = n.Interfaces.RenderStartPoint;
+                if (window.Enabled)
                 {
-                    renderers.Add(window);
+                    renderers.Add(n);
                 }
             }
             return renderers;
         }
-        #endregion
 
+        private List<DX11Node> FindRenderStartPoints(DX11RenderContext context)
+        {
+            List<DX11Node> renderers = new List<DX11Node>();
+            foreach (DX11Node n in this.graph.RenderStartPoints)
+            {
 
-
+                IDX11RenderStartPoint window = n.Interfaces.RenderStartPoint;
+                if (window.Enabled && window.RenderContext == context)
+                {
+                    renderers.Add(n);
+                }
+            }
+            return renderers;
+        }
     }
 }

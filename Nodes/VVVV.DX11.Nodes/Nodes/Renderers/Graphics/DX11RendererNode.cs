@@ -282,7 +282,6 @@ namespace VVVV.DX11.Nodes
 
         private bool FInvalidateSwapChain;
         private bool FResized = false;
-        private DX11RenderContext primary;
         private bool FirstFrame = true;
         #endregion
 
@@ -592,13 +591,17 @@ namespace VVVV.DX11.Nodes
             this.FResized = false;
         }
 
+
+        private DX11RenderContext attachedContext;
+
+        public void AttachContext(DX11RenderContext renderContext)
+        {
+            this.attachedContext = renderContext;
+        }
+
         public DX11RenderContext RenderContext
         {
-            get { return this.primary; }
-            set
-            {
-                this.primary = value;
-            }
+            get { return this.attachedContext; }
         }
 
         public IntPtr WindowHandle

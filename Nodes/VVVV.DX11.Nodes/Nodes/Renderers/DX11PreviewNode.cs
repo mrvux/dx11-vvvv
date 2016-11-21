@@ -215,21 +215,28 @@ namespace VVVV.DX11.Nodes.Renderers
                  return CustomQueryInterfaceResult.NotHandled;
              }
          }
-         #endregion
+        #endregion
 
-         #region Window Stuff
-         public DX11RenderContext RenderContext
-         {
-             get;
-             set;
-         }
+        #region Window Stuff
+
+        private DX11RenderContext attachedContext;
+
+        public void AttachContext(DX11RenderContext renderContext)
+        {
+            this.attachedContext = renderContext;
+        }
+
+        public DX11RenderContext RenderContext
+        {
+            get { return this.attachedContext; }
+        }
 
          public IntPtr WindowHandle
          {
              get { return ctrl.Handle; }
          }
 
-         public bool IsVisible
+         public bool Enabled
          {
              get { return ctrl.Visible; }
          }
@@ -260,5 +267,7 @@ namespace VVVV.DX11.Nodes.Renderers
              this.FOutCtrl[0] = this.ctrl;
             this.spreadMax = SpreadMax;
          }
+
+ 
     }
 }
