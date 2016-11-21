@@ -308,7 +308,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 }
 
                 //Only call render if layer connected
-                if (this.FInLayer.PluginIO.IsConnected)
+                if (this.FInLayer.IsConnected)
                 {
                     float cw = (float)this.form.ClientSize.Width;
                     float ch = (float)this.form.ClientSize.Height;

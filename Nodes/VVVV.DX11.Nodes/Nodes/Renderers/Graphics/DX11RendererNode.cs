@@ -430,7 +430,7 @@ namespace VVVV.DX11.Nodes
                     }
 
                     //Only call render if layer connected
-                    if (this.FInLayer.PluginIO.IsConnected)
+                    if (this.FInLayer.IsConnected)
                     {
                         int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
                         rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
