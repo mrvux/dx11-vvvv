@@ -140,6 +140,25 @@ namespace VVVV.DX11
             return result;
         }
 
+        public static PrimitiveTopology Topology(this EffectPass var)
+        {
+            if (var.GetAnnotationByName("topology") != null)
+            {
+                if (var.GetAnnotationByName("topology").AsString() != null)
+                {
+                    try
+                    {
+                        return (PrimitiveTopology)Enum.Parse(typeof(PrimitiveTopology), var.GetAnnotationByName("topology").AsString().GetString(), true);
+                    }
+                    catch
+                    {
+                        return PrimitiveTopology.Undefined;
+                    }
+                }
+            }
+            return PrimitiveTopology.Undefined;
+        }
+
         public static string LinkClassesStr(this EffectVariable var)
         {
             string result = String.Empty;
