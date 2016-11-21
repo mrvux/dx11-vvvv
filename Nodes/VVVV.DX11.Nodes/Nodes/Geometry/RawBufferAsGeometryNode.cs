@@ -12,7 +12,7 @@ using SlimDX;
 namespace VVVV.DX11.Nodes.Geometry
 {
     [PluginInfo(Name = "AsGeometry", Category = "DX11.Buffer", Version = "Advanced", Author = "vux", Help = "Allows to set a raw buffer as drawing geometry by relocation memory addresses")]
-    public class RawBufferAsGeometryNode : IPluginEvaluate, IDX11ResourceProvider
+    public class RawBufferAsGeometryNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", IsSingle = true)]
         protected Pin<DX11Resource<IDX11Buffer>> inputBuffer;
@@ -50,7 +50,7 @@ namespace VVVV.DX11.Nodes.Geometry
         [Output("Geometry Out")]
         protected ISpread<DX11Resource<RawBufferGeometry>> geometryOutput;
 
-        private RawBufferGeometry rawGeometry;
+        private DX11Resource<RawBufferGeometry> rawGeometry;
 
 
         public void Evaluate(int SpreadMax)
@@ -58,34 +58,34 @@ namespace VVVV.DX11.Nodes.Geometry
             if (this.geometryOutput[0] == null)
             {
                 this.geometryOutput[0] = new DX11Resource<RawBufferGeometry>();
+                this.rawGeometry = this.geometryOutput[0];
             }
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
-            if (this.rawGeometry == null)
+            if (!this.rawGeometry.Contains(context))
             {
-                this.rawGeometry = new RawBufferGeometry(context);
+                this.rawGeometry[context] = new RawBufferGeometry(context);
             }
 
             if (this.inputBuffer.IsConnected && enabled[0])
             {
-                this.rawGeometry.Buffer = this.inputBuffer[0][context];
-                this.rawGeometry.Topology = this.topology[0];
-                this.rawGeometry.InputLayout = this.inputLayout.ToArray();
-                this.rawGeometry.Prop.AllowIndexBuffer = this.allowIndexBuffer[0];
-                this.rawGeometry.Prop.DrawOffset = this.drawArgumentOffset[0];
-                this.rawGeometry.Prop.IndexBufferOffset = this.indexBufferOffset[0];
+                var rg = this.rawGeometry[context];
+                rg.Buffer = this.inputBuffer[0][context];
+                rg.Topology = this.topology[0];
+                rg.InputLayout = this.inputLayout.ToArray();
+                rg.Prop.AllowIndexBuffer = this.allowIndexBuffer[0];
+                rg.Prop.DrawOffset = this.drawArgumentOffset[0];
+                rg.Prop.IndexBufferOffset = this.indexBufferOffset[0];
 
-                this.rawGeometry.Prop.VertexBufferOffsets = new int[this.vertexBufferCount[0]];
-                this.rawGeometry.Prop.VertexBufferStrides = new int[this.vertexBufferCount[0]];
+                rg.Prop.VertexBufferOffsets = new int[this.vertexBufferCount[0]];
+                rg.Prop.VertexBufferStrides = new int[this.vertexBufferCount[0]];
                 for (int i = 0; i < this.vertexBufferCount[0]; i++)
                 {
-                    this.rawGeometry.Prop.VertexBufferOffsets[i] = this.vertexBufferOffsets[i];
-                    this.rawGeometry.Prop.VertexBufferStrides[i] = this.vertexBufferStrides[i];
+                    rg.Prop.VertexBufferOffsets[i] = this.vertexBufferOffsets[i];
+                    rg.Prop.VertexBufferStrides[i] = this.vertexBufferStrides[i];
                 }
-
-                this.geometryOutput[0][context] = this.rawGeometry;
             }
             else
             {

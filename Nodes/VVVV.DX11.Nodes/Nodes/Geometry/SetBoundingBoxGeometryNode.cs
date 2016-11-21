@@ -16,7 +16,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes.Geometry
 {
     [PluginInfo(Name = "BoundingBox", Category = "DX11.Geometry", Version = "Set", Author = "vux")]
-    public class SetBoundingBoxGeometryNode : IPluginEvaluate, IDX11ResourceProvider
+    public class SetBoundingBoxGeometryNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", CheckIfChanged = true)]
         protected Pin<DX11Resource<IDX11Geometry>> FInGeom;
@@ -46,7 +46,7 @@ namespace VVVV.DX11.Nodes.Geometry
             this.spmax = SpreadMax;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInGeom.PluginIO.IsConnected)
             {
@@ -64,7 +64,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             
         }
