@@ -21,7 +21,7 @@ using Microsoft.Kinect.Fusion;
 namespace VVVV.DX11.Nodes.Nodes
 {
     [PluginInfo(Name="Fusion",Category="Kinect",Version="Microsoft",Author="vux")]
-    public unsafe class KinectFusionNode : IPluginEvaluate,IDX11ResourceProvider, IPluginConnections
+    public unsafe class KinectFusionNode : IPluginEvaluate,IDX11ResourceHost, IPluginConnections
     {
         [Input("Kinect Runtime")]
         private Pin<KinectRuntime> FInRuntime;
@@ -306,7 +306,7 @@ namespace VVVV.DX11.Nodes.Nodes
             this.processing = false;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FTextureOutput[0].Contains(context))
             {
@@ -424,7 +424,7 @@ namespace VVVV.DX11.Nodes.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FTextureOutput[0].Dispose(context);
         }

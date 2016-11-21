@@ -22,7 +22,8 @@ namespace VVVV.MSKinect.Nodes
                 Author = "flateric",
                 Tags = "DX11",
                 Help = "Returns high definition face data for user")]
-    public unsafe class KinectHDFaceBufferNode : IPluginEvaluate, IPluginConnections, IDX11ResourceProvider, IDisposable
+    [Obsolete("Does not support multiple devices")]
+    public unsafe class KinectHDFaceBufferNode : IPluginEvaluate, IPluginConnections, IDX11ResourceHost, IDisposable
     {
 
         [Input("Kinect Runtime")]
@@ -271,7 +272,7 @@ namespace VVVV.MSKinect.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.ibo == null)
             {
@@ -311,7 +312,7 @@ namespace VVVV.MSKinect.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }
