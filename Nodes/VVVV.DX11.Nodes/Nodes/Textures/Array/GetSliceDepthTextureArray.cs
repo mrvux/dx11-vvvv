@@ -25,7 +25,7 @@ using VVVV.Utils.VMath;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "GetSlice", Category = "DX11.DepthTextureArray", Version = "", Author = "sebl")]
-    public class GetSliceDepthTextureArray : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class GetSliceDepthTextureArray : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("TextureArray In", IsSingle = true)]
         protected Pin<DX11Resource<DX11DepthTextureArray>> FTexIn;
@@ -80,7 +80,7 @@ namespace VVVV.DX11.Nodes
         }
 
         
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FTextureOutput.SliceCount == 0 || !FTexIn.IsConnected) { return; }
 
@@ -136,28 +136,15 @@ namespace VVVV.DX11.Nodes
             this.FTextureOutput[index][context] = new DX11DepthStencil(context, description.Width, description.Height, description.SampleDescription);
         }
 
-
         public void Dispose()
         {
-            if (this.FTextureOutput.SliceCount > 0)
-            {
-                if (this.FTextureOutput[0] != null)
-                {
-                    for (int i = 0; i < FTextureOutput.SliceCount; i++)
-                    {
-                        this.FTextureOutput[i].Dispose();
-                    }
-                }
-            }
+            this.FTextureOutput.SafeDisposeAll();
         }
 
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < FTextureOutput.SliceCount; i++ )
-            {
-                this.FTextureOutput[i].Dispose(context);
-            }
+            this.FTextureOutput.SafeDisposeAll(context);
         }
 
 
