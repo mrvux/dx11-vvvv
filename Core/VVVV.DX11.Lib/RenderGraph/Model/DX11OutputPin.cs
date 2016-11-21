@@ -8,9 +8,12 @@ namespace VVVV.DX11.RenderGraph.Model
 {
     public class DX11OutputPin : DX11Pin
     {
+        private bool isFeedBackPin;
 
         public DX11OutputPin(DX11Node parentnode) : base(parentnode) 
         {
+            INodeOut nodeout = (INodeOut)this.PluginIO;
+            this.isFeedBackPin = nodeout.AllowFeedback;
             this.ChildrenPins = new List<DX11InputPin>();
             this.ParentNode.OutputPins.Add(this);
         }
@@ -19,11 +22,7 @@ namespace VVVV.DX11.RenderGraph.Model
 
         public bool IsFeedBackPin
         {
-            get
-            {
-                INodeOut nodeout = (INodeOut)this.PluginIO;
-                return nodeout.AllowFeedback;
-            }
+            get { return this.isFeedBackPin; }
         }
 
     }
