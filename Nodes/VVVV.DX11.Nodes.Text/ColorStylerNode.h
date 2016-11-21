@@ -69,6 +69,8 @@ namespace VVVV {
 
 				virtual void Evaluate(int spreadMax) 
 				{
+					this->styleOut->SliceCount = spreadMax;
+					 
 					for (int i = 0; i < spreadMax; i++)
 					{
 						ColorStyler^  ts = gcnew ColorStyler();
