@@ -20,12 +20,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
     {
         protected abstract ShaderResourceView GetSRV(DX11ShaderInstance shaderinstance,int bin,int slice);
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            var data = this.GetViews(shaderinstance, slice);
-            shaderinstance.SetByName(this.Name, data);
-        }
-
         private ShaderResourceView[] GetViews(DX11ShaderInstance shaderinstance, int slice)
         {
             ShaderResourceView[] data = new ShaderResourceView[array.Length];
@@ -57,12 +51,9 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
     public class Texture2DArrayShaderPin : TextureArrayShaderPin<DX11Texture2D, Texture2D>
     {
-
         protected override ShaderResourceView GetSRV(DX11ShaderInstance shaderinstance, int bin, int slice)
         {
             return  this.pin[bin][slice][shaderinstance.RenderContext].SRV;
         }
-
-
     }
 }

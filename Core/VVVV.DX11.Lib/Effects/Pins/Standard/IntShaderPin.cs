@@ -15,11 +15,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 {
     public class IntShaderPin : AbstractValuePin<int>
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             attr.DefaultValue = var.AsScalar().GetFloat();
@@ -34,11 +29,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
     public class Int2ShaderPin : AbstractValuePin<Vector2>
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             Vector4 vec = var.AsVector().GetVector();
@@ -55,11 +45,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
     public class Int3ShaderPin : AbstractValuePin<Vector3>
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             Vector4 vec = var.AsVector().GetVector();
@@ -76,11 +61,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
     public class Int4ShaderPin : AbstractValuePin<Vector4>
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             Vector4 vec = var.AsVector().GetVector();

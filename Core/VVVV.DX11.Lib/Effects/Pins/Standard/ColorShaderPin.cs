@@ -18,8 +18,9 @@ namespace VVVV.DX11.Internals.Effects.Pins
         double* colorPtr;
         int colorCnt;
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
+        public void Update()
         {
+            this.pin.GetColorPointer(out colorCnt, out colorPtr);
         }
 
         public override Action<int> CreateAction(DX11ShaderInstance instance)
@@ -38,11 +39,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public bool ChangeType(EffectVariable var)
         {
             return var.IsColor();
-        }
-
-        public void Update()
-        {
-            this.pin.GetColorPointer(out colorCnt, out colorPtr);
         }
 
         protected override void CreatePin(EffectVariable variable)

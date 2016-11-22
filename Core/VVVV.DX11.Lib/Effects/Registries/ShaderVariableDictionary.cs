@@ -93,32 +93,6 @@ namespace VVVV.DX11.Lib.Effects.Registries
                 return max;
             }
         }
-
-        public void Preprocess(DX11ShaderInstance instance)
-        {
-            this.spreadedpins.Clear();
-            for (int i = 0; i < this.variablesList.Count; i++)
-            {
-                IShaderPin sp = this.variablesList[i];
-                //sp.RenderContext = context;
-
-                if (sp.Constant) { sp.SetVariable(instance, 0); }
-                else { spreadedpins.Add(sp); }
-            }
-
-            foreach (IShaderPin sp in spreadedpins)
-            {
-                sp.SetVariable(instance, 0);
-            }
-        }
-
-        public void ApplySlice(DX11ShaderInstance instance, int slice)
-        {
-            for (int i = 0; i < this.spreadedpins.Count; i++)
-            {
-                spreadedpins[i].SetVariable(instance, slice);
-            }
-        }
     }
 
     public class RenderVariableDictionary : ShaderVariableDictionary<IRenderVariable>

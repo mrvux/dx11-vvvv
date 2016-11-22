@@ -14,11 +14,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 {
     public class Float3ShaderPin : AbstractValuePin<Vector3>
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             Vector4 vec = var.AsVector().GetVector();

@@ -13,13 +13,9 @@ namespace VVVV.DX11.Internals.Effects.Pins
     public interface IShaderPin : IShaderVariable
     {
         void Initialize(IIOFactory factory, EffectVariable variable);
-
-        void SetVariable(DX11ShaderInstance shaderinstance, int slice);
-
         string PinName { get; }
         bool Constant { get; }
         int SliceCount { get; }
-        EffectVariable EffectVariable { get; }
         Action<int> CreateAction(DX11ShaderInstance instance);
     }
 

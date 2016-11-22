@@ -18,11 +18,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
         private bool uvspace;
         private bool invy;
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.GetMatrix(slice));
-        }
-
         private Matrix GetMatrix(int slice)
         {
             if (!uvspace)

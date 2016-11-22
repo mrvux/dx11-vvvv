@@ -30,11 +30,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
             return false;
         }
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.GetView(shaderinstance, slice));
-        }
-
         private ShaderResourceView GetView(DX11ShaderInstance shaderinstance, int slice)
         {
             if (this.pin.IsConnected)

@@ -25,7 +25,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
             return false;
         }
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
+        private void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
             if (this.pin.IsConnected)
             {
