@@ -19,8 +19,6 @@ namespace VVVV.DX11.Lib.Effects.RenderSemantics
         public string Semantic { get; protected set; }
         public string TypeName { get; protected set; }
         public int Elements { get; protected set; }
-        public DX11RenderContext RenderContext { get; set; }
-
 
         public AbstractRenderVariable(EffectVariable var)
         {
@@ -31,7 +29,6 @@ namespace VVVV.DX11.Lib.Effects.RenderSemantics
             this.Elements = var.GetVariableType().Description.Elements;
         }
 
-        public abstract void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings);
         public abstract Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader);
 
         public void Update(EffectVariable variable) { }

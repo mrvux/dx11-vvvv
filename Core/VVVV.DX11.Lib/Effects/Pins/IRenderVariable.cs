@@ -14,7 +14,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
     public interface IRenderVariable : IShaderVariable
     {
         string Semantic { get; }
-        void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings);
         Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader);
     }
 
