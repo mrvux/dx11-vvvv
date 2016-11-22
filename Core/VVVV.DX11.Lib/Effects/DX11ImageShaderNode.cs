@@ -250,7 +250,7 @@ namespace VVVV.DX11.Nodes.Layers
                 this.varmanager.RebuildPassCache(tid);
             }
 
-            this.varmanager.ApplyUpdatable();
+            this.varmanager.ApplyUpdates();
 
             this.FOut.Stream.IsChanged = true;
         }
@@ -380,8 +380,7 @@ namespace VVVV.DX11.Nodes.Layers
 
                     this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, r);
                     var variableCache = this.shaderVariableCache[context];
-                    variableCache.Preprocess(r);
-                    this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
+                    variableCache.ApplyGlobals(r);
 
                     DX11Texture2D lastrt = initial;
                     DX11ResourcePoolEntry<DX11RenderTarget2D> lasttmp = null;
@@ -530,10 +529,10 @@ namespace VVVV.DX11.Nodes.Layers
                             r.RenderWidth = w;
                             r.RenderHeight = h;
                             r.BackBuffer = elem.Element;
-                            this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
-                            //Apply settings (note that textures swap is handled later)
-                            variableCache.Apply(or, i);
+                            //Apply settings (we do both here, as texture size semantic might ahve 
+                            variableCache.ApplyGlobals(r);
+                            variableCache.ApplySlice(or, i);
                             //Bind last render target
                             this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
 

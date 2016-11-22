@@ -80,7 +80,7 @@ namespace VVVV.DX11.Lib.Effects
             }
         }
 
-        public void ApplyUpdatable()
+        public void ApplyUpdates()
         {
             for (int i = 0; i < this.shaderpins.VariablesList.Count; i++)
             {
@@ -90,7 +90,6 @@ namespace VVVV.DX11.Lib.Effects
                     ((IUpdateShaderPin)sp).Update();
                 }
             }
-            
         }
         #endregion
 
@@ -156,23 +155,17 @@ namespace VVVV.DX11.Lib.Effects
             get { return this.worldvariables; }
         }
 
+        public RenderVariableDictionary RenderVariables
+        {
+            get { return this.rendervariables; }
+        }
+
         public bool SetGlobalSettings(DX11ShaderInstance instance, DX11RenderSettings settings)
         {
             this.globalsettings = settings;
 
             return settings.ApplySemantics(instance, this.customvariables);
         }
-
-        #region Apply Global
-        public void ApplyGlobal(DX11ShaderInstance instance)
-        {
-            //this.globalsettings = settings;
-
-            this.rendervariables.Apply(instance, this.globalsettings);
-
-            //this.shaderpins.Preprocess(instance);
-        }
-        #endregion
 
         public int CalculateSpreadMax()
         {

@@ -241,7 +241,7 @@ namespace VVVV.DX11.Nodes.Layers
             this.FOut.Stream.IsChanged = true;
             this.FOutBuffer.Stream.IsChanged = true;
 
-            this.varmanager.ApplyUpdatable();
+            this.varmanager.ApplyUpdates();
         }
 
         #endregion
@@ -352,8 +352,7 @@ namespace VVVV.DX11.Nodes.Layers
                     }
 
                     var variableCache = this.shaderVariableCache[context];
-                    this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
-                    variableCache.Preprocess(settings);
+                    variableCache.ApplyGlobals(settings);
 
                     if (this.clone == null || this.FIn.IsChanged || this.FInAsAuto.IsChanged || this.FInMaxElements.IsChanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
                     {
@@ -518,7 +517,7 @@ namespace VVVV.DX11.Nodes.Layers
                     ors.DrawCallIndex = 0;
                     ors.Geometry = this.FIn[0][context];
                     ors.WorldTransform = Matrix.Identity;
-                    variableCache.Apply(ors, 0);
+                    variableCache.ApplySlice(ors, 0);
 
                     shaderdata.ApplyPass(ctx);
 

@@ -32,17 +32,10 @@ namespace VVVV.DX11.Lib.Effects.RenderSemantics
         }
 
         public abstract void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings);
+        public abstract Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader);
 
-
-        public void Update(EffectVariable variable)
-        {
-            
-        }
-
-        public void Dispose()
-        {
-           
-        }
+        public void Update(EffectVariable variable) { }
+        public void Dispose() { }
     }
 
     public abstract class AbstractWorldRenderVariable : IWorldRenderVariable
@@ -62,14 +55,7 @@ namespace VVVV.DX11.Lib.Effects.RenderSemantics
 
         public abstract Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader);
 
-        public void Update(EffectVariable variable)
-        {
-            
-        }
-
-        public void Dispose()
-        {
-            
-        }
+        public void Update(EffectVariable variable) { }
+        public void Dispose() { }
     }
 }

@@ -217,7 +217,7 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FInvalidate = false;
             }
 
-            this.varmanager.ApplyUpdatable();
+            this.varmanager.ApplyUpdates();
         }
         #endregion
 
@@ -372,8 +372,7 @@ namespace VVVV.DX11.Nodes.Layers
                     var variableCache = this.shaderVariableCache[context];
                     DX11ShaderData sdata = this.deviceshaderdata[context];
                     this.varmanager.SetGlobalSettings(sdata.ShaderInstance, settings);
-                    this.varmanager.ApplyGlobal(sdata.ShaderInstance);
-                    variableCache.Preprocess(settings);
+                    variableCache.ApplyGlobals(settings);
 
                     DX11ObjectRenderSettings oset = new DX11ObjectRenderSettings();
                     oset.DrawCallIndex = 0;
@@ -381,7 +380,7 @@ namespace VVVV.DX11.Nodes.Layers
                     oset.IterationCount = 1;
                     oset.IterationIndex = 0;
                     oset.WorldTransform = this.mworld[0 % this.mworldcount];
-                    variableCache.Apply(oset, 0);
+                    variableCache.ApplySlice(oset, 0);
                     sdata.ApplyPass(ctx);
 
 
@@ -475,9 +474,7 @@ namespace VVVV.DX11.Nodes.Layers
                     var objectsettings = this.objectSettings[context];
                     var orderedobjectsettings = this.orderedObjectSettings[context];
                     var variableCache = this.shaderVariableCache[context];
-
-                    this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
-                    variableCache.Preprocess(settings);
+                    variableCache.ApplyGlobals(settings);
 
                     //IDX11Geometry drawgeom = null;
                     objectsettings.Geometry = null;
@@ -573,7 +570,7 @@ namespace VVVV.DX11.Nodes.Layers
 
                                 if (settings.ValidateObject(objectsettings))
                                 {
-                                    variableCache.Apply(objectsettings, idx);
+                                    variableCache.ApplySlice(objectsettings, idx);
 
                                     for (int ip = 0; ip < shaderdata.PassCount;ip++)
                                     {
