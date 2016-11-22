@@ -494,6 +494,21 @@ namespace VVVV.DX11.Nodes.Layers
                         drawCount = 0;
                     }
 
+                    bool singleGeometry = this.FGeometry.SliceCount == 1 || settings.Geometry != null;
+                    if (settings.Geometry != null)
+                    {
+                        objectsettings.Geometry = settings.Geometry;
+                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, 0);
+                    }
+                    else if (singleGeometry)
+                    {
+                        pg = this.FGeometry[0];
+                        objectsettings.Geometry = pg[context];
+                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, 0);
+                    }
+
+
+
                     for (int i = 0; i < drawCount; i++)
                     {
                         int idx = doOrder ? orderedSlices[i] : i;
@@ -510,22 +525,27 @@ namespace VVVV.DX11.Nodes.Layers
                             for (int k = 0; k < objectsettings.IterationCount; k++)
                             {
                                 objectsettings.IterationIndex = k;
-                                if (settings.Geometry == null)
-                                {
-                                    if (this.FGeometry[idx] != pg)
+
+                                if (!singleGeometry)
+                                { 
+                                    if (settings.Geometry == null)
                                     {
-                                        pg = this.FGeometry[idx];
+                                        if (this.FGeometry[idx] != pg)
+                                        {
+                                            pg = this.FGeometry[idx];
 
-                                        objectsettings.Geometry = pg[context];
+                                            objectsettings.Geometry = pg[context];
 
+                                            shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        objectsettings.Geometry = settings.Geometry;
                                         shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
                                     }
                                 }
-                                else
-                                {
-                                    objectsettings.Geometry = settings.Geometry;
-                                    shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
-                                }
+
 
                                 //Prepare settings
                                 objectsettings.DrawCallIndex = idx;
