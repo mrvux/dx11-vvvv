@@ -10,6 +10,9 @@ platform: x64
 
 configuration: Release
 
+build:
+  project: vvvv-dx11.sln
+
 artifacts:
   # pushing a single file
   - path: vvvv-dx11-x64-build-alpha.zip
