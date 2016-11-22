@@ -276,7 +276,7 @@ namespace VVVV.DX11.Nodes
                 popstate = true;
             }
 
-            if (this.FInSamplerState.PluginIO.IsConnected)
+            if (this.FInSamplerState.IsConnected)
             {
                 SamplerState state = SamplerState.FromDescription(context.Device,this.FInSamplerState[0]);
                 qd.samplervariable.SetSamplerState(0, state);

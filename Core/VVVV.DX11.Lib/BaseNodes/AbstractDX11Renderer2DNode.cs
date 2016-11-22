@@ -129,7 +129,7 @@ namespace VVVV.DX11
 
             if (!this.renderers.ContainsKey(context))
             {
-                this.renderers.Add(context, new DX11GraphicsRenderer(this.FHost, context));
+                this.renderers.Add(context, new DX11GraphicsRenderer(context));
             }
 
             //Update what's needed

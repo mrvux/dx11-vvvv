@@ -187,7 +187,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.FInvalidateSwapChain = false;
             }
 
-            if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(this.FHost, context); }
+            if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(context); }
             this.updateddevices.Add(context);
 
             if (this.FInFullScreen[0] != this.swapchain.IsFullScreen)

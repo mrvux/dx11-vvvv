@@ -437,7 +437,7 @@ namespace VVVV.DX11.Nodes
 
                         settings.ViewportCount = rtmax;
 
-                        bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
+                        bool viewportpop = this.FInViewPort.IsConnected;
 
                         for (int i = 0; i < rtmax; i++)
                         {
@@ -545,7 +545,7 @@ namespace VVVV.DX11.Nodes
             }
 
             
-            if (!this.renderers.ContainsKey(context)) { this.renderers.Add(context, new DX11GraphicsRenderer(this.FHost, context)); }
+            if (!this.renderers.ContainsKey(context)) { this.renderers.Add(context, new DX11GraphicsRenderer(context)); }
 
             this.depthmanager.Update(context, sc.Width, sc.Height, sd);
 
