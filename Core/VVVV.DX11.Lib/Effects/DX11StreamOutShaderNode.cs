@@ -43,7 +43,7 @@ using System.CodeDom.Compiler;
 namespace VVVV.DX11.Nodes.Layers
 {
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
-    public unsafe class DX11StreamOutShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public unsafe class DX11StreamOutShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         private int tid = 0;
 
@@ -267,7 +267,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.CalculateSpreadMax() == 0)
             {
@@ -547,7 +547,7 @@ namespace VVVV.DX11.Nodes.Layers
 
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (this.deviceshaderdata.ContainsKey(context))
             {

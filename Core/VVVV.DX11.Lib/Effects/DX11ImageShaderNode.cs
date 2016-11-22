@@ -88,7 +88,7 @@ namespace VVVV.DX11.Nodes.Layers
     }
 
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
-    public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         private int tid = 0;
 
@@ -274,7 +274,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
@@ -666,7 +666,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             //this.FOutLayer[0].Dispose(OnDevice.Device);
 
