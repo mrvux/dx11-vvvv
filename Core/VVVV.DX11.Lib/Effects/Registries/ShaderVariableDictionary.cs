@@ -117,13 +117,5 @@ namespace VVVV.DX11.Lib.Effects.Registries
         {
             return !var.NeedDestroy(element);
         }
-
-        public void Apply(DX11ShaderInstance instance, DX11RenderSettings settings, DX11ObjectRenderSettings objectsettings)
-        {
-            for (int i = 0; i < this.variablesList.Count; i++)
-            {
-                this.variablesList[i].Apply(instance, settings, objectsettings);
-            }
-        }
     }
 }

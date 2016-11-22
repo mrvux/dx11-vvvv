@@ -18,11 +18,6 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         private Vector3 vec = new Vector3(-0.5f, -0.5f, -0.5f);
         public ObjectBMinRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
-        {
-            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
-        }
-
         private Vector3 GetBoundingBox(DX11ObjectRenderSettings obj)
         {
             if (obj.Geometry != null)
@@ -53,11 +48,6 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         private Vector3 vec = new Vector3(0.5f,-0.5f, 0.5f);
         public ObjectBMaxRenderVariable(EffectVariable var) : base(var) { }
-
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
-        {
-            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
-        }
 
         private Vector3 GetBoundingBox(DX11ObjectRenderSettings obj)
         {
@@ -90,11 +80,6 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         private Vector3 vec = new Vector3(1, 1, 1);
         public ObjectBScaleRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
-        {
-            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
-        }
-
         private Vector3 GetBoundingBox(DX11ObjectRenderSettings obj)
         {
             if (obj.Geometry != null)
@@ -125,11 +110,6 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         private Matrix m = Matrix.Identity;
         public ObjectUnitTransformRenderVariable(EffectVariable var) : base(var) { }
-
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
-        {
-            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
-        }
 
         private Matrix GetBoundingBox(DX11ObjectRenderSettings obj)
         {
@@ -166,11 +146,6 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         private Matrix m = Matrix.Identity;
         public ObjectSdfTransformRenderVariable(EffectVariable var) : base(var) { }
-
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
-        {
-            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
-        }
 
         private Matrix GetBoundingBox(DX11ObjectRenderSettings obj)
         {
