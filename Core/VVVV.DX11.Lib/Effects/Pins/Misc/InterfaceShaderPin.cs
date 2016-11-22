@@ -72,5 +72,11 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             shaderinstance.Effect.GetVariableByName(this.Name).AsInterface().ClassInstance = shaderinstance.Effect.GetVariableByName(this.pin[slice].Name).AsClassInstance();
         }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsResource();
+            return (i) => { instance.Effect.GetVariableByName(this.Name).AsInterface().ClassInstance = instance.Effect.GetVariableByName(this.pin[i].Name).AsClassInstance(); };
+        }
     }
 }

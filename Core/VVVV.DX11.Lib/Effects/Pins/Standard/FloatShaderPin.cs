@@ -23,5 +23,11 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             attr.DefaultValue = var.AsScalar().GetFloat();
         }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsScalar();
+            return (i) => { sv.Set(this.pin[i]); };
+        }
     }
 }

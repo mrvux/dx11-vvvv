@@ -24,6 +24,12 @@ namespace VVVV.DX11.Internals.Effects.Pins
             Vector4 vec = var.AsVector().GetVector();
             attr.DefaultValues = new double[] { vec.X, vec.Y };
         }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
+            return (i) => { sv.Set(this.pin[i]); };
+        }
     }
 
 

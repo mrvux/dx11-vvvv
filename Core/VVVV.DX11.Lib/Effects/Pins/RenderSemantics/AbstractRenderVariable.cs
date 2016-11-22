@@ -62,7 +62,7 @@ namespace VVVV.DX11.Lib.Effects.RenderSemantics
         }
 
         public abstract void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj);
-
+        public abstract Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader);
 
         public void Update(EffectVariable variable)
         {

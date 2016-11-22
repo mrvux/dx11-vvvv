@@ -15,6 +15,11 @@ namespace VVVV.DX11.Lib.Effects.Registries
         private Dictionary<string, T> variablesDictionary = new Dictionary<string, T>();
         protected List<T> variablesList = new List<T>();
 
+        public List<T> VariablesList
+        {
+            get { return this.variablesList; }
+        }
+
         public void UpdateEffect(Effect effect)
         {
             List<string> toremove = new List<string>();

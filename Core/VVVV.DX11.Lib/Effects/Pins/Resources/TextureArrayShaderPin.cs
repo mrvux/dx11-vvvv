@@ -22,8 +22,12 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
-            
-            //ISpread<U> f = this.pin[slice];
+            var data = this.GetViews(shaderinstance, slice);
+            shaderinstance.SetByName(this.Name, data);
+        }
+
+        private ShaderResourceView[] GetViews(DX11ShaderInstance shaderinstance, int slice)
+        {
             ShaderResourceView[] data = new ShaderResourceView[array.Length];
             for (int i = 0; i < array.Length; i++)
             {
@@ -36,9 +40,14 @@ namespace VVVV.DX11.Internals.Effects.Pins
                     data[i] = null;
                 }
             }
-            shaderinstance.SetByName(this.Name, data);
+            return data;
         }
 
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsResource();
+            return (i) => { sv.SetResourceArray(this.GetViews(instance, i)); };
+        }
 
         protected override void UpdateShaderValue(DX11ShaderInstance shaderinstance)
         {
@@ -53,5 +62,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             return  this.pin[bin][slice][shaderinstance.RenderContext].SRV;
         }
+
+
     }
 }

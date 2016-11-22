@@ -19,6 +19,8 @@ namespace VVVV.DX11.Internals.Effects.Pins
         string PinName { get; }
         bool Constant { get; }
         int SliceCount { get; }
+        EffectVariable EffectVariable { get; }
+        Action<int> CreateAction(DX11ShaderInstance instance);
     }
 
     public interface IMultiTypeShaderPin

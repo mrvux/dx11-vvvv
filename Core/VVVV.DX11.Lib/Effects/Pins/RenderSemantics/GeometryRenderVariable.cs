@@ -20,21 +20,32 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
         {
+            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
+        }
+
+        private Vector3 GetBoundingBox(DX11ObjectRenderSettings obj)
+        {
             if (obj.Geometry != null)
             {
                 if (obj.Geometry.HasBoundingBox)
                 {
-                    shaderinstance.SetByName(this.Name,obj.Geometry.BoundingBox.Minimum);
+                    return obj.Geometry.BoundingBox.Minimum;
                 }
                 else
                 {
-                    shaderinstance.SetByName(this.Name, vec);
+                    return vec;
                 }
             }
             else
             {
-                shaderinstance.SetByName(this.Name, vec);
+                return vec;
             }
+        }
+
+        public override Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var effectVar = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (settings, obj) => effectVar.Set(this.GetBoundingBox(obj));
         }
     }
 
@@ -45,21 +56,32 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
         {
+            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
+        }
+
+        private Vector3 GetBoundingBox(DX11ObjectRenderSettings obj)
+        {
             if (obj.Geometry != null)
             {
                 if (obj.Geometry.HasBoundingBox)
                 {
-                    shaderinstance.SetByName(this.Name, obj.Geometry.BoundingBox.Maximum);
+                    return obj.Geometry.BoundingBox.Maximum;
                 }
                 else
                 {
-                    shaderinstance.SetByName(this.Name, vec);
+                    return vec;
                 }
             }
             else
             {
-                shaderinstance.SetByName(this.Name, vec);
+                return vec;
             }
+        }
+
+        public override Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var effectVar = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (settings, obj) => effectVar.Set(this.GetBoundingBox(obj));
         }
     }
 
@@ -70,21 +92,32 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
         {
+            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
+        }
+
+        private Vector3 GetBoundingBox(DX11ObjectRenderSettings obj)
+        {
             if (obj.Geometry != null)
             {
                 if (obj.Geometry.HasBoundingBox)
                 {
-                    shaderinstance.SetByName(this.Name, obj.Geometry.BoundingBox.Maximum - obj.Geometry.BoundingBox.Minimum);
+                    return obj.Geometry.BoundingBox.Maximum - obj.Geometry.BoundingBox.Minimum;
                 }
                 else
                 {
-                    shaderinstance.SetByName(this.Name, vec);
+                    return vec;
                 }
             }
             else
             {
-                shaderinstance.SetByName(this.Name, vec);
+                return vec;
             }
+        }
+
+        public override Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var effectVar = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (settings, obj) => effectVar.Set(this.GetBoundingBox(obj));
         }
     }
 
@@ -95,6 +128,11 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
         {
+            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
+        }
+
+        private Matrix GetBoundingBox(DX11ObjectRenderSettings obj)
+        {
             if (obj.Geometry != null)
             {
                 if (obj.Geometry.HasBoundingBox)
@@ -104,19 +142,23 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
                     scale.Y = scale.Y != 0.0f ? 1.0f / scale.Y : 1.0f;
                     scale.Z = scale.Z != 0.0f ? 1.0f / scale.Z : 1.0f;
 
-                    Matrix m = Matrix.Scaling(scale);
-
-                    shaderinstance.SetByName(this.Name, m);
+                    return Matrix.Scaling(scale);
                 }
                 else
                 {
-                    shaderinstance.SetByName(this.Name, m);
+                    return m;
                 }
             }
             else
             {
-                shaderinstance.SetByName(this.Name, m);
+                return m;
             }
+        }
+
+        public override Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var effectVar = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (settings, obj) => effectVar.SetMatrix(this.GetBoundingBox(obj));
         }
     }
 
@@ -126,6 +168,11 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         public ObjectSdfTransformRenderVariable(EffectVariable var) : base(var) { }
 
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj)
+        {
+            shaderinstance.SetByName(this.Name, this.GetBoundingBox(obj));
+        }
+
+        private Matrix GetBoundingBox(DX11ObjectRenderSettings obj)
         {
             if (obj.Geometry != null)
             {
@@ -143,17 +190,23 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
                     m.M41 = min.X;
                     m.M42 = min.Y;
                     m.M43 = min.Z;
-                    shaderinstance.SetByName(this.Name, Matrix.Invert(m));
+                    return Matrix.Invert(m);
                 }
                 else
                 {
-                    shaderinstance.SetByName(this.Name, m);
+                    return m;
                 }
             }
             else
             {
-                shaderinstance.SetByName(this.Name, m);
+                return m;
             }
+        }
+
+        public override Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var effectVar = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (settings, obj) => effectVar.SetMatrix(this.GetBoundingBox(obj));
         }
     }
 }

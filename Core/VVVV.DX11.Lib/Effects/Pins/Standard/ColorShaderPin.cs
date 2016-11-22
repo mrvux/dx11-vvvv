@@ -26,6 +26,12 @@ namespace VVVV.DX11.Internals.Effects.Pins
             attr.DefaultColor = new double[] { vec.X, vec.Y, vec.Z, vec.W };
         }
 
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
+            return (i) => { sv.Set(this.pin[i]); };
+        }
+
         public bool ChangeType(EffectVariable var)
         {
             return var.IsColor();

@@ -51,6 +51,7 @@ namespace VVVV.DX11.Nodes.Layers
 
         private DX11ShaderVariableManager varmanager;
         private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
+        private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
         private DX11RenderSettings settings = new DX11RenderSettings();
         private bool shaderupdated;
@@ -116,6 +117,7 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
+                this.shaderVariableCache.Clear();
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -278,6 +280,10 @@ namespace VVVV.DX11.Nodes.Layers
                 this.deviceshaderdata.Add(context, new DX11ShaderData(context));
                 this.deviceshaderdata[context].SetEffect(this.FShader);
             }
+            if (!this.shaderVariableCache.Contains(context))
+            {
+                this.shaderVariableCache[context] = new DX11ShaderVariableCache(context, this.deviceshaderdata[context].ShaderInstance, this.varmanager);
+            }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
             if (this.shaderupdated)
@@ -343,7 +349,9 @@ namespace VVVV.DX11.Nodes.Layers
                         this.settings.ResourceSemantics.AddRange(this.FInResSemantics.ToArray());
                     }
 
+                    var variableCache = this.shaderVariableCache[context];
                     this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
+                    variableCache.Preprocess(settings);
 
                     if (this.clone == null || this.FIn.IsChanged || this.FInAsAuto.IsChanged || this.FInMaxElements.IsChanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
                     {
@@ -508,9 +516,7 @@ namespace VVVV.DX11.Nodes.Layers
                     ors.DrawCallIndex = 0;
                     ors.Geometry = this.FIn[0][context];
                     ors.WorldTransform = Matrix.Identity;
-
-                    this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, ors, 0);
-
+                    variableCache.Apply(ors, 0);
 
                     shaderdata.ApplyPass(ctx);
 

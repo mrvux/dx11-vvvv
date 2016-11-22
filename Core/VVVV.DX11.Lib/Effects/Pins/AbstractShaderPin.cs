@@ -25,10 +25,15 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public int Elements { get; private set; }
         public string TypeName { get; private set; }
 
+        public EffectVariable EffectVariable
+        {
+            get; private set;
+        }
 
         public void Initialize(IIOFactory factory, EffectVariable variable)
         {
             this.factory = factory;
+            this.EffectVariable = variable;
             this.PinName = variable.UiName();
             this.visible = variable.Visible();
             this.TypeName = variable.GetVariableType().Description.TypeName;
@@ -74,7 +79,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public abstract void SetVariable(DX11ShaderInstance shaderinstance, int slice);
         public abstract bool Constant { get; }
         public abstract int SliceCount { get; }
-
+        public abstract Action<int> CreateAction(DX11ShaderInstance instance);
 
         public void Dispose()
         {

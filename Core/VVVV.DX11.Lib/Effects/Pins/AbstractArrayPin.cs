@@ -26,12 +26,17 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
+            this.UpdateArray(slice);
+            this.UpdateShaderValue(shaderinstance);
+        }
+
+        protected void UpdateArray(int slice)
+        {
             ISpread<T> f = this.pin[slice];
             for (int i = 0; i < array.Length; i++)
             {
                 array[i] = f[i];
             }
-            this.UpdateShaderValue(shaderinstance);
         }
  
         protected override bool RecreatePin(EffectVariable variable)

@@ -95,6 +95,7 @@ namespace VVVV.DX11.Nodes.Layers
         private RenderTargetView[] nullrtvs = new RenderTargetView[8];
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
+        private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
         private DX11ImageShaderVariableManager varmanager;
         private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
@@ -147,6 +148,7 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
                 this.varmanager.RebuildTextureCache();
+                this.shaderVariableCache.Clear();
 
                 this.varmanager.RebuildPassCache(tid);
             }
@@ -280,6 +282,10 @@ namespace VVVV.DX11.Nodes.Layers
                 this.deviceshaderdata.Add(context, new DX11ShaderData(context));
                 this.deviceshaderdata[context].SetEffect(this.FShader);
             }
+            if (!this.shaderVariableCache.Contains(context))
+            {
+                this.shaderVariableCache[context] = new DX11ShaderVariableCache(context, this.deviceshaderdata[context].ShaderInstance, this.varmanager);
+            }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
             if (this.shaderupdated)
@@ -371,7 +377,8 @@ namespace VVVV.DX11.Nodes.Layers
                     }
 
                     this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, r);
-
+                    var variableCache = this.shaderVariableCache[context];
+                    variableCache.Preprocess(r);
                     this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
                     DX11Texture2D lastrt = initial;
@@ -524,8 +531,7 @@ namespace VVVV.DX11.Nodes.Layers
                             this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
                             //Apply settings (note that textures swap is handled later)
-                            this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, or, i);
-
+                            variableCache.Apply(or, i);
                             //Bind last render target
                             this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
 

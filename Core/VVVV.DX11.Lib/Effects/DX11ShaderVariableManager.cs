@@ -133,6 +133,16 @@ namespace VVVV.DX11.Lib.Effects
         }
         #endregion
 
+        public ShaderPinDictionary ShaderPins
+        {
+            get { return this.shaderpins; }
+        }
+
+        public WorldRenderVariableDictionary WorldVariables
+        {
+            get { return this.worldvariables; }
+        }
+
         public bool SetGlobalSettings(DX11ShaderInstance instance, DX11RenderSettings settings)
         {
             this.globalsettings = settings;
@@ -147,17 +157,7 @@ namespace VVVV.DX11.Lib.Effects
 
             this.rendervariables.Apply(instance, this.globalsettings);
 
-            this.shaderpins.Preprocess(instance);
-        }
-        #endregion
-
-        #region Apply Per object
-        public void ApplyPerObject(DX11RenderContext context, DX11ShaderInstance instance, DX11ObjectRenderSettings objectsettings, int slice)
-        {
-            this.worldvariables.Apply(instance, this.globalsettings, objectsettings);
-
-            this.shaderpins.ApplySlice(instance, slice);
-
+            //this.shaderpins.Preprocess(instance);
         }
         #endregion
 

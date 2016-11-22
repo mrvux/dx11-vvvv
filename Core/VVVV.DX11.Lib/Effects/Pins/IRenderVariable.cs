@@ -21,5 +21,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
     {
         string Semantic { get; }
         void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings, DX11ObjectRenderSettings obj);
+
+        Action<DX11RenderSettings, DX11ObjectRenderSettings> CreateAction(DX11ShaderInstance shader);
     }
 }
