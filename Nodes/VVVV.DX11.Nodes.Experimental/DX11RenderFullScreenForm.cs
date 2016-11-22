@@ -68,7 +68,7 @@ namespace VVVV.DX11.Nodes
                 this.form.Top = 0;
                 this.form.Width = 1920;
                 this.form.Height = 1080;
-                this.swapChain = new DX11SwapChain(this.RenderContext, this.form.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SlimDX.DXGI.SampleDescription(1, 0), 60, 2);
+                this.swapChain = new DX11SwapChain(this.RenderContext, this.form.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SlimDX.DXGI.SampleDescription(1, 0), 60, 2, false);
                 this.RenderContext.Factory.SetWindowAssociation(this.form.Handle, SlimDX.DXGI.WindowAssociationFlags.IgnoreAll);
             }
         }

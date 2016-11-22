@@ -19,20 +19,20 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "Tetrahedron", Category = "DX11.Geometry", Version = "", Author = "fibo")]
     public class DX11TetrahedronNode : DX11BasePrimitiveNode
     {
-        /*[Input("Size",DefaultValues= new double[] { 1,1,1})]
-        IDiffSpread<Vector3> FSize;*/
+        [Input("Radius", DefaultValue = 1)]
+        IDiffSpread<float> FSize;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {
             Tetrahedron settings = new Tetrahedron();
-            settings.Size = new Vector3(1, 1, 1);
+            settings.Radius = FSize[slice];
 
             return context.Primitives.Tetrahedron(settings);
         }
 
         protected override bool Invalidate()
         {
-            return false;// this.FSize.IsChanged;
+            return this.FSize.IsChanged;
         }
     }
 }
