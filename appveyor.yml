@@ -3,6 +3,7 @@ branches:
   # whitelist
   only:
     - master
+    - io
 
 image: Visual Studio 2015
 
@@ -11,11 +12,11 @@ platform: x64
 configuration: Release
 
 build:
-  project: vvvv-dx11.sln
+  project: ci.targets
 
 artifacts:
   # pushing a single file
-  - path: vvvv-dx11-x64-build-alpha.zip
+  - path: Zip/vvvv-packs-dx11-x64.zip
 
 environment:
   priv_key:

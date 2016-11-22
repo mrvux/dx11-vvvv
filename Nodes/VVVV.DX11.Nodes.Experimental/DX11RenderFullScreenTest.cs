@@ -58,7 +58,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.swapChain == null && this.RenderContext != null)
             {
-                this.swapChain = new DX11SwapChain(this.RenderContext, this.node.Window.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SlimDX.DXGI.SampleDescription(1, 0), 60, 2);
+                this.swapChain = new DX11SwapChain(this.RenderContext, this.node.Window.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SlimDX.DXGI.SampleDescription(1, 0), 60, 2, false);
                 this.RenderContext.Factory.SetWindowAssociation(this.node.Window.Handle, SlimDX.DXGI.WindowAssociationFlags.IgnoreAll);
             }
         }

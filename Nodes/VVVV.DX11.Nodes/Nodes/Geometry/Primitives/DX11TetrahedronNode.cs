@@ -32,7 +32,7 @@ namespace VVVV.DX11.Nodes
 
         protected override bool Invalidate()
         {
-            return false;// this.FSize.IsChanged;
+            return this.FSize.IsChanged;
         }
     }
 }

@@ -526,6 +526,8 @@ namespace VVVV.DX11.Nodes
                 this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, this.FInRefreshRate[0],
                     this.FInBufferCount[0], this.FInFlipSequential[0]);
 
+                this.FInvalidateSwapChain = false;
+
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
                 #endif
