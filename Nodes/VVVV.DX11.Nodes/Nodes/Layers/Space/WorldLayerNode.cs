@@ -4,23 +4,28 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel.Composition;
 
-using SlimDX;
-
 using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 
 using FeralTic.DX11;
-
-
+using SlimDX.Direct3D11;
+using SlimDX;
 
 namespace VVVV.DX11.Nodes
 {
-    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerHost
+    [PluginInfo(Name = "World", Category = "DX11.Layer", Version = "", Author = "vux")]
+    public class DX11LayerWorldNode : IPluginEvaluate, IDX11LayerHost
     {
+        [Input("World Transform")]
+        protected ISpread<Matrix> FInWorld;
+
+        [Input("Relative")]
+        protected ISpread<bool> FInRelative;
+
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
-        [Input("Enabled",DefaultValue=1, Order = 100000)]
+        [Input("Enabled", DefaultValue = 1, Order = 100000)]
         protected IDiffSpread<bool> FEnabled;
 
         [Output("Layer Out")]
@@ -45,61 +50,46 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FOutLayer.SafeDisposeAll(context);
+            this.FOutLayer[0].Dispose(context);
         }
 
         public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
-            if (this.FLayerIn.SliceCount == 0) { return; }
-
             if (this.FEnabled[0])
             {
                 if (this.FLayerIn.IsConnected)
                 {
-
-                    Matrix view = settings.View;
-                    Matrix projection = settings.Projection;
-                    Matrix vp = settings.ViewProjection;
-                    Matrix crop = settings.Crop;
-                    Matrix aspect = settings.Aspect;
-                    Matrix rawProj = settings.RawProjection;
-                    bool depthonly = settings.DepthOnly;
-
-                    for (int i = 0; i< this.LayerCount;i++)
+                    var spMax = SpreadUtils.SpreadMax(this.FInWorld, this.FInRelative);
+                    for (int i = 0; i < spMax; i++)
                     {
-                        this.UpdateSettings(settings,i);
+                        Matrix world = settings.WorldTransform;
+
+                        if (this.FInRelative[i])
+                        {
+                            settings.WorldTransform = settings.WorldTransform*this.FInWorld[i];
+                        }
+                        else
+                        {
+                            settings.WorldTransform = this.FInWorld[i];
+                        }
+                        
 
                         this.FLayerIn.RenderAll(context, settings);
+                        settings.WorldTransform = world;
                     }
-
-                    settings.View = view;
-                    settings.Projection = projection;
-                    settings.ViewProjection = vp;
-                    settings.DepthOnly = depthonly;
-                    settings.Crop = crop;
-                    settings.Aspect = aspect;
-                    settings.RawProjection = rawProj;
+                    
                 }
             }
             else
             {
-                this.FLayerIn.RenderAll(context, settings);
+                if (this.FLayerIn.IsConnected)
+                {
+                    this.FLayerIn.RenderAll(context, settings);
+                }
             }
         }
 
-        protected abstract int LayerCount
-        {
-            get;
-        }
-
-
-        protected abstract void UpdateSettings(DX11RenderSettings settings, int slice);
-
-
         #endregion
+
     }
-
-
-
-
 }

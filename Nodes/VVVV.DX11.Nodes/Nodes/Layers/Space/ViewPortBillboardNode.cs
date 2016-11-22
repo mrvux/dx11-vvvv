@@ -34,7 +34,12 @@ namespace VVVV.DX11.Nodes
         [Input("Top Left", IsSingle = true, Order = 51)]
         protected ISpread<bool> FTopLeft;
 
-        protected override void UpdateSettings(DX11RenderSettings settings)
+        protected override int LayerCount
+        {
+            get { return 1; }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             float f = this.FDoubleScale[0] ? 2.0f : 1.0f;
 

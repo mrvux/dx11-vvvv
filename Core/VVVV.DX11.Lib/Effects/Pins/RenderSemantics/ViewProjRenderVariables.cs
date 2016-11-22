@@ -12,6 +12,16 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 {
+    public class MatrixLayerWorldRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerWorldRenderVariable(EffectVariable var) : base(var) { }
+
+        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        {
+            shaderinstance.SetByName(this.Name, settings.WorldTransform);
+        }
+    }
+
     public class MatrixProjRenderVariable : AbstractRenderVariable
     {
         public MatrixProjRenderVariable(EffectVariable var) : base(var) { }

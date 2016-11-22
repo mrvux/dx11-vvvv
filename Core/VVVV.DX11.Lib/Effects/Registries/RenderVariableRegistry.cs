@@ -13,6 +13,8 @@ namespace VVVV.DX11.Lib.Effects.Registries
         public RenderVariableRegistry()
         {
             //View projection semantics
+            this.RegisterType("float4x4", "WORLDLAYER", false, (var, host, factory) => new MatrixLayerWorldRenderVariable(var));
+
             this.RegisterType("float4x4", "PROJECTION", false, (var, host, factory) => new MatrixProjRenderVariable(var));
             this.RegisterType("float4x4", "VIEW", false, (var, host, factory) => new MatrixViewRenderVariable(var));
             this.RegisterType("float4x4", "VIEWPROJECTION", false, (var, host, factory) => new MatrixViewProjRenderVariable(var));

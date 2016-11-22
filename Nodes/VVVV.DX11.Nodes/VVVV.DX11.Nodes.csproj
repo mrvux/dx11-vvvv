@@ -56,6 +56,7 @@
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerZSortOrderNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerGetSliceOrderNode.cs" />
+    <Compile Include="Nodes\Layers\Space\WorldLayerNode.cs" />
     <Compile Include="Nodes\Layers\Space\SliceviewPortNode.cs" />
     <Compile Include="Nodes\Layers\Space\ViewPortBillboardNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />

@@ -35,7 +35,10 @@ namespace VVVV.DX11
             this.ViewportIndex = 0;
             this.RenderHint = eRenderHint.Forward;
             this.SceneDescriptor = new DX11RenderScene();
+            this.WorldTransform = Matrix.Identity;
         }
+
+        public Matrix WorldTransform;
 
         public DX11RenderSpace RenderSpace { get; set; }
 
