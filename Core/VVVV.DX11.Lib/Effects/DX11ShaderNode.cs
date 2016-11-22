@@ -581,7 +581,7 @@ namespace VVVV.DX11.Nodes.Layers
                                         if (settings.DepthOnly) { ctx.PixelShader.Set(null); }
 
                                         objectsettings.Geometry.Draw();
-                                        shaderdata.ShaderInstance.CleanUp();
+
                                     }
                                 }
                             }
@@ -592,6 +592,8 @@ namespace VVVV.DX11.Nodes.Layers
                             context.RenderStateStack.Pop();
                         }
                     }
+
+                    shaderdata.ShaderInstance.CleanUp();
 
                     if (pipelineState != null)
                     {
