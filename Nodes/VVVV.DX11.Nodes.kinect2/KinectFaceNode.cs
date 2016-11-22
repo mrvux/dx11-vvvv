@@ -296,7 +296,6 @@ namespace VVVV.MSKinect.Nodes
                     skeletonFrame.Dispose();
                 }
             }
-            this.FInvalidate = true;
         }
 
 

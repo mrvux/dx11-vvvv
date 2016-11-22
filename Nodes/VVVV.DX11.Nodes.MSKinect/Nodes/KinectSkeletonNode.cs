@@ -161,9 +161,9 @@ namespace VVVV.MSKinect.Nodes
                             this.FOutJointID[jc] = joint.JointType.ToString();
                             this.FOutJointPosition[jc] = new Vector3(joint.Position.X, joint.Position.Y, joint.Position.Z);
 
-                            ColorImagePoint cp = this.runtime.Runtime.MapSkeletonPointToColor(joint.Position, ColorImageFormat.RgbResolution640x480Fps30);
+                            ColorImagePoint cp = this.runtime.Runtime.CoordinateMapper.MapSkeletonPointToColorPoint(joint.Position, ColorImageFormat.RgbResolution640x480Fps30);
                             this.FOutJointColorPosition[jc] = new Vector2(cp.X, cp.Y);
-                            DepthImagePoint dp = this.runtime.Runtime.MapSkeletonPointToDepth(joint.Position, DepthImageFormat.Resolution320x240Fps30);
+                            DepthImagePoint dp = this.runtime.Runtime.CoordinateMapper.MapSkeletonPointToDepthPoint(joint.Position, DepthImageFormat.Resolution320x240Fps30);
                             this.FOutJointDepthPosition[jc] = new Vector4(dp.X, dp.Y, dp.Depth, dp.PlayerIndex);
 
                             this.FOutJointOrientation[jc] = new Quaternion(bo.Quaternion.X, bo.Quaternion.Y, bo.Quaternion.Z, bo.Quaternion.W);

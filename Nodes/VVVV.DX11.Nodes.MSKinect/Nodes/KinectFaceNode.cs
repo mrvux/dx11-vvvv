@@ -311,12 +311,12 @@ namespace VVVV.MSKinect.Nodes
                 }
             }
 
-            private struct FaceModelTriangle
+            /*private struct FaceModelTriangle
             {
                 public Point P1;
                 public Point P2;
                 public Point P3;
-            }
+            }*/
         }
 
     }

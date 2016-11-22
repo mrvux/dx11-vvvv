@@ -157,11 +157,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.updateddevices.Clear();
             this.rendereddevices.Clear();
             
-
-            if (this.FInFullScreen.IsChanged)
-            {
-                this.setfull = true;
-            }
         }
         #endregion
 
@@ -205,8 +200,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     this.swapchain.Resize();
 
                     this.swapchain.SetFullScreen(true);
-
-                    this.setfull = false;
                 }
                 else
                 {

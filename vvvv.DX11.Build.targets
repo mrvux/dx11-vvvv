@@ -4,7 +4,8 @@
   <PropertyGroup>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+	<OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+	<!--<TreatWarningsAsErrors>true</TreatWarningsAsErrors>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
