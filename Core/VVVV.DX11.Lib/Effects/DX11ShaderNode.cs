@@ -288,15 +288,14 @@ namespace VVVV.DX11.Nodes.Layers
         #region Destroy
         public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FOutLayer.SafeDisposeAll(context);
-
-            if (this.deviceshaderdata.Contains(context))
+            if (force)
             {
+                this.FOutLayer.SafeDisposeAll(context);
                 this.deviceshaderdata.Dispose(context);
+                this.shaderVariableCache.Dispose(context);
+                this.objectSettings.Dispose(context);
+                this.orderedObjectSettings.Dispose(context);
             }
-            this.shaderVariableCache.Dispose(context);
-            this.objectSettings.Dispose(context);
-            this.orderedObjectSettings.Dispose(context);
         }
         #endregion
 
@@ -626,6 +625,11 @@ namespace VVVV.DX11.Nodes.Layers
         public void Dispose()
         {
             this.deviceshaderdata.Dispose();
+            this.shaderVariableCache.Dispose();
+            this.FOutLayer.SafeDisposeAll();
+            this.objectSettings.Dispose();
+            this.orderedObjectSettings.Dispose();
+
         }
         #endregion
 

@@ -14,7 +14,7 @@ namespace VVVV.DX11
     /// Main resource holder for per data device, to be used by any pin which holds a dx11 resource
     /// </summary>
     /// <typeparam name="T">Resource Type</typeparam>
-    public class DX11ContextElement<T>
+    public class DX11ContextElement<T> : IDisposable
     {
         private Dictionary<DX11RenderContext, T> resources = new Dictionary<DX11RenderContext, T>();
 
@@ -52,6 +52,24 @@ namespace VVVV.DX11
                     }
                     this.resources.Remove(context);
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (syncRoot)
+            {
+                //Dispose resource for all devices
+                foreach (DX11RenderContext context in this.resources.Keys)
+                {
+                    if (resources[context] is IDisposable)
+                    {
+                        IDisposable d = resources[context] as IDisposable;
+                        d.Dispose();
+                    }
+                    //resources[dev].Dispose();
+                }
+                resources.Clear();
             }
         }
 

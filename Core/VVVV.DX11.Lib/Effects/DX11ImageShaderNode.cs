@@ -98,7 +98,7 @@ namespace VVVV.DX11.Nodes.Layers
         private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
         private DX11ImageShaderVariableManager varmanager;
-        private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
+        private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
         private bool shaderupdated;
 
         private int spmax = 0;
@@ -279,9 +279,9 @@ namespace VVVV.DX11.Nodes.Layers
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
-            if (!this.deviceshaderdata.ContainsKey(context))
+            if (!this.deviceshaderdata.Contains(context))
             {
-                this.deviceshaderdata.Add(context, new DX11ShaderData(context));
+                this.deviceshaderdata[context] = new DX11ShaderData(context);
                 this.deviceshaderdata[context].SetEffect(this.FShader);
             }
             if (!this.shaderVariableCache.Contains(context))
@@ -668,14 +668,11 @@ namespace VVVV.DX11.Nodes.Layers
         #region Destroy
         public void Destroy(DX11RenderContext context, bool force)
         {
-            //this.FOutLayer[0].Dispose(OnDevice.Device);
-
-            if (this.deviceshaderdata.ContainsKey(context))
+            if (force)
             {
-                this.deviceshaderdata[context].Dispose();
-                this.deviceshaderdata.Remove(context);
+                this.deviceshaderdata.Dispose(context);
+                this.shaderVariableCache.Dispose(context);
             }
-
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
             {
                 entry.UnLock();
@@ -687,10 +684,8 @@ namespace VVVV.DX11.Nodes.Layers
         #region Dispose
         public void Dispose()
         {
-            foreach (DX11ShaderData sd in this.deviceshaderdata.Values)
-            {
-                sd.Dispose();
-            }
+            this.deviceshaderdata.Dispose();
+            this.shaderVariableCache.Dispose();
 
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
             {
