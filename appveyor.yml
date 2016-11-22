@@ -13,3 +13,6 @@ configuration: Release
 artifacts:
   # pushing a single file
   - path: vvvv-dx11-x64-build-alpha.zip
+
+install:
+  git submodule -q update --init --recursive
