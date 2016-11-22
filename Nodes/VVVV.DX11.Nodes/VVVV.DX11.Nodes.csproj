@@ -49,9 +49,9 @@
     <Compile Include="Nodes\Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPixelViewportNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerBlendFactorNode.cs" />
+    <Compile Include="Legacy\DX11LayerBlendFactorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerTagNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerStencilRefNode.cs" />
+    <Compile Include="Legacy\DX11LayerStencilRefNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerOrderNode.cs" />
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerZSortOrderNode.cs" />

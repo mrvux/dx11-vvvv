@@ -12,7 +12,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name="StencilReference",Category="DX11.Layer",Version="", Author="vux")]
+    [PluginInfo(Name="StencilReference",Category="DX11.Layer",Version="Legacy", Author="vux")]
     public class DX11LayerStencilReferenceNode : IPluginEvaluate, IDX11LayerHost
     {
         [Input("Reference Value", IsSingle = true)]

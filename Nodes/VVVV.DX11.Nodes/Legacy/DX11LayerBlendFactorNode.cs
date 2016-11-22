@@ -13,7 +13,7 @@ using SlimDX;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name="BlendFactor",Category="DX11.Layer",Version="", Author="vux")]
+    [PluginInfo(Name="BlendFactor",Category="DX11.Layer",Version="Legacy", Author="vux")]
     public class DX11LayerBlendFactorNode : IPluginEvaluate, IDX11LayerHost
     {
         [Input("Blend factor", IsSingle = true)]
