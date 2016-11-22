@@ -92,7 +92,8 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Output("Shader Signature", Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<DX11Resource<DX11Shader>> FOutShader;
-
+        
+      
 
         #endregion
 
@@ -430,8 +431,8 @@ namespace VVVV.DX11.Nodes.Layers
                     if (this.FGeometry.IsChanged || this.techniquechanged || shaderdata.LayoutValid.Count == 0)
                     {
                         shaderdata.Update(this.techniqueindex, 0, this.FGeometry);
-                        //this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
-                        //this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
+                        this.FOutLayoutValid.AssignFrom(shaderdata.LayoutValid);
+                        this.FOutLayoutMsg.AssignFrom(shaderdata.LayoutMsg);
 
                         int errorCount = 0;
                         StringBuilder sbMsg = new StringBuilder();
