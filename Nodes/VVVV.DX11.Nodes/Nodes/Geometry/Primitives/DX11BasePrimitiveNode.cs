@@ -48,7 +48,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInvalidate || !this.FOutput[0].Data.ContainsKey(context))
+            if (this.FInvalidate || !this.FOutput[0].Contains(context))
             {
                 for (int i = 0; i < oldSpreadMax; i++)
                 {

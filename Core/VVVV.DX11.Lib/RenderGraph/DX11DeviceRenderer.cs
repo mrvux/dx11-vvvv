@@ -212,6 +212,10 @@ namespace VVVV.DX11.Lib.RenderGraph
                                     foreach (DX11OutputPin outpin in source.OutputPins)
                                     {
                                         this.thisframepins.Add(outpin);
+                                        if (this.lastframepins.Contains(outpin))
+                                        {
+                                            this.lastframepins.Remove(outpin);
+                                        }
                                     }
                                 }
                             }
@@ -224,7 +228,14 @@ namespace VVVV.DX11.Lib.RenderGraph
                                     foreach (DX11OutputPin outpin in source.OutputPins)
                                     {
                                         this.thisframepins.Add(outpin);
+
+                                        //Remove from old cache if applicable
+                                        if (this.lastframepins.Contains(outpin))
+                                        {
+                                            this.lastframepins.Remove(outpin);
+                                        }
                                     }
+
                                 }
                             }
                         }
@@ -236,14 +247,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                             this.logger.Log(LogType.Message, ex.StackTrace);
                         }
 
-                        if (this.DoNotDestroy == false)
-                        {
-                            //Remove from old cache if applicable
-                            if (this.lastframepins.Contains(parent))
-                            {
-                                this.lastframepins.Remove(parent);
-                            }
-                        }
+
                     }
                 }
 

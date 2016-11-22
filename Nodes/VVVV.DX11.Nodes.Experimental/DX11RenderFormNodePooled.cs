@@ -61,7 +61,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         protected ISpread<bool> FInResize;
 
         [Input("Rate", Visibility = PinVisibility.OnlyInspector,DefaultValue=30)]
-        protected ISpread<int> FInRate;
+        protected IDiffSpread<int> FInRate;
 
         [Input("Flip Sequential", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInFlipSequential;
@@ -116,7 +116,10 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.invalidate = true;
             this.form.Show();
             this.form.ShowIcon = false;
+            this.handle = this.form.Handle;
         }
+
+        private IntPtr handle;
 
         void form_ResizeEnd(object sender, EventArgs e)
         {
@@ -128,6 +131,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         {
             this.FInvalidateSwapChain = false;
 
+            cw = (float)this.form.ClientSize.Width;
+            ch = (float)this.form.ClientSize.Height;
+
             if (this.FInTopMost.IsChanged)
             {
                 this.form.TopMost = this.FInTopMost[0];
@@ -138,7 +144,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.SetBorder();
             }
 
-            if (this.FInResize[0] || this.FInRate.IsChanged || this.FInFlipSequential.IsChanged)
+            if (this.FInResize[0] || this.FInRate.IsChanged || this.FInFlipSequential.IsChanged || this.FInRenderContext.IsChanged)
             {
                 this.FInvalidateSwapChain = true;
             }
@@ -183,7 +189,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             if (this.FResized || this.FInvalidateSwapChain || this.swapchain == null)
             {
                 if (this.swapchain != null) { this.swapchain.Dispose(); }
-                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, this.FInFlipSequential[0]);
+                this.swapchain = new DX11SwapChain(context, this.handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, this.FInFlipSequential[0]);
                 this.FInvalidateSwapChain = false;
             }
 
@@ -284,6 +290,8 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         }
         #endregion
 
+        private float cw, ch;
+
         #region Render
         public void Render(DX11RenderContext context)
         {
@@ -310,17 +318,14 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 //Only call render if layer connected
                 if (this.FInLayer.IsConnected)
                 {
-                    float cw = (float)this.form.ClientSize.Width;
-                    float ch = (float)this.form.ClientSize.Height;
-
                     settings.ViewportCount = 1;
                     settings.ViewportIndex = 0;
                     settings.View = Matrix.Identity;
                     settings.Projection = Matrix.Identity;
                     settings.ViewProjection = Matrix.Identity;
                     settings.BackBuffer = this.swapchain;
-                    settings.RenderWidth = 1920;
-                    settings.RenderHeight = 1200;
+                    settings.RenderWidth = (int)cw;
+                    settings.RenderHeight = (int)ch;
                     settings.ResourceSemantics.Clear();
                     settings.CustomSemantics.Clear();
 

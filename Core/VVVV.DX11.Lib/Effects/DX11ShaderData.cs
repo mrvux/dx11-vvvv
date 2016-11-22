@@ -18,7 +18,7 @@ using SlimDX.D3DCompiler;
 
 namespace VVVV.DX11.Lib.Effects
 {
-    public class DX11ShaderData : IDisposable
+    public class DX11ShaderData : IDX11Resource, IDisposable
     {
         private DX11RenderContext context;
 

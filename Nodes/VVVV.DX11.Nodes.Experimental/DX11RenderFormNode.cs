@@ -58,7 +58,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         protected ISpread<bool> FInResize;
 
         [Input("Rate", Visibility = PinVisibility.OnlyInspector,DefaultValue=30)]
-        protected ISpread<int> FInRate;
+        protected IDiffSpread<int> FInRate;
 
         [Input("Flip Sequential", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInFlipSequential;
