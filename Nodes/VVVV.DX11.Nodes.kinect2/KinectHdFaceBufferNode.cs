@@ -91,8 +91,6 @@ namespace VVVV.MSKinect.Nodes
         {
         }
 
-        private bool first = true;
-
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutGeom[0] == null)

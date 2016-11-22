@@ -107,9 +107,6 @@ namespace VVVV.MSKinect.Nodes
                 if (this.lastframe != null)
                 {
                     List<Skeleton> skels = new List<Skeleton>();
-                    float z = float.MaxValue;
-                    int id = -1;
-
                     lock (m_lock)
                     {
 

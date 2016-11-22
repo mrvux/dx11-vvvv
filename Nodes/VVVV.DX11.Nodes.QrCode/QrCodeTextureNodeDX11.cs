@@ -55,8 +55,6 @@ namespace VVVV.Nodes
         public ISpread<DX11Resource<DX11Texture2D>> FTextureOut;
         /*public ISpread<TextureResource<Info>> FTextureOut;*/
 
-        private MemoryStream FMemoryStream;
-
         [Import()]
         public ILogger FLogger;
 

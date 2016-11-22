@@ -22,58 +22,58 @@ namespace VVVV.MSKinect.Nodes
     public class KinectFaceNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("Position Infrared")]
-        private ISpread<Vector2> FOutPositionInfrared;
+        protected ISpread<Vector2> FOutPositionInfrared;
 
         [Output("Size Infrared")]
-        private ISpread<Vector2> FOutSizeInfrared;
+        protected ISpread<Vector2> FOutSizeInfrared;
 
         [Output("Position Color")]
-        private ISpread<Vector2> FOutPositionColor;
+        protected ISpread<Vector2> FOutPositionColor;
 
         [Output("Size Color")]
-        private ISpread<Vector2> FOutSizeColor;
+        protected ISpread<Vector2> FOutSizeColor;
 
         [Output("Points Color")]
-        private ISpread<ISpread<Vector2>> FOutPointsColor;
+        protected ISpread<ISpread<Vector2>> FOutPointsColor;
 
         [Output("Points World")]
-        private ISpread<ISpread<Vector3>> FOutPointsWorld;
+        protected ISpread<ISpread<Vector3>> FOutPointsWorld;
 
         [Output("Orientation")]
-        private ISpread<Quaternion> FOutOrientation;
+        protected ISpread<Quaternion> FOutOrientation;
 
         [Output("Engaged")]
-        private ISpread<string> FOutEngaged;
+        protected ISpread<string> FOutEngaged;
 
         [Output("Wear Glasses")]
-        private ISpread<string> FOutWearGlasses;
+        protected ISpread<string> FOutWearGlasses;
 
         [Output("Happy")]
-        private ISpread<string> FOutHappy;
+        protected ISpread<string> FOutHappy;
 
         [Output("Left Eye Closed")]
-        private ISpread<string> FOutLeftEyeClosed;
+        protected ISpread<string> FOutLeftEyeClosed;
 
         [Output("Right Eye Closed")]
-        private ISpread<string> FOutRightEyeClosed;
+        protected ISpread<string> FOutRightEyeClosed;
 
         [Output("Looking Away")]
-        private ISpread<string> FOutlookAway;
+        protected ISpread<string> FOutlookAway;
 
         [Output("Mouth Open")]
-        private ISpread<string> FOutMouthOpen;
+        protected ISpread<string> FOutMouthOpen;
 
         [Output("Mouth Moved")]
-        private ISpread<string> FOutMouthMoved;
+        protected ISpread<string> FOutMouthMoved;
 
         [Output("User Index")]
-        private ISpread<int> FOutUserIndex;
+        protected ISpread<int> FOutUserIndex;
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<int> FOutFrameNumber;
+        protected ISpread<int> FOutFrameNumber;
 
         private bool FInvalidateConnect = false;
 
@@ -83,12 +83,9 @@ namespace VVVV.MSKinect.Nodes
         private FaceFrameReader[] faceFrameReaders = null;
         private FaceFrameResult[] lastResults = null;
 
-        private bool FInvalidate = false;
-
         private Body[] lastframe = new Body[6];
 
         private object m_lock = new object();
-        private int frameid = -1;
 
         public KinectFaceNode()
         {

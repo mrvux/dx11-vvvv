@@ -60,8 +60,8 @@ void DX11TextLayerNode::Render(DX11RenderContext^ context, DX11RenderSettings^ s
 {
 	if (this->FInEnabled[0])
 	{
-		float w = settings->RenderWidth;
-		float h = settings->RenderHeight;
+		float w = (float)settings->RenderWidth;
+		float h = (float)settings->RenderHeight;
 
 		IFW1FontWrapper* fw = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
 

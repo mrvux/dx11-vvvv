@@ -203,7 +203,7 @@ namespace VVVV.DX11.Nodes.DShow
 		public IIOFactory FIOFactory;
 		
 		[Import()]
-		private IPluginHost FHost;
+        protected IPluginHost FHost;
 		
 		[Import()]
 		public ILogger FLogger;

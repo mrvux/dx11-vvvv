@@ -21,28 +21,28 @@ namespace MSKinect.Nodes
     public class KinectFaceFrameDataNode : IPluginEvaluate
     {
         [Input("Face", CheckIfChanged = true)]
-        private Pin<FaceTrackFrame> FInFrame;
+        protected Pin<FaceTrackFrame> FInFrame;
 
         [Output("Success")]
-        private ISpread<bool> FOutOK;
+        protected ISpread<bool> FOutOK;
 
         [Output("Position")]
-        private ISpread<Vector3> FOutPosition;
+        protected ISpread<Vector3> FOutPosition;
 
         [Output("Rotation")]
-        private ISpread<Vector3> FOutRotation;
+        protected ISpread<Vector3> FOutRotation;
 
         [Output("Face Points")]
-        private ISpread<ISpread<Vector3>> FOutPts;
+        protected ISpread<ISpread<Vector3>> FOutPts;
 
         [Output("Face Normals")]
-        private ISpread<ISpread<Vector3>> FOutNormals;
+        protected ISpread<ISpread<Vector3>> FOutNormals;
         
         [Output("Projected Face Points")]
-        private ISpread<ISpread<Vector2>> FOutPPTs;
+        protected ISpread<ISpread<Vector2>> FOutPPTs;
 
         [Output("Indices")]
-        private ISpread<int> FOutIndices;
+        protected ISpread<int> FOutIndices;
 
         private bool first = true;
 

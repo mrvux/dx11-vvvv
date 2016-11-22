@@ -256,8 +256,6 @@ namespace VVVV.MSKinect.Nodes
         {
             private FaceTracker faceTracker;
 
-            private bool lastFaceTrackSucceeded;
-
             private SkeletonTrackingState skeletonTrackingState;
 
             public int LastTrackedFrame { get; set; }
@@ -275,7 +273,7 @@ namespace VVVV.MSKinect.Nodes
 
             public void DrawFaceModel()
             {
-                if (!this.lastFaceTrackSucceeded || this.skeletonTrackingState != SkeletonTrackingState.Tracked)
+                if (this.skeletonTrackingState != SkeletonTrackingState.Tracked)
                 {
                     return;
                 }
@@ -300,7 +298,7 @@ namespace VVVV.MSKinect.Nodes
                     {
                         this.faceTracker = new FaceTracker(kinectSensor);
                     }
-                    catch (InvalidOperationException ex)
+                    catch
                     {
                         this.faceTracker = null;
                     }

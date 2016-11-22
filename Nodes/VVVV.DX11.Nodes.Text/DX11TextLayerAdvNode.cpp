@@ -62,8 +62,8 @@ namespace VVVV {
 			{
 				if (this->FInEnabled[0] && this->FLayout->IsConnected)
 				{
-					float w = settings->RenderWidth;
-					float h = settings->RenderHeight;
+					float w = (float)settings->RenderWidth;
+					float h = (float)settings->RenderHeight;
 
 					IFW1FontWrapper* fw = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
 

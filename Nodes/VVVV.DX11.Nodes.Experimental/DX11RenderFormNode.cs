@@ -93,12 +93,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
         private int prevx = 400;
         private int prevy = 300;
-
-        private int prevpx;
-        private int prevpy;
-
-        private bool setfull = false;
-        private bool invalidate;
         #endregion
 
 		[ImportingConstructor()]
@@ -112,7 +106,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.form.Height = 300;
             //this.form.
             //this.form.ResizeEnd += form_ResizeEnd;
-            this.invalidate = true;
             this.form.Show();
             this.form.ShowIcon = false;
 

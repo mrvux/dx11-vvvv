@@ -29,19 +29,19 @@ namespace VVVV.DX11.MSKinect.Nodes
 
 
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("Skeleton Id")]
-        private ISpread<int> FOutId;
+        protected ISpread<int> FOutId;
 
         [Output("Gesture Type")]
-        private ISpread<GestureType> FOutType;
+        protected ISpread<GestureType> FOutType;
 
         [Output("Is New")]
-        private ISpread<bool> FOutNew;
+        protected ISpread<bool> FOutNew;
 
         [Output("Skeleton Count", IsSingle = true)]
-        private ISpread<int> FOutCount;
+        protected ISpread<int> FOutCount;
 
         private bool FInvalidateConnect = false;
 
