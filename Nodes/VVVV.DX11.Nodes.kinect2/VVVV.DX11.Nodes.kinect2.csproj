@@ -101,10 +101,6 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy "$(KINECTSDK20_DIR)Redist\Face\x64\NuiDatabase" "$(OutputPath)\NuiDatabase" /S /R /Y /I
-xcopy "$(KINECTSDK20_DIR)Redist\VGB\x64\vgbtechs" "$(OutputPath)\vgbtechs" /S /R /Y /I</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

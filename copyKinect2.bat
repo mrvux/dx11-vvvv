@@ -1,0 +1,1 @@
+xcopy "$(KINECTSDK20_DIR)Redist\Face\x64\NuiDatabase" "Deploy\Release\x64\packs\dx11\nodes\plugins\kinect2\NuiDatabase" /S /R /Y /Ixcopy "$(KINECTSDK20_DIR)Redist\VGB\x64\vgbtechs" "Deploy\Release\x64\packs\dx11\nodes\plugins\kinect2\vgbtechs" /S /R /Y /I
