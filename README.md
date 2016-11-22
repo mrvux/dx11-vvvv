@@ -3,6 +3,8 @@ dx11-vvvv
 
 DirectX11 Rendering within vvvv
 
+(https://ci.appveyor.com/api/projects/status/79m7u3obr15yopct)
+
 # Licensing
 
 vvvv dx11 nodes are released under a 3 clause BSD license (https://raw.githubusercontent.com/mrvux/dx11-vvvv/master/License.md)
