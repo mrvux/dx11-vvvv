@@ -12,12 +12,13 @@ namespace VVVV.DX11.Lib.Effects.Registries
 {
     public abstract class ShaderVariableDictionary<T> where T : IShaderVariable
     {
-        protected Dictionary<string, T> variables = new Dictionary<string, T>();
+        private Dictionary<string, T> variablesDictionary = new Dictionary<string, T>();
+        protected List<T> variablesList = new List<T>();
 
         public void UpdateEffect(Effect effect)
         {
             List<string> toremove = new List<string>();
-            foreach (T shaderpin in this.variables.Values)
+            foreach (T shaderpin in this.variablesDictionary.Values)
             {
                 bool needdelete = true;
                 for (int i = 0; i < effect.Description.GlobalVariableCount; i++)
@@ -39,19 +40,22 @@ namespace VVVV.DX11.Lib.Effects.Registries
 
             foreach (string s in toremove)
             {
-                this.variables[s].Dispose();
-                this.variables.Remove(s);
+                T var = this.variablesDictionary[s];     
+                var.Dispose();
+                this.variablesDictionary.Remove(s);
+                this.variablesList.Remove(var);
             }
         }
 
         public bool Contains(string name)
         {
-            return this.variables.ContainsKey(name);
+            return this.variablesDictionary.ContainsKey(name);
         }
 
         public void Add(string name, T data)
         {
-            this.variables[name] = data;
+            this.variablesDictionary[name] = data;
+            this.variablesList.Add(data);
         }
 
         protected abstract bool Match(T element, EffectVariable var);
@@ -72,11 +76,12 @@ namespace VVVV.DX11.Lib.Effects.Registries
         {
             get
             {
-                if (this.variables.Count == 0) { return 1; }
+                if (this.variablesList.Count == 0) { return 1; }
 
                 int max = 0;
-                foreach (IShaderPin pin in this.variables.Values.ToList())
+                for (int i = 0; i < this.variablesList.Count; i++)
                 {
+                    IShaderPin pin = this.variablesList[i];
                     if (pin.SliceCount == 0) { return 0; }
                     max = Math.Max(pin.SliceCount, max);
                 }
@@ -87,9 +92,9 @@ namespace VVVV.DX11.Lib.Effects.Registries
         public void Preprocess(DX11ShaderInstance instance)
         {
             this.spreadedpins.Clear();
-            foreach (string var in this.variables.Keys)
+            for (int i = 0; i < this.variablesList.Count; i++)
             {
-                IShaderPin sp = this.variables[var];
+                IShaderPin sp = this.variablesList[i];
                 //sp.RenderContext = context;
 
                 if (sp.Constant) { sp.SetVariable(instance, 0); }
@@ -104,9 +109,9 @@ namespace VVVV.DX11.Lib.Effects.Registries
 
         public void ApplySlice(DX11ShaderInstance instance, int slice)
         {
-            foreach (IShaderPin sp in spreadedpins)
+            for (int i = 0; i < this.spreadedpins.Count; i++)
             {
-                sp.SetVariable(instance, slice);
+                spreadedpins[i].SetVariable(instance, slice);
             }
         }
     }
@@ -120,10 +125,9 @@ namespace VVVV.DX11.Lib.Effects.Registries
 
         public void Apply(DX11ShaderInstance instance, DX11RenderSettings settings)
         {
-            foreach (string rv in this.variables.Keys)
+            for (int i = 0; i < this.variablesList.Count; i++)
             {
-                IRenderVariable var = this.variables[rv];
-                var.Apply(instance, settings);
+                this.variablesList[i].Apply(instance, settings);
             }
         }
     }
@@ -137,9 +141,9 @@ namespace VVVV.DX11.Lib.Effects.Registries
 
         public void Apply(DX11ShaderInstance instance, DX11RenderSettings settings, DX11ObjectRenderSettings objectsettings)
         {
-            foreach (string rv in this.variables.Keys)
+            for (int i = 0; i < this.variablesList.Count; i++)
             {
-                this.variables[rv].Apply(instance, settings, objectsettings);
+                this.variablesList[i].Apply(instance, settings, objectsettings);
             }
         }
     }
