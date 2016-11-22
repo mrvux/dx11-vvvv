@@ -14,5 +14,13 @@ artifacts:
   # pushing a single file
   - path: vvvv-dx11-x64-build-alpha.zip
 
+environment:
+  priv_key:
+    secure: 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
+
 install:
-  git submodule -q update --init --recursive
+  - ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----`n"
+  - ps: $fileContent += $env:priv_key.Replace(' ', "`n")
+  - ps: $fileContent += "`n-----END RSA PRIVATE KEY-----`n"
+  - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
+  - git submodule update --init --recursive
