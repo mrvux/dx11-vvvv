@@ -22,6 +22,16 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         }
     }
 
+    public class MatrixLayerInvWorldRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerInvWorldRenderVariable(EffectVariable var) : base(var) { }
+
+        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        {
+            shaderinstance.SetByName(this.Name, Matrix.Invert(settings.WorldTransform));
+        }
+    }
+
     public class MatrixProjRenderVariable : AbstractRenderVariable
     {
         public MatrixProjRenderVariable(EffectVariable var) : base(var) { }
@@ -59,6 +69,16 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
         {
             shaderinstance.SetByName(this.Name, Matrix.Transpose(Matrix.Invert(settings.Projection)));
+        }
+    }
+
+    public class MatrixLayerWorldViewRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerWorldViewRenderVariable(EffectVariable var) : base(var) { }
+
+        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        {
+            shaderinstance.SetByName(this.Name, settings.WorldTransform* settings.View);
         }
     }
 
@@ -110,6 +130,16 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
         {
             shaderinstance.SetByName(this.Name, settings.ViewProjection);
+        }
+    }
+
+    public class MatrixLayerWorldViewProjRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerWorldViewProjRenderVariable(EffectVariable var) : base(var) { }
+
+        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        {
+            shaderinstance.SetByName(this.Name, settings.WorldTransform * settings.ViewProjection);
         }
     }
 
