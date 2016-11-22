@@ -287,6 +287,59 @@ namespace VVVV.DX11.Nodes.Layers
         }
         #endregion
 
+        private void Collect(DX11RenderContext context, DX11RenderSettings settings)
+        {
+            if (settings.RenderHint == eRenderHint.Collector)
+            {
+                if (this.FGeometry.IsConnected)
+                {
+                    DX11ObjectGroup group = new DX11ObjectGroup();
+                    group.ShaderName = this.Source.Name;
+                    group.Semantics.AddRange(settings.CustomSemantics);
+
+                    if (this.FGeometry.SliceCount == 1)
+                    {
+                        IDX11Geometry g = this.FGeometry[0][context];
+                        if (g.Tag != null)
+                        {
+                            DX11RenderObject o = new DX11RenderObject();
+                            o.ObjectType = g.PrimitiveType;
+                            o.Descriptor = g.Tag;
+                            o.Transforms = new Matrix[spmax];
+                            for (int i = 0; i < this.spmax; i++)
+                            {
+                                o.Transforms[i] = this.mworld[i % this.mworldcount];
+                            }
+                            group.RenderObjects.Add(o);
+
+                            settings.SceneDescriptor.Groups.Add(group);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < this.spmax; i++)
+                        {
+                            IDX11Geometry g = this.FGeometry[i][context];
+                            if (g.Tag != null)
+                            {
+                                DX11RenderObject o = new DX11RenderObject();
+                                o.ObjectType = g.PrimitiveType;
+                                o.Descriptor = g.Tag;
+                                o.Transforms = new Matrix[1];
+                                o.Transforms[0] = this.mworld[i % this.mworldcount];
+                                group.RenderObjects.Add(o);
+                            }
+                        }
+
+                        settings.SceneDescriptor.Groups.Add(group);
+
+                    }
+
+                }
+                return;
+            }
+        }
+
         #region Render
         public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
@@ -327,51 +380,7 @@ namespace VVVV.DX11.Nodes.Layers
 
                 if (settings.RenderHint == eRenderHint.Collector)
                 {
-                    if (this.FGeometry.IsConnected)
-                    {
-                        DX11ObjectGroup group = new DX11ObjectGroup();
-                        group.ShaderName = this.Source.Name;
-                        group.Semantics.AddRange(settings.CustomSemantics);
-
-                        if (this.FGeometry.SliceCount == 1)
-                        {
-                            IDX11Geometry g = this.FGeometry[0][context];
-                            if (g.Tag != null)
-                            {
-                                DX11RenderObject o = new DX11RenderObject();
-                                o.ObjectType = g.PrimitiveType;
-                                o.Descriptor = g.Tag;
-                                o.Transforms = new Matrix[spmax];
-                                for (int i = 0; i < this.spmax; i++)
-                                {
-                                    o.Transforms[i] = this.mworld[i % this.mworldcount];
-                                }
-                                group.RenderObjects.Add(o);
-
-                                settings.SceneDescriptor.Groups.Add(group);
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < this.spmax; i++)
-                            {
-                                IDX11Geometry g = this.FGeometry[i][context];
-                                if (g.Tag != null)
-                                {
-                                    DX11RenderObject o = new DX11RenderObject();
-                                    o.ObjectType = g.PrimitiveType;
-                                    o.Descriptor = g.Tag;
-                                    o.Transforms = new Matrix[1];
-                                    o.Transforms[0] = this.mworld[i % this.mworldcount];
-                                    group.RenderObjects.Add(o);
-                                }
-                            }
-
-                            settings.SceneDescriptor.Groups.Add(group);
-
-                        }
-
-                    }
+                    this.Collect(context, settings);
                     return;
                 }
 
@@ -491,7 +500,6 @@ namespace VVVV.DX11.Nodes.Layers
                         if (multistate)
                         {
                             context.RenderStateStack.Push(this.FInState[idx]);
-                            
                         }
 
                         if (shaderdata.IsLayoutValid(idx) || settings.Geometry != null)
@@ -546,11 +554,6 @@ namespace VVVV.DX11.Nodes.Layers
                         if (multistate)
                         {
                             context.RenderStateStack.Pop();
-                        }
-
-                        if (settings.PostShaderAction != null)
-                        {
-                            settings.PostShaderAction(context);
                         }
                     }
 

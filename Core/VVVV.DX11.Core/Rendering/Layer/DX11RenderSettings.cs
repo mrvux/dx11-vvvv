@@ -76,8 +76,6 @@ namespace VVVV.DX11
 
         public Action<DX11RenderContext> PostPassAction { get; set; }
 
-        public Action<DX11RenderContext> PostShaderAction { get; set; }
-
         /// <summary>
         /// If true, asks the shader to keep current pipeline and not set other shader to null,
         /// this can be useful if your shader provides pixel/geometry shader and you want the node to provide a vs only
@@ -96,8 +94,9 @@ namespace VVVV.DX11
 
         public bool ValidateObject(DX11ObjectRenderSettings obj)
         {
-            foreach (IDX11ObjectValidator objval in this.ObjectValidators)
+            for (int i = 0; i < this.ObjectValidators.Count; i++)
             {
+                IDX11ObjectValidator objval = this.ObjectValidators[i];
                 if (objval.Enabled)
                 {
                     if (!objval.Validate(obj)) { return false; }
@@ -108,17 +107,14 @@ namespace VVVV.DX11
 
         public bool ApplySemantics(DX11ShaderInstance instance, List<IDX11CustomRenderVariable> variables)
         {
-            foreach (IDX11RenderSemantic semantic in this.CustomSemantics)
+            for (int i = 0; i < this.CustomSemantics.Count; i++)
             {
-                if (!semantic.Apply(instance, variables)) { return false; }
+                if (!this.CustomSemantics[i].Apply(instance, variables)) { return false; }
             }
 
-            foreach (DX11Resource<IDX11RenderSemantic> semantic in this.ResourceSemantics)
+            for (int i = 0; i < this.ResourceSemantics.Count; i++)
             {
-                if (semantic[instance.RenderContext] != null)
-                {
-                    if (!semantic[instance.RenderContext].Apply(instance, variables)) { return false; }
-                }
+                if (!this.ResourceSemantics[i][instance.RenderContext].Apply(instance, variables)) { return false; }
             }
 
             return true;
