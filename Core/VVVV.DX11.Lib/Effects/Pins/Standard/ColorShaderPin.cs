@@ -13,29 +13,50 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Internals.Effects.Pins
 {
-    public class ColorShaderPin : AbstractValuePin<Color4>, IMultiTypeShaderPin
+    public unsafe class ColorShaderPin : AbstractV1ColorPin, IMultiTypeShaderPin, IUpdateShaderPin
     {
+        double* colorPtr;
+        int colorCnt;
+
         public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
-        protected override void SetDefault(InputAttribute attr, EffectVariable var)
-        {
-            Vector4 vec = var.AsVector().GetVector();
-            attr.DefaultColor = new double[] { vec.X, vec.Y, vec.Z, vec.W };
         }
 
         public override Action<int> CreateAction(DX11ShaderInstance instance)
         {
             var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
-            return (i) => { sv.Set(this.pin[i]); };
+            return (i) => 
+            {
+                Vector4 c = new Vector4((float)colorPtr[(i * 4) % colorCnt],
+                    (float)colorPtr[(i * 4 + 1) % colorCnt],
+                    (float)colorPtr[(i * 4 + 2) % colorCnt],
+                    (float)colorPtr[(i * 4 + 3) % colorCnt]);
+                sv.Set(c);
+            };
         }
 
         public bool ChangeType(EffectVariable var)
         {
             return var.IsColor();
         }
+
+        public void Update()
+        {
+            this.pin.GetColorPointer(out colorCnt, out colorPtr);
+        }
+
+        protected override void CreatePin(EffectVariable variable)
+        {
+            var visible = variable.Visible();
+            this.factory.PluginHost.CreateColorInput(variable.UiName(), TSliceMode.Dynamic, visible ? TPinVisibility.True : TPinVisibility.OnlyInspector, out this.pin);
+
+            Vector4 vec = variable.AsVector().GetVector();
+            this.pin.SetSubType(new RGBAColor(vec.X, vec.Y, vec.Z, vec.W), true);
+        }
+
+        protected override void ProcessAttribute(InputAttribute attr, EffectVariable var) { }
+        protected override bool RecreatePin(EffectVariable variable) { return false; }
+
     }
 }
 

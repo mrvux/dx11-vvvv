@@ -28,5 +28,10 @@ namespace VVVV.DX11.Internals.Effects.Pins
         bool ChangeType(EffectVariable var);
     }
 
+    public interface IUpdateShaderPin
+    {
+        void Update();
+    }
+
 
 }

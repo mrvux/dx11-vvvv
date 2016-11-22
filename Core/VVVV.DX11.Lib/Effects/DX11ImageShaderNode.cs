@@ -250,6 +250,8 @@ namespace VVVV.DX11.Nodes.Layers
                 this.varmanager.RebuildPassCache(tid);
             }
 
+            this.varmanager.ApplyUpdatable();
+
             this.FOut.Stream.IsChanged = true;
         }
         #endregion

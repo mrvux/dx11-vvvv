@@ -61,7 +61,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
             }
         }
 
-        private void CreatePin(EffectVariable variable)
+        protected virtual void CreatePin(EffectVariable variable)
         {
             this.visible = variable.Visible();
 

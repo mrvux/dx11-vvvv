@@ -79,6 +79,19 @@ namespace VVVV.DX11.Lib.Effects
                 }
             }
         }
+
+        public void ApplyUpdatable()
+        {
+            for (int i = 0; i < this.shaderpins.VariablesList.Count; i++)
+            {
+                var sp = this.shaderpins.VariablesList[i];
+                if (sp is IUpdateShaderPin)
+                {
+                    ((IUpdateShaderPin)sp).Update();
+                }
+            }
+            
+        }
         #endregion
 
         #region Create Pin

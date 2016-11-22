@@ -186,6 +186,8 @@ namespace VVVV.DX11.Nodes.Layers
             this.FInWorld.GetMatrixPointer(out this.mworldcount, out src);
             this.mworld = (Matrix*)src;
 
+            
+
             this.FOutLayer.SliceCount = 1;
             if (this.FOutLayer[0] == null)
             {
@@ -213,6 +215,8 @@ namespace VVVV.DX11.Nodes.Layers
                 }
                 this.FInvalidate = false;
             }
+
+            this.varmanager.ApplyUpdatable();
         }
         #endregion
 

@@ -240,6 +240,8 @@ namespace VVVV.DX11.Nodes.Layers
             this.techniquechanged = this.FInTechnique.IsChanged;
             this.FOut.Stream.IsChanged = true;
             this.FOutBuffer.Stream.IsChanged = true;
+
+            this.varmanager.ApplyUpdatable();
         }
 
         #endregion
