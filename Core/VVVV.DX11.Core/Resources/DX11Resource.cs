@@ -57,17 +57,20 @@ namespace VVVV.DX11
         /// </summary>
         public void Dispose()
         {
-            //Dispose resource for all devices
-            foreach (DX11RenderContext context in this.resources.Keys)
+            lock (syncRoot)
             {
-                if (resources[context] is IDisposable)
+                //Dispose resource for all devices
+                foreach (DX11RenderContext context in this.resources.Keys)
                 {
-                    IDisposable d = resources[context] as IDisposable;
-                    d.Dispose();
+                    if (resources[context] is IDisposable)
+                    {
+                        IDisposable d = resources[context] as IDisposable;
+                        d.Dispose();
+                    }
+                    //resources[dev].Dispose();
                 }
-                //resources[dev].Dispose();
+                resources.Clear();
             }
-            resources.Clear();
         }
 
         /// <summary>
@@ -86,6 +89,17 @@ namespace VVVV.DX11
                         IDisposable d = resources[context] as IDisposable;
                         d.Dispose();
                     }
+                    this.resources.Remove(context);
+                }
+            }
+        }
+
+        public void Remove(DX11RenderContext context)
+        {
+            lock (syncRoot)
+            {
+                if (this.resources.ContainsKey(context))
+                {
                     this.resources.Remove(context);
                 }
             }

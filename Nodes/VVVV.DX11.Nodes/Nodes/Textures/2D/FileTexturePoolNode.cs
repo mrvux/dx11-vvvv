@@ -89,7 +89,7 @@ namespace VVVV.DX11.Nodes
                     }
                     else
                     {
-                        this.FTextureOutput[i].Data.Remove(context);
+                        this.FTextureOutput[i].Remove(context);
                     }
                     
 

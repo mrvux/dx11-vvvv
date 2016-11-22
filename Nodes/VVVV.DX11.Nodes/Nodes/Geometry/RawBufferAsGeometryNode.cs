@@ -89,7 +89,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
             else
             {
-                this.geometryOutput[0].Data.Remove(context);
+                this.geometryOutput[0].Remove(context);
             }
         }
        

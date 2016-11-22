@@ -55,6 +55,11 @@ namespace VVVV.DX11
             }
         }
 
+        public void Clear()
+        {
+            this.resources.Clear();
+        }
+
         /// <summary>
         /// Assigns or retrieve resource from a device
         /// </summary>

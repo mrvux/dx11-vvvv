@@ -127,7 +127,7 @@ namespace VVVV.DX11.Nodes
                 catch
                 { }
 
-                this.FOutGeom[i].Data.Remove(OnDevice);
+                this.FOutGeom[i].Remove(OnDevice);
             }
                 
         }

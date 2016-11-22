@@ -45,7 +45,7 @@ namespace VVVV.DX11.Nodes
             }
             else
             {
-                this.FTextureOutput[0].Data.Remove(context);
+                this.FTextureOutput[0].Remove(context);
             }
         }
 
