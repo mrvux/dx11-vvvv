@@ -1,0 +1,20 @@
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+	
+image: Visual Studio 2015
+
+platform: x64
+
+configuration: Release
+
+artifacts:
+
+  # pushing a single file
+  - path: vvvv-dx11-x64-build-alpha.zip
+ 
+ 
+install:
+  git submodule update --init --recursive
