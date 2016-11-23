@@ -517,6 +517,10 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         pg = this.FGeometry[0];
                         objectsettings.Geometry = pg[context];
+                        if (objectsettings.Geometry == null)
+                        {
+                            objectsettings.Geometry = new DX11InvalidGeometry();
+                        }
                         shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, 0);
                     }
 
@@ -551,6 +555,10 @@ namespace VVVV.DX11.Nodes.Layers
                                             pg = this.FGeometry[idx];
 
                                             objectsettings.Geometry = pg[context];
+                                            if (objectsettings.Geometry == null)
+                                            {
+                                                objectsettings.Geometry = new DX11InvalidGeometry();
+                                            }
 
                                             shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, idx);
                                         }
