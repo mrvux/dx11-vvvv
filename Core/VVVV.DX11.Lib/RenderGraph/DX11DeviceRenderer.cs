@@ -180,9 +180,9 @@ namespace VVVV.DX11.Lib.RenderGraph
                 }
             }
 
-            //Got to all parents recursively (eg: make sure all is updated)
-            foreach (DX11InputPin ip in node.InputPins)
+            for (int i = 0; i < node.InputPins.Count; i++)
             {
+                DX11InputPin ip = node.InputPins[i];
                 if (ip.IsConnected && (ip.ParentPin.IsFeedBackPin == false))
                 {
                     this.ProcessNode(ip.ParentPin.ParentNode);
@@ -194,9 +194,10 @@ namespace VVVV.DX11.Lib.RenderGraph
             }
 
 
-                //Call Update
-                foreach (DX11InputPin ip in node.InputPins)
+            //Call Update
+            for (int i = 0; i < node.InputPins.Count; i++)
             {
+                DX11InputPin ip = node.InputPins[i];
                 if (ip.IsConnected)
                 {
                     DX11OutputPin parent = ip.ParentPin;
