@@ -299,6 +299,7 @@ namespace VVVV.DX11.Nodes.Layers
         }
         #endregion
 
+        #region Collect
         private void Collect(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (settings.RenderHint == eRenderHint.Collector)
@@ -351,6 +352,30 @@ namespace VVVV.DX11.Nodes.Layers
                 return;
             }
         }
+        #endregion
+
+        private void ApplyOnly(DX11RenderContext context, DX11RenderSettings settings)
+        {
+            Device device = context.Device;
+            DeviceContext ctx = context.CurrentDeviceContext;
+
+            var variableCache = this.shaderVariableCache[context];
+            DX11ShaderData sdata = this.deviceshaderdata[context];
+            this.varmanager.SetGlobalSettings(sdata.ShaderInstance, settings);
+            variableCache.ApplyGlobals(settings);
+
+            DX11ObjectRenderSettings oset = new DX11ObjectRenderSettings();
+            oset.DrawCallIndex = 0;
+            oset.Geometry = null;
+            oset.IterationCount = 1;
+            oset.IterationIndex = 0;
+            oset.WorldTransform = this.mworld[0 % this.mworldcount];
+            variableCache.ApplySlice(oset, 0);
+            sdata.ApplyPass(ctx);
+
+            this.FInLayer.RenderAll(context, settings);
+
+        }
 
         #region Render
         public void Render(DX11RenderContext context, DX11RenderSettings settings)
@@ -368,26 +393,7 @@ namespace VVVV.DX11.Nodes.Layers
                 //In that case we do not care about geometry, but only apply pass for globals
                 if (settings.RenderHint == eRenderHint.ApplyOnly)
                 {
-                    var variableCache = this.shaderVariableCache[context];
-                    DX11ShaderData sdata = this.deviceshaderdata[context];
-                    this.varmanager.SetGlobalSettings(sdata.ShaderInstance, settings);
-                    variableCache.ApplyGlobals(settings);
-
-                    DX11ObjectRenderSettings oset = new DX11ObjectRenderSettings();
-                    oset.DrawCallIndex = 0;
-                    oset.Geometry = null;
-                    oset.IterationCount = 1;
-                    oset.IterationIndex = 0;
-                    oset.WorldTransform = this.mworld[0 % this.mworldcount];
-                    variableCache.ApplySlice(oset, 0);
-                    sdata.ApplyPass(ctx);
-
-
-                    if (this.FInLayer.IsConnected)
-                    {
-                        this.FInLayer[0][context].Render(context, settings);
-                    }
-
+                    this.ApplyOnly(context, settings);
                     return;
                 }
 
