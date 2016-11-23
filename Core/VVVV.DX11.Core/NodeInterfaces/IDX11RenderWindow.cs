@@ -12,7 +12,7 @@ namespace VVVV.DX11
         IntPtr WindowHandle { get; }
     }
 
-    public interface IDX11RenderStartPoint
+    public interface IDX11RenderStartPoint : IDX11RenderGraphPart
     {
         DX11RenderContext RenderContext { get; }
         bool Enabled { get; }
