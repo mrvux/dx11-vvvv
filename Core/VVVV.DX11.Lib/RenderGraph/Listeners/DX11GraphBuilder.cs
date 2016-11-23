@@ -75,7 +75,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         protected override bool ProcessAddedNode(INode2 node)
         {
 
-            if (node.IsNodeAssignableFrom<IDX11ResourceProvider>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>() || node.IsNodeAssignableFrom<IDX11ResourceHost>())
+            if (node.IsNodeAssignableFrom<IDX11RenderGraphPart>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>() || node.IsNodeAssignableFrom<IDX11ResourceHost>())
             {
                 DX11Node vn = new DX11Node(node);
 
@@ -161,7 +161,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
             //Normally we should have data from cache (since it's created before events are fired)
             if (reg.pinconnections.ContainsKey(sink))
             {
-                return reg.pinconnections[sink].link;
+                return reg.pinconnections[sink].ParentPin;
             }
             return null;
         }

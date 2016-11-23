@@ -21,6 +21,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeInterfaces\DX11RenderGraphPinAttribute.cs" />
     <Compile Include="NodeInterfaces\IDX11RenderWindow.cs" />
     <Compile Include="NodeInterfaces\IDX11ResourceDataRetriever.cs" />
     <Compile Include="NodeInterfaces\IDX11UpdateBlocker.cs" />
