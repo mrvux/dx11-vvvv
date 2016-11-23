@@ -33,7 +33,7 @@ namespace VVVV.DX11.Factories
     [Export(typeof(DX11NodesFactory))]
     [ComVisible(false)]
     public class DX11NodesFactory : IAddonFactory, IDisposable
-	{
+    {
         private IHDEHost hdehost;
 
         private IORegistry ioreg;
@@ -42,7 +42,9 @@ namespace VVVV.DX11.Factories
         private IDX11RenderContextManager devicemanager;
         private DX11RenderManager rendermanager;
 
+        [Export(typeof(IDX11RenderDependencyFactory))]
         private DX11GraphBuilder graphbuilder;
+
         private ILogger logger;
 
         [Export]

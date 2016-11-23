@@ -188,9 +188,14 @@ namespace VVVV.DX11.Lib.RenderGraph
                     this.ProcessNode(ip.ParentPin.ParentNode);
                 }
             }
+            for (int i = 0; i < node.VirtualConnections.Count; i++)
+            {
+                this.ProcessNode(node.VirtualConnections[i].sourceNode);
+            }
 
-            //Call Update
-            foreach (DX11InputPin ip in node.InputPins)
+
+                //Call Update
+                foreach (DX11InputPin ip in node.InputPins)
             {
                 if (ip.IsConnected)
                 {

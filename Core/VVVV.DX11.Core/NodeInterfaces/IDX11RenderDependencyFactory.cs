@@ -11,6 +11,6 @@ namespace VVVV.DX11
     public interface IDX11RenderDependencyFactory
     {
         void CreateDependency(IPin inputPin, IPin outputPin);
-        void DeleteDependency(IPin inputPin, IPin outputPin);
+        void DeleteDependency(IPin inputPin);
     }
 }

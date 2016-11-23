@@ -32,7 +32,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         DX11Graph Graph { get; }
     }
 
-    public class DX11GraphBuilder : AbstractHdeNodeListener, IDX11GraphBuilder
+    public class DX11GraphBuilder : AbstractHdeNodeListener, IDX11GraphBuilder, IDX11RenderDependencyFactory
     {
         private DX11Graph graph;
 
@@ -40,6 +40,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
 
         private List<IPin2> pendingpins = new List<IPin2>();
         private Dictionary<IPin, HdeLink> pendinglinks = new Dictionary<IPin, HdeLink>();
+        private List<Tuple<IPin, IPin>> pendingDependencies = new List<Tuple<IPin, IPin>>(); 
 
         public event DX11RenderRequestDelegate RenderRequest;
 
@@ -68,9 +69,25 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
             }
             this.pendingpins.Clear();
 
+            foreach (Tuple<IPin, IPin> dep in this.pendingDependencies)
+            {
+                this.CreateAdditionalConnection(dep.Item1, dep.Item2);
+            }
+            this.pendingpins.Clear();
+            this.pendingDependencies.Clear();
+
             this.ProcessPendingLinks();
         }
 
+        public void CreateDependency(IPin inputPin, IPin outputPin)
+        {
+            this.pendingDependencies.Add(new Tuple<IPin, IPin>(inputPin, outputPin));
+        }
+
+        public void DeleteDependency(IPin inputPin)
+        {
+            this.RemoveAdditionalConnection(inputPin);
+        }
 
         protected override bool ProcessAddedNode(INode2 node)
         {
@@ -182,6 +199,44 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         {
             IPin2 sink = sender as IPin2;
             this.SetLink(sink.InternalCOMInterf, args.OtherPin,false);
+        }
+
+        private void RemoveAdditionalConnection(IPin sink)
+        {
+            if (sink as IPluginIO == null)
+                return;
+
+            DX11Node sinknode = this.graph.FindNode(sink.ParentNode);
+
+            if (sinknode != null)
+            {
+                DX11VirtualConnection connection = sinknode.GetVirtualConnection(sink);
+                if (connection != null)
+                {
+                    sinknode.VirtualConnections.Remove(connection);
+                }
+            }
+        }
+
+        private void CreateAdditionalConnection(IPin sink, IPin source)
+        {
+            if (sink as IPluginIO == null || source as IPluginIO == null)
+                return;
+
+            DX11Node sinknode = this.graph.FindNode(sink.ParentNode);
+            DX11Node sourcenode = this.graph.FindNode(source.ParentNode);
+
+            if (sinknode != null && sourcenode != null)
+            {
+                DX11VirtualConnection existing = sinknode.GetVirtualConnection(sink);
+                if (existing != null)
+                {
+                    sinknode.VirtualConnections.Remove(existing);
+                }
+
+                DX11VirtualConnection connection = new DX11VirtualConnection(sink, source, sourcenode);
+                sinknode.VirtualConnections.Add(connection);
+            }
         }
 
         private bool SetLink(IPin sink,IPin source, bool frompending)
