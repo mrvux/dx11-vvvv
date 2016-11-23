@@ -75,7 +75,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Listeners
         protected override bool ProcessAddedNode(INode2 node)
         {
 
-            if (node.IsNodeAssignableFrom<IDX11RenderGraphPart>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>() || node.IsNodeAssignableFrom<IDX11ResourceHost>())
+            if (node.IsNodeAssignableFrom<IDX11RenderGraphPart>() || node.IsNodeAssignableFrom<IDX11ResourceDataRetriever>())
             {
                 DX11Node vn = new DX11Node(node);
 
