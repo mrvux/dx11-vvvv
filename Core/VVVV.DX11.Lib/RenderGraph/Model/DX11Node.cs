@@ -71,6 +71,25 @@ namespace VVVV.DX11.RenderGraph.Model
             return null;
         }
 
+
+        public DX11InputPin GetInput(IPin pin)
+        {
+            foreach (DX11InputPin ip in this.InputPins)
+            {
+                if (ip.HdePin == pin) { return ip; }
+            }
+            return null;
+        }
+
+        public DX11OutputPin GetOutput(IPin pin)
+        {
+            foreach (DX11OutputPin ip in this.OutputPins)
+            {
+                if (ip.HdePin == pin) { return ip; }
+            }
+            return null;
+        }
+
         public bool RemovePin(string name, PinDirection direction)
         {
             if (direction == PinDirection.Input)
