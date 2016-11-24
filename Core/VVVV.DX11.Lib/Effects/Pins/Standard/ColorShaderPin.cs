@@ -21,6 +21,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public void Update()
         {
             this.pin.GetColorPointer(out colorCnt, out colorPtr);
+            colorCnt *= 4;
         }
 
         public override Action<int> CreateAction(DX11ShaderInstance instance)
