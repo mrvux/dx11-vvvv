@@ -93,6 +93,8 @@
     <Compile Include="Effects\Pins\ResourceShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\BuffersShaderPins.cs" />
     <Compile Include="Effects\Pins\Resources\SamplerShaderPin.cs" />
+    <Compile Include="Effects\Pins\Resources\Texture3dShaderPin.cs" />
+    <Compile Include="Effects\Pins\Resources\Texture2dShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\TextureArrayShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\TextureShaderPin.cs" />
     <Compile Include="Effects\Pins\Standard\BoolShaderPin.cs" />
