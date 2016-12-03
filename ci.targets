@@ -35,6 +35,7 @@
   <Target Name="Build">
     <Delete Files="Deploy\**\*.*" />
     <CallTarget Targets="Build-x64" />
+	<Exec WorkingDirectory="Deploy\Release\x64\packs\DX11\nodes\plugins\vlc\" Command="..\..\..\..\..\..\..\..\Tools\7zA.exe x ..\..\..\..\..\..\..\..\Dependencies\x64\vlc-plugins.zip" LogStandardErrorAsError="true" />
     <Copy SourceFiles="@(GirlPowerNodes)" DestinationFolder="Deploy\Release\x64\packs\dx11\nodes\%(GirlPowerNodes.RecursiveDir)" />
     <Copy SourceFiles="@(GirlPower)" DestinationFolder="Deploy\Release\x64\packs\dx11\girlpower\%(GirlPower.RecursiveDir)" />
     <Exec WorkingDirectory="Deploy\Release\x64\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x64.zip packs" LogStandardErrorAsError="true" />
