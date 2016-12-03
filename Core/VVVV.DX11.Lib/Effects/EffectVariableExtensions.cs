@@ -23,6 +23,19 @@ namespace VVVV.DX11
             return name;
         }
 
+        public static bool Reference(this EffectVariable var, string variableName)
+        {
+            if (var.GetAnnotationByName("ref") != null)
+            {
+                if (var.GetAnnotationByName("ref").AsString() != null)
+                {
+                    string name = var.GetAnnotationByName("ref").AsString().GetString();
+                    return name == variableName;
+                }
+            }
+            return false;
+        }
+
         public static bool Visible(this EffectVariable var)
         {
             bool res = true;
