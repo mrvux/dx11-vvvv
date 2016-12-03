@@ -54,7 +54,6 @@ namespace VVVV.DX11.Nodes.Layers
         private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
         private DX11RenderSettings settings = new DX11RenderSettings();
-        private bool shaderupdated;
 
         private int spmax = 0;
         private int layoutsize;
@@ -118,6 +117,7 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
                 this.shaderVariableCache.Clear();
+                this.deviceshaderdata.Dispose();
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -144,9 +144,6 @@ namespace VVVV.DX11.Nodes.Layers
                     this.varmanager.UpdateShaderPins();
                 }
             }
-
-
-            this.shaderupdated = true;
             this.FInvalidate = true;
         }
         #endregion
@@ -279,8 +276,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (!this.deviceshaderdata.Contains(context))
             {
-                this.deviceshaderdata[context]  = new DX11ShaderData(context);
-                this.deviceshaderdata[context].SetEffect(this.FShader);
+                this.deviceshaderdata[context]  = new DX11ShaderData(context, this.FShader);
             }
             if (!this.shaderVariableCache.Contains(context))
             {
@@ -288,14 +284,10 @@ namespace VVVV.DX11.Nodes.Layers
             }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
-            if (this.shaderupdated)
-            {
-                shaderdata.SetEffect(this.FShader);
-                shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
-            }
-
+            shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
+            
             bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
-            if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged || this.shaderupdated)
+            if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
             {
                 elems = null;
                 int size = 0;
@@ -313,8 +305,6 @@ namespace VVVV.DX11.Nodes.Layers
                 }
                 this.layoutsize = size;
             }
-
-            this.shaderupdated = false;
 
             if (this.FInEnabled[0] && this.FIn.PluginIO.IsConnected)
             {

@@ -55,15 +55,16 @@ namespace VVVV.DX11.Lib.Effects
             }
         }
 
-        public DX11ShaderData(DX11RenderContext context)
+        public DX11ShaderData(DX11RenderContext context, DX11Effect effect)
         {
             this.context = context;
             this.passid = 0;
             this.techid = 0;
+            this.SetEffect(effect);
         }
 
         #region Set Effect
-        public void SetEffect(DX11Effect shader)
+        private void SetEffect(DX11Effect shader)
         {
             //Create
             if (this.shader == null)

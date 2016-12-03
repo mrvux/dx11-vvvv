@@ -99,8 +99,6 @@ namespace VVVV.DX11.Nodes.Layers
 
         private DX11ImageShaderVariableManager varmanager;
         private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
-        private bool shaderupdated;
-
         private int spmax = 0;
 
         private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
@@ -149,8 +147,8 @@ namespace VVVV.DX11.Nodes.Layers
                 this.varmanager.SetShader(shader);
                 this.varmanager.RebuildTextureCache();
                 this.shaderVariableCache.Clear();
-
                 this.varmanager.RebuildPassCache(tid);
+                this.deviceshaderdata.Dispose();
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -177,9 +175,6 @@ namespace VVVV.DX11.Nodes.Layers
                     this.varmanager.UpdateShaderPins();
                 }
             }
-
-
-            this.shaderupdated = true;
             this.FInvalidate = true;
         }
         #endregion
@@ -281,8 +276,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (!this.deviceshaderdata.Contains(context))
             {
-                this.deviceshaderdata[context] = new DX11ShaderData(context);
-                this.deviceshaderdata[context].SetEffect(this.FShader);
+                this.deviceshaderdata[context] = new DX11ShaderData(context, this.FShader);
             }
             if (!this.shaderVariableCache.Contains(context))
             {
@@ -290,12 +284,6 @@ namespace VVVV.DX11.Nodes.Layers
             }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
-            if (this.shaderupdated)
-            {
-                shaderdata.SetEffect(this.FShader);
-                this.shaderupdated = false;
-            }
-
             context.RenderStateStack.Push(new DX11RenderState());
 
             this.OnBeginQuery(context);

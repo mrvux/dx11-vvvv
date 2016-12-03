@@ -47,7 +47,6 @@ namespace VVVV.DX11.Nodes.Layers
         private DX11ContextElement<List<DX11ObjectRenderSettings>> orderedObjectSettings = new DX11ContextElement<List<DX11ObjectRenderSettings>>();
         private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
-        private bool shaderupdated;
         private int spmax = 0;
         private bool geomconnected;
         private bool stateconnected;
@@ -106,6 +105,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             this.varmanager.SetShader(shader);
             this.shaderVariableCache.Clear();
+            this.deviceshaderdata.Dispose();
             FOutPath.SliceCount = 1;
             FOutPath[0] = fileName;
             
@@ -143,8 +143,6 @@ namespace VVVV.DX11.Nodes.Layers
                     this.FoutCS.AssignFrom(this.varmanager.GetCustomData());
                 }
             }
-
-            this.shaderupdated = true;
             this.FInvalidate = true;
         }
         #endregion
@@ -166,11 +164,10 @@ namespace VVVV.DX11.Nodes.Layers
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
-            if (this.shaderupdated)
+            if (this.FOutShader[0] == null)
             {
                 this.FOutShader[0] = new DX11Resource<DX11Shader>();
             }
-            this.shaderupdated = false;
 
             this.spmax = this.CalculateSpreadMax();
 
@@ -242,7 +239,7 @@ namespace VVVV.DX11.Nodes.Layers
         #region Update
         public void Update(DX11RenderContext context)
         {
-            if (!this.FOutLayer[0].Contains(context)) 
+            if (!this.FOutLayer[0].Contains(context))
             {
                 this.FOutLayer[0][context] = new DX11Layer();
                 this.FOutLayer[0][context].Render = this.Render;
@@ -260,27 +257,17 @@ namespace VVVV.DX11.Nodes.Layers
 
             if (!this.deviceshaderdata.Contains(context))
             {
-                this.deviceshaderdata[context] = new DX11ShaderData(context);
+                this.deviceshaderdata[context] = new DX11ShaderData(context, this.FShader);
             }
-            //Update shader
-            this.deviceshaderdata[context].SetEffect(this.FShader);
             if (!this.shaderVariableCache.Contains(context))
             {
                 this.shaderVariableCache[context] = new DX11ShaderVariableCache(context, this.deviceshaderdata[context].ShaderInstance, this.varmanager);
             }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
-            if (this.shaderupdated)
+            if (!this.FOutShader[0].Contains(context))
             {
-                shaderdata.SetEffect(this.FShader);
                 this.FOutShader[0][context] = new DX11Shader(shaderdata.ShaderInstance);
-            }
-            else
-            {
-                if (!this.FOutShader[0].Contains(context))
-                {
-                    this.FOutShader[0][context] = new DX11Shader(shaderdata.ShaderInstance);
-                }
             }
         }
         #endregion
