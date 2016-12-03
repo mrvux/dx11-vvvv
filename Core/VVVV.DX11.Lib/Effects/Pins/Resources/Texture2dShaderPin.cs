@@ -14,6 +14,7 @@ using VVVV.DX11.Lib.Effects.Pins;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using SlimDX;
+using FeralTic;
 
 namespace VVVV.DX11.Internals.Effects.Pins
 {
@@ -47,6 +48,8 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
             List<EffectVectorVariable> sizeOfVar = new List<EffectVectorVariable>();
             List<EffectVectorVariable> invSizeOfVar = new List<EffectVectorVariable>();
+            List<EffectMatrixVariable> aspectVar = new List<EffectMatrixVariable>();
+            List<AspectRatioMode> aspectMode = new List<AspectRatioMode>();
 
             for (int i = 0; i < instance.Effect.Description.GlobalVariableCount; i++)
             {
@@ -59,8 +62,13 @@ namespace VVVV.DX11.Internals.Effects.Pins
                 {
                     invSizeOfVar.Add(v.AsVector());
                 }
+                if (v.GetVariableType().Description.TypeName == "float4x4" && v.Description.Semantic == "ASPECTOF" && v.Reference(this.Name))
+                {
+                    aspectVar.Add(v.AsMatrix());
+                    aspectMode.Add(v.AspectMode());                   
+                }
             }
-            if (sizeOfVar.Count == 0 && invSizeOfVar.Count == 0)
+            if (sizeOfVar.Count == 0 && invSizeOfVar.Count == 0 && aspectMode.Count == 0)
             {
                 return (i) => { sv.SetResource(this.GetResource(instance.RenderContext, i).SRV); };
             }
@@ -77,6 +85,10 @@ namespace VVVV.DX11.Internals.Effects.Pins
                     for (int j = 0; j < invSizeOfVar.Count; j++)
                     {
                         invSizeOfVar[j].Set(new Vector2(1.0f / resource.Width, 1.0f / resource.Height));
+                    }
+                    for (int j = 0; j < aspectVar.Count; j++)
+                    {
+                        aspectVar[j].SetMatrix(AspectUtils.AspectMatrix(new Vector2(resource.Width, resource.Height), aspectMode[i]));
                     }
                 };
             }
