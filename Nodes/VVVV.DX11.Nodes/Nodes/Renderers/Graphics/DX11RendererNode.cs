@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererHost, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor
+    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererHost, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor, IPartImportsSatisfiedNotification
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -257,7 +257,7 @@ namespace VVVV.DX11.Nodes
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
-        [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector, AllowFeedback =true)]
         protected ISpread<Control> FOutCtrl;
 
         [Output("Node Ref", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
@@ -288,9 +288,6 @@ namespace VVVV.DX11.Nodes
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
-            this.FOutCtrl[0] = this;
-            this.FOutRef[0] = (INode)this.FHost;
-
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             if (this.FOutBackBuffer[0] == null)
             {
@@ -664,6 +661,12 @@ namespace VVVV.DX11.Nodes
             this.Name = "DX11RendererNode";
             this.ResumeLayout(false);
 
+        }
+
+        public void OnImportsSatisfied()
+        {
+            this.FOutCtrl[0] = this;
+            this.FOutRef[0] = (INode)this.FHost;
         }
     }
 }
