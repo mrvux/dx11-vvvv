@@ -23,7 +23,7 @@ namespace VVVV.DX11.Nodes
         [Input("Size")]
         protected ISpread<Vector2> FInSize;
 
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Enabled",DefaultValue=1, Order = 100000)]
@@ -37,11 +37,6 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-
-            if (this.FEnabled[0])
-            {
-                this.FLayerIn.Sync();
-            }
 
             if (rectangles.Length != SpreadMax)
             {
