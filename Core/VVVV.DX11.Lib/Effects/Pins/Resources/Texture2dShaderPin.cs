@@ -34,7 +34,8 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             if (this.pin[slice] != null && this.pin[slice].Contains(context))
             {
-                return this.pin[slice][context];
+                var tex = this.pin[slice][context];
+                return tex != null ? tex : context.DefaultTextures.BlackTexture;
             }
             else
             {
