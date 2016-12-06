@@ -33,6 +33,7 @@
   <ItemGroup>
     <Compile Include="HitTestTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextFormatAdvancedNode.cs" />
     <Compile Include="TextFormatNode.cs" />
     <Compile Include="TextLayer\SpacingNode.cs" />
     <Compile Include="TextLayer\PairKerningNode.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="TextLayoutLineMetricsNode.cs" />
     <Compile Include="TextLayoutMetricsNode.cs" />
     <Compile Include="TextLayoutNode.cs" />
+    <Compile Include="TextObjectNode.cs" />
     <Compile Include="TextPositionNode.cs" />
     <Compile Include="TextRangeNode.cs" />
   </ItemGroup>
