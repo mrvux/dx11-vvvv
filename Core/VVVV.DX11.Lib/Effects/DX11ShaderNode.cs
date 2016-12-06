@@ -101,14 +101,17 @@ namespace VVVV.DX11.Nodes.Layers
 
         public override void SetShader(DX11Effect shader, bool isnew, string fileName)
         {
-            this.FShader = shader;
-
-            this.varmanager.SetShader(shader);
-            this.shaderVariableCache.Clear();
-            this.deviceshaderdata.Dispose();
             FOutPath.SliceCount = 1;
             FOutPath[0] = fileName;
-            
+
+            if (shader.IsCompiled)
+            {
+                this.FShader = shader;
+                this.varmanager.SetShader(shader);
+                this.shaderVariableCache.Clear();
+                this.deviceshaderdata.Dispose();
+            }
+
             //Only set technique if new, otherwise do it on update/evaluate
             if (isnew)
             {
