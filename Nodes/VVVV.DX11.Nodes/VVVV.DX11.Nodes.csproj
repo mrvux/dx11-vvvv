@@ -43,6 +43,7 @@
     <Compile Include="Nodes\Layers\DX11LayerDispatcherNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerApplyOnlyNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerEnabledNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPreservePipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerScissorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSpreadNode.cs" />
