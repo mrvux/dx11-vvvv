@@ -166,5 +166,16 @@ namespace VVVV.DX11.Lib.Effects
             return this.shaderpins.SpreadMax;
         }
 
+        public List<string> GetCustomData()
+        {
+            List<string> csd = new List<string>();
+            foreach (DX11CustomRenderVariable csr in this.customvariables)
+            {
+                var t = csr.Semantic + " : " + csr.Help;
+                csd.Add(t);
+            }
+            return csd;
+        }
+
     }
 }

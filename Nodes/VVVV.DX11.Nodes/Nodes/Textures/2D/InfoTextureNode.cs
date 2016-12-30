@@ -41,7 +41,7 @@ namespace VVVV.DX11.Nodes
         [Output("Mip Levels")]
         protected ISpread<int> FOutMipLevels;
 
-        [Output("Resource Pointer")]
+        [Output("Resource Pointer", Visibility=PinVisibility.OnlyInspector)]
         protected ISpread<int> FOutPointer;
 
         [Import()]

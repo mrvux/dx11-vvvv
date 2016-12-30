@@ -36,6 +36,9 @@ namespace VVVV.DX11
 
         [Input("Mip Map Levels", Order = 5)]
         protected IDiffSpread<int> FInMipLevel;
+
+        [Input("Shared Texture", Order = 6)]
+        protected IDiffSpread<bool> FInSharedTex;
         #endregion
 
         #region Output Pins
@@ -52,6 +55,8 @@ namespace VVVV.DX11
 
         private bool genmipmap;
         private int mipmaplevel;
+
+        private bool invalidate = true;
 
         private Dictionary<DX11RenderContext, DX11RenderTarget2D> targets = new Dictionary<DX11RenderContext, DX11RenderTarget2D>();
         private Dictionary<DX11RenderContext, DX11RenderTarget2D> targetresolve = new Dictionary<DX11RenderContext, DX11RenderTarget2D>();
@@ -75,13 +80,15 @@ namespace VVVV.DX11
 
             if (this.FInAASamplesPerPixel.IsChanged
               || this.FInDoMipMaps.IsChanged
-              || this.FInMipLevel.IsChanged)
+              || this.FInMipLevel.IsChanged
+              || this.FInSharedTex.IsChanged)
             {
                 this.sd.Count = Convert.ToInt32(this.FInAASamplesPerPixel[0].Name);
                 this.sd.Quality = 0;
                 this.genmipmap = this.FInDoMipMaps[0];
                 this.mipmaplevel = Math.Max(FInMipLevel[0], 0);
                 this.depthmanager.NeedReset = true;
+                this.invalidate = true;
             }
 
             this.FOutBufferSize[0] = new Vector2D(this.width, this.height);          
@@ -95,9 +102,10 @@ namespace VVVV.DX11
 
             TexInfo ti = this.rtm.GetRenderTarget(context);
 
-            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.FInAASamplesPerPixel.IsChanged
+            if (ti.w != this.width || ti.h != this.height || !this.targets.ContainsKey(context) || this.invalidate
                 || ti.format !=this.format)
             {
+                this.invalidate = false;
                 this.width = ti.w;
                 this.height = ti.h;
                 this.format = ti.format;
@@ -128,8 +136,8 @@ namespace VVVV.DX11
                         aacount = maxlevels;
                     }
 
-                    DX11RenderTarget2D temptarget = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount,aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
-                    DX11RenderTarget2D temptargetresolve = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(1, 0), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
+                    DX11RenderTarget2D temptarget = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount, aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0], this.FInSharedTex[0]).Element;
+                    DX11RenderTarget2D temptargetresolve = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(1, 0), this.FInDoMipMaps[0], this.FInMipLevel[0], this.FInSharedTex[0]).Element;
 
                     targets[context] = temptarget;
                     targetresolve[context] = temptargetresolve;
@@ -140,11 +148,12 @@ namespace VVVV.DX11
                 else
                 {
                     //Bind both texture as same output
-                    DX11RenderTarget2D temptarget = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount, aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0]).Element;
+                    DX11RenderTarget2D temptarget = context.ResourcePool.LockRenderTarget(this.width, this.height, ti.format, new SampleDescription(aacount, aaquality), this.FInDoMipMaps[0], this.FInMipLevel[0], this.FInSharedTex[0]).Element;
                     targets[context] = temptarget;
   
                     this.FOutBuffers[0][context] = temptarget;
                     this.FOutAABuffers[0][context] = temptarget;
+
                 }
 
 

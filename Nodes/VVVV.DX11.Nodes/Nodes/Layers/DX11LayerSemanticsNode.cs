@@ -12,9 +12,9 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Semantics",Category="DX11.Layer",Version="", Author="vux")]
-    public class DX11LayerSemanticsNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public class DX11LayerSemanticsNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Custom Semantics", Order = 5000)]
@@ -32,11 +32,6 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-
-            if (this.FEnabled[0])
-            {
-                this.FLayerIn.Sync();
-            }
         }
 
 
@@ -60,7 +55,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     List<IDX11RenderSemantic> semantics = new List<IDX11RenderSemantic>();
                     if (this.FInSemantics.PluginIO.IsConnected)
@@ -71,13 +66,16 @@ namespace VVVV.DX11.Nodes
 
 
                     List<DX11Resource<IDX11RenderSemantic>> ressemantics = new List<DX11Resource<IDX11RenderSemantic>>();
-                    if (this.FInResSemantics.PluginIO.IsConnected)
+                    if (this.FInResSemantics.IsConnected)
                     {
                         ressemantics.AddRange(this.FInResSemantics);
                         settings.ResourceSemantics.AddRange(ressemantics);
                     }
 
-                    this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
 
                     foreach (IDX11RenderSemantic semantic in semantics)
                     {
@@ -92,13 +90,18 @@ namespace VVVV.DX11.Nodes
 
                 }
             }
+            else
+            {
+                if (this.FLayerIn.IsConnected)
+                {
+                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
+                }
+            }
         }
 
         #endregion
-
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 }

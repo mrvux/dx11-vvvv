@@ -189,7 +189,7 @@ namespace VVVV.DX11.Lib.Rendering
         {
             if (this.currentmode == eDepthBufferMode.ReadOnly)
             {
-                if (this.depthinputpin.IOObject.PluginIO.IsConnected)
+                if (this.depthinputpin.IOObject.IsConnected)
                 {
                     return this.depthinputpin.IOObject[0][context];
                 }
@@ -207,7 +207,7 @@ namespace VVVV.DX11.Lib.Rendering
 
             if (this.currentmode == eDepthBufferMode.ReadOnly)
             {
-                if (this.depthinputpin.IOObject.PluginIO.IsConnected)
+                if (this.depthinputpin.IOObject.IsConnected)
                 {
                     return this.depthinputpin.IOObject[0][context].ReadOnlyDSV;
                 }
@@ -232,11 +232,11 @@ namespace VVVV.DX11.Lib.Rendering
             }
         }
 
-        public void Clear(DX11RenderContext context)
+        public void Clear(DX11RenderContext context, float depthValue = 1.0f)
         {
             if (this.currentmode == eDepthBufferMode.Standard)
             {
-                context.CurrentDeviceContext.ClearDepthStencilView(this.depthoutputpin.IOObject[0][context].DSV, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
+                context.CurrentDeviceContext.ClearDepthStencilView(this.depthoutputpin.IOObject[0][context].DSV, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, depthValue, 0);
             }
         }
     }

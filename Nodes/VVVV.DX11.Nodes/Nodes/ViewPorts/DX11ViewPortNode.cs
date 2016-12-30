@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes
         [Input("Center")]
         protected ISpread<Vector2> FInPosition;
 
-        [Input("Size", DefaultValue=1.0)]
+        [Input("Size", DefaultValues = new double[] { 1.0,1.0})]
         protected ISpread<Vector2> FInSize;
 
         [Input("Min Z", DefaultValue = 0.0)]

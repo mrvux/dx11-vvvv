@@ -12,7 +12,7 @@ using VVVV.DX11.Effects;
 
 namespace VVVV.DX11
 {
-    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector }
+    public enum eRenderHint { Forward, MRT, Shadow, Overlay, Collector, ApplyOnly }
 
 
     public partial class DX11RenderSettings
@@ -24,11 +24,13 @@ namespace VVVV.DX11
             this.Aspect = Matrix.Identity;
             this.Crop = Matrix.Identity;
             this.ViewProjection = Matrix.Identity;
+            this.RawProjection = Matrix.Identity;
             this.CustomSemantics = new List<IDX11RenderSemantic>();
             this.ObjectValidators = new List<IDX11ObjectValidator>();
             this.ResourceSemantics = new List<DX11Resource<IDX11RenderSemantic>>();
+            this.LayerOrder = null;
             this.RenderSpace = new DX11RenderSpace();
-            this.PrefferedTechnique = "";
+            this.PreferredTechniques = new List<string>();
             this.ViewportCount = 1;
             this.ViewportIndex = 0;
             this.RenderHint = eRenderHint.Forward;
@@ -40,6 +42,12 @@ namespace VVVV.DX11
         public eRenderHint RenderHint { get; set; }
 
         public DX11RenderScene SceneDescriptor { get; set; }
+
+
+        /// <summary>
+        /// Arbitrary tag to set a custom object for this layer
+        /// </summary>
+        public object Tag { get; set; }
 
         /// <summary>
         /// Renderer Width
@@ -66,17 +74,25 @@ namespace VVVV.DX11
         /// </summary>
         public int ViewportCount { get; set; }
 
+        public Action<DX11RenderContext> PostPassAction { get; set; }
+
+        public Action<DX11RenderContext> PostShaderAction { get; set; }
+
         /// <summary>
         /// If true, asks the shader to keep current pipeline and not set other shader to null,
         /// this can be useful if your shader provides pixel/geometry shader and you want the node to provide a vs only
         /// </summary>
         public bool PreserveShaderStages { get; set; }
 
+        public List<string> PreferredTechniques { get; set; }
+
         public List<IDX11RenderSemantic> CustomSemantics { get; set; }
 
         public List<DX11Resource<IDX11RenderSemantic>> ResourceSemantics { get; set; }
 
         public List<IDX11ObjectValidator> ObjectValidators { get; set; }
+
+        public IDX11LayerOrder LayerOrder { get; set; }
 
         public bool ValidateObject(DX11ObjectRenderSettings obj)
         {
@@ -108,6 +124,24 @@ namespace VVVV.DX11
             return true;
         }
 
+        public int GetPreferredTechnique(DX11Effect shader)
+        {
+            string[] techniqueNames = shader.TechniqueNames;
+
+            foreach (string pref in this.PreferredTechniques)
+            {
+                for (int i = 0; i < techniqueNames.Length; ++i)
+                {
+                    if (techniqueNames[i].ToLower() == pref)
+                    {
+                        return i;
+                    }
+                }
+            }
+
+            return -1;
+        }
+
         /// <summary>
         /// How many draw calls this shader is gonna do
         /// </summary>
@@ -133,7 +167,5 @@ namespace VVVV.DX11
         public int CounterValue { get; set; }
 
         public bool DepthOnly { get; set; }
-
-        public string PrefferedTechnique { get; set; }
     }
 }

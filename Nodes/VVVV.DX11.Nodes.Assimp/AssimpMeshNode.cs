@@ -12,7 +12,7 @@ using SlimDX.Direct3D11;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 
-namespace VVVV.DX11.Nodes.Assimp
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name="Mesh",Category="DX11.Geometry",Version="Assimp",Author="vux,flateric")]
     public class AssimpMeshNode : IPluginEvaluate,IDisposable,IDX11ResourceProvider
@@ -83,7 +83,12 @@ namespace VVVV.DX11.Nodes.Assimp
                         this.FOutMaterialIndex[i] = assimpmesh.MaterialIndex;
 
                         this.FOutBoneNames[i].AssignFrom(assimpmesh.BoneNames);
-                        this.FOutBoneMats[i].AssignFrom(assimpmesh.BoneMatrices);
+                        this.FOutBoneMats[i].SliceCount = assimpmesh.BoneMatrices.Count;
+                        for (int j = 0; j < assimpmesh.BoneMatrices.Count; j++ )
+                        {
+                            this.FOutBoneNames[i][j] = assimpmesh.BoneNames[j];
+                            this.FOutBoneMats[i][j] = Matrix.Transpose(assimpmesh.BoneMatrices[j]);
+                        }
                         this.FOutGeom[i] = new DX11Resource<DX11IndexedGeometry>();
                         this.FOutValid[i] = assimpmesh.Indices.Count > 0 && assimpmesh.VerticesCount > 0;
                         this.FOutBoundingMin[i] = assimpmesh.BoundingBox.Minimum;

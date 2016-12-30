@@ -49,6 +49,15 @@ namespace VVVV.DX11.Nodes
         }
     }
 
+    [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Int")]
+    public class IntSemanticNode : DX11CustomSemanticNode<int, IntRenderSemantic>
+    {
+        protected override IntRenderSemantic GetData(int input, string semantic, bool mandatory)
+        {
+            return new IntRenderSemantic(semantic, mandatory, input);
+        }
+    }
+
     [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "2d")]
     public class Vector2SemanticNode : DX11CustomSemanticNode<Vector2, Vector2RenderSemantic>
     {
@@ -73,6 +82,15 @@ namespace VVVV.DX11.Nodes
         protected override Vector4RenderSemantic GetData(Vector4 input, string semantic, bool mandatory)
         {
             return new Vector4RenderSemantic(semantic, mandatory, input);
+        }
+    }
+
+    [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Color")]
+    public class Color4SemanticNode : DX11CustomSemanticNode<Color4, Vector4RenderSemantic>
+    {
+        protected override Vector4RenderSemantic GetData(Color4 input, string semantic, bool mandatory)
+        {
+            return new Vector4RenderSemantic(semantic, mandatory, input.ToVector4());
         }
     }
 

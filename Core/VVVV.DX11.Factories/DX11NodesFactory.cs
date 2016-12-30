@@ -24,6 +24,9 @@ using FeralTic.DX11;
 using VVVV.PluginInterfaces.V2.Graph;
 using System.Windows.Forms;
 
+using DWriteFactory = SlimDX.DirectWrite.Factory;
+using System.IO;
+
 namespace VVVV.DX11.Factories
 {
 	[Export(typeof(IAddonFactory))]
@@ -39,12 +42,28 @@ namespace VVVV.DX11.Factories
         private IDX11RenderContextManager devicemanager;
         private DX11RenderManager rendermanager;
 
-        private DX11GraphBuilder<IDX11ResourceProvider> graphbuilder;
+        private DX11GraphBuilder graphbuilder;
         private ILogger logger;
+
+        [Export]
+        public DWriteFactory DirectWriteFactory { get; private set; }
 
         [ImportingConstructor()]
         public DX11NodesFactory(IHDEHost hdehost, DotNetPluginFactory dnfactory, INodeInfoFactory ni, IORegistry ioreg, ILogger logger)
 		{
+            //Attach lib core path and plugins path
+
+            string path = Path.GetDirectoryName(typeof(DX11DeviceRenderer).Assembly.Location);
+            string vvvvpath = Path.GetDirectoryName(Application.ExecutablePath);
+
+            string varpath = Environment.GetEnvironmentVariable("Path", EnvironmentVariableTarget.Process);
+            varpath += ";" + path;
+
+            vvvvpath = Path.Combine(vvvvpath, "packs\\dx11\\nodes\\plugins");
+            varpath += ";" + path;
+
+            Environment.SetEnvironmentVariable("Path", varpath, EnvironmentVariableTarget.Process);
+
             DX11EnumFormatHelper.CreateNullDeviceFormat();
 
             this.hdehost = hdehost;
@@ -62,6 +81,9 @@ namespace VVVV.DX11.Factories
 
             this.displaymanager = new DX11DisplayManager();
 
+            this.DirectWriteFactory = new DWriteFactory(SlimDX.DirectWrite.FactoryType.Shared);
+            DirectWriteFontUtils.SetFontEnum(this.hdehost, this.DirectWriteFactory);
+
             string[] args = Environment.GetCommandLineArgs();
 
             foreach (string s in args)
@@ -74,6 +96,10 @@ namespace VVVV.DX11.Factories
                     if (sl == "permonitor")
                     {
                         this.devicemanager = new DX11PerMonitorDeviceManager(this.logger, this.displaymanager);
+                    }
+                    else if (sl == "nvidia")
+                    {
+                        this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
                     }
                     else if (sl == "peradapter")
                     {
@@ -103,7 +129,7 @@ namespace VVVV.DX11.Factories
                 this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager);
             }
 
-           this.graphbuilder = new DX11GraphBuilder<IDX11ResourceProvider>(hdehost, reg);
+           this.graphbuilder = new DX11GraphBuilder(hdehost, reg);
            this.graphbuilder.RenderRequest += graphbuilder_OnRenderRequest;
            this.rendermanager = new DX11RenderManager(this.devicemanager, this.graphbuilder,this.logger);
 
@@ -111,6 +137,7 @@ namespace VVVV.DX11.Factories
             DX11GlobalDevice.RenderManager = this.rendermanager;
 
             this.BuildAAEnum();
+            this.RegisterStateEnums();
 		}
 
         void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
@@ -124,6 +151,21 @@ namespace VVVV.DX11.Factories
         {
             string[] aa = new string[] { "1", "2", "4", "8", "16", "32" };
             this.hdehost.UpdateEnum("DX11_AASamples", "1", aa);
+        }
+
+        private void RegisterStateEnums()
+        {
+            string[] enums = DX11SamplerStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11SamplerStates.Instance.EnumName, enums[0], enums);
+
+            enums = DX11BlendStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11BlendStates.Instance.EnumName, enums[0], enums);
+
+            enums = DX11DepthStencilStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11DepthStencilStates.Instance.EnumName, enums[0], enums);
+
+            enums = DX11RasterizerStates.Instance.StateKeys;
+            hdehost.UpdateEnum(DX11RasterizerStates.Instance.EnumName, enums[0], enums);
         }
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)

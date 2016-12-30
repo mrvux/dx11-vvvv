@@ -28,7 +28,7 @@ namespace VVVV.DX11.Nodes
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Element Count", Order = 8, DefaultValue = 512)]
@@ -179,6 +179,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.updateddevices.Contains(context)) { return; }
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);

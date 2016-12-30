@@ -27,19 +27,13 @@ namespace VVVV.MSKinect.Nodes
         private ISpread<int> FOutCount;
 
         [Output("User Index")]
-        private ISpread<int> FOutUserIndex;
+        private ISpread<string> FOutUserIndex;
+
+        [Output("Short Index")]
+        private ISpread<int> FOutShortIndex;
 
         [Output("Position")]
         private ISpread<Vector3> FOutPosition;
-
-        [Output("Wear Glasses")]
-        private ISpread<DetectionResult> FOutWearGlasses;
-
-        [Output("Happy")]
-        private ISpread<DetectionResult> FOutHappy;
-
-        [Output("Neutral")]
-        private ISpread<DetectionResult> FOutNeutral;
 
         [Output("Clipping")]
         private ISpread<Vector4> FOutClipped;
@@ -50,6 +44,9 @@ namespace VVVV.MSKinect.Nodes
         [Output("Joint Position")]
         private ISpread<Vector3> FOutJointPosition;
 
+        [Output("Joint Position RGB")]
+        private ISpread<Vector2> FOutJointPositionRGB;
+
         [Output("Joint Orientation")]
         private ISpread<Quaternion> FOutJointOrientation;
 
@@ -57,7 +54,7 @@ namespace VVVV.MSKinect.Nodes
         private ISpread<string> FOutJointState;
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<int> FOutFrameNumber;
+        private ISpread<long> FOutFrameNumber;
 
 
         private bool FInvalidateConnect = false;
@@ -68,7 +65,7 @@ namespace VVVV.MSKinect.Nodes
 
         private Body[] lastframe = new Body[6];
         private object m_lock = new object();
-        private int frameid = -1;
+        private long frameid = -1;
 
         public void Evaluate(int SpreadMax)
         {
@@ -99,17 +96,19 @@ namespace VVVV.MSKinect.Nodes
                 if (this.lastframe != null)
                 {
                     List<Body> skels = new List<Body>();
+                    List<int> indices = new List<int>();
                     float z = float.MaxValue;
                     int id = -1;
 
                     lock (m_lock)
                     {
 
-                        foreach (Body sk in this.lastframe)
+                        for (int i = 0; i < this.lastframe.Length; i++)
                         {
-                            if (sk.IsTracked)
+                            if (this.lastframe[i].IsTracked)
                             {
-                                skels.Add(sk);
+                                skels.Add(this.lastframe[i]);
+                                indices.Add(i);
                             }
                         }
                     }
@@ -119,15 +118,14 @@ namespace VVVV.MSKinect.Nodes
 
                     this.FOutPosition.SliceCount = cnt;
                     this.FOutUserIndex.SliceCount = cnt;
+                    this.FOutShortIndex.SliceCount = cnt;
                     this.FOutClipped.SliceCount = cnt;
                     this.FOutJointPosition.SliceCount = cnt * 25;
                     this.FOutJointState.SliceCount = cnt * 25;
                     this.FOutJointID.SliceCount = cnt * 25;
+                    this.FOutJointPositionRGB.SliceCount = cnt * 25;
                     this.FOutJointOrientation.SliceCount = cnt * 25;
                     this.FOutFrameNumber[0] = this.frameid;
-                    this.FOutWearGlasses.SliceCount = cnt;
-                    this.FOutHappy.SliceCount = cnt;
-                    this.FOutNeutral.SliceCount = cnt;
 
 
                     int jc = 0;
@@ -137,12 +135,8 @@ namespace VVVV.MSKinect.Nodes
 
                         Joint ce = sk.Joints[JointType.SpineBase];
                         this.FOutPosition[i] = new Vector3(ce.Position.X, ce.Position.Y, ce.Position.Z);
-                        this.FOutUserIndex[i] = (int)sk.TrackingId;
-                        this.FOutWearGlasses[i] = sk.Appearance[Appearance.WearingGlasses];
-                        this.FOutHappy[i] = sk.Expressions[Expression.Happy];
-                        this.FOutNeutral[i] = sk.Expressions[Expression.Neutral];
-
-                        //var t = sk.Expressions[Expression.]
+                        this.FOutUserIndex[i] = sk.TrackingId.ToString();
+                        this.FOutShortIndex[i] = indices[i];
 
                         Vector4 clip = Vector4.Zero;
                         clip.X = Convert.ToSingle(sk.ClippedEdges.HasFlag(FrameEdges.Left));
@@ -154,12 +148,17 @@ namespace VVVV.MSKinect.Nodes
 
                         foreach (Joint joint in sk.Joints.Values)
                         {
+
+                            var jrgb = this.runtime.Runtime.CoordinateMapper.MapCameraPointToColorSpace(joint.Position);
+
                             Microsoft.Kinect.Vector4 bo = sk.JointOrientations[joint.JointType].Orientation;
                             this.FOutJointID[jc] = joint.JointType.ToString();
                             this.FOutJointPosition[jc] = new Vector3(joint.Position.X, joint.Position.Y, joint.Position.Z);
 
                             this.FOutJointOrientation[jc] = new Quaternion(bo.X, bo.Y, bo.Z, bo.W);
                             this.FOutJointState[jc] = joint.TrackingState.ToString();
+
+                            this.FOutJointPositionRGB[jc] = new Vector2(jrgb.X, jrgb.Y);
                             jc++;
                         }
                     }
@@ -174,7 +173,6 @@ namespace VVVV.MSKinect.Nodes
                     this.FOutJointState.SliceCount = 0;
                     this.FOutFrameNumber[0] = 0;
                     this.FOutJointOrientation.SliceCount = 0;
-                    this.FOutWearGlasses.SliceCount = 0;
                 }
                 this.FInvalidate = false;
             }

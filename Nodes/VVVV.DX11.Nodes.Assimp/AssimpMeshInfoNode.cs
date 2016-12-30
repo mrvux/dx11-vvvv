@@ -6,7 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using SlimDX;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "Info", Category = "Assimp", Version = "Mesh", Author = "vux,flateric")]
     public class AssimpMeshInfoNode : IPluginEvaluate, IDisposable
@@ -50,7 +50,7 @@ namespace VVVV.Assimp.Nodes
 
                     for (int i = 0; i < this.FInMeshes.SliceCount; i++)
                     {
-                        AssimpMesh assimpmesh = this.FInMeshes[0];
+                        AssimpMesh assimpmesh = this.FInMeshes[i];
 
                         this.FOutMaterialIndex[i] = assimpmesh.MaterialIndex;
                         this.FOutBoundingMin[i] = assimpmesh.BoundingBox.Minimum;

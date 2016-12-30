@@ -8,7 +8,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-	[VVVV.PluginInterfaces.V2.PluginInfo(Name = "Rasterizer", Category = "DX11.RenderState",Version="Advanced", Author = "vux,tonfilm")]
+	[VVVV.PluginInterfaces.V2.PluginInfo(Name = "Rasterizer", Category = "DX11.RenderState", Version="Advanced", Tags="fill, point, wireframe, solid", Author = "vux,tonfilm")]
 	public class DX11RasterizerStateNode : IPluginEvaluate
 	{
 		[Input("Render State",CheckIfChanged=true)]

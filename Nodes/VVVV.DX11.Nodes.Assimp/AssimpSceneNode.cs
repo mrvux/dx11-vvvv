@@ -5,8 +5,10 @@ using System.Text;
 using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using System.IO;
+using VVVV.Core.Logging;
+using System.ComponentModel.Composition;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "SceneFile", Category = "DX11.Geometry", Version = "Assimp", Author = "vux,flateric")]
     public class AssimpSceneNode : IPluginEvaluate, IDisposable
@@ -32,6 +34,9 @@ namespace VVVV.Assimp.Nodes
         [Output("Is Valid")]
         protected ISpread<bool> FOutValid;
 
+        [Import()]
+        ILogger FLogger;
+
         private AssimpScene scene;
 
         public void Evaluate(int SpreadMax)
@@ -56,8 +61,9 @@ namespace VVVV.Assimp.Nodes
                             this.FOutMeshes[i] = this.scene.Meshes[i];
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        this.FLogger.Log(ex);
                         this.FOutValid[0] = false;
                         this.FOutMeshCount[0] = 0;
                         this.FOutMeshes.SliceCount = 0;

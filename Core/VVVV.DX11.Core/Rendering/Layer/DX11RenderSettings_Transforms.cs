@@ -13,26 +13,41 @@ namespace VVVV.DX11
         /// <summary>
         /// View Matrix
         /// </summary>
-        public Matrix View { get; set; }
+        public Matrix View;
 
         /// <summary>
         /// Projection Matrix
         /// </summary>
-        public Matrix Projection { get; set; }
+        public Matrix RawProjection;
+
+        /// <summary>
+        /// Projection Matrix (Normalized)
+        /// </summary>
+        public Matrix Projection;
 
         /// <summary>
         /// View Projection Matrix
         /// </summary>
-        public Matrix ViewProjection { get; set; }
+        public Matrix ViewProjection;
 
         /// <summary>
         /// Aspect Ratio
         /// </summary>
-        public Matrix Aspect { get; set; }
+        public Matrix Aspect;
 
         /// <summary>
         /// Crop Transform
         /// </summary>
-        public Matrix Crop { get; set; }
+        public Matrix Crop;
+
+        public void ApplyTransforms(Matrix view,Matrix projection,Matrix aspect,Matrix crop)
+        {
+            this.View = view;
+            this.RawProjection = projection;
+            this.Aspect = Matrix.Invert(aspect);
+            this.Crop = Matrix.Invert(crop);
+            this.Projection = this.RawProjection * this.Aspect * this.Crop;
+            this.ViewProjection = this.View * this.Projection;
+        }
     }
 }

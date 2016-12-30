@@ -1,46 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+
 using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
+
 using SlimDX;
-using VVVV.Utils.VMath;
-
-using VVVV.DX11.Lib.Devices;
 using SlimDX.Direct3D11;
-using System.ComponentModel.Composition;
-using VVVV.Hosting.Pins;
-using VVVV.DX11.Internals.Helpers;
-using VVVV.DX11.Internals;
-using VVVV.DX11.Internals.Effects;
 
-using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11.Queries;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "RawBuffer", Author = "vux", AutoEvaluate = false)]
+    [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Buffer.Raw", Author = "vux", AutoEvaluate = false)]
     public class DX11RawBufferRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Size", Order = 8, DefaultValue = 512)]
         protected IDiffSpread<int> FInSize;
 
-        [Input("Appendable", Order = 8, DefaultValue = 0)]
-        protected IDiffSpread<bool> FInAppendable;
+        [Input("Allow VertexBuffer", DefaultValue = 0, Order = 12)]
+        protected IDiffSpread<bool> FInVBO;
 
-        [Input("Reset Counter",IsBang=true )]
-        protected IDiffSpread<bool> FInResetCounter;
+        [Input("Allow IndexBuffer", DefaultValue = 0, Order = 13)]
+        protected IDiffSpread<bool> FInIBO;
 
-        [Input("Reset Counter Value")]
-        protected IDiffSpread<int> FInResetCounterValue;
+        [Input("Allow Argument Buffer", DefaultValue = 0, Order = 14)]
+        protected IDiffSpread<bool> FInABO;
 
         [Input("Enabled", DefaultValue = 1, Order = 15)]
         protected ISpread<bool> FInEnabled;
@@ -57,13 +51,14 @@ namespace VVVV.DX11.Nodes
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
-        protected int cnt;
-        protected int stride;
+        protected int size;
+        private DX11RawBufferFlags flags = new DX11RawBufferFlags();
 
         protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
         protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
 
         private bool reset = false;
+
 
         public event DX11QueryableDelegate BeginQuery;
 
@@ -74,6 +69,7 @@ namespace VVVV.DX11.Nodes
         [ImportingConstructor()]
         public DX11RawBufferRendererNode(IPluginHost FHost)
         {
+
         }
 
         public void Evaluate(int SpreadMax)
@@ -81,7 +77,7 @@ namespace VVVV.DX11.Nodes
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            reset = this.FInElementCount.IsChanged || this.FInStride.IsChanged || this.FInAppendable.IsChanged;
+            reset = this.FInSize.IsChanged || this.FInVBO.IsChanged || this.FInIBO.IsChanged || this.FInABO.IsChanged;
 
             if (this.FOutBuffers[0] == null)
             {
@@ -89,13 +85,15 @@ namespace VVVV.DX11.Nodes
             }
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
 
-            DX11Resource<IDX11RWStructureBuffer> res = this.FOutBuffers[0];
+            DX11Resource<DX11RawBuffer> res = this.FOutBuffers[0];
             this.FOutBuffers[0] = res;
 
             if (reset)
             {
-                this.stride = this.FInStride[0];
-                this.cnt = this.FInElementCount[0];
+                this.size = this.FInSize[0];
+                this.flags.AllowIndexBuffer = this.FInIBO[0];
+                this.flags.AllowVertexBuffer = this.FInVBO[0];
+                this.flags.AllowArgumentBuffer = this.FInABO[0];
             }
         }
 
@@ -139,23 +137,10 @@ namespace VVVV.DX11.Nodes
                     settings.View = this.FInView[i];
                     settings.Projection = this.FInProjection[i];
                     settings.ViewProjection = settings.View * settings.Projection;
-                    settings.RenderWidth = this.cnt;
-                    settings.RenderHeight = this.cnt;
-                    settings.RenderDepth = this.cnt;
+                    settings.RenderWidth = 1;
+                    settings.RenderHeight = 1;
+                    settings.RenderDepth = 1;
                     settings.BackBuffer = this.FOutBuffers[0][context];
-                    
-
-                    if (this.FInResetCounter[0])
-                    {
-                        settings.ResetCounter = true;
-                        settings.CounterValue = this.FInResetCounterValue[0];
-                    }
-                    else
-                    {
-                        settings.ResetCounter = false;
-                    }
-
-                   // this.rwbuffersemantic.Data = this.FOutBuffers[0][context];
 
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
@@ -172,15 +157,13 @@ namespace VVVV.DX11.Nodes
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.updateddevices.Contains(context)) { return; }
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);
 
-                eDX11BufferMode mode = this.FInAppendable[0] ? eDX11BufferMode.Append : eDX11BufferMode.Default;
-
-                DX11RWStructuredBuffer rt = new DX11RWStructuredBuffer(context.Device, this.cnt, this.stride, mode);
-
-                this.FOutBuffers[0][context] = rt;
+                DX11RawBuffer rb = new DX11RawBuffer(context.Device, this.size, this.flags);
+                this.FOutBuffers[0][context] = rb;
             }
 
             this.updateddevices.Add(context);

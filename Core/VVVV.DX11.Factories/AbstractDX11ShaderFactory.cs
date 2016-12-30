@@ -27,6 +27,8 @@ using VVVV.DX11.Lib.Effects;
 using VVVV.DX11.Lib.RenderGraph.Listeners;
 
 using FeralTic.DX11;
+using FeralTic.DX11.Shaders;
+using System.Linq;
 
 
 namespace VVVV.DX11.Factories
@@ -62,6 +64,7 @@ namespace VVVV.DX11.Factories
 
         protected abstract string NodeCategory { get; }
         protected abstract string NodeVersion { get; }
+
         protected virtual List<CompilerError> VerifyShader(string file,DX11Effect effect)
         {
             return new List<CompilerError>();
@@ -117,13 +120,12 @@ namespace VVVV.DX11.Factories
                 using (var sr = new StreamReader(filename))
                 {
                 	var code = sr.ReadToEnd();
-                	//remove comments: between (* and *)
-                	code = Regex.Replace(code, @"/\*.*?\*/", "", RegexOptions.Singleline);
-                	//remove comments: from // to lineend
-                	code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
-                    
+                    //remove comments: from // to lineend
+                    code = Regex.Replace(code, @"//.*?\n", "", RegexOptions.Singleline);
+                    //remove comments: between (* and *)
+                    code = Regex.Replace(code, @"/\*.*?\*/", "", RegexOptions.Singleline);
                     //if the code contains now contains "technique10 " or "technique11 " this must be a dx11 effect
-					if (code.Contains("technique10 ") || code.Contains("technique11 "))
+                    if (code.Contains("technique10 ") || code.Contains("technique11 "))
                 		isDX11 = true;
             	}
             	
@@ -217,102 +219,9 @@ namespace VVVV.DX11.Factories
 
         private void ParseErrors(string e,FXProject project, DX11Effect shader)
         {
-            var compilerResults = new CompilerResults(null);
-            //now parse errors to CompilerResults
-            //split errorstring linewise
-            var errorlines = e.Split(new char[1] { '\n' });
-            foreach (var line in errorlines)
-            {
-                string filePath = project.LocalPath;
-                string eCoords = string.Empty;
-                int eLine = 0;
-                int eChar = 0;
-                string eNumber = string.Empty;
-                string eText = string.Empty;
-                bool isWarning = false;
+            string filePath = project.LocalPath;
+            var compilerResults = ShaderCompilerErrorParser.ParseCompilerResult(e,project.LocalPath, filePath);
 
-                if (string.IsNullOrEmpty(line))
-                {
-                    continue;
-                }
-
-                //split the line at ": "
-                //which results in 3 or 4 lines:
-                //[0] filename (line, character)
-                //[1] error/warning code
-                //[2] (optional) erroneous character
-                //[3] error description
-                var eItems = line.Split(new string[1] { ": " }, StringSplitOptions.None);
-
-                //extract line/char substring
-                int start = eItems[0].LastIndexOf('(');
-                int end = eItems[0].LastIndexOf(')');
-
-                if (start > 0)
-                {
-                    string relativePath = eItems[0].Substring(0, start);
-
-                    //if this is a path to an include..
-                    if (relativePath != Path.Combine(FHDEHost.ExePath, "memory"))
-                    {
-                        // we need to guess here. shader compiler outputs relative paths.
-                        // we don't know if the include was "local" or <global>
-
-                        filePath = Path.Combine(Path.GetDirectoryName(project.LocalPath), relativePath);
-                        if (!File.Exists(filePath))
-                        {
-                            string fileName = Path.GetFileName(relativePath);
-
-                            foreach (var reference in project.References)
-                            {
-                                var referenceFileName = Path.GetFileName((reference as FXReference).ReferencedDocument.LocalPath);
-                                if (referenceFileName.ToLower() == fileName.ToLower())
-                                {
-                                    filePath = reference.AssemblyLocation;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (start > -1 && end > 0)
-                {
-                    eCoords = eItems[0].Substring(start + 1, end - start - 1);
-                    var eLineChar = eCoords.Split(new char[1] { ',' });
-                    eLine = Convert.ToInt32(eLineChar[0]);
-                    eChar = Convert.ToInt32(eLineChar[1]);
-
-                    if (eItems[1].StartsWith("warning"))
-                    {
-                        isWarning = true;
-                        eNumber = eItems[1].Substring(8, 5);
-                    }
-                    else
-                        eNumber = eItems[1].Substring(6, 5);
-
-                    if (eItems.Length == 2)
-                    {
-                        isWarning = false;
-                        eNumber = "-1";
-                        eText = eItems[1];
-                    }
-                    else
-                    {
-                        eText = eItems[2];
-                        if (eItems.Length > 3)
-                            eText += ": " + eItems[3];
-                    }
-                }
-                else
-                {
-                    eText = line;
-                }
-
-                var error = new CompilerError(filePath, eLine, eChar, eNumber, eText);
-                error.IsWarning = isWarning;
-                compilerResults.Errors.Add(error);
-            }
-            
             //Add some extra error from reflection
             if (shader.IsCompiled)
             {
@@ -350,13 +259,13 @@ namespace VVVV.DX11.Factories
 
                 FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
 
-                IDX11ShaderNodeWrapper shadernode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
-                shadernode.Source = nodeInfo;
-                shadernode.WantRecompile += new EventHandler(shadernode_WantRecompile);
+                IDX11ShaderNodeWrapper shaderNode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
+                shaderNode.Source = nodeInfo;
+                shaderNode.WantRecompile += new EventHandler(shadernode_WantRecompile);
 
-                shader = DX11Effect.FromString(code, FIncludeHandler,shadernode.Macros);
+                shader = DX11Effect.FromString(code, FIncludeHandler,shaderNode.Macros);
 
-                shadernode.SetShader(shader, true);
+                shaderNode.SetShader(shader, true, nodeInfo.Filename);
 
                 if (this.PluginCreated != null)
                 {
@@ -368,7 +277,8 @@ namespace VVVV.DX11.Factories
                 PluginContainer container = pluginHost.Plugin as PluginContainer;
                 var shaderNode = container.PluginBase as IDX11ShaderNodeWrapper;
                 shader = DX11Effect.FromString(code, FIncludeHandler, shaderNode.Macros);
-                shaderNode.SetShader(shader, false);
+
+                shaderNode.SetShader(shader, false,nodeInfo.Filename);
             }
 
             //now the effect is compiled in vvvv and we can access the errors
@@ -396,7 +306,7 @@ namespace VVVV.DX11.Factories
             string code = File.ReadAllText(wrp.Source.Filename);
 
             var shader = DX11Effect.FromString(code, FIncludeHandler,wrp.Macros);
-            wrp.SetShader(shader, false);
+            wrp.SetShader(shader, false, wrp.Source.Filename);
         }
 
         protected override bool DeleteNode(INodeInfo nodeInfo, IInternalPluginHost host)

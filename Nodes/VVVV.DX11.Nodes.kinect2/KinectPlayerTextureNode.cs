@@ -80,7 +80,10 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
-            texture.WriteData<int>(this.playerimage);
+            lock (m_lock)
+            {
+                texture.WriteData<int>(this.playerimage);
+            }      
         }
 
         protected override void OnRuntimeConnected()
@@ -97,20 +100,19 @@ namespace VVVV.DX11.Nodes.MSKinect
         private void DepthFrameReady(object sender, BodyIndexFrameArrivedEventArgs e)
         {
             BodyIndexFrame frame = e.FrameReference.AcquireFrame();
-
             int bg = this.backcolor;
 
             if (frame != null)
             {
                 this.FInvalidate = true;
-                this.frameindex = (int)frame.RelativeTime;
+                this.frameindex = frame.RelativeTime.Ticks;
                 lock (m_lock)
                 {
                     frame.CopyFrameDataToArray(this.rawdepth);
                     for (int i16 = 0; i16 < 512 * 424; i16++)
                     {
                         byte player = rawdepth[i16];
-                        this.playerimage[i16] = player == 255 ? bg : this.colors[player];
+                        this.playerimage[i16] = player == 255 ? bg : this.colors[player % 6];
 
                     }
                 }

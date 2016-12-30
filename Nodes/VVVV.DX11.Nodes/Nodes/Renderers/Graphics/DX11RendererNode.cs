@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow 
+    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -168,7 +168,7 @@ namespace VVVV.DX11.Nodes
         [Import()]
         protected ILogger logger;
 
-        [Input("Layers", Order=1,IsSingle = true)]
+        [Input("Layers", Order=1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Clear",DefaultValue=1,Order = 2)]
@@ -178,10 +178,16 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FInClearDepth;
 
         [Input("Background Color",DefaultColor=new double[] { 0,0,0,1 },Order=3)]
-        protected ISpread<RGBAColor> FInBgColor;
+        protected ISpread<Color4> FInBgColor;
 
-        [Input("VSync",Visibility=PinVisibility.OnlyInspector)]
+        [Input("VSync",Visibility=PinVisibility.OnlyInspector, IsSingle=true)]
         protected ISpread<bool> FInVsync;
+
+        [Input("Buffer Count", Visibility = PinVisibility.OnlyInspector, DefaultValue=1, IsSingle=true)]
+        protected IDiffSpread<int> FInBufferCount;
+
+        [Input("Do Not Wait", Visibility = PinVisibility.OnlyInspector, IsSingle=true)]
+        protected ISpread<bool> FInDNW;
 
         [Input("Show Cursor", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInShowCursor;
@@ -192,11 +198,11 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 6,DefaultValue=1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
+        [Input("Clear Depth Value", Order = 9, DefaultValue = 1)]
+        protected ISpread<float> FInClearDepthValue;
+
         [Input("AA Samples per Pixel", DefaultEnumEntry="1",EnumName="DX11_AASamples")]
         protected IDiffSpread<EnumEntry> FInAASamplesPerPixel;
-
-        /*[Input("AA Quality", Order = 8)]
-        protected IDiffSpread<int> FInAAQuality;*/
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
@@ -216,9 +222,6 @@ namespace VVVV.DX11.Nodes
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
 
-        [Input("Transformation Index", DefaultValue=-1,Visibility=PinVisibility.OnlyInspector, Order=22)]
-        protected IDiffSpread<int> FInTI;
-        string oldbbformat = "";
         #endregion
 
         #region Output Pins
@@ -234,7 +237,7 @@ namespace VVVV.DX11.Nodes
         [Output("Touch Data", AllowFeedback = true)]
         protected ISpread<TouchData> FOutTouchData;
 
-        [Output("Actual BackBuffer Size")]
+        [Output("Actual BackBuffer Size", AllowFeedback = true)]
         protected ISpread<Vector2D> FOutBackBufferSize;
 
         [Output("Texture Out")]
@@ -274,6 +277,7 @@ namespace VVVV.DX11.Nodes
         private bool FInvalidateSwapChain;
         private bool FResized = false;
         private DX11RenderContext primary;
+        private bool FirstFrame = true;
         #endregion
 
         #region Evaluate
@@ -304,7 +308,7 @@ namespace VVVV.DX11.Nodes
                 this.depthmanager.FormatChanged = false; //Clear flag ok
             }
             
-            if (FInAASamplesPerPixel.IsChanged)
+            if (FInAASamplesPerPixel.IsChanged || this.FInBufferCount.IsChanged)
             {
                 this.depthmanager.NeedReset = true;
                 this.FInvalidateSwapChain = true;
@@ -322,33 +326,19 @@ namespace VVVV.DX11.Nodes
                     {
                         if (this.FInFullScreen[0])
                         {
+                            // if the pin is true we want to give it priority over the component mode set in the patch. also in the first frame.
                             hde.SetComponentMode(n2, ComponentMode.Fullscreen);
                         }
                         else
                         {
-                            hde.SetComponentMode(n2, ComponentMode.InAWindow);
+                            // checking for first frame is necessary. the pin will always report to be changed in the very first frame.
+                            // however in the first frame we want to respect the component mode that is saved in the patch
+                            if (!FirstFrame)
+                                hde.SetComponentMode(n2, ComponentMode.InAWindow);
                         }
                     }
                 }
             }
-
-            /*if (this.FInFullScreen.IsChanged)
-            {
-                if (this.FInFullScreen[0])
-                {
-                    string path;
-                    this.FHost.GetNodePath(false, out path);
-                    INode2 n2 = hde.GetNodeFromPath(path);
-                    hde.SetComponentMode(n2, ComponentMode.Fullscreen);
-                }
-                else
-                {
-                    string path;
-                    this.FHost.GetNodePath(false, out path);
-                    INode2 n2 = hde.GetNodeFromPath(path);
-                    hde.SetComponentMode(n2, ComponentMode.InAWindow);
-                }
-            }*/
 
             this.FOutKState[0] = new KeyboardState(this.FKeys);
             this.FOutMouseState[0] = MouseState.Create(this.FMousePos.x, this.FMousePos.y, this.FMouseButtons.x > 0.5f, this.FMouseButtons.y > 0.5f, this.FMouseButtons.z> 0.5f, false, false, this.wheel);
@@ -372,6 +362,7 @@ namespace VVVV.DX11.Nodes
                     tcnt++;
                 }
             }
+            FirstFrame = false;
         }
         #endregion
 
@@ -398,6 +389,8 @@ namespace VVVV.DX11.Nodes
 
             if (this.rendereddevices.Contains(context)) { return; }
 
+            Exception exception = null;
+
             if (this.FInEnabled[0])
             {
 
@@ -415,82 +408,94 @@ namespace VVVV.DX11.Nodes
                 renderer.SetRenderTargets(chain);
                 renderer.SetTargets();
 
-                if (this.FInClear[0])
+                try
                 {
-                    //Remove Shader view if bound as is
-                    context.CurrentDeviceContext.ClearRenderTargetView(chain.RTV, this.FInBgColor[0].Color);
-                }
-
-                if (this.FInClearDepth[0])
-                {
-                    if (this.FInDepthBuffer[0])
+                    if (this.FInClear[0])
                     {
-                        this.depthmanager.Clear(context);
+                        //Remove Shader view if bound as is
+                        context.CurrentDeviceContext.ClearRenderTargetView(chain.RTV, this.FInBgColor[0]);
                     }
-                }
 
-                //Only call render if layer connected
-                if (this.FInLayer.PluginIO.IsConnected)
-                {
-                    int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
-                    rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
-
-                    settings.ViewportCount = rtmax;
-
-                    bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
-
-                    float cw = (float)this.ClientSize.Width;
-                    float ch = (float)this.ClientSize.Height;
-
-                    for (int i = 0; i < rtmax; i++)
+                    if (this.FInClearDepth[0])
                     {
-
-                        settings.ViewportIndex = i;
-                        settings.View = this.FInView[i];
-
-                        Matrix proj = this.FInProjection[i];
-                        Matrix aspect = Matrix.Invert(this.FInAspect[i]);
-                        Matrix crop = Matrix.Invert(this.FInCrop[i]);
-
-
-                        settings.Projection = proj * aspect * crop;
-                        settings.ViewProjection = settings.View * settings.Projection;
-                        settings.BackBuffer = this.FOutBackBuffer[0][context];
-                        settings.RenderWidth = this.FOutBackBuffer[0][context].Resource.Description.Width;
-                        settings.RenderHeight = this.FOutBackBuffer[0][context].Resource.Description.Height;
-                        settings.ResourceSemantics.Clear();
-                        settings.CustomSemantics.Clear();
-
-                        if (viewportpop)
+                        if (this.FInDepthBuffer[0])
                         {
-                            context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
-                        }
-
-
-                        //Call render on all layers
-                        for (int j = 0; j < this.FInLayer.SliceCount; j++)
-                        {
-                            this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-                        }
-
-                        if (viewportpop)
-                        {
-                            context.RenderTargetStack.PopViewport();
+                            this.depthmanager.Clear(context, this.FInClearDepthValue[0]);
                         }
                     }
-                }
 
-                if (this.EndQuery != null)
+                    //Only call render if layer connected
+                    if (this.FInLayer.PluginIO.IsConnected)
+                    {
+                        int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
+                        rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
+
+                        settings.ViewportCount = rtmax;
+
+                        bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
+
+                        for (int i = 0; i < rtmax; i++)
+                        {
+                            this.RenderSlice(context, settings, i, viewportpop);
+                        }
+                    }
+
+                    if (this.EndQuery != null)
+                    {
+                        this.EndQuery(context);
+                    }
+                } 
+                catch (Exception ex)
                 {
-                    this.EndQuery(context);
+                    exception = ex;
                 }
-
-                renderer.CleanTargets();
-                //OnDevice.RenderTargetStack.Pop();
+                finally
+                {
+                    renderer.CleanTargets();
+                }
             }
+
             this.rendereddevices.Add(context);
+
+            //Rethrow
+            if (exception != null)
+            {
+                throw exception;
+            }
         }
         #endregion
+
+        private void RenderSlice(DX11RenderContext context,DX11RenderSettings settings, int i, bool viewportpop)
+        {
+            float cw = (float)this.ClientSize.Width;
+            float ch = (float)this.ClientSize.Height;
+
+            settings.ViewportIndex = i;
+            settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], this.FInAspect[i], this.FInCrop[i]);
+
+            settings.BackBuffer = this.FOutBackBuffer[0][context];
+            settings.RenderWidth = this.FOutBackBuffer[0][context].Resource.Description.Width;
+            settings.RenderHeight = this.FOutBackBuffer[0][context].Resource.Description.Height;
+            settings.ResourceSemantics.Clear();
+            settings.CustomSemantics.Clear();
+
+            if (viewportpop)
+            {
+                context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
+            }
+
+
+            //Call render on all layers
+            for (int j = 0; j < this.FInLayer.SliceCount; j++)
+            {
+                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+            }
+
+            if (viewportpop)
+            {
+                context.RenderTargetStack.PopViewport();
+            }
+        }
 
         #region Update
         public void Update(IPluginIO pin, DX11RenderContext context)
@@ -516,7 +521,8 @@ namespace VVVV.DX11.Nodes
                     sd.Count = maxlevels;
                 }
 
-                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd);
+                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, 60,
+                    this.FInBufferCount[0], false);
 
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
@@ -528,6 +534,7 @@ namespace VVVV.DX11.Nodes
 
             if (this.FResized)
             {
+                
                 //if (!sc.IsFullScreen)
                 //{
                    // sc.Resize();
@@ -561,17 +568,19 @@ namespace VVVV.DX11.Nodes
             Stopwatch sw = Stopwatch.StartNew();
             try
             {
+                PresentFlags flags = this.FInDNW[0] ? (PresentFlags)8 : PresentFlags.None;
                 if (this.FInVsync[0])
                 {
-                    this.FOutBackBuffer[0][this.RenderContext].Present(1, PresentFlags.None); 
+                    this.FOutBackBuffer[0][this.RenderContext].Present(1, flags); 
                 }
                 else
                 {
-                    this.FOutBackBuffer[0][this.RenderContext].Present(0, PresentFlags.None); 
+                    this.FOutBackBuffer[0][this.RenderContext].Present(0, flags); 
                 }
             }
             catch
             {
+                
             }
 
             sw.Stop();
@@ -630,6 +639,23 @@ namespace VVVV.DX11.Nodes
         public IntPtr InputWindowHandle
         {
             get { return this.Handle; }
+        }
+
+        public RGBAColor BackgroundColor
+        {
+            get { return new RGBAColor(0, 0, 0, 1); }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // DX11RendererNode
+            // 
+            this.BackColor = System.Drawing.Color.Black;
+            this.Name = "DX11RendererNode";
+            this.ResumeLayout(false);
+
         }
     }
 }

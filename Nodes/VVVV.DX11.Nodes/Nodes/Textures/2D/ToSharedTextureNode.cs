@@ -20,17 +20,16 @@ namespace VVVV.DX11.Nodes.Textures
     public class ToSharedTextureNode : IPluginEvaluate, IDX11ResourceDataRetriever, IDisposable
     {
         [Import()]
-        IPluginHost FHost;
+        protected IPluginHost FHost;
 
         [Input("Texture In", IsSingle=true)]
-        Pin<DX11Resource<DX11Texture2D>> FTextureIn;
+        protected Pin<DX11Resource<DX11Texture2D>> FTextureIn;
 
-        [Output("Pointer",IsSingle=true)]
-        ISpread<uint> FPointer;
+        [Output("Pointer",IsSingle=true, AsInt=true)]
+        protected ISpread<long> FPointer;
 
-        private bool FRendered = false;
-        private bool FUpdated = false;
         private Texture2D tex = null;
+        private SlimDX.DXGI.Resource SharedResource = null;
 
         public void Evaluate(int SpreadMax)
         {
@@ -53,12 +52,27 @@ namespace VVVV.DX11.Nodes.Textures
                         if (tex != null)
                         {
                             Texture2D t = this.FTextureIn[0][context].Resource;
+
                             if (t.Description.Width != this.tex.Description.Width 
                                 || t.Description.Height != this.tex.Description.Height
                                 || t.Description.Format != this.tex.Description.Format)
                             {
+                                this.SharedResource.Dispose();
+                                this.SharedResource = null;
                                 this.tex.Dispose();
                                 this.tex = null;
+                            }
+
+
+                            if (t.Description.MipLevels > 1)
+                            {
+                                this.FPointer[0] = 0;
+                                throw new Exception("Sharing texture with more than one mip level is not allowed");
+                            }
+                            if (t.Description.SampleDescription.Count > 1)
+                            {
+                                this.FPointer[0] = 0;
+                                throw new Exception("Sharing multisampled texture is not allowed");
                             }
 
                         }
@@ -72,8 +86,8 @@ namespace VVVV.DX11.Nodes.Textures
                             desc.OptionFlags = ResourceOptionFlags.Shared;
                             desc.MipLevels = 1;
                             this.tex = new Texture2D(context.Device, desc);
-                            var SharedResource = new SlimDX.DXGI.Resource(this.tex);
-                            this.FPointer[0] = (uint)SharedResource.SharedHandle.ToInt32();
+                            this.SharedResource = new SlimDX.DXGI.Resource(this.tex);
+                            this.FPointer[0] = SharedResource.SharedHandle.ToInt64();
                         }
 
                         this.AssignedContext.CurrentDeviceContext.CopyResource(this.FTextureIn[0][context].Resource, this.tex);
@@ -92,8 +106,6 @@ namespace VVVV.DX11.Nodes.Textures
             {
                 this.SetNull();
             }
-        
-            
         }
 
 
@@ -106,13 +118,6 @@ namespace VVVV.DX11.Nodes.Textures
         {
             this.FPointer[i] = 0;
         }
-
-        public void Prepare()
-        {
-            this.FUpdated = false;
-            this.FRendered = false;
-        }
-
 
         public void Dispose()
         {

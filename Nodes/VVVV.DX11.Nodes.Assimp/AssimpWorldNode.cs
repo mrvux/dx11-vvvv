@@ -6,7 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using SlimDX;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name="Node",Category="Assimp", Version="",Author="vux,flateric")]
     public class AssimpWorldNode : IPluginEvaluate
@@ -19,6 +19,9 @@ namespace VVVV.Assimp.Nodes
 
         [Input("Recurse",DefaultValue=1)]
         protected IDiffSpread<bool> FInRecurse;
+
+        [Input("Include Self", DefaultValue = 1)]
+        protected IDiffSpread<bool> FInIncludeSelf;
 
         [Output("Name")]
         protected ISpread<string> FOutName;
@@ -36,7 +39,7 @@ namespace VVVV.Assimp.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInScene.IsChanged || this.FInRootNode.IsChanged || this.FInRecurse.IsChanged)
+            if (this.FInScene.IsChanged || this.FInRootNode.IsChanged || this.FInRecurse.IsChanged || this.FInIncludeSelf.IsChanged)
             {
                 if (this.FInScene[0] != null)
                 {
@@ -58,7 +61,7 @@ namespace VVVV.Assimp.Nodes
                             {
                                 if (this.FInRecurse[i])
                                 {
-                                    this.RecurseNodes(filterednodes, found);
+                                    this.RecurseNodes(filterednodes, found, this.FInIncludeSelf[i]);
                                 }
                                 else
                                 {
@@ -99,9 +102,12 @@ namespace VVVV.Assimp.Nodes
             }
         }
 
-        private void RecurseNodes(List<AssimpNode> nodes, AssimpNode current)
+        private void RecurseNodes(List<AssimpNode> nodes, AssimpNode current, bool addcurrent = true)
         {
-            nodes.Add(current);
+            if (addcurrent)
+            {
+                nodes.Add(current);
+            }
             foreach (AssimpNode child in current.Children)
             {
                 RecurseNodes(nodes, child);

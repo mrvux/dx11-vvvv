@@ -32,5 +32,10 @@ namespace VVVV.DX11
 
         public int IterationCount { get; set; }
 
+        /// <summary>
+        /// Object render state tag
+        /// </summary>
+        public object RenderStateTag { get; set; }
+
     }
 }

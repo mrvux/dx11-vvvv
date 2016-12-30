@@ -6,7 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using AssimpNet;
 using SlimDX;
 
-namespace VVVV.Assimp.Nodes
+namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "AnimationChannels", Category = "Assimp",Version="Animation", Author = "vux,flateric")]
     public class AssimpAnimationChannelsNode : IPluginEvaluate
@@ -19,6 +19,9 @@ namespace VVVV.Assimp.Nodes
 
         [Input("Duration")]
         protected IDiffSpread<double> FInDuration;
+
+        [Input("Absolute Time")]
+        protected IDiffSpread<bool> FInAbsoluteTime;
 
         [Output("Node Name")]
         protected ISpread<string> FOutName;
@@ -34,28 +37,38 @@ namespace VVVV.Assimp.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInChannels.IsChanged || this.FInTime.IsChanged)
+            if (SpreadMax == 0)
             {
-                this.FOutName.SliceCount = this.FInChannels.SliceCount;
-                this.FOutPos.SliceCount = this.FInChannels.SliceCount;
-                this.FOutRotation.SliceCount = this.FInChannels.SliceCount;
-                this.FOutScale.SliceCount = this.FInChannels.SliceCount;
-
-
-                for (int i = 0; i < this.FInChannels.SliceCount; i++)
+                this.FOutName.SliceCount = 0;
+                this.FOutPos.SliceCount = 0;
+                this.FOutRotation.SliceCount = 0;
+                this.FOutScale.SliceCount = 0;
+            }
+            else
+            {
+                if (this.FInChannels.IsChanged || this.FInTime.IsChanged)
                 {
-                    AssimpAnimationChannel chan = this.FInChannels[i];
-                    this.FOutName[i] = chan.Name;
+                    this.FOutName.SliceCount = this.FInChannels.SliceCount;
+                    this.FOutPos.SliceCount = this.FInChannels.SliceCount;
+                    this.FOutRotation.SliceCount = this.FInChannels.SliceCount;
+                    this.FOutScale.SliceCount = this.FInChannels.SliceCount;
 
-                    double t = this.FInTime[i];
-                    double duration = this.FInDuration[i];
 
-                    double dt = t * duration;
+                    for (int i = 0; i < Math.Max(this.FInChannels.SliceCount, this.FInTime.SliceCount); i++)
+                    {
+                        AssimpAnimationChannel chan = this.FInChannels[i];
+                        this.FOutName[i] = chan.Name;
 
-                    this.FOutPos[i] = this.InterpolatePosition(dt, chan);
-                    this.FOutScale[i] = this.InterpolateScale(dt, chan);
-                    this.FOutRotation[i] = this.InterpolateRotation(dt, chan);
+                        double t = this.FInTime[i];
+                        double duration = this.FInDuration[i];
 
+                        double dt = this.FInAbsoluteTime[0] ? t : t * duration;
+
+                        this.FOutPos[i] = this.InterpolatePosition(dt, chan);
+                        this.FOutScale[i] = this.InterpolateScale(dt, chan);
+                        this.FOutRotation[i] = this.InterpolateRotation(dt, chan);
+
+                    }
                 }
             }
         }

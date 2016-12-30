@@ -9,7 +9,7 @@ using FeralTic.DX11.Geometry;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Mesh", Category = "DX11.Geometry Join Subsets", Version = "3d", Author = "velcrome")]
+    [PluginInfo(Name = "Mesh", Category = "DX11.Geometry", Version = "Join Subsets", Author = "velcrome")]
     public class MeshJoinNode : DX11AbstractMeshNode, IPluginEvaluate
     {
         #region Fields

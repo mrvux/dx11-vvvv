@@ -49,40 +49,35 @@ namespace VVVV.DX11.Nodes
 
         private int spmax;
 
-        private static DX11ShaderInstance quadshader;
+        /*private static DX11ShaderInstance quadshader;
 
         private static List<InputLayout> quadlayouts;
 
-        private static DX11IndexedGeometry quadgeometry;
+        private static DX11IndexedGeometry quadgeometry;*/
 
-        private DX11DynamicStructuredBuffer<Matrix> worldbuffer;
+        /*private DX11DynamicStructuredBuffer<Matrix> worldbuffer;
         private DX11DynamicStructuredBuffer<Color4> colorbuffer;
-        private DX11DynamicStructuredBuffer<Matrix> uvbuffer;
+        private DX11DynamicStructuredBuffer<Matrix> uvbuffer;*/
 
-        private static EffectResourceVariable texturevariable;
-        private static EffectSamplerVariable samplervariable;
+        /*private static EffectResourceVariable texturevariable;
+        private static EffectSamplerVariable samplervariable;*/
 
-
-        [ImportingConstructor()]
-        public DX11QuadLayerNode(IPluginHost host, IIOFactory iofactory)
+        private class QuadBuffers
         {
-
+            public DX11DynamicStructuredBuffer<Matrix> worldbuffer;
+            public DX11DynamicStructuredBuffer<Color4> colorbuffer;
+            public DX11DynamicStructuredBuffer<Matrix> uvbuffer;
         }
 
-        public void Evaluate(int SpreadMax)
+        private class QuadShaderDeviceData
         {
-            this.spmax = SpreadMax;
-            if (SpreadMax > 0)
-            {
-                if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-                if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
-            }
-        }
+            public DX11ShaderInstance quadshader;
+            public List<InputLayout> quadlayouts;
+            public DX11IndexedGeometry quadgeometry;
+            public EffectResourceVariable texturevariable;
+            public EffectSamplerVariable samplervariable;
 
-        #region IDX11ResourceProvider Members
-        public void Update(IPluginIO pin, DX11RenderContext context)
-        {
-            if (quadshader == null)
+            public QuadShaderDeviceData(DX11RenderContext context)
             {
                 string basepath = "VVVV.DX11.Nodes.effects.quad.fx";
                 DX11Effect effect = DX11Effect.FromResource(Assembly.GetExecutingAssembly(), basepath);
@@ -106,6 +101,45 @@ namespace VVVV.DX11.Nodes
                     quadlayouts.Add(layout);
                 }
             }
+        }
+
+        private static Dictionary<DX11RenderContext, QuadShaderDeviceData> quaddata = new Dictionary<DX11RenderContext, QuadShaderDeviceData>();
+        private Dictionary<DX11RenderContext, QuadBuffers> quadBuffers = new Dictionary<DX11RenderContext, QuadBuffers>();
+
+        private object syncRoot = new object();
+
+        [ImportingConstructor()]
+        public DX11QuadLayerNode(IPluginHost host, IIOFactory iofactory)
+        {
+
+        }
+
+        public void Evaluate(int SpreadMax)
+        {
+            this.spmax = SpreadMax;
+            if (SpreadMax > 0)
+            {
+                if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
+                if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
+            }
+        }
+
+        #region IDX11ResourceProvider Members
+        public void Update(IPluginIO pin, DX11RenderContext context)
+        {
+            lock( syncRoot)
+            {
+                if (!quaddata.ContainsKey(context))
+                {
+                    quaddata[context] = new QuadShaderDeviceData(context);
+                }
+
+                if (!quadBuffers.ContainsKey(context))
+                {
+                    quadBuffers[context] = new QuadBuffers();
+                }
+            }
+
 
             if (this.spmax > 0)
             {
@@ -122,104 +156,121 @@ namespace VVVV.DX11.Nodes
             this.FOutLayer[0].Dispose(context);
         }
 
-        private void RenderBasic(DX11RenderContext context)
+        private void RenderBasic(DX11RenderContext context, DX11RenderSettings settings)
         {
-            quadshader.SelectTechnique("Render");
-            quadgeometry.Bind(quadlayouts[0]);
+            QuadShaderDeviceData qd = quaddata[context];
+
+            qd.quadshader.SelectTechnique("Render");
+            qd.quadgeometry.Bind(qd.quadlayouts[0]);
 
             for (int i = 0; i < this.spmax; i++)
             {
                 bool popstate = false;
-                if (this.FInState.PluginIO.IsConnected)
+                if (this.FInState.IsConnected)
                 {
                     context.RenderStateStack.Push(this.FInState[i]);
                     popstate = true;
                 }
 
-                quadshader.SetBySemantic("COLOR", this.FInColor[i]);
-                quadshader.SetBySemantic("WORLD", this.FInWorld[i]);
-                quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
+                qd.quadshader.SetBySemantic("COLOR", this.FInColor[i]);
+                qd.quadshader.SetBySemantic("WORLD", this.FInWorld[i]);
+                qd.quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
 
-                quadshader.ApplyPass(0);
+                qd.quadshader.ApplyPass(0);
+                if (settings.DepthOnly)
+                {
+                    context.CurrentDeviceContext.PixelShader.Set(null);
+                }
 
-                quadgeometry.Draw();
+                    qd.quadgeometry.Draw();
 
                 if (popstate) { context.RenderStateStack.Pop(); }
             }
         }
 
-        private void RenderTextured(DX11RenderContext context)
+
+        private void RenderTextured(DX11RenderContext context, DX11RenderSettings settings)
         {
-            quadshader.SelectTechnique("RenderTextured");
-            quadgeometry.Bind(quadlayouts[1]);
+            QuadShaderDeviceData qd = quaddata[context];
+            qd.quadshader.SelectTechnique("RenderTextured");
+            qd.quadgeometry.Bind(qd.quadlayouts[1]);
 
             for (int i = 0; i < this.spmax; i++)
             {
                 bool popstate = false;
-                if (this.FInState.PluginIO.IsConnected)
+                if (this.FInState.IsConnected)
                 {
                     context.RenderStateStack.Push(this.FInState[i]);
                     popstate = true;
                 }
 
-                if (this.FInSamplerState.PluginIO.IsConnected)
+                if (this.FInSamplerState.IsConnected)
                 {
                     SamplerState state = SamplerState.FromDescription(context.Device, this.FInSamplerState[i]);
-                    samplervariable.SetSamplerState(0, state);
+                    qd.samplervariable.SetSamplerState(0, state);
                 }
                 else
                 {
-                    samplervariable.UndoSetSamplerState(0);
+                    qd.samplervariable.UndoSetSamplerState(0);
                 }
 
-                quadshader.SetBySemantic("COLOR", this.FInColor[i]);
-                quadshader.SetBySemantic("WORLD", this.FInWorld[i]);
-                quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
+                qd.quadshader.SetBySemantic("COLOR", this.FInColor[i]);
+                qd.quadshader.SetBySemantic("WORLD", this.FInWorld[i]);
+                qd.quadshader.SetBySemantic("TEXTUREMATRIX", this.FInTexTransform[i]);
 
-                if (this.FInTexture[i].Contains(context))
+                if (this.FInTexture[i].Contains(context) && this.FInTexture[i][context] != null)
                 {
-                    texturevariable.SetResource(this.FInTexture[i][context].SRV);
+                    qd.texturevariable.SetResource(this.FInTexture[i][context].SRV);
                 }
                 else
                 {
-                    texturevariable.SetResource(null);
+                    qd.texturevariable.SetResource(null);
                 }
 
-                quadshader.ApplyPass(0);
-
-                quadgeometry.Draw();
+                qd.quadshader.ApplyPass(0);
+                if (settings.DepthOnly)
+                {
+                    context.CurrentDeviceContext.PixelShader.Set(null);
+                }
+                qd.quadgeometry.Draw();
 
                 if (popstate) { context.RenderStateStack.Pop(); }
             }
         }
 
 
-        private void RenderInstanced(DX11RenderContext context)
+        private void RenderInstanced(DX11RenderContext context, DX11RenderSettings settings)
         {
+            QuadShaderDeviceData qd = quaddata[context];
             bool popstate = false;
-            if (this.FInState.PluginIO.IsConnected)
+            if (this.FInState.IsConnected)
             {
                 context.RenderStateStack.Push(this.FInState[0]);
                 popstate = true;
             }
 
-            quadshader.SelectTechnique("RenderInstanced");
-            quadgeometry.Bind(quadlayouts[2]);
+            qd.quadshader.SelectTechnique("RenderInstanced");
+            qd.quadgeometry.Bind(qd.quadlayouts[2]);
 
             this.BindBuffers(context);
 
-            quadshader.ApplyPass(0);
+            qd.quadshader.ApplyPass(0);
+            if (settings.DepthOnly)
+            {
+                context.CurrentDeviceContext.PixelShader.Set(null);
+            }
 
-            context.CurrentDeviceContext.DrawIndexedInstanced(quadgeometry.IndexBuffer.IndicesCount, this.spmax, 0, 0, 0);
+            context.CurrentDeviceContext.DrawIndexedInstanced(qd.quadgeometry.IndexBuffer.IndicesCount, this.spmax, 0, 0, 0);
 
             if (popstate) { context.RenderStateStack.Pop(); }
         }
 
 
-        private void RenderInstancedTextured(DX11RenderContext context)
+        private void RenderInstancedTextured(DX11RenderContext context, DX11RenderSettings settings)
         {
+            QuadShaderDeviceData qd = quaddata[context];
             bool popstate = false;
-            if (this.FInState.PluginIO.IsConnected)
+            if (this.FInState.IsConnected)
             {
                 context.RenderStateStack.Push(this.FInState[0]);
                 popstate = true;
@@ -228,81 +279,87 @@ namespace VVVV.DX11.Nodes
             if (this.FInSamplerState.PluginIO.IsConnected)
             {
                 SamplerState state = SamplerState.FromDescription(context.Device,this.FInSamplerState[0]);
-                samplervariable.SetSamplerState(0, state);
+                qd.samplervariable.SetSamplerState(0, state);
             }
             else
             {
-                samplervariable.UndoSetSamplerState(0);
+                qd.samplervariable.UndoSetSamplerState(0);
             }
 
-            quadshader.SelectTechnique("RenderInstancedTextured");
-            quadgeometry.Bind(quadlayouts[3]);
+            qd.quadshader.SelectTechnique("RenderInstancedTextured");
+            qd.quadgeometry.Bind(qd.quadlayouts[3]);
 
             this.BindBuffers(context);
 
-            if (this.FInTexture[0].Contains(context))
+            if (this.FInTexture[0].Contains(context) && this.FInTexture[0][context] != null)
             {
-                texturevariable.SetResource(this.FInTexture[0][context].SRV);
+                qd.texturevariable.SetResource(this.FInTexture[0][context].SRV);
             }
             else
             {
-                texturevariable.SetResource(null);
+                qd.texturevariable.SetResource(null);
             }
 
-            quadshader.ApplyPass(0);
+            qd.quadshader.ApplyPass(0);
+            if (settings.DepthOnly)
+            {
+                context.CurrentDeviceContext.PixelShader.Set(null);
+            }
 
-            context.CurrentDeviceContext.DrawIndexedInstanced(quadgeometry.IndexBuffer.IndicesCount, this.spmax, 0, 0, 0);
+            context.CurrentDeviceContext.DrawIndexedInstanced(qd.quadgeometry.IndexBuffer.IndicesCount, this.spmax, 0, 0, 0);
 
             if (popstate) { context.RenderStateStack.Pop(); }
         }
 
         private void BindBuffers(DX11RenderContext context)
         {
-            if (this.worldbuffer != null)
+            QuadShaderDeviceData qd = quaddata[context];
+            QuadBuffers qb = quadBuffers[context];
+            if (qb.worldbuffer != null)
             {
-                if (this.worldbuffer.ElementCount != this.FInWorld.SliceCount)
+                if (qb.worldbuffer.ElementCount != this.FInWorld.SliceCount)
                 {
-                    this.worldbuffer.Dispose(); this.worldbuffer = null;
+                    qb.worldbuffer.Dispose(); qb.worldbuffer = null;
                 }
             }
 
-            if (this.colorbuffer != null)
+            if (qb.colorbuffer != null)
             {
-                if (this.colorbuffer.ElementCount != this.FInColor.SliceCount)
+                if (qb.colorbuffer.ElementCount != this.FInColor.SliceCount)
                 {
-                    this.colorbuffer.Dispose(); this.colorbuffer = null;
+                    qb.colorbuffer.Dispose(); qb.colorbuffer = null;
                 }
             }
 
-            if (this.FInTexture.PluginIO.IsConnected)
+            if (this.FInTexture.IsConnected)
             {
-                if (this.uvbuffer != null)
+                if (qb.uvbuffer != null)
                 {
-                    if (this.uvbuffer.ElementCount != this.FInTexTransform.SliceCount)
+                    if (qb.uvbuffer.ElementCount != this.FInTexTransform.SliceCount)
                     {
-                        this.uvbuffer.Dispose(); this.uvbuffer = null;
+                        qb.uvbuffer.Dispose(); qb.uvbuffer = null;
                     }
                 }
-                if (this.uvbuffer == null) { this.uvbuffer = new DX11DynamicStructuredBuffer<Matrix>(context, this.FInTexTransform.SliceCount); }
+                if (qb.uvbuffer == null) { qb.uvbuffer = new DX11DynamicStructuredBuffer<Matrix>(context, this.FInTexTransform.SliceCount); }
 
-                quadshader.SetBySemantic("TEXTUREMATRIXCOUNT", this.uvbuffer.ElementCount);
-                quadshader.SetBySemantic("TEXTUREMATRIXBUFFER", this.uvbuffer.SRV);
+                qd.quadshader.SetBySemantic("TEXTUREMATRIXCOUNT", qb.uvbuffer.ElementCount);
+                qd.quadshader.SetBySemantic("TEXTUREMATRIXBUFFER", qb.uvbuffer.SRV);
 
-                this.uvbuffer.WriteData(this.FInTexTransform.ToArray());
+                qb.uvbuffer.WriteData(this.FInTexTransform.Stream.Buffer, 0, this.FInTexTransform.SliceCount);
             }
 
-            if (this.worldbuffer == null) { this.worldbuffer = new DX11DynamicStructuredBuffer<Matrix>(context, this.FInWorld.SliceCount); }
-            if (this.colorbuffer == null) { this.colorbuffer = new DX11DynamicStructuredBuffer<Color4>(context, this.FInColor.SliceCount); }
-            
+            if (qb.worldbuffer == null) { qb.worldbuffer = new DX11DynamicStructuredBuffer<Matrix>(context, this.FInWorld.SliceCount); }
+            if (qb.colorbuffer == null) { qb.colorbuffer = new DX11DynamicStructuredBuffer<Color4>(context, this.FInColor.SliceCount); }
 
-            this.worldbuffer.WriteData(this.FInWorld.ToArray());
-            this.colorbuffer.WriteData(this.FInColor.ToArray());
 
-            quadshader.SetBySemantic("WORLDBUFFER", this.worldbuffer.SRV);
-            quadshader.SetBySemantic("COLORBUFFER", this.colorbuffer.SRV);
-            
-            quadshader.SetBySemantic("WORLDCOUNT", this.worldbuffer.ElementCount);
-            quadshader.SetBySemantic("COLORCOUNT", this.colorbuffer.ElementCount);
+            qb.worldbuffer.WriteData(this.FInWorld.Stream.Buffer, 0, this.FInWorld.SliceCount);
+            qb.colorbuffer.WriteData(this.FInColor.Stream.Buffer, 0, this.FInColor.SliceCount);
+
+            qd.quadshader.SetBySemantic("WORLDBUFFER", qb.worldbuffer.SRV);
+            qd.quadshader.SetBySemantic("COLORBUFFER", qb.colorbuffer.SRV);
+
+            qd.quadshader.SetBySemantic("WORLDCOUNT", qb.worldbuffer.ElementCount);
+            qd.quadshader.SetBySemantic("COLORCOUNT", qb.colorbuffer.ElementCount);
             
         }
 
@@ -314,36 +371,36 @@ namespace VVVV.DX11.Nodes
                 if (this.FEnabled[0])
                 {
                     context.CleanShaderStages();
-
-                    quadshader.SetBySemantic("VIEWPROJECTION", settings.ViewProjection);
+                    QuadShaderDeviceData qd = quaddata[context];
+                    qd.quadshader.SetBySemantic("VIEWPROJECTION", settings.ViewProjection);
 
                     if (this.BeginQuery != null)
                     {
                         this.BeginQuery(context);
                     }
 
-                    bool multisampler = this.FInSamplerState.SliceCount > 1 && this.FInTexture.PluginIO.IsConnected;
+                    bool multisampler = this.FInSamplerState.SliceCount > 1 && this.FInTexture.IsConnected;
 
                     if (this.FInState.SliceCount > 1 || this.FInTexture.SliceCount > 1 || multisampler)
                     {
-                        if (this.FInTexture.PluginIO.IsConnected)
+                        if (this.FInTexture.IsConnected)
                         {
-                            this.RenderTextured(context);
+                            this.RenderTextured(context, settings);
                         }
                         else
                         {
-                            this.RenderBasic(context);
+                            this.RenderBasic(context, settings);
                         }
                     }
                     else
                     {
-                        if (this.FInTexture.PluginIO.IsConnected)
+                        if (this.FInTexture.IsConnected)
                         {
-                            this.RenderInstancedTextured(context);
+                            this.RenderInstancedTextured(context, settings);
                         }
                         else
                         {
-                            this.RenderInstanced(context);
+                            this.RenderInstanced(context, settings);
                         }
                     }
 

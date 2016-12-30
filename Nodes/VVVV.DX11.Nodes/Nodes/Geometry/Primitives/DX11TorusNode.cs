@@ -26,10 +26,10 @@ namespace VVVV.DX11.Nodes
         [Input("Thickness", DefaultValue = 0.1f)]
         protected IDiffSpread<float> FThick;
 
-        [Input("Resolution X", DefaultValue = 15)]
+        [Input("Resolution X", DefaultValue = 15, MinValue = 2)]
         protected IDiffSpread<int> FResX;
 
-        [Input("Resolution Y", DefaultValue = 15)]
+        [Input("Resolution Y", DefaultValue = 15, MinValue = 2)]
         protected IDiffSpread<int> FResY;
 
         [Input("Phase X", DefaultValue = 1.0f)]

@@ -30,7 +30,7 @@ namespace VVVV.DX11
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1,IsSingle=true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Clear", DefaultValue = 1, Order = 6)]
@@ -51,6 +51,9 @@ namespace VVVV.DX11
         [Input("Enable Depth Buffer", Order = 9,DefaultValue=1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
+        [Input("Clear Depth Value", Order = 9, DefaultValue = 1)]
+        protected ISpread<float> FInClearDepthValue;
+
         [Input("View", Order = 10)]
         protected IDiffSpread<Matrix> FInView;
 
@@ -65,9 +68,6 @@ namespace VVVV.DX11
 
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
-
-        [Input("Transformation Index",Order=22, DefaultValue = 1, Visibility = PinVisibility.OnlyInspector)]
-        protected IDiffSpread<int> FInTI;
 
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
@@ -95,9 +95,8 @@ namespace VVVV.DX11
 
         protected abstract void OnDispose();
 
-        protected virtual IDX11RWResource GetMainTarget(DX11RenderContext device) { return null; }
 
-        //protected virtual DX11Texture2D GetLastBuffer() { return null; }
+        protected virtual IDX11RWResource GetMainTarget(DX11RenderContext device) { return null; }
 
         public bool IsEnabled
         {
@@ -142,6 +141,15 @@ namespace VVVV.DX11
             this.updateddevices.Add(context);
         }
 
+        protected virtual void DoClear(DX11RenderContext context)
+        {
+            if (this.FInClear[0])
+            {
+                this.renderers[context].Clear(this.FInBgColor[0]);
+            }
+        }
+
+
         #region Render
         public void Render(DX11RenderContext context)
         {
@@ -157,97 +165,106 @@ namespace VVVV.DX11
 
             if (this.FInEnabled[0])
             {
+
+                DX11GraphicsRenderer renderer = this.renderers[context];
+
                 if (this.BeginQuery != null)
                 {
                     this.BeginQuery(context);
                 }
 
-
-
-                DX11GraphicsRenderer renderer = this.renderers[context];
-
                 this.BeforeRender(renderer, context);
 
-                renderer.SetTargets();
+                Exception exception = null;
 
-                if (this.FInClearDepth[0] && this.FInDepthBuffer[0])
+                try
                 {
-                    this.depthmanager.Clear(context);
-                }
+                    renderer.SetTargets();
 
-                if (this.FInClear[0])
-                {
-                    renderer.Clear(this.FInBgColor[0]);
-                }
-
-                if (this.FInLayer.PluginIO.IsConnected)
-                {
-
-                    int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
-                    rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
-
-                    DX11RenderSettings settings = new DX11RenderSettings();
-                    settings.ViewportCount = rtmax;
-
-                    bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
-
-                    float cw = (float)this.width;
-                    float ch = (float)this.height;
-
-                    for (int i = 0; i < rtmax; i++)
+                    if (this.FInClearDepth[0] && this.FInDepthBuffer[0])
                     {
-                        settings.ViewportIndex = i;
-                        settings.View = this.FInView[i];
+                        this.depthmanager.Clear(context, this.FInClearDepthValue[0]);
+                    }
 
-                        Matrix proj = this.FInProjection[i];
-                        Matrix aspect = Matrix.Invert(this.FInAspect[i]);
-                        Matrix crop = Matrix.Invert(this.FInCrop[i]);
+                    this.DoClear(context);
 
-                        settings.Projection = proj * aspect * crop;
-                        settings.ViewProjection = settings.View * settings.Projection;
-                        settings.RenderWidth = this.width;
-                        settings.RenderHeight = this.height;
-                        settings.BackBuffer = this.GetMainTarget(context);
-                        settings.CustomSemantics.Clear();
-                        settings.ResourceSemantics.Clear();
+                    if (this.FInLayer.IsConnected)
+                    {
 
-                        if (viewportpop)
+                        int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
+                        rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
+
+                        DX11RenderSettings settings = new DX11RenderSettings();
+                        settings.ViewportCount = rtmax;
+
+                        bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
+
+                        float cw = (float)this.width;
+                        float ch = (float)this.height;
+
+                        for (int i = 0; i < rtmax; i++)
                         {
-                            context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
-                        }
+                            settings.ViewportIndex = i;
+                            settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], this.FInAspect[i], this.FInCrop[i]);
 
-                        //Call render on all layers
-                        for (int j = 0; j < this.FInLayer.SliceCount; j++)
-                        {
-                            try
+
+                            settings.RenderWidth = this.width;
+                            settings.RenderHeight = this.height;
+                            settings.BackBuffer = this.GetMainTarget(context);
+                            settings.CustomSemantics.Clear();
+                            settings.ResourceSemantics.Clear();
+
+                            if (viewportpop)
                             {
-                                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+                                context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
-                        }
 
-                        if (viewportpop)
-                        {
-                            context.RenderTargetStack.PopViewport();
+                            //Call render on all layers
+                            for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                            {
+                                try
+                                {
+                                    this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                }
+                            }
+
+                            if (viewportpop)
+                            {
+                                context.RenderTargetStack.PopViewport();
+                            }
                         }
                     }
+
+
+                    //Post render
+                    this.AfterRender(renderer, context);
+
+
                 }
-
-
-                //Post render
-                this.AfterRender(renderer, context);
-
-                renderer.CleanTargets();
-
-                if (this.EndQuery != null)
+                catch (Exception ex)
                 {
-                    this.EndQuery(context);
+                    exception = ex;
+                }
+                finally
+                {
+                    if (this.EndQuery != null)
+                    {
+                        this.EndQuery(context);
+                    }
+
+                    renderer.CleanTargets();
                 }
 
                 this.rendereddevices.Add(context);
+
+                if (exception != null)
+                {
+                    throw exception;
+                }
             }
 
             

@@ -28,7 +28,6 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Help = "Returns world positions from the Kinects depth camera.")]
     public unsafe class KinectWorldTextureNode : KinectBaseTextureNode
     {
-        private object m_depthlock = new object();
         private Vector4[] colorread;
         private Vector4[] colorwrite;
 
@@ -69,7 +68,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     frame.CopyFrameDataToArray(this.depthwrite);
                     this.runtime.Runtime.CoordinateMapper.MapDepthFrameToCameraSpace(this.depthwrite, this.camerawrite);
 
-                    lock (m_depthlock)
+                    lock (m_lock)
                     {
                         int pixels = 512*424;
                         for (int i = 0; i < pixels;i++)
@@ -82,6 +81,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                         Vector4[] swap = this.colorread;
                         this.colorread = this.colorwrite;
                         this.colorwrite = swap;
+                        this.frameindex = frame.RelativeTime.Ticks;
                     }
 
                     this.FInvalidate = true;
@@ -106,7 +106,7 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         protected override void CopyData(DX11DynamicTexture2D texture)
         {
-            lock (m_depthlock)
+            lock (m_lock)
             {
                 fixed (Vector4* cp = &this.colorread[0])
                 {

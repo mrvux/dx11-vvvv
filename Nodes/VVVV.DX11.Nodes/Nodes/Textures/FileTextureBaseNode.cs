@@ -52,10 +52,10 @@ namespace VVVV.DX11.Nodes
         [Input("No Mips", Visibility = PinVisibility.Hidden)]
         protected IDiffSpread<bool> FInNoMips;
 
-        [Output("Texture Out")]
+        [Output("Texture Out", Order=1)]
         protected ISpread<DX11Resource<T>> FTextureOutput;
 
-        [Output("Is Valid")]
+        [Output("Is Valid", Order = 500)]
         protected ISpread<bool> FValid;
 
         //protected static Dictionary<string, T> respool = new Dictionary<string, T>();
@@ -75,6 +75,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FInPath.IsChanged || this.FInReload[0] || this.FInNoMips.IsChanged)
             {
+                this.SliceCountchanged(SpreadMax);
                 //Kill old resources
                 for (int i = 0; i < this.FTextureOutput.SliceCount; i++)
                 {
@@ -85,7 +86,20 @@ namespace VVVV.DX11.Nodes
                 {
                     task.MarkForAbort();
                 }
-                
+
+                for (int i = 0; i < SpreadMax; i++ )
+                {
+                    if (File.Exists(this.FInPath[i]))
+                    {
+                        this.LoadInfo(i, this.FInPath[i]);
+                    }
+                    else
+                    {
+                        this.MarkInvalid(i);
+                    }
+                    
+                }
+
 
                 this.FTextureOutput.SliceCount = SpreadMax;
                 this.FValid.SliceCount = SpreadMax;
@@ -97,8 +111,12 @@ namespace VVVV.DX11.Nodes
                 }
 
                 this.FInvalidate = true;
-            }
+            }     
         }
+
+        protected virtual void SliceCountchanged(int slicecount) { }
+        protected abstract void LoadInfo(int slice, string path);
+        protected abstract void MarkInvalid(int slice);
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
@@ -110,7 +128,6 @@ namespace VVVV.DX11.Nodes
 
                     if (File.Exists(this.FInPath[i]))
                     {
-
                         if (this.FInBGLoad[0])
                         {
 

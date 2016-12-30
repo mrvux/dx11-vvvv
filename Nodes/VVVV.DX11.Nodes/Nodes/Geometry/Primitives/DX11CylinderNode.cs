@@ -28,10 +28,13 @@ namespace VVVV.DX11.Nodes
         [Input("Caps", DefaultValue = 1.0)]
         protected IDiffSpread<bool> FInCaps;
 
-        [Input("Resolution X", DefaultValue = 15)]
+        [Input("Center Y", DefaultValue = 1.0)]
+        protected IDiffSpread<bool> FInCenterY;
+
+        [Input("Resolution X", DefaultValue = 15, MinValue = 2)]
         protected IDiffSpread<int> FInResX;
 
-        [Input("Resolution Y", DefaultValue = 1)]
+        [Input("Resolution Y", DefaultValue = 1, MinValue = 1)]
         protected IDiffSpread<int> FInResY;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
@@ -44,7 +47,8 @@ namespace VVVV.DX11.Nodes
                 Radius1 = this.FInR1[slice],
                 Radius2 = this.FInR2[slice],
                 ResolutionX = this.FInResX[slice],
-                ResolutionY= this.FInResY[slice]
+                ResolutionY= this.FInResY[slice],
+                CenterY = this.FInCenterY[slice]
             };
 
 
@@ -59,7 +63,8 @@ namespace VVVV.DX11.Nodes
                 || this.FInR1.IsChanged
                 || this.FInR2.IsChanged
                 || this.FInResX.IsChanged
-                || this.FInResY.IsChanged;
+                || this.FInResY.IsChanged
+                || this.FInCenterY.IsChanged;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FApply;
 
         [Output("Buffer")]
-        protected Pin<DX11Resource<DX11DynamicStructuredBuffer<T>>> FOutput;
+        protected ISpread<DX11Resource<DX11DynamicStructuredBuffer<T>>> FOutput;
 
         [Output("Is Valid")]
         protected ISpread<bool> FValid;
@@ -45,39 +45,52 @@ namespace VVVV.DX11.Nodes
         private int spreadmax;
 
         protected bool ffixed = false;
+        protected virtual bool NeedConvert { get { return false; } }
 
         protected T[] tempbuffer = new T[0];
 
         public void Evaluate(int SpreadMax)
         {
-            this.spreadmax = SpreadMax;
-            this.FOutput.SliceCount = SpreadMax > 0 ? 1 : 0;
-            this.FValid.SliceCount = SpreadMax > 0 ? 1 : 0;
             this.FInvalidate = false;
 
-            if (this.spreadmax > 0)
+            if (this.FApply[0] || this.FFirst)
             {
-                if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicStructuredBuffer<T>>(); }
 
-                if (this.FApply[0] || this.FFirst)
+                if (this.ffixed)
                 {
-
-                    if (this.ffixed)
-                    {
-                        this.FCount.IOObject.Sync();
-                    }
-
-                    this.FInData.Sync();
-
-                    this.FInvalidate = true;
-                    this.FFirst = false;
-                    this.FOutput.Stream.IsChanged = true;
+                    this.FCount.IOObject.Sync();
                 }
+
+                this.FInData.Sync();
+
+                if (this.FInData.SliceCount > 0)
+                {
+                    this.FOutput.SliceCount = 1;
+                    this.FValid.SliceCount = 1;
+                    if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicStructuredBuffer<T>>(); }
+                }
+                else
+                {
+                    if (this.FOutput.SliceCount > 0 && this.FOutput[0] != null)
+                    {
+                        this.FOutput[0].Dispose();
+                    }
+                    this.FOutput.SliceCount = 0;
+                    this.FValid.SliceCount = 0;
+                }
+
+                this.spreadmax = this.FInData.SliceCount;
+
+                this.FInvalidate = true;
+                this.FFirst = false;
+                this.FOutput.Stream.IsChanged = true;
             }
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.spreadmax == 0) { return; }
+
             if (this.FInvalidate || !this.FOutput[0].Contains(context))
             {
                 int count = this.ffixed ? this.FCount.IOObject[0] : this.FInData.SliceCount;
@@ -110,9 +123,29 @@ namespace VVVV.DX11.Nodes
                 {
                     Array.Resize<T>(ref this.tempbuffer, count);
                 }
-                this.WriteArray(count);
 
-                b.WriteData(this.tempbuffer);
+                //If fixed or if size is the same, we can do a direct copy
+                bool needconvert = ((this.ffixed && count != this.FInData.SliceCount)) || this.NeedConvert;
+                
+                try
+                {
+                    if (needconvert)
+                    {
+                        this.WriteArray(count);
+                        b.WriteData(this.tempbuffer);
+                    }
+                    else
+                    {
+                        b.WriteData(this.FInData.Stream.Buffer,0, this.FInData.SliceCount);
+                    }
+                } 
+                catch
+                {
+
+                }
+
+ 
+                
             }
 
         }
@@ -139,7 +172,11 @@ namespace VVVV.DX11.Nodes
         {
             try
             {
-                this.FOutput[0].Dispose();
+                if (this.FOutput.SliceCount > 0 && this.FOutput[0] != null)
+                {
+                    this.FOutput[0].Dispose();
+                }
+                
             }
             catch
             {
@@ -150,6 +187,8 @@ namespace VVVV.DX11.Nodes
 
         public void OnImportsSatisfied()
         {
+            this.FOutput.SliceCount = 1;
+
             this.FFixed.Changed += FFixed_Changed;
         }
 

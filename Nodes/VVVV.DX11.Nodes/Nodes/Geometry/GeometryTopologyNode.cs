@@ -30,21 +30,15 @@ namespace VVVV.DX11.Nodes
         [Output("Geometry Out")]
         protected ISpread<DX11Resource<IDX11Geometry>> FOutGeom;
 
-        bool invalidate = false;
-
         public void Evaluate(int SpreadMax)
         {
-            invalidate = false;
-
             if (this.FInGeom.PluginIO.IsConnected)
             {
                 this.FOutGeom.SliceCount = SpreadMax;
 
                 for (int i = 0; i < SpreadMax; i++) { if (this.FOutGeom[i] == null) { this.FOutGeom[i] = new DX11Resource<IDX11Geometry>(); } }
 
-                invalidate = this.FInGeom.IsChanged || this.FInEnabled.IsChanged || this.FInTopology.IsChanged;
-
-                if (invalidate) { this.FOutGeom.Stream.IsChanged = true; }
+                this.FOutGeom.Stream.IsChanged = SpreadMax > 0 && this.FInEnabled.SliceCount > 0 ? this.FInEnabled[0] : false;
             }
             else
             {
@@ -56,28 +50,25 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
 
-            if (this.invalidate)
+            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                for (int i = 0; i < this.FOutGeom.SliceCount; i++)
+                if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined && this.FInGeom[i].Contains(context))
                 {
-                    if (this.FInEnabled[i] && this.FInTopology[i] != PrimitiveTopology.Undefined)
-                    {
 
-                        IDX11Geometry geom = this.FInGeom[i][context].ShallowCopy();
-                        geom.Topology = this.FInTopology[i];
-                        this.FOutGeom[i][context] = geom;
-                    }
-                    else
-                    {
-                        this.FOutGeom[i][context] = this.FInGeom[i][context];
-                    }
+                    IDX11Geometry geom = this.FInGeom[i][context].ShallowCopy();
+                    geom.Topology = this.FInTopology[i];
+                    this.FOutGeom[i][context] = geom;
+                }
+                else
+                {
+                    this.FOutGeom[i][context] = this.FInGeom[i][context];
                 }
             }
         }
 
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
         {
-            //Not ownding resource eg: do nothing
+
         }
     }
 }

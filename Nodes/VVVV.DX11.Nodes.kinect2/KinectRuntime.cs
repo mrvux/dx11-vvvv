@@ -19,7 +19,7 @@ namespace VVVV.MSKinect.Lib
         public event EventHandler<InfraredFrameArrivedEventArgs> IRFrameReady;
         public event EventHandler<BodyIndexFrameArrivedEventArgs> BodyFrameReady;
 
-        public KinectStatus LastStatus { get; private set; }
+        public event EventHandler OnReset;
 
         private DepthFrameReader depthreader;
         private ColorFrameReader colorreader;
@@ -36,7 +36,7 @@ namespace VVVV.MSKinect.Lib
         {
             if (this.Runtime != null)
             {
-                this.Runtime = null;
+                return true;
             }
 
             if (this.IsStarted)
@@ -44,27 +44,10 @@ namespace VVVV.MSKinect.Lib
                 this.Stop();
             }
 
-            if (KinectSensor.KinectSensors.Count > 0)
-            {
-                this.Runtime = KinectSensor.KinectSensors[idx % KinectSensor.KinectSensors.Count];
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            this.Runtime = KinectSensor.GetDefault();
+            this.Runtime.IsAvailableChanged += Runtime_IsAvailableChanged;
+            return true;
         }
-
-
-
-       /* void Runtime_AllFramesReady(object sender, AllFramesReadyEventArgs e)
-        {
-            if (this.AllFrameReady != null)
-            {
-                this.AllFrameReady(sender, e);
-            }
-
-        }*/
 
         void Runtime_DepthFrameReady(object sender, DepthFrameArrivedEventArgs e)
         {
@@ -98,44 +81,96 @@ namespace VVVV.MSKinect.Lib
             }
         }
 
-        public void EnableSkeleton(bool enable, bool smooth)//, TransformSmoothParameters sp)
+        public void EnableSkeleton(bool enable, bool smooth)
         {
-            if (enable)
+            if (enable && this.bodyreader == null && this.Runtime.IsAvailable)
             {
                 this.bodyreader = this.Runtime.BodyFrameSource.OpenReader();
                 this.bodyreader.FrameArrived += this.Runtime_SkeletonFrameReady;
-            }           
+            }  
+            else
+            {
+                if (this.bodyreader != null)
+                {
+                    this.bodyreader.FrameArrived -= this.Runtime_SkeletonFrameReady;
+                    this.bodyreader.Dispose();
+                    this.bodyreader = null;
+                }
+            }
         }
 
 
         public void SetPlayer(bool enable)
         {
-            if (enable)
+            if (enable && this.playerreader == null && this.Runtime.IsAvailable)
             {
                 playerreader = this.Runtime.BodyIndexFrameSource.OpenReader();
                 playerreader.FrameArrived += this.Runtime_PlayerFrameReady;
+            }
+            else
+            {
+                if(this.playerreader != null)
+                {
+                    this.playerreader.FrameArrived -= this.Runtime_PlayerFrameReady;
+                    this.playerreader.Dispose();
+                    this.playerreader = null;
+                }
             }
         }
 
         public void SetDepthMode(bool enable)
         {
-            if (enable)
+            if (enable && this.depthreader == null && this.Runtime.IsAvailable)
             {
                 depthreader = this.Runtime.DepthFrameSource.OpenReader();
                 depthreader.FrameArrived += this.Runtime_DepthFrameReady ;
+            }
+            else
+            {
+                if (this.depthreader != null)
+                {
+                    this.depthreader.FrameArrived -= this.Runtime_DepthFrameReady;
+                    this.depthreader.Dispose(); this.depthreader = null;
+                }
             }
         }
 
         public void SetColor(bool enable)
         {
-            colorreader = this.Runtime.ColorFrameSource.OpenReader();
-            colorreader.FrameArrived += this.Runtime_ColorFrameReady;
+            if (this.colorreader == null && enable && this.Runtime.IsAvailable)
+            {
+                colorreader = this.Runtime.ColorFrameSource.OpenReader();
+                colorreader.FrameArrived += this.Runtime_ColorFrameReady;
+            }
+            else
+            {
+                if (this.colorreader != null)
+                {
+                    this.colorreader.FrameArrived -= this.Runtime_ColorFrameReady;
+                    this.colorreader.Dispose();
+                    this.colorreader = null;
+                }
+            }
+            
         }
 
         public void SetInfrared(bool enable)
         {
-            irreader = this.Runtime.InfraredFrameSource.OpenReader();
-            irreader.FrameArrived += irreader_FrameArrived;
+            if (this.irreader == null && enable && this.Runtime.IsAvailable)
+            {
+                irreader = this.Runtime.InfraredFrameSource.OpenReader();
+                irreader.FrameArrived += irreader_FrameArrived;
+            }
+            else
+            {
+                if (this.irreader != null)
+                {
+                    this.irreader.FrameArrived -= this.irreader_FrameArrived;
+                    this.irreader.Dispose();
+                    this.irreader = null;
+                }
+            }
+
         }
 
         void irreader_FrameArrived(object sender, InfraredFrameArrivedEventArgs e)
@@ -148,7 +183,7 @@ namespace VVVV.MSKinect.Lib
 
 
         #region Start
-        public void Start(bool color, bool skeleton, bool depth)
+        public void Start()
         {
             if (this.Runtime != null)
             {
@@ -162,7 +197,6 @@ namespace VVVV.MSKinect.Lib
                     try
                     {
                         this.Runtime.Open();
-
                         this.IsStarted = true;
                     }
                     catch (Exception ex)
@@ -170,8 +204,17 @@ namespace VVVV.MSKinect.Lib
                         this.IsStarted = false;
                     }
                 }
+            }
+        }
 
-                //this.Runtime.AllFramesReady += Runtime_AllFramesReady;
+        private void Runtime_IsAvailableChanged(object sender, IsAvailableChangedEventArgs e)
+        {
+            if (e.IsAvailable)
+            {
+                if (this.OnReset != null)
+                {
+                    this.OnReset(sender, new EventArgs());
+                }
             }
         }
 
@@ -186,7 +229,13 @@ namespace VVVV.MSKinect.Lib
                 {
                     try
                     {
+                        this.EnableSkeleton(false, false);
+                        this.SetColor(false);
+                        this.SetDepthMode(false);
+                        this.SetInfrared(false);
+                        this.SetPlayer(false);
 
+                        this.Runtime.Close();
                     }
                     catch
                     {

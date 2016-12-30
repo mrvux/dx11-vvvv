@@ -60,10 +60,9 @@ namespace VVVV.Nodes
         private IValueIn smooth;
 
         [Output("Geometry Out", IsSingle = true)]
-        ISpread<DX11Resource<DX11IndexedGeometry>> FGeom;
+        protected ISpread<DX11Resource<DX11IndexedGeometry>> FGeom;
 
         DataStream sVx;
-        DataStream sIx;
 
         //private Dictionary<Device, Mesh> FDeviceMeshes = new Dictionary<Device, Mesh>();
 

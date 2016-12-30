@@ -17,8 +17,8 @@ namespace VVVV.MSKinect.Nodes
 	            Help = "Provides access to a Kinect through the MSKinect API")]
     public class KinectRuntimeNode : IPluginEvaluate, IDisposable
     {
-        [Input("Index", IsSingle = true)]
-        IDiffSpread<int> FInIndex;
+        /*[Input("Index", IsSingle = true)]
+        IDiffSpread<int> FInIndex;*/
 
         [Input("Enable Color", IsSingle = true, DefaultValue = 1)]
         IDiffSpread<bool> FInEnableColor;
@@ -47,30 +47,47 @@ namespace VVVV.MSKinect.Nodes
         [Output("Kinect Count", IsSingle = true)]
         ISpread<int> FOutKCnt;
 
-        [Output("Kinect Status", IsSingle = true)]
-        ISpread<KinectStatus> FOutStatus;
+        [Output("Is Available", IsSingle = true)]
+        ISpread<bool> FOutStatus;
+
+        [Output("Color FOV")]
+        ISpread<Vector2D> FOutColorFOV;
+
+        [Output("Depth FOV")]
+        ISpread<Vector2D> FOutDepthFOV;
 
         [Output("Is Started", IsSingle = true)]
         ISpread<bool> FOutStarted;
 
-        /*[Output("Color FOV")]
-        ISpread<Vector2D> FOutColorFOV;
+        [Output("DepthRange (cm)" )]
+        ISpread<Vector2D> FDepthrange;
 
-        [Output("Depth FOV")]
-        ISpread<Vector2D> FOutDepthFOV;*/
+        [Output("Intrinsics")]
+        ISpread<CameraIntrinsics> intrinsics;
 
         private KinectRuntime runtime = new KinectRuntime();
 
         private bool haskinect = false;
 
+        
+        private bool onkinectreset = false;
+
+
         public void Evaluate(int SpreadMax)
         {
-
             bool reset = false;
 
-            if (this.FInIndex.IsChanged || this.FInReset[0] || this.runtime.Runtime == null)
+            if (this.FInReset[0] || this.runtime.Runtime == null)
             {
-                this.haskinect = this.runtime.Assign(this.FInIndex[0]);
+                bool regevent = this.runtime.Runtime == null;
+                //Keep until we have multiple kinect support
+                this.haskinect = this.runtime.Assign(0);
+
+                if (regevent)
+                {
+                    this.runtime.OnReset += (s, e) => this.onkinectreset = true;
+                }
+
                 reset = true;
             }
 
@@ -81,7 +98,7 @@ namespace VVVV.MSKinect.Nodes
                 {
                     if (this.FInEnabled[0])
                     {
-                        this.runtime.Start(this.FInEnableColor[0], this.FInEnableSkeleton[0], this.FInDepthMode[0]);
+                        this.runtime.Start();
                     }
                     else
                     {
@@ -91,58 +108,67 @@ namespace VVVV.MSKinect.Nodes
                     reset = true;
                 }
 
-                if (this.FInDepthMode.IsChanged || reset)
+                if (this.FInDepthMode.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetDepthMode(this.FInDepthMode[0]);
                 }
 
 
-                if (this.FInEnableColor.IsChanged || reset)
+                if (this.FInEnableColor.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetColor(this.FInEnableColor[0]);
                 }
 
-                if (this.FInInfrared.IsChanged || reset)
+                if (this.FInInfrared.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetInfrared(this.FInInfrared[0]);
                 }
 
-                if (this.FInEnablePlayer.IsChanged || reset)
+                if (this.FInEnablePlayer.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.SetPlayer(this.FInEnablePlayer[0]);
                 }
 
-                if (this.FInEnableSkeleton.IsChanged || reset)
+                if (this.FInEnableSkeleton.IsChanged || reset || onkinectreset)
                 {
                     this.runtime.EnableSkeleton(this.FInEnableSkeleton[0], false);
                 }
 
+                //TODO : Modify here to make sure flag has been taken properly
+                if (this.onkinectreset)
+                {
+                    this.onkinectreset = false;
+                }  
 
-                this.FOutStatus[0] = runtime.Runtime.Status;
+
+                this.FOutStatus[0] = runtime.Runtime.IsAvailable;
                 this.FOutRuntime[0] = runtime;
                 this.FOutStarted[0] = runtime.IsStarted;
 
 
+                this.FOutColorFOV.SliceCount = 1;
+                this.FOutDepthFOV.SliceCount = 1;
 
-                /*this.FOutColorFOV.SliceCount = 1;
-                this.FOutDepthFOV.SliceCount = 1;*/
+                this.FOutColorFOV[0] = new Vector2D(this.runtime.Runtime.ColorFrameSource.FrameDescription.HorizontalFieldOfView,
+                                                    this.runtime.Runtime.ColorFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
 
-                /*this.FOutColorFOV[0] = new Vector2D(this.runtime.Runtime.ColorStream.NominalHorizontalFieldOfView,
-                                                    this.runtime.Runtime.ColorStream.NominalVerticalFieldOfView) * (float)VMath.DegToCyc;
+                this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthFrameSource.FrameDescription.HorizontalFieldOfView,
+                                                    this.runtime.Runtime.DepthFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
 
-                this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthStream.NominalHorizontalFieldOfView,
-                    								this.runtime.Runtime.DepthStream.NominalVerticalFieldOfView) * (float)VMath.DegToCyc;*/
+                this.FDepthrange[0] = new Vector2D( (double)this.runtime.Runtime.DepthFrameSource.DepthMinReliableDistance,
+                                                    (double)this.runtime.Runtime.DepthFrameSource.DepthMaxReliableDistance);
+
+                this.intrinsics[0] = this.runtime.Runtime.CoordinateMapper.GetDepthCameraIntrinsics();
             }
 
-            this.FOutKCnt[0] = KinectSensor.KinectSensors.Count;
+            this.FOutKCnt[0] = 1; // KinectSensor.KinectSensors.Count;
+                       
         }
-
         public void Dispose()
         {
             if (this.runtime != null)
             {
                 this.runtime.Stop();
-                this.runtime.Runtime.Dispose();
             }
         }
     }

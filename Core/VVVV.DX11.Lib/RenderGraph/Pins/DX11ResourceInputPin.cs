@@ -25,6 +25,7 @@ namespace VVVV.DX11.Lib.RenderGraph.Pins
             FNodeIn = nodeIn;
             FNodeIn.SetConnectionHandler(new DX11ResourceConnectionHandler(), this);
             FAutoValidate = nodeIn.AutoValidate;
+            IsChanged = true;
         }
 
 

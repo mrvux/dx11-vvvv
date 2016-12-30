@@ -43,6 +43,23 @@ namespace VVVV.DX11.Lib.Devices
             return null;
         }
 
+        public int FindNVidia(out bool found)
+        {
+            for (int i= 0; i < this.Factory.GetAdapterCount1(); i++)
+            {
+                var adp = this.Factory.GetAdapter1(i);
+
+                if (adp.Description1.Description.ToLower().Contains("nvidia"))
+                {
+                    found = true;
+                    return i;
+                }
+            }
+
+            found = false;
+            return 0;
+        }
+
         public void Refresh()
         {
             foreach (DXGIScreen scr in this.screens)

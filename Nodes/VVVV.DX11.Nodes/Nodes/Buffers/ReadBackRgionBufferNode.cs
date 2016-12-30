@@ -54,7 +54,7 @@ namespace VVVV.DX11.Nodes
         {
 
 
-            if (this.FInput.PluginIO.IsConnected && this.FInEnabled[0])
+            if (this.FInput.IsConnected && this.FInEnabled[0])
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 

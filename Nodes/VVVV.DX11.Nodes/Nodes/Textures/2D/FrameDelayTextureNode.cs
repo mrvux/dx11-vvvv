@@ -8,6 +8,7 @@ using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using System.ComponentModel.Composition;
 using VVVV.DX11.Lib.Devices;
+using VVVV.Core.Logging;
 
 namespace VVVV.DX11.Nodes
 {
@@ -15,7 +16,7 @@ namespace VVVV.DX11.Nodes
         AutoEvaluate=true,      
         Author = "vux",
         Warnings="Doesn't suppport multicontext, experimental,non spreadable")]
-    public class FrameDelayTextureNode : IPluginEvaluate, IDX11ResourceProvider
+    public class FrameDelayTextureNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
         [Input("Texture In", IsSingle = true)]
         protected Pin<DX11Resource<DX11Texture2D>> FTextureInput;
@@ -28,12 +29,14 @@ namespace VVVV.DX11.Nodes
 
         private IHDEHost hde;
         private DX11Texture2D lasttexture = null;
+        private ILogger logger;
 
         [ImportingConstructor()]
-        public FrameDelayTextureNode(IHDEHost hde)
+        public FrameDelayTextureNode(IHDEHost hde, ILogger logger)
         {
             this.hde = hde;
-            this.hde.MainLoop.OnResetCache += new EventHandler(MainLoop_OnPresent);
+            this.hde.MainLoop.OnResetCache += this.MainLoop_OnPresent;
+            this.logger = logger;
         }
 
         private void MainLoop_OnPresent(object sender, EventArgs e)
@@ -48,6 +51,12 @@ namespace VVVV.DX11.Nodes
                 if (this.FTextureInput[0].Contains(context))
                 {
                     DX11Texture2D texture = this.FTextureInput[0][context];
+
+                    if (texture is DX11DepthStencil)
+                    {
+                        this.logger.Log(LogType.Warning, "FrameDelay for depth texture is not supported");
+                        return;
+                    }
 
                     if (this.lasttexture != null)
                     {
@@ -102,6 +111,11 @@ namespace VVVV.DX11.Nodes
         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
         {
 
+        }
+
+        public void Dispose()
+        {
+            this.hde.MainLoop.OnResetCache -= this.MainLoop_OnPresent;
         }
     }
 }

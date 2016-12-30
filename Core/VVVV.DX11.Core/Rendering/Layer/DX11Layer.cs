@@ -11,7 +11,11 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11
 {
+
+    [Obsolete("This does access IPluginIO, which fails in case of multi core access, this will be removed in next release, use RenderTaskDelegate instead")]
     public delegate void RenderDelegate<T>(IPluginIO pin, DX11RenderContext context, T settings);
+
+    public delegate void RenderTaskDelegate<T>(IPluginIO pin, DX11RenderContext context, T settings);
 
     public class DX11BaseLayer<T> : IDX11Resource
     {
@@ -33,5 +37,82 @@ namespace VVVV.DX11
     /// </summary>
     public class DX11Layer : DX11BaseLayer<DX11RenderSettings>
     {
+    }
+
+    public class DX11Shader: IDX11Resource
+    {
+        public DX11ShaderInstance Shader
+        {
+            get;
+            private set;
+        }
+
+        public DX11Shader(DX11ShaderInstance instance)
+        {
+            this.Shader = instance;
+        }
+
+        public void ApplyShaders(DX11RenderContext context)
+        {
+            var vsV = Shader.CurrentTechnique.GetPassByIndex(0).VertexShaderDescription.Variable;
+            if (vsV.IsValid)
+            {
+                context.CurrentDeviceContext.VertexShader.Set(vsV.AsShader().GetVertexShader(0));
+            }
+
+            var hsV = Shader.CurrentTechnique.GetPassByIndex(0).HullShaderDescription.Variable;
+            if (hsV.IsValid)
+            {
+                context.CurrentDeviceContext.HullShader.Set(hsV.AsShader().GetHullShader(0));
+            }
+
+            var dsV = Shader.CurrentTechnique.GetPassByIndex(0).DomainShaderDescription.Variable;
+            if (dsV.IsValid)
+            {
+                context.CurrentDeviceContext.DomainShader.Set(dsV.AsShader().GetDomainShader(0));
+            }
+
+            var gsV = Shader.CurrentTechnique.GetPassByIndex(0).GeometryShaderDescription.Variable;
+            if (gsV.IsValid)
+            {
+                context.CurrentDeviceContext.GeometryShader.Set(gsV.AsShader().GetGeometryShader(0));
+            }
+
+            var psV = Shader.CurrentTechnique.GetPassByIndex(0).PixelShaderDescription.Variable;
+            if (psV.IsValid)
+            {
+                context.CurrentDeviceContext.PixelShader.Set(psV.AsShader().GetPixelShader(0));
+            }
+
+        }
+
+        public void Dispose()
+        {
+            //Owned, do nothing
+        }
+    }
+
+    public class DX11Layout : IDX11Resource
+    {
+        public InputLayout Layout
+        {
+            get;
+            private set;
+        }
+
+        public DX11Layout(InputLayout layout)
+        {
+            this.Layout = layout;
+        }
+
+        public void Dispose()
+        {
+            if (this.Layout != null)
+            {
+                this.Layout.Dispose();
+                this.Layout = null;
+            }
+            
+        }
     }
 }

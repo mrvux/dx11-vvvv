@@ -176,15 +176,12 @@ namespace VVVV.DX11.Lib.RenderGraph
         {
             List<DX11Node> renderers = new List<DX11Node>();
 
-            foreach (DX11Node n in this.graph.Nodes)
+            foreach (DX11Node n in this.graph.RenderWindows)
             {
-                if (n.IsAssignable<IDX11RenderWindow>())
+                IDX11RenderWindow window = n.Interfaces.RenderWindow;
+                if (window.RenderContext == device && window.IsVisible)
                 {
-                    IDX11RenderWindow window = n.Instance<IDX11RenderWindow>();
-                    if (window.RenderContext == device && window.IsVisible)
-                    {
-                        renderers.Add(n);
-                    }
+                    renderers.Add(n);
                 }
             }
             return renderers;
@@ -194,31 +191,15 @@ namespace VVVV.DX11.Lib.RenderGraph
         {
             List<IDX11RenderWindow> renderers = new List<IDX11RenderWindow>();
 
-            foreach (DX11Node n in this.graph.Nodes)
+            foreach (DX11Node n in this.graph.RenderWindows)
             {
-                if (n.IsAssignable<IDX11RenderWindow>())
+
+                IDX11RenderWindow window = n.Interfaces.RenderWindow;
+                //We only care about the window in case it's visible
+
+                if (window.IsVisible)
                 {
-                    IDX11RenderWindow window = n.Instance<IDX11RenderWindow>();
-                    //We only care about the window in case it's visible
-
-                    if (window.IsVisible)
-                    {
-                        renderers.Add(window);
-                    }
-                }
-            }
-            return renderers;
-        }
-
-        private List<DX11Node> FindRenderers()
-        {
-            List<DX11Node> renderers = new List<DX11Node>();
-
-            foreach (DX11Node n in this.graph.Nodes)
-            {
-                if (n.IsAssignable<IDX11RendererProvider>())
-                {
-                    renderers.Add(n);
+                    renderers.Add(window);
                 }
             }
             return renderers;

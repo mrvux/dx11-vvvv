@@ -21,11 +21,21 @@ namespace VVVV.DX11.Lib.RenderGraph.Pins
     {
         private readonly INodeOut FNodeOut;
 
-        public DX11ResourceOutputStream(INodeOut nodeOut)
+        public DX11ResourceOutputStream(INodeOut nodeOut, bool isSingle)
         {
             FNodeOut = nodeOut;
             FNodeOut.SetInterface(this);
-            FNodeOut.SetConnectionHandler(new DX11ResourceConnectionHandler(), this);
+
+            IConnectionHandler connectionHandler;
+            if (isSingle)
+            {
+                connectionHandler = new DX11SingleResourceConnectionHandler(nodeOut);
+            }
+            else    
+            {
+                connectionHandler = new DX11ResourceConnectionHandler();
+            }
+            FNodeOut.SetConnectionHandler(connectionHandler, this);
         }
 
         object IGenericIO.GetSlice(int index)

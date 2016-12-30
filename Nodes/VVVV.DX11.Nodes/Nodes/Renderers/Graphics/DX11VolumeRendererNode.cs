@@ -27,7 +27,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
     {
         protected IPluginHost FHost;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
         [Input("Texture Size", Order = 5, DefaultValues = new double[] { 32, 32,8 })]
@@ -41,6 +41,9 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
+
+        [Input("Bind As Target", DefaultValue = 1, Order = 10, Visibility= PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInBindTarget;
 
         [Input("View", Order = 10)]
         protected IDiffSpread<Matrix> FInView;
@@ -133,17 +136,23 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
                     this.BeginQuery(context);
                 }
 
-                ctx.OutputMerger.SetTargets(this.FOutBuffers[0][context].RTV);
+                
 
                 if (this.FInClear[0])
                 {
                     ctx.ClearRenderTargetView(this.FOutBuffers[0][context].RTV, this.FInBgColor[0]);
                 }
 
-                Viewport vp = new Viewport(0, 0, this.width, this.height);
-                ctx.Rasterizer.SetViewports(vp);
+                /*Viewport vp = new Viewport(0, 0, this.width, this.height);
+                ctx.Rasterizer.SetViewports(vp);*/
+                //ctx.OutputMerger.SetTargets(this.FOutBuffers[0][context].RTV);
 
                 int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
+
+                if (this.FInBindTarget[0])
+                {
+                    context.RenderTargetStack.Push(this.FOutBuffers[0][context]);
+                }
 
                 for (int i = 0; i < rtmax; i++)
                 {
@@ -166,6 +175,11 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
                     }
                 }
 
+                if (this.FInBindTarget[0])
+                {
+                    context.RenderTargetStack.Pop();
+                }
+
                 if (this.EndQuery != null)
                 {
                     this.EndQuery(context);
@@ -175,6 +189,8 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
 
         public void Update(IPluginIO pin, DX11RenderContext context)
         {
+            if (this.updateddevices.Contains(context)) { return; }
+
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);

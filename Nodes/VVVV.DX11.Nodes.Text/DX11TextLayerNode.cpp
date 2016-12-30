@@ -1,13 +1,25 @@
 #include "StdAfx.h"
 #include "DX11TextLayerNode.h"
 
+#include "FontWrapperFactory.h"
+
+using namespace FeralTic::Utils;
+
 namespace VVVV { namespace Nodes { namespace DX11 {
 
-DX11TextLayerNode::DX11TextLayerNode(IIOFactory^ factory)
+DX11TextLayerNode::DX11TextLayerNode(IIOFactory^ factory, SlimDX::DirectWrite::Factory^ dwFactory)
 {
+	this->dwFactory = dwFactory;
 	this->iofactory = factory;
 	factory->PluginHost->CreateTransformInput("Transform In",TSliceMode::Dynamic,TPinVisibility::True,this->FInTr);
+	this->FInTr->Order = 1;
 	this->fontrenderers = gcnew	Dictionary<DX11RenderContext^,IntPtr>();
+
+	InputAttribute^ colorAttribute = gcnew InputAttribute("Color");
+	colorAttribute->Order = 6;
+	colorAttribute->DefaultColor = MagicNumberUtils::WhiteDefault();
+
+	this-> FInColor = IOFactoryExtensions::CreateSpread<SlimDX::Color4>(this->iofactory, colorAttribute, true);
 }
 
 void DX11TextLayerNode::Evaluate(int SpreadMax)
@@ -30,24 +42,7 @@ void DX11TextLayerNode::Update(IPluginIO^ pin, DX11RenderContext^ context)
 
 	if (!this->fontrenderers->ContainsKey(context))
 	{
-		FW1_FONTWRAPPERCREATEPARAMS createParams = {0};
-		createParams.SheetMipLevels = 5;
-		createParams.AnisotropicFiltering = TRUE;
-		createParams.DefaultFontParams.pszFontFamily = L"Arial";
-		createParams.DefaultFontParams.FontWeight = DWRITE_FONT_WEIGHT_NORMAL;
-		createParams.DefaultFontParams.FontStyle = DWRITE_FONT_STYLE_NORMAL;
-		createParams.DefaultFontParams.FontStretch = DWRITE_FONT_STRETCH_NORMAL;
-
-
-		IFW1Factory *pFW1Factory;
-		FW1CreateFactory(FW1_VERSION, &pFW1Factory);
-		ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
-		
-		IFW1FontWrapper* pw;
-		
-		pFW1Factory->CreateFontWrapper(dev, NULL,&createParams, &pw);	
-		pFW1Factory->Release();
-
+		IFW1FontWrapper* pw = FontWrapperFactory::GetWrapper(context, this->dwFactory);
 		this->fontrenderers->Add(context,IntPtr(pw));
 	}
 }
@@ -73,12 +68,16 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 		ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
 		ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)context->CurrentDeviceContext->ComPointer.ToPointer();
 
+		IFW1GlyphRenderStates* pRenderStates;
+		fw->GetRenderStates(&pRenderStates);
 
 		int cnt;
 		float* tr;
 		this->FInTr->GetMatrixPointer(cnt,tr);
 
 		SlimDX::Matrix* smp = (SlimDX::Matrix*)&tr[0];
+
+		bool applyState = this->FStateIn->PluginIO->IsConnected;
 
 		for (int i = 0; i < this->spmax; i++)
 		{
@@ -120,17 +119,43 @@ void DX11TextLayerNode::Render(IPluginIO^ pin,DX11RenderContext^ context, DX11Re
 			else if (this->FVerticalAlignInput[i]->Index == 1) { flag |= FW1_VCENTER; }
 			else if (this->FVerticalAlignInput[i]->Index == 2) { flag |= FW1_BOTTOM; }
 
-			fw->DrawString(
+
+			if (applyState)
+			{
+				pRenderStates->SetStates(pContext, 0);
+
+				context->RenderStateStack->Push(this->FStateIn[i]);
+
+				fw->DrawString(
 					pContext,
 					(WCHAR*)txt,
 					(WCHAR*)font,
 					size,
 					&rect,
 					color,
-					NULL, 
+					NULL,
+					tr,
+					flag | FW1_STATEPREPARED
+					);
+
+				context->RenderStateStack->Pop();
+			}
+			else
+			{
+				fw->DrawString(
+					pContext,
+					(WCHAR*)txt,
+					(WCHAR*)font,
+					size,
+					&rect,
+					color,
+					NULL,
 					tr,
 					flag
-				);
+					);
+			}
+
+
 
 			Marshal::FreeHGlobal(System::IntPtr(txt));
 			Marshal::FreeHGlobal(System::IntPtr(font));

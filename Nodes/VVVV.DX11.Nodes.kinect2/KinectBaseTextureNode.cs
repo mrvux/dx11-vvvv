@@ -14,21 +14,25 @@ using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 
 using VVVV.MSKinect.Lib;
+using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
     public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceProvider, IDisposable
     {
-        [Input("Kinect Runtime")]
+         [DllImport("msvcrt.dll", SetLastError = false)]
+        protected static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
+
+        [Input("Kinect Runtime", Order = -20)]
         private Pin<KinectRuntime> FInRuntime;
 
         [Output("Texture", IsSingle = true)]
         Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
 
         [Output("Frame Index", IsSingle = true, Order = 10)]
-        private ISpread<int> FOutFrameIndex;
+        private ISpread<long> FOutFrameIndex;
 
-        protected int frameindex = -1;
+        protected long frameindex = -1;
 
         private bool FInvalidateConnect = false;
         protected bool FInvalidate = true;
@@ -132,6 +136,12 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         public void Dispose()
         {
+            if (this.runtime != null)
+            {
+                //Force a disconnect, to unregister event
+                this.OnRuntimeDisconnected();
+            }
+
             this.Disposing();
 
             if (this.FTextureOutput[0] != null)

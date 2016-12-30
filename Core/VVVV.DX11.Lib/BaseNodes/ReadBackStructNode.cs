@@ -46,10 +46,11 @@ namespace VVVV.DX11.Nodes
         protected abstract void WriteData(DataStream ds, int elementcount);
 
 
+
         #region IPluginEvaluate Members
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInput.PluginIO.IsConnected && this.FInEnabled[0])
+            if (this.FInput.IsConnected && this.FInEnabled[0])
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 
@@ -73,19 +74,30 @@ namespace VVVV.DX11.Nodes
 
                     if (this.staging == null)
                     {
-                        staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, 16);
+                        staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, b.Stride);
                     }
 
                     this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
 
                     this.FOutput.SliceCount = b.ElementCount;
+
                     DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
+                    try
+                    {
+                        
+                        this.WriteData(ds, b.ElementCount);
 
-                    this.WriteData(ds,b.ElementCount);
+                        this.FOutput.Flush(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        FHost.Log(TLogType.Error, "Error inreadback node: " + ex.Message);
+                    }
+                    finally
+                    {
+                        staging.UnMap(this.AssignedContext.CurrentDeviceContext);
+                    }
 
-                    this.FOutput.Flush(true);
-
-                    staging.UnMap(this.AssignedContext.CurrentDeviceContext);
                 }
                 else
                 {

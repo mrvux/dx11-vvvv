@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\vvvv.DX11.Build.targets" />
+  <PropertyGroup>
+    <ProjectGuid>{6A0AFB1F-8219-4A08-85F7-B7F19B66AC16}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>VVVV.DX11.Nodes.DShow</RootNamespace>
+    <AssemblyName>VVVV.DX11.Nodes.DShow</AssemblyName>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <OutputPath>$(OutputPath)\nodes\plugins\dshow\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SlimDX" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="VVVV.AForge.Video">
+      <HintPath>Dependencies\VVVV.AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="VVVV.AForge.Video.DirectShow">
+      <HintPath>Dependencies\VVVV.AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="VVVV.Core">
+      <HintPath>..\..\Dependencies\x86\VVVV.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.PluginInterfaces">
+      <HintPath>..\..\Dependencies\x86\VVVV.PluginInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils">
+      <HintPath>..\..\Dependencies\x86\VVVV.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VVVV.Utils3rdParty">
+      <HintPath>..\..\Dependencies\x86\VVVV.Utils3rdParty.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
+      <Project>{71c0786d-2640-4e39-aa7b-83602f36f3a3}</Project>
+      <Name>VVVV.DX11.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
+      <Project>{c6ee17bb-1f48-44ea-8131-d299bc57748c}</Project>
+      <Name>VVVV.DX11.Lib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9ead0f44-e6aa-4363-be4d-d944c1d35044}</Project>
+      <Name>FeralTic</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VideoIn.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="Dependencies\VVVV.AForge.Video.DirectShow.dll" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="Dependencies\VVVV.AForge.Video.dll" DestinationFolder="$(OutputPath)" />
+  </Target>
+
+</Project>

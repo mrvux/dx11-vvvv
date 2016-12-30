@@ -26,6 +26,7 @@ namespace VVVV.DX11.Lib.Effects
 
         private EffectTechnique technique;
         private EffectPass pass;
+        private PrimitiveTopology forcedTopology = PrimitiveTopology.Undefined;
 
         private DX11Effect shader;
 
@@ -45,6 +46,14 @@ namespace VVVV.DX11.Lib.Effects
         public List<string> LayoutMsg { get { return this.layoutmsg; } }
 
         public DX11ShaderInstance ShaderInstance { get { return this.shaderinstance; } }
+
+        public int PassCount
+        {
+            get
+            {
+                return this.technique.Description.PassCount;
+            }
+        }
 
         public DX11ShaderData(DX11RenderContext context)
         {
@@ -203,6 +212,7 @@ namespace VVVV.DX11.Lib.Effects
         {
             this.technique = this.shaderinstance.Effect.GetTechniqueByIndex(this.techid);
             this.pass = this.technique.GetPassByIndex(this.passid);
+            this.forcedTopology = pass.Topology();
         }
 
         public bool IsLayoutValid(int slice)
@@ -213,12 +223,17 @@ namespace VVVV.DX11.Lib.Effects
         public void SetInputAssembler(DeviceContext ctx, IDX11Geometry geom, int slice)
         {
             geom.Bind(this.layouts[slice % this.layouts.Count]);
+            if (this.forcedTopology != PrimitiveTopology.Undefined)
+            {
+                ctx.InputAssembler.PrimitiveTopology = this.forcedTopology;
+            }
         }
 
         #region Apply Pass
-        public void ApplyPass(DeviceContext ctx)
+        public void ApplyPass(DeviceContext ctx, int passIndex= 0)
         {
-            this.shaderinstance.ApplyPass(this.pass);
+            var cpass = this.technique.GetPassByIndex(passIndex);
+            this.shaderinstance.ApplyPass(cpass);
         }
         #endregion
     }

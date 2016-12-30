@@ -8,6 +8,7 @@ using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
 using VVVV.DX11;
 using VVVV.DX11.Lib.RenderGraph.Pins;
+using VVVV.Hosting.Interfaces;
 
 namespace VVVV.Nodes
 {
@@ -86,7 +87,11 @@ namespace VVVV.Nodes
 
                 Type restype = t.GetGenericArguments()[0];
                 Type fulltype = typeof(DX11Resource<>).MakeGenericType(restype);
-                var stream = Activator.CreateInstance(typeof(DX11ResourceOutputStream<,>).MakeGenericType(fulltype,restype), container.RawIOObject) as IOutStream;
+
+                //Check if resource type should only be a single output
+                bool shouldBeSingle = restype.GetCustomAttributes(typeof(SingleOutputAttribute), true).Length > 0;
+
+                var stream = Activator.CreateInstance(typeof(DX11ResourceOutputStream<,>).MakeGenericType(fulltype, restype), container.RawIOObject, shouldBeSingle) as IOutStream;
                 return IOContainer.Create(context, stream, container);
             }
 

@@ -33,6 +33,7 @@ namespace VVVV.DX11.Nodes
         //[Input("Enabled")]
         //IDiffSpread<bool> FInEnabled;
 
+
         [Output("Geometry Out")]
         protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutGeom;
 
@@ -71,14 +72,27 @@ namespace VVVV.DX11.Nodes
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
                 DX11IndexedGeometry geom;
-                if (this.FInGeom.IsChanged || this.FInCnt.IsChanged || !this.FOutGeom[i].Contains(context))
+                if (this.invalidate || (!this.FOutGeom[i].Contains(context)))
                 {
+                    if (this.FOutGeom[i].Contains(context))
+                    {
+                        var g = this.FOutGeom[i][context];
+                        DX11IndexedIndirectDrawer d = (DX11IndexedIndirectDrawer)g.Drawer;
+
+                        if (d != null)
+                        {
+                            d.IndirectArgs.Dispose();
+                        }
+                    }
+
                     geom = (DX11IndexedGeometry)this.FInGeom[i][context].ShallowCopy();
 
                     DX11IndexedIndirectDrawer ind = new DX11IndexedIndirectDrawer();
                     geom.AssignDrawer(ind);
 
                     ind.Update(context, this.FInCnt[i]);
+
+                    this.invalidate = false;
                 }
                 else
                 {
@@ -104,7 +118,21 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
         {
-            //Not ownding resource eg: do nothing
+            for (int i = 0; i < this.FOutGeom.SliceCount; i++ )
+            {
+
+                try
+                {
+                    var geom = this.FOutGeom[i][OnDevice];
+                    DX11IndexedIndirectDrawer drawer = (DX11IndexedIndirectDrawer)geom.Drawer;
+                    drawer.IndirectArgs.Dispose();
+                }
+                catch
+                { }
+
+                this.FOutGeom[i].Data.Remove(OnDevice);
+            }
+                
         }
     }
 }

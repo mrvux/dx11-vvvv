@@ -25,8 +25,8 @@ namespace VVVV.DX11.Nodes
         [Input("Apply", IsBang = true, DefaultValue = 1, Order = 100)]
         protected ISpread<bool> FApply;
 
-        [Output("Buffer")]
-        protected Pin<DX11Resource<DX11DynamicStructuredBuffer<T>>> FOutput;
+        [Output("Buffer",IsSingle=true)]
+        protected ISpread<DX11Resource<DX11DynamicStructuredBuffer<T>>> FOutput;
 
         [Output("Is Valid")]
         protected ISpread<bool> FValid;

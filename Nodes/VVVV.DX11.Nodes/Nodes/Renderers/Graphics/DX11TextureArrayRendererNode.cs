@@ -32,17 +32,20 @@ namespace VVVV.DX11.Nodes
 
         IDiffSpread<EnumEntry> FInFormat;
 
-        [Input("Layer", Order = 1, IsSingle = true)]
+        [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
-        [Input("Size", DefaultValues  = new double[] { 512, 512 },AsInt=true, Order = 5)]
+        [Input("Size", DefaultValues  = new double[] { 512, 512 },AsInt=true, Order = 3)]
         protected IDiffSpread<Vector2> FInSize;
 
-        [Input("Element Count", DefaultValue = 1, Order = 5)]
+        [Input("Element Count", DefaultValue = 1, Order = 4)]
         protected IDiffSpread<int> FInElementCount;
 
         [Input("Clear", DefaultValue = 1, Order = 6)]
         protected ISpread<bool> FInClear;
+
+        [Input("Mips", DefaultValue = 0, Order = 5)]
+        protected IDiffSpread<bool> FInMips;
 
         [Input("Clear Depth", DefaultValue = 1, Order = 6)]
         protected ISpread<bool> FInClearDepth;
@@ -56,13 +59,16 @@ namespace VVVV.DX11.Nodes
         [Input("Enable Depth Buffer", Order = 9, DefaultValue = 1)]
         protected IDiffSpread<bool> FInDepthBuffer;
 
-        [Input("View", Order = 10)]
+        [Input("Bind Whole Target", DefaultValue = 0, Order = 10, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInBindTarget;
+
+        [Input("View", Order = 11)]
         protected IDiffSpread<Matrix> FInView;
 
-        [Input("Projection", Order = 11)]
+        [Input("Projection", Order = 12)]
         protected IDiffSpread<Matrix> FInProjection;
 
-        [Input("Aspect Ratio", Order = 12, Visibility = PinVisibility.Hidden)]
+        [Input("Aspect Ratio", Order = 13, Visibility = PinVisibility.Hidden)]
         protected IDiffSpread<Matrix> FInAspect;
 
         [Input("Crop", Order = 13, Visibility = PinVisibility.OnlyInspector)]
@@ -74,7 +80,10 @@ namespace VVVV.DX11.Nodes
         [Output("Texture Out", Order = 2, IsSingle = true)]
         protected ISpread<DX11Resource<DX11RenderTextureArray>> FOutTexture;
 
-        [Output("Depth Out", Order = 2, IsSingle = true)]
+        [Output("Texture Slices Out", Order = 3)]
+        protected ISpread<DX11Resource<DX11Texture2D>> FOutSliceTextures;
+
+        [Output("Depth Out", Order = 4, IsSingle = true)]
         protected ISpread<DX11Resource<DX11DepthTextureArray>> FOutDepthTexture;
 
         public event DX11QueryableDelegate BeginQuery;
@@ -114,13 +123,23 @@ namespace VVVV.DX11.Nodes
             if (this.FOutTexture[0] == null) { this.FOutTexture[0] = new DX11Resource<DX11RenderTextureArray>(); }
             if (this.FOutDepthTexture[0] == null) { this.FOutDepthTexture[0] = new DX11Resource<DX11DepthTextureArray>(); }
 
+
             if (this.FInFormat.IsChanged
                 || this.FInSize.IsChanged
-                || this.FInElementCount.IsChanged)
+                || this.FInElementCount.IsChanged
+                || this.FInMips.IsChanged)
             {
                 this.FOutTexture[0].Dispose();
                 this.FOutDepthTexture[0].Dispose();
+
+                this.FOutSliceTextures.SliceCount = this.FInElementCount[0];
+
+                for (int i = 0; i < this.FInElementCount[0]; i++)
+                {
+                    this.FOutSliceTextures[i] = new DX11Resource<DX11Texture2D>();
+                }
             }
+        
         }
 
         public void Update(IPluginIO pin, DX11RenderContext context)
@@ -133,8 +152,14 @@ namespace VVVV.DX11.Nodes
 
             if (!this.FOutTexture[0].Contains(context))
             {
-                this.FOutTexture[0][context] = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]), true);
+                var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]),true, this.FInMips[0] ? 0 : 1);
+                this.FOutTexture[0][context] = result;
                 this.FOutDepthTexture[0][context] = new DX11DepthTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], Format.R32_Float, true);
+                for (int i = 0; i < this.FInElementCount[0]; i++)
+                {
+                    DX11Texture2D slice = DX11Texture2D.FromTextureAndSRV(context, result.Resource, result.SliceRTV[i].SRV);
+                    this.FOutSliceTextures[i][context] = slice;
+                }
             }
 
             this.updateddevices.Add(context);
@@ -174,18 +199,26 @@ namespace VVVV.DX11.Nodes
 
                 if (this.FInLayer.PluginIO.IsConnected)
                 {
-                    for (int i = 0; i < target.ElemCnt; i++)
+                    int slicecount = target.ElemCnt;
+                    if (this.FInBindTarget[0])
+                    {
+                        if (this.FInDepthBuffer[0])
+                        {
+                            context.RenderTargetStack.Push(depth, false, target);
+                        }
+                        else
+                        {
+                            context.RenderTargetStack.Push(target);
+                        }
+                        slicecount = 1;
+                    }
+
+                    for (int i = 0; i < slicecount; i++)
                     {
                         settings.ViewportIndex = i;
                         settings.ViewportCount = target.ElemCnt;
-                        settings.View = this.FInView[i];
+                        settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], this.FInAspect[i], this.FInCrop[i]);
 
-                        Matrix proj = this.FInProjection[i];
-                        Matrix aspect = Matrix.Invert(this.FInAspect[i]);
-                        Matrix crop = Matrix.Invert(this.FInCrop[i]);
-
-                        settings.Projection = proj * aspect * crop;
-                        settings.ViewProjection = settings.View * settings.Projection;
                         settings.RenderWidth = target.Width;
                         settings.RenderHeight = target.Height;
                         settings.RenderDepth = target.ElemCnt;
@@ -193,16 +226,17 @@ namespace VVVV.DX11.Nodes
                         settings.CustomSemantics.Clear();
                         settings.ResourceSemantics.Clear();
 
-                        if (this.FInDepthBuffer[0])
+                        if (this.FInBindTarget[0] == false)
                         {
-                            context.RenderTargetStack.Push(depth.SliceDSV[i], false, target.SliceRTV[i]);
+                            if (this.FInDepthBuffer[0])
+                            {
+                                context.RenderTargetStack.Push(depth.SliceDSV[i], false, target.SliceRTV[i]);
+                            }
+                            else
+                            {
+                                context.RenderTargetStack.Push(target.SliceRTV[i]);
+                            }
                         }
-                        else
-                        {
-                            context.RenderTargetStack.Push(target.SliceRTV[i]);
-                        }
-
-                        
 
                         for (int j = 0; j < this.FInLayer.SliceCount; j++)
                         {
@@ -216,10 +250,22 @@ namespace VVVV.DX11.Nodes
                             }
                         }
 
+
+                        if (this.FInBindTarget[0] == false)
+                        {
+                            context.RenderTargetStack.Pop();
+                        }
+                    }
+
+                    if (this.FInBindTarget[0])
+                    {
                         context.RenderTargetStack.Pop();
                     }
 
-                    
+                    if (this.FInMips[0])
+                    {
+                        context.CurrentDeviceContext.GenerateMips(this.FOutTexture[0][context].SRV);
+                    }
                 }
 
 

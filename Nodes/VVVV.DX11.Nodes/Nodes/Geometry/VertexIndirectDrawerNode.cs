@@ -68,6 +68,17 @@ namespace VVVV.DX11.Nodes
 
                     if (this.FInGeom.IsChanged || this.FInCnt.IsChanged)
                     {
+                        if (this.FOutGeom[i].Contains(context))
+                        {
+                            var g = this.FOutGeom[i][context];
+                            DX11VertexIndirectDrawer d = (DX11VertexIndirectDrawer)g.Drawer;
+
+                            if (d != null)
+                            {
+                                d.IndirectArgs.Dispose();
+                            }
+                        }
+
                         DX11VertexIndirectDrawer ind = new DX11VertexIndirectDrawer();
                         geom.AssignDrawer(ind);
 

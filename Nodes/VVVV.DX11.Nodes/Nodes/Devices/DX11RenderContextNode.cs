@@ -13,6 +13,7 @@ using FeralTic.DX11.Queries;
 using VVVV.DX11.Lib.Devices;
 using VVVV.DX11.Lib.RenderGraph;
 using SlimDX.Direct3D11;
+using FeralTic.Utils;
 
 
 namespace VVVV.DX11.Nodes
@@ -28,6 +29,9 @@ namespace VVVV.DX11.Nodes
 
         [Input("Clear Cache", IsBang = true)]
         protected ISpread<bool> FInClear;
+
+        [Output("Adapter Name")]
+        protected ISpread<string> FOutAdapter;
 
         [Output("Feature Level")]
         protected ISpread<string> FOutFeatureLevel;
@@ -85,7 +89,6 @@ namespace VVVV.DX11.Nodes
             {
                 DX11GlobalDevice.OnBeginRender += new EventHandler(DX11GlobalDevice_OnBeginRender);
                 DX11GlobalDevice.OnEndRender += new EventHandler(DX11GlobalDevice_OnEndRender);
-                first = false;
             }
 
             if (this.FInClear[0])
@@ -104,7 +107,7 @@ namespace VVVV.DX11.Nodes
                 }
             }
 
-            if (this.FInRefresh[0])
+            if (this.FInRefresh[0] || first)
             {
                 List<DX11RenderContext> ctxlist = DX11GlobalDevice.DeviceManager.RenderContexts;
 
@@ -117,6 +120,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutProcessedCount.SliceCount = ctxlist.Count;
                 this.FOutFeatureLevel.SliceCount = ctxlist.Count;
                 this.FOUCS.SliceCount = ctxlist.Count;
+                this.FOutAdapter.SliceCount = ctxlist.Count;
 
                 List<DeviceCreationFlags> flags = new List<DeviceCreationFlags>();
 
@@ -124,6 +128,15 @@ namespace VVVV.DX11.Nodes
                 foreach (DX11RenderContext ctx in ctxlist)
                 {
                     DX11DeviceRenderer renderer = DX11GlobalDevice.RenderManager.RenderGraphs[ctx];
+
+                    try
+                    {
+                        this.FOutAdapter[i] = ctx.Adapter.Description.Description;
+                    }
+                    catch
+                    {
+                        this.FOutAdapter[i] = "Unknown";
+                    }
 
                     this.FOutBufferCount[i] = ctx.ResourcePool.BufferCount;
                     this.FOutRTCount[i] = ctx.ResourcePool.RenderTargetCount;
@@ -134,7 +147,16 @@ namespace VVVV.DX11.Nodes
                     this.FOutThisFrame[i] = renderer.ThisFramePins;
                     this.FOutNodeCount[i] = renderer.Graph.Nodes.Count;
                     this.FOutProcessedCount[i] = renderer.ProcessedNodes;
-                    this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
+
+                    int featureLevel = (int)ctx.FeatureLevel;
+                    if (featureLevel == MagicNumberUtils.FeatureLevel11_1)
+                    {
+                        this.FOutFeatureLevel[i] = "Level_11_1";
+                    }
+                    else
+                    {
+                        this.FOutFeatureLevel[i] = ctx.FeatureLevel.ToString();
+                    }
                     this.FOUCS[i] = ctx.ComputeShaderSupport;
  
                     if (ctx.Device.CreationFlags.HasFlag(DeviceCreationFlags.BgraSupport)) { flags.Add(DeviceCreationFlags.BgraSupport);}
@@ -158,6 +180,8 @@ namespace VVVV.DX11.Nodes
                 this.FOutPLCount[0] = DX11GlobalDevice.PendingLinksCount;
                 this.FOutPPCount[0] = DX11GlobalDevice.PendingPinsCount;
             }
+
+            first = false;
         }
 
         void DX11GlobalDevice_OnEndRender(object sender, EventArgs e)

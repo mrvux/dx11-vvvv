@@ -12,12 +12,16 @@ using SlimDX;
 
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using VVVV.Core.Logging;
 
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "DynamicTexture", Category = "DX11.Texture", Version = "2d", Author = "vux")]
     public unsafe class DynamicTexture2DNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
     {
+        [Import()]
+        protected ILogger logger;
+
         [Input("Width", DefaultValue = 1,AutoValidate=false)]
         protected ISpread<int> FInWidth;
 
@@ -33,6 +37,9 @@ namespace VVVV.DX11.Nodes
         [Input("Apply", IsBang = true, DefaultValue = 1)]
         protected ISpread<bool> FApply;
 
+        [Config("Suppress Warning", DefaultValue = 0)]
+        protected ISpread<bool> FSuppressWarning;
+
         [Output("Texture Out")]
         protected Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
 
@@ -41,11 +48,10 @@ namespace VVVV.DX11.Nodes
 
         private bool FInvalidate;
 
+        private float[] data = new float[0];
+
         public void Evaluate(int SpreadMax)
         {
-            /*if (this.FTextureOutput[0] == null) { this.FTextureOutput[0] = new DX11Resource<DX11DynamicTexture2D>(); }
-            this.FValid.SliceCount = 1;*/
-
             if (this.FApply[0])
             {
                 this.FInChannels.Sync();
@@ -53,6 +59,10 @@ namespace VVVV.DX11.Nodes
                 this.FInHeight.Sync();
                 this.FInWidth.Sync();
                 this.FInvalidate = true;
+                if (this.FInChannels[0] == 3 && FSuppressWarning[0] == false)
+                {
+                    logger.Log(LogType.Warning, "Using 3 channels texture format, samplers are not allowed in this case, use load only");
+                }
             }
 
             if (this.FInWidth.SliceCount == 0
@@ -73,7 +83,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public unsafe void Update(IPluginIO pin, DX11RenderContext context)
         {
             if (this.FTextureOutput.SliceCount == 0) { return; }
 
@@ -126,14 +136,30 @@ namespace VVVV.DX11.Nodes
                 chans = Math.Min(chans, 4);
                 chans = Math.Max(chans, 1);
 
-                float[] data = new float[desc.Width * desc.Height * chans];
+                if (data.Length != desc.Width * desc.Height * chans)
+                {
+                    data = new float[desc.Width * desc.Height * chans];
+                }
 
                 for (int i = 0; i < data.Length; i++)
                 {
-                    data[i] = this.FInData[i % data.Length];
+                    data[i] = this.FInData[i];
                 }
 
-                this.FTextureOutput[0][context].WriteData(data, chans);
+                int stride = chans * 4;
+                var t = this.FTextureOutput[0][context];
+                fixed (float* fptr = & data[0])
+                {
+                    IntPtr ptr = new IntPtr(fptr);
+                    if (t.GetRowPitch() == desc.Width * stride)
+                    {
+                        t.WriteData(ptr, desc.Width * desc.Height * stride);
+                    }
+                    else
+                    {
+                        t.WriteDataPitch(ptr, desc.Width * desc.Height * stride, stride);
+                    }
+                }
                 this.FInvalidate = false;
             }
 

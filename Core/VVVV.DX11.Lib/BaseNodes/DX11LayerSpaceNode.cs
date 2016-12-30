@@ -15,9 +15,9 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider, IDX11UpdateBlocker
+    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider
     {
-        [Input("Layer In", AutoValidate = false)]
+        [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Enabled",DefaultValue=1, Order = 100000)]
@@ -29,11 +29,6 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
-
-            if (this.FEnabled[0])
-            {
-                this.FLayerIn.Sync();
-            }
         }
 
 
@@ -59,7 +54,7 @@ namespace VVVV.DX11.Nodes
 
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.PluginIO.IsConnected)
+                if (this.FLayerIn.IsConnected)
                 {
                     Matrix view = settings.View;
                     Matrix projection = settings.Projection;
@@ -68,7 +63,11 @@ namespace VVVV.DX11.Nodes
 
                     this.UpdateSettings(settings);
 
-                    this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    for (int i = 0; i < this.FLayerIn.SliceCount;i++)
+                    {
+                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                    }
+                        
 
                     settings.View = view;
                     settings.Projection = projection;
@@ -78,7 +77,10 @@ namespace VVVV.DX11.Nodes
             }
             else
             {
-                this.FLayerIn[0][context].Render(this.FLayerIn.PluginIO, context, settings);
+                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
+                {
+                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                }
             }
         }
 
@@ -86,11 +88,6 @@ namespace VVVV.DX11.Nodes
 
 
         #endregion
-
-        public bool Enabled
-        {
-            get { return this.FEnabled[0]; }
-        }
     }
 
 

@@ -73,7 +73,7 @@ namespace VVVV.DX11.Lib.Rendering
 
             if (this.currentmode == eRenderFormatMode.Inherit)
             {
-                if (this.texinputpin.IOObject.PluginIO.IsConnected)
+                if (this.texinputpin.IOObject.IsConnected)
                 {
                     DX11Texture2D t = this.texinputpin.IOObject[0][context];
 
@@ -108,7 +108,7 @@ namespace VVVV.DX11.Lib.Rendering
 
             if (this.currentmode == eRenderFormatMode.InheritSize)
             {
-                if (this.texinputpin.IOObject.PluginIO.IsConnected)
+                if (this.texinputpin.IOObject.IsConnected)
                 {
                     DX11Texture2D t = this.texinputpin.IOObject[0][context];
 
@@ -175,6 +175,7 @@ namespace VVVV.DX11.Lib.Rendering
                 tattr.AllowDefault = true;
                 tattr.Order = 0;
                 tattr.CheckIfChanged = true;
+                tattr.DefaultString = "R8G8B8A8_UNorm";
 
                 this.FInFormat = this.iofactory.CreateIOContainer<IDiffSpread<EnumEntry>>(tattr);
             }

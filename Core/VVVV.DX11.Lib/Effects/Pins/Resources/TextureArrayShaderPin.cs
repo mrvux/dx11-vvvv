@@ -54,39 +54,4 @@ namespace VVVV.DX11.Internals.Effects.Pins
             return  this.pin[bin][slice][shaderinstance.RenderContext].SRV;
         }
     }
-
-    /*public class Texture1DArrayShaderPin : TextureArrayShaderPin<DX11Texture1D, Texture1D>
-    {
-        public Texture1DArrayShaderPin(EffectVariable var, IPluginHost host, IIOFactory factory) : base(var, host, factory) { }
-
-        protected override ShaderResourceView GetSRV(int binslice, int dataslice)
-        {
-            try
-            {
-                return this.pin[binslice][dataslice][this.RenderContext.Device].SRV;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-    }*/
-
-    
-    /*public class Texture3DArrayShaderPin : TextureArrayShaderPin<DX11Texture3D, Texture3D>
-    {
-        public Texture3DArrayShaderPin(EffectVariable var, IPluginHost host, IIOFactory factory) : base(var, host, factory) { }
-
-        protected override ShaderResourceView GetSRV(int binslice, int dataslice)
-        {
-            try
-            {
-                return this.pin[binslice][dataslice][this.RenderContext.Device].SRV;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-    }*/
 }

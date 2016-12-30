@@ -13,13 +13,18 @@ namespace VVVV.DX11.Lib.Effects.Registries
 
     public class StandardShaderPinRegistry : ShaderPinRegistry
     {
-        public StandardShaderPinRegistry()
+        public StandardShaderPinRegistry() 
         {
-            //Basic scalar/vector types
+            //Basic scalar/vector types 
             this.RegisterType("int", (var) => new IntShaderPin());
             this.RegisterType("int2", (var) => new Int2ShaderPin());
             this.RegisterType("int3", (var) => new Int3ShaderPin());
             this.RegisterType("int4", (var) => new Int4ShaderPin());
+
+            this.RegisterType("uint", (var) => new IntShaderPin());
+            this.RegisterType("uint2", (var) => new Int2ShaderPin());
+            this.RegisterType("uint3", (var) => new Int3ShaderPin());
+            this.RegisterType("uint4", (var) => new Int4ShaderPin());
 
             this.RegisterType("bool", (var) => new BoolShaderPin());
 
@@ -34,11 +39,14 @@ namespace VVVV.DX11.Lib.Effects.Registries
             
             //Textures
             this.RegisterType("Texture1D", (var) => new Texture1DShaderPin());
+            this.RegisterType("Texture1DArray", (var) => new Texture1DShaderPin());
             this.RegisterType("Texture2D", (var) => new Texture2DShaderPin());
             this.RegisterType("Texture3D", (var) => new Texture3DShaderPin());
             this.RegisterType("Texture2DMS", (var) => new Texture2DShaderPin());
+            this.RegisterType("Texture2DMSArray", (var) => new Texture2DShaderPin());
             this.RegisterType("Texture2DArray", (var) => new Texture2DShaderPin());
             this.RegisterType("TextureCube", (var) => new TextureCubeShaderPin());
+            this.RegisterType("TextureCubeArray", (var) => new TextureCubeShaderPin());
             
             //Sampler
             this.RegisterType("SamplerState", (var) => new SamplerShaderPin());

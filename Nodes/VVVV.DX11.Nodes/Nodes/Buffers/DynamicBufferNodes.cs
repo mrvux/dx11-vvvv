@@ -32,6 +32,13 @@ namespace VVVV.DX11.Nodes
         [Input("Transpose", DefaultValue = 1,Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<bool> FTranspose;
 
+        protected override bool NeedConvert
+        {
+            get
+            {
+                return this.FTranspose[0]; //If we transpose (eg: default), we need to convert
+            }
+        }
 
         protected override void WriteArray(int count)
         {
