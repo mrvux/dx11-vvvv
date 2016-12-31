@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,11 +14,13 @@ namespace VVVV.MSKinect.Nodes
 	            Version = "Microsoft", 
 	            Author = "flateric", 
 	            Tags = "DX11",
-	            Help = "Provides access to a Kinect through the MSKinect API")]
+	            Help = "Provides access to a Kinect through the MSKinect API, supports Kinect Studio with device unplugged")]
     public class KinectRuntimeNode : IPluginEvaluate, IDisposable
     {
-        /*[Input("Index", IsSingle = true)]
-        IDiffSpread<int> FInIndex;*/
+        /* no multiple kinect support ahead
+        [Input("Index", IsSingle = true)]
+        IDiffSpread<int> FInIndex;
+        */
 
         [Input("Enable Color", IsSingle = true, DefaultValue = 1)]
         IDiffSpread<bool> FInEnableColor;
@@ -43,7 +45,7 @@ namespace VVVV.MSKinect.Nodes
 
         [Output("Kinect Runtime", IsSingle = true)]
         ISpread<KinectRuntime> FOutRuntime;
-
+			
         [Output("Kinect Count", IsSingle = true)]
         ISpread<int> FOutKCnt;
 
@@ -138,27 +140,36 @@ namespace VVVV.MSKinect.Nodes
                 if (this.onkinectreset)
                 {
                     this.onkinectreset = false;
-                }  
+                }
 
-
-                this.FOutStatus[0] = runtime.Runtime.IsAvailable;
+                try
+                {
+                    this.FOutStatus[0] = runtime.Runtime.IsAvailable;
+                }
+                catch (Exception ex)
+                {
+                    this.FOutStatus[0] = false;
+                }
                 this.FOutRuntime[0] = runtime;
                 this.FOutStarted[0] = runtime.IsStarted;
 
 
                 this.FOutColorFOV.SliceCount = 1;
                 this.FOutDepthFOV.SliceCount = 1;
+                if (runtime.Runtime != null)
+                {
 
-                this.FOutColorFOV[0] = new Vector2D(this.runtime.Runtime.ColorFrameSource.FrameDescription.HorizontalFieldOfView,
-                                                    this.runtime.Runtime.ColorFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
+                    this.FOutColorFOV[0] = new Vector2D(this.runtime.Runtime.ColorFrameSource.FrameDescription.HorizontalFieldOfView,
+                                                        this.runtime.Runtime.ColorFrameSource.FrameDescription.VerticalFieldOfView) * (float)VMath.DegToCyc;
 
-                this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthFrameSource.FrameDescription.HorizontalFieldOfView,
-                                                    this.runtime.Runtime.DepthFrameSource.FrameDescription.VerticalFieldOfView)  *(float)VMath.DegToCyc;
+                    this.FOutDepthFOV[0] = new Vector2D(this.runtime.Runtime.DepthFrameSource.FrameDescription.HorizontalFieldOfView,
+                                                        this.runtime.Runtime.DepthFrameSource.FrameDescription.VerticalFieldOfView) * (float)VMath.DegToCyc;
 
-                this.FDepthrange[0] = new Vector2D( (double)this.runtime.Runtime.DepthFrameSource.DepthMinReliableDistance,
-                                                    (double)this.runtime.Runtime.DepthFrameSource.DepthMaxReliableDistance);
+                    this.FDepthrange[0] = new Vector2D((double)this.runtime.Runtime.DepthFrameSource.DepthMinReliableDistance,
+                                                        (double)this.runtime.Runtime.DepthFrameSource.DepthMaxReliableDistance);
 
-                this.intrinsics[0] = this.runtime.Runtime.CoordinateMapper.GetDepthCameraIntrinsics();
+                    this.intrinsics[0] = this.runtime.Runtime.CoordinateMapper.GetDepthCameraIntrinsics();
+                }
             }
 
             this.FOutKCnt[0] = 1; // KinectSensor.KinectSensors.Count;
