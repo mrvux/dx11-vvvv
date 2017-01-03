@@ -3,7 +3,6 @@ branches:
   # whitelist
   only:
     - master
-    - io
 
 image: Visual Studio 2015
 
