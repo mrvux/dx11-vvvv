@@ -16,26 +16,26 @@ namespace VVVV.DX11
         /// <summary>
         /// Draw Call Index (per shader)
         /// </summary>
-        public int DrawCallIndex { get; set; }
+        public int DrawCallIndex;
 
         /// <summary>
         /// World Transform
         /// </summary>
-        public Matrix WorldTransform { get; set; }
+        public Matrix WorldTransform;
 
         /// <summary>
         /// Object bounding box transform
         /// </summary>
-        public IDX11Geometry Geometry { get; set; }
+        public IDX11Geometry Geometry;
 
-        public int IterationIndex { get; set; }
+        public int IterationIndex;
 
-        public int IterationCount { get; set; }
+        public int IterationCount;
 
         /// <summary>
         /// Object render state tag
         /// </summary>
-        public object RenderStateTag { get; set; }
+        public object RenderStateTag;
 
     }
 }

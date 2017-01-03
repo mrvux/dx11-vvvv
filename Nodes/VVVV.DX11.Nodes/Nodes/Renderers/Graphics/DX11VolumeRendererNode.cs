@@ -23,7 +23,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes.Renderers.Graphics
 {
     [PluginInfo(Name = "Renderer", Category = "DX11", Version = "Volume", Author = "vux", AutoEvaluate = false)]
-    public class DX11VolumeRendererNode : IPluginEvaluate, IDX11RendererProvider, IDisposable, IDX11Queryable
+    public class DX11VolumeRendererNode : IPluginEvaluate, IDX11RendererHost, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
@@ -122,7 +122,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
             //Just in case
             if (!this.updateddevices.Contains(context))
             {
-                this.Update(null, context);
+                this.Update(context);
             }
 
             if (!this.FInLayer.PluginIO.IsConnected) { return; }
@@ -169,10 +169,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
                     settings.CustomSemantics.Clear();
                     settings.ResourceSemantics.Clear();
 
-                    for (int j = 0; j < this.FInLayer.SliceCount; j++)
-                    {
-                        this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-                    }
+                    this.FInLayer.RenderAll(context, settings);
                 }
 
                 if (this.FInBindTarget[0])
@@ -187,7 +184,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.updateddevices.Contains(context)) { return; }
 
@@ -203,7 +200,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
             this.updateddevices.Add(context);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.DisposeBuffers(context);    
         }

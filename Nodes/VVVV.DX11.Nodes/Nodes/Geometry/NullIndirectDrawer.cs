@@ -16,7 +16,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes.Geometry
 {
     [PluginInfo(Name = "NullIndirect", Category = "DX11.Drawer", Version = "", Author = "vux")]
-    public class NullIndirectDrawerNode : IPluginEvaluate, IDX11ResourceProvider
+    public class NullIndirectDrawerNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Default Vertex Count", DefaultValue = 1)]
         protected IDiffSpread<int> FInVCnt;
@@ -55,7 +55,7 @@ namespace VVVV.DX11.Nodes.Geometry
             invalidate = this.FInICnt.IsChanged || this.FInEnabled.IsChanged || this.FInVCnt.IsChanged;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
@@ -78,12 +78,12 @@ namespace VVVV.DX11.Nodes.Geometry
 
                     DX11NullIndirectDrawer drawer = (DX11NullIndirectDrawer)this.FOutGeom[i][context].Drawer;
 
-                    if (this.FInI.PluginIO.IsConnected)
+                    if (this.FInI.IsConnected)
                     {
                         drawer.IndirectArgs.CopyInstanceCount(context.CurrentDeviceContext, this.FInI[i][context].UAV);
                     }
 
-                    if (this.FInV.PluginIO.IsConnected)
+                    if (this.FInV.IsConnected)
                     {
                         drawer.IndirectArgs.CopyVertexCount(context.CurrentDeviceContext, this.FInV[i][context].UAV);
                     }
@@ -91,7 +91,7 @@ namespace VVVV.DX11.Nodes.Geometry
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(DX11RenderContext OnDevice, bool force)
         {
             //Not ownding resource eg: do nothing
         }

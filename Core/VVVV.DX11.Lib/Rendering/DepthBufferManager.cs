@@ -132,7 +132,7 @@ namespace VVVV.DX11.Lib.Rendering
             if (this.currentmode == eDepthBufferMode.Standard)
             {
                 DX11DepthStencil ds;
-                if (this.NeedReset || !this.depthoutputpin.IOObject[0].Data.ContainsKey(context))
+                if (this.NeedReset || !this.depthoutputpin.IOObject[0].Contains(context))
                 {
                     if (this.depthoutputpin.IOObject[0] != null)
                     {

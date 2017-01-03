@@ -33,7 +33,7 @@ namespace VVVV.DX11.Factories
     [Export(typeof(DX11NodesFactory))]
     [ComVisible(false)]
     public class DX11NodesFactory : IAddonFactory, IDisposable
-	{
+    {
         private IHDEHost hdehost;
 
         private IORegistry ioreg;
@@ -42,7 +42,9 @@ namespace VVVV.DX11.Factories
         private IDX11RenderContextManager devicemanager;
         private DX11RenderManager rendermanager;
 
+        [Export(typeof(IDX11RenderDependencyFactory))]
         private DX11GraphBuilder graphbuilder;
+
         private ILogger logger;
 
         [Export]
@@ -105,6 +107,10 @@ namespace VVVV.DX11.Factories
                     {
                         this.devicemanager = new DX11PerAdapterDeviceManager(this.logger, this.displaymanager);
                     }
+                    else if (sl == "all")
+                    {
+                        this.devicemanager = new DX11AllAdapterDeviceManager(this.logger, this.displaymanager);
+                    }
                     else if (sl.StartsWith("force"))
                     {
                         sl = sl.Replace("force", "");
@@ -115,6 +121,21 @@ namespace VVVV.DX11.Factories
                             {
                                 this.devicemanager = new DX11AutoAdapterDeviceManager(this.logger, this.displaymanager, i);
                             }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    else if (sl.StartsWith("pooled"))
+                    {
+                        sl = sl.Replace("pooled", "");
+                        try
+                        {
+                            int i = 0;
+                            int.TryParse(sl, out i);
+
+                            this.devicemanager = new DX11PooledAdapterDeviceManager(this.logger, this.displaymanager, i);
                         }
                         catch
                         {

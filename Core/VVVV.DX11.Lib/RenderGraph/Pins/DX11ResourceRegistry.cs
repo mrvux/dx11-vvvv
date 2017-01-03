@@ -16,14 +16,17 @@ namespace VVVV.Nodes
 
     public class ResourceListener : IPinListener
     {
-        public IPin pin;
+        public IPin Pin { get; private set; }
 
-        public IPin link;
+        public IPin ParentPin { get; private set; }
 
-        public ResourceListener(IPluginIO pin)
+        public object RawInstance { get; private set; }
+
+        public ResourceListener(IPluginIO pin, object rawinstance)
         {
-            this.pin = (IPin)pin;
-            this.pin.AddListener(this);
+            this.RawInstance = rawinstance;
+            this.Pin = (IPin)pin;
+            this.Pin.AddListener(this);
         }
 
         public void ChangedCB()
@@ -33,12 +36,12 @@ namespace VVVV.Nodes
 
         public void ConnectedCB(IPin otherPin)
         {
-            this.link = otherPin;
+            this.ParentPin = otherPin;
         }
 
         public void DisconnectedCB(IPin otherPin)
         {
-            this.link = null;
+            this.ParentPin = null;
         }
 
         public void StatusChangedCB()
@@ -73,9 +76,9 @@ namespace VVVV.Nodes
                 var stream = Activator.CreateInstance(typeof(DX11ResourceInputStream<,>).MakeGenericType(fulltype, restype), container.RawIOObject) as IInStream;
                 IPluginIO io = container.GetPluginIO();
 
-                ResourceListener rl = new ResourceListener(io);
+                ResourceListener rl = new ResourceListener(io, stream);
 
-                this.pinconnections.Add(rl.pin, rl);
+                this.pinconnections.Add(rl.Pin, rl);
                 return IOContainer.Create(context, stream, container);
             }
 

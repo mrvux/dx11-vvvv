@@ -22,28 +22,28 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Author = "vux", 
 	            Tags = "DX11, kinect",
 	            Help = "Returns a line-based skeleton geometry")]
-    public class KinectSkeletonIndicesMeshNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class KinectSkeletonIndicesMeshNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Output("Output", IsSingle = true)]
-        Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutput;
+        protected Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutput;
 
         [Output("Arms Geom", IsSingle = true)]
-        Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutArmsGeom;
+        protected Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutArmsGeom;
 
         [Output("Legs Geom", IsSingle = true)]
-        Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutLegsGeom;
+        protected Pin<DX11Resource<DX11IndexOnlyGeometry>> FOutLegsGeom;
 
         [Output("Arms")]
-        ISpread<int> FOutArms;
+        protected ISpread<int> FOutArms;
 
         [Output("Up Body")]
-        ISpread<int> FOutUpBody;
+        protected ISpread<int> FOutUpBody;
 
         [Output("Legs")]
-        ISpread<int> FOutLegs;
+        protected ISpread<int> FOutLegs;
 
         [Output("Chest")]
-        ISpread<int> FOutChest;
+        protected ISpread<int> FOutChest;
 
         bool first = true;
 
@@ -81,7 +81,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             respin[0][context] = geom;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutput[0].Contains(context))
             {
@@ -93,25 +93,14 @@ namespace VVVV.DX11.Nodes.MSKinect
             
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < this.FOutput.SliceCount; i++)
-            {
-                this.FOutput[i].Dispose(context);
-            }
+            this.FOutput.SafeDisposeAll(context);
         }
 
         public void Dispose()
         {
-            this.DisposeOutput();
-        }
-
-        private void DisposeOutput()
-        {
-            for (int i = 0; i < this.FOutput.SliceCount; i++)
-            {
-                this.FOutput[i].Dispose();
-            }
+            this.FOutput.SafeDisposeAll();
         }
     }
 }

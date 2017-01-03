@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="ColorStylerNode.h" />
     <ClInclude Include="DX11TextLayerAdvNode.h" />
+    <ClInclude Include="DX11TextLayerCacheNode.h" />
     <ClInclude Include="DX11TextLayerNode.h" />
     <ClInclude Include="FontWrapperFactory.h" />
     <ClInclude Include="FW1FontWrapper.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="ColorStylerNode.cpp" />
     <ClCompile Include="DX11TextLayerAdvNode.cpp" />
+    <ClCompile Include="DX11TextLayerCacheNode.cpp" />
     <ClCompile Include="DX11TextLayerNode.cpp" />
     <ClCompile Include="FontWrapperFactory.cpp" />
     <ClCompile Include="Stdafx.cpp">

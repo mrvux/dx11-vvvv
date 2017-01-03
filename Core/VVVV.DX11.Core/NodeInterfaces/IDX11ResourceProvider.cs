@@ -12,10 +12,18 @@ using FeralTic.DX11;
 namespace VVVV.DX11
 {
     /// <summary>
+    /// Indicates that we are part of the render graph, but with no affiliated operations
+    /// </summary>
+    public interface IDX11RenderGraphPart
+    {
+
+    }
+
+    /// <summary>
     /// Indicates that the node provides DX11 Resources
     /// </summary>
     [Obsolete("Resource provider does access IPluginIO, which fails in case of multi core access, this will be removed in next release, use IDX11ResourceHost instead")]
-    public interface IDX11ResourceProvider
+    public interface IDX11ResourceProvider : IDX11RenderGraphPart
     {
         /// <summary>
         /// Updates resource (called by subgraph)
@@ -36,7 +44,7 @@ namespace VVVV.DX11
     /// <summary>
     /// Indicates that the node provides DX11 Resources
     /// </summary>
-    public interface IDX11ResourceHost
+    public interface IDX11ResourceHost : IDX11RenderGraphPart
     {
         /// <summary>
         /// Updates resource (called by subgraph)

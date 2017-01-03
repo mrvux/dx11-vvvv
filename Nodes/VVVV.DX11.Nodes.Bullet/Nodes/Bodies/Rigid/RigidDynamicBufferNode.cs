@@ -18,7 +18,7 @@ namespace VVVV.DX11.Nodes.Bullet
 {
     [PluginInfo(Name = "DynamicBuffer", Category = "DX11",Version="Bullet.RigidBody",
         Help = "Retrieves details for a rigid body", Author = "vux")]
-    public unsafe class BulletRigidDynamicBufferNode : IPluginEvaluate, IDX11ResourceProvider
+    public unsafe class BulletRigidDynamicBufferNode : IPluginEvaluate, IDX11ResourceHost, System.IDisposable
     {
         [Input("Bodies")]
         protected Pin<RigidBody> FBodies;
@@ -44,7 +44,7 @@ namespace VVVV.DX11.Nodes.Bullet
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FOutBody.SliceCount > 0)
             {
@@ -82,12 +82,14 @@ namespace VVVV.DX11.Nodes.Bullet
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            if (this.FOutBody.SliceCount > 0)
-            {
-                this.FOutBody[0].Dispose(context);
-            }
+            this.FOutBody.SafeDisposeAll(context);
+        }
+
+        public void Dispose()
+        {
+            this.FOutBody.SafeDisposeAll();
         }
     }
 }

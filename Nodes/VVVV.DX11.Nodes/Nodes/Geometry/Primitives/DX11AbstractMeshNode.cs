@@ -19,7 +19,7 @@ namespace VVVV.DX11.Nodes
 {
     public enum e2dMeshTextureMapping { Stretch, Crop }
 
-    public abstract class DX11AbstractMeshNode : IDX11ResourceProvider
+    public abstract class DX11AbstractMeshNode : IDX11ResourceHost
     {
         #region Fields and abstract stuff
         protected IPluginHost FHost;
@@ -46,7 +46,7 @@ namespace VVVV.DX11.Nodes
         #region Dispose
         public void Dispose()
         {
-            this.FOutput.Dispose();
+            this.FOutput.SafeDisposeAll();
         }
         #endregion
 
@@ -65,10 +65,10 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
 
-            if (this.FInvalidate || !this.FOutput[0].Data.ContainsKey(context))
+            if (this.FInvalidate || !this.FOutput[0].Contains(context))
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -121,12 +121,9 @@ namespace VVVV.DX11.Nodes
             this.FInvalidate = false;
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < this.FOutput.SliceCount; i++)
-            {
-                this.FOutput[i].Dispose(context);
-            }
+            this.FOutput.SafeDisposeAll(context);
         }
     }
 }

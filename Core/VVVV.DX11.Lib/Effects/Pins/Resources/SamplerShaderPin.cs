@@ -25,7 +25,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
             return false;
         }
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
+        private void SetVariable(DX11ShaderInstance shaderinstance, int slice)
         {
             if (this.pin.IsConnected)
             {
@@ -38,8 +38,12 @@ namespace VVVV.DX11.Internals.Effects.Pins
             {
                 shaderinstance.Effect.GetVariableByName(this.Name).AsSampler().UndoSetSamplerState(0);
             }
+        }
 
-            
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsResource();
+            return (i) => { SetVariable(instance, i); };
         }
     }
 }

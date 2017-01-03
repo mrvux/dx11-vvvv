@@ -20,7 +20,7 @@ namespace VVVV.DX11.Nodes.Renderers
 {
      [PluginInfo(Name = "Preview", Category = "DX11.Texture", Author = "vux", AutoEvaluate = true,
         InitialWindowHeight = 300, InitialWindowWidth = 400, InitialBoxWidth = 400, InitialBoxHeight = 300, InitialComponentMode = TComponentMode.InAWindow)]
-    public class DX11PreviewNode :IDX11RendererProvider, 
+    public class DX11PreviewNode : IDX11RendererHost, 
          IDisposable,
          IPluginEvaluate, 
          IDX11RenderWindow, 
@@ -96,8 +96,7 @@ namespace VVVV.DX11.Nodes.Renderers
 
              if (!this.swapchain.Contains(context))
              {
-                 this.swapchain[context] = new DX11SwapChain(context, this.Handle, 
-                     SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1, 0),60,1,false);
+                 this.swapchain[context] = new DX11SwapChain(context, this.Handle, SlimDX.DXGI.Format.R8G8B8A8_UNorm, new SampleDescription(1, 0),60,1,false);
              }
 
              if (this.resized)
@@ -158,7 +157,7 @@ namespace VVVV.DX11.Nodes.Renderers
              }  
          }
 
-         public void Update(IPluginIO pin, DX11RenderContext context)
+         public void Update(DX11RenderContext context)
          {
              if (this.lasthandle != this.Handle)
              {
@@ -181,7 +180,7 @@ namespace VVVV.DX11.Nodes.Renderers
              }
          }
 
-         public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+         public void Destroy(DX11RenderContext context, bool force)
          {
              this.swapchain.Dispose(context);
          }
@@ -215,21 +214,28 @@ namespace VVVV.DX11.Nodes.Renderers
                  return CustomQueryInterfaceResult.NotHandled;
              }
          }
-         #endregion
+        #endregion
 
-         #region Window Stuff
-         public DX11RenderContext RenderContext
-         {
-             get;
-             set;
-         }
+        #region Window Stuff
+
+        private DX11RenderContext attachedContext;
+
+        public void AttachContext(DX11RenderContext renderContext)
+        {
+            this.attachedContext = renderContext;
+        }
+
+        public DX11RenderContext RenderContext
+        {
+            get { return this.attachedContext; }
+        }
 
          public IntPtr WindowHandle
          {
              get { return ctrl.Handle; }
          }
 
-         public bool IsVisible
+         public bool Enabled
          {
              get { return ctrl.Visible; }
          }
@@ -260,5 +266,7 @@ namespace VVVV.DX11.Nodes.Renderers
              this.FOutCtrl[0] = this.ctrl;
             this.spreadMax = SpreadMax;
          }
+
+ 
     }
 }

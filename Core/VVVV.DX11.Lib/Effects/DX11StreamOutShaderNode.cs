@@ -43,17 +43,17 @@ using System.CodeDom.Compiler;
 namespace VVVV.DX11.Nodes.Layers
 {
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
-    public unsafe class DX11StreamOutShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public unsafe class DX11StreamOutShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         private int tid = 0;
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
 
         private DX11ShaderVariableManager varmanager;
-        private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
+        private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
+        private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
         private DX11RenderSettings settings = new DX11RenderSettings();
-        private bool shaderupdated;
 
         private int spmax = 0;
         private int layoutsize;
@@ -116,6 +116,8 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
+                this.shaderVariableCache.Clear();
+                this.deviceshaderdata.Dispose();
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -142,9 +144,6 @@ namespace VVVV.DX11.Nodes.Layers
                     this.varmanager.UpdateShaderPins();
                 }
             }
-
-
-            this.shaderupdated = true;
             this.FInvalidate = true;
         }
         #endregion
@@ -238,6 +237,8 @@ namespace VVVV.DX11.Nodes.Layers
             this.techniquechanged = this.FInTechnique.IsChanged;
             this.FOut.Stream.IsChanged = true;
             this.FOutBuffer.Stream.IsChanged = true;
+
+            this.varmanager.ApplyUpdates();
         }
 
         #endregion
@@ -263,7 +264,7 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.CalculateSpreadMax() == 0)
             {
@@ -273,21 +274,20 @@ namespace VVVV.DX11.Nodes.Layers
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
-            if (!this.deviceshaderdata.ContainsKey(context))
+            if (!this.deviceshaderdata.Contains(context))
             {
-                this.deviceshaderdata.Add(context, new DX11ShaderData(context));
-                this.deviceshaderdata[context].SetEffect(this.FShader);
+                this.deviceshaderdata[context]  = new DX11ShaderData(context, this.FShader);
+            }
+            if (!this.shaderVariableCache.Contains(context))
+            {
+                this.shaderVariableCache[context] = new DX11ShaderVariableCache(context, this.deviceshaderdata[context].ShaderInstance, this.varmanager);
             }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
-            if (this.shaderupdated)
-            {
-                shaderdata.SetEffect(this.FShader);
-                shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
-            }
-
+            shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
+            
             bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
-            if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged || this.shaderupdated)
+            if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
             {
                 elems = null;
                 int size = 0;
@@ -305,8 +305,6 @@ namespace VVVV.DX11.Nodes.Layers
                 }
                 this.layoutsize = size;
             }
-
-            this.shaderupdated = false;
 
             if (this.FInEnabled[0] && this.FIn.PluginIO.IsConnected)
             {
@@ -343,7 +341,8 @@ namespace VVVV.DX11.Nodes.Layers
                         this.settings.ResourceSemantics.AddRange(this.FInResSemantics.ToArray());
                     }
 
-                    this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
+                    var variableCache = this.shaderVariableCache[context];
+                    variableCache.ApplyGlobals(settings);
 
                     if (this.clone == null || this.FIn.IsChanged || this.FInAsAuto.IsChanged || this.FInMaxElements.IsChanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
                     {
@@ -508,9 +507,7 @@ namespace VVVV.DX11.Nodes.Layers
                     ors.DrawCallIndex = 0;
                     ors.Geometry = this.FIn[0][context];
                     ors.WorldTransform = Matrix.Identity;
-
-                    this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, ors, 0);
-
+                    variableCache.ApplySlice(ors, 0);
 
                     shaderdata.ApplyPass(ctx);
 
@@ -540,12 +537,12 @@ namespace VVVV.DX11.Nodes.Layers
 
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            if (this.deviceshaderdata.ContainsKey(context))
+            if (force)
             {
-                this.deviceshaderdata[context].Dispose();
-                this.deviceshaderdata.Remove(context);
+                this.deviceshaderdata.Dispose(context);
+                this.shaderVariableCache.Dispose(context);
             }
         }
         #endregion
@@ -553,7 +550,8 @@ namespace VVVV.DX11.Nodes.Layers
         #region Dispose
         public void Dispose()
         {
-            //if (this.effect != null) { this.effect.Dispose(); }
+            this.deviceshaderdata.Dispose();
+            this.shaderVariableCache.Dispose();
         }
         #endregion
 

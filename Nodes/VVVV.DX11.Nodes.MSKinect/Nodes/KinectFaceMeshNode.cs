@@ -34,13 +34,13 @@ namespace VVVV.DX11.Nodes.MSKinect
                 Author = "vux", 
                 Tags = "DX11",
                 Help = "Returns a geometry representing the tracked face")]
-    public class KinectFaceMeshNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class KinectFaceMeshNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Face", CheckIfChanged = true)]
-        private Pin<FaceTrackFrame> FInFrame;
+        protected Pin<FaceTrackFrame> FInFrame;
 
         [Output("Output", Order = 5)]
-        Pin<DX11Resource<DX11IndexedGeometry>> FOutput;
+        protected Pin<DX11Resource<DX11IndexedGeometry>> FOutput;
 
         private bool FInvalidate = false;
 
@@ -63,7 +63,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             {
                 if (this.FOutput.SliceCount > 0)
                 {
-                    this.DisposeOutput();
+                    this.FOutput.SafeDisposeAll();
                     this.FOutput.SliceCount = 0;
                 }
             }
@@ -72,7 +72,7 @@ namespace VVVV.DX11.Nodes.MSKinect
 
 
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -164,25 +164,14 @@ namespace VVVV.DX11.Nodes.MSKinect
 
 
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < this.FOutput.SliceCount; i++)
-            {
-                this.FOutput[i].Dispose(context);
-            }
+            this.FOutput.SafeDisposeAll(context);
         }
 
         public void Dispose()
         {
-            this.DisposeOutput();
-        }
-
-        private void DisposeOutput()
-        {
-            for (int i = 0; i < this.FOutput.SliceCount; i++)
-            {
-                if (this.FOutput[i] != null) { this.FOutput[i].Dispose(); }
-            }
+            this.FOutput.SafeDisposeAll();
         }
     }
 }

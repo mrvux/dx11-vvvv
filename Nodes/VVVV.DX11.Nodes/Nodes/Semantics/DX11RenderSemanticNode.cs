@@ -19,7 +19,7 @@ using VVVV.DX11.Lib.Rendering;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Texture2D")]
-    public class DX11Texture2dSemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11Texture2dSemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<DX11Texture2D>> FInput;
@@ -43,7 +43,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -63,7 +63,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -73,7 +73,7 @@ namespace VVVV.DX11.Nodes
     }
 
     [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "Texture2DArray")]
-    public class DX11Texture2dArraySemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11Texture2dArraySemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<DX11Texture2D>> FInput;
@@ -97,7 +97,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -117,7 +117,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -127,7 +127,7 @@ namespace VVVV.DX11.Nodes
     }
 
     [PluginInfo(Name = "RenderSemantic", Category = "DX11.Layer", Version = "TextureCube")]
-    public class DX11TextureCubeSemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11TextureCubeSemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<DX11Texture2D>> FInput;
@@ -151,7 +151,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -171,7 +171,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -181,7 +181,7 @@ namespace VVVV.DX11.Nodes
     }
 
     [PluginInfo(Name = "RenderSemantic", Category = "DX11", Version = "StructuredBuffer")]
-    public class DX11SBufferSemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11SBufferSemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<IDX11ReadableStructureBuffer>> FInput;
@@ -205,7 +205,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -225,7 +225,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -235,7 +235,7 @@ namespace VVVV.DX11.Nodes
     }
 
     [PluginInfo(Name = "RenderSemantic", Category = "DX11", Version = "ByteAddressBuffer")]
-    public class DX11BABufferSemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11BABufferSemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<IDX11ReadableResource>> FInput;
@@ -259,7 +259,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -279,7 +279,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -290,7 +290,7 @@ namespace VVVV.DX11.Nodes
 
 
     [PluginInfo(Name = "RenderSemantic", Category = "DX11", Version = "RWStructuredBuffer")]
-    public class DX11RWBufferSemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11RWBufferSemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<IDX11RWStructureBuffer>> FInput;
@@ -314,7 +314,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -334,7 +334,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {
@@ -344,7 +344,7 @@ namespace VVVV.DX11.Nodes
     }
 
     [PluginInfo(Name = "RenderSemantic", Category = "DX11", Version = "Texture3D")]
-    public class DX11Texture3dSemanticNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11Texture3dSemanticNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Input")]
         protected Pin<DX11Resource<DX11Texture3D>> FInput;
@@ -368,7 +368,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInput.PluginIO.IsConnected)
             {
@@ -388,7 +388,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < this.FOutput.SliceCount; i++)
             {

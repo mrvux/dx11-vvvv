@@ -18,67 +18,67 @@ namespace VVVV.MSKinect.Nodes
     public class KinectRuntimeNode : IPluginEvaluate, IDisposable
     {
         [Input("Motor Angle", IsSingle = true, DefaultValue = 0.5)]
-        IDiffSpread<double> FInAngle;
+        protected IDiffSpread<double> FInAngle;
 
         [Input("Emit Infrared", IsSingle = true, DefaultValue = 1)]
-        IDiffSpread<bool> FInInfraredEmit;
+        protected IDiffSpread<bool> FInInfraredEmit;
 
         [Input("Index", IsSingle = true)]
-        IDiffSpread<int> FInIndex;
+        protected IDiffSpread<int> FInIndex;
 
         [Input("Enable Color", IsSingle = true)]
-        IDiffSpread<bool> FInEnableColor;
+        protected IDiffSpread<bool> FInEnableColor;
 
         [Input("Infrared Color", IsSingle = true)]
-        IDiffSpread<bool> FInInfrared;
+        protected IDiffSpread<bool> FInInfrared;
 
         [Input("Enable Depth", IsSingle = true)]
-        IDiffSpread<bool> FInDepthMode;
+        protected IDiffSpread<bool> FInDepthMode;
 
         [Input("High Res Depth", IsSingle = true)]
-        IDiffSpread<bool> FInDeptRes;
+        protected IDiffSpread<bool> FInDeptRes;
 
         [Input("Depth Range", IsSingle = true)]
-        IDiffSpread<DepthRange> FInDepthRange;
+        protected IDiffSpread<DepthRange> FInDepthRange;
 
         [Input("Enable Skeleton", IsSingle = true)]
-        IDiffSpread<bool> FInEnableSkeleton;
+        protected IDiffSpread<bool> FInEnableSkeleton;
 
         [Input("Enable Skeleton Smoothing", IsSingle = true, DefaultValue = 1)]
-        IDiffSpread<bool> FInEnableSmooth;
+        protected IDiffSpread<bool> FInEnableSmooth;
 
         [Input("Skeleton Mode", IsSingle = true)]
-        IDiffSpread<SkeletonTrackingMode> FInSkMode;
+        protected IDiffSpread<SkeletonTrackingMode> FInSkMode;
 
         [Input("Smooth Parameters", IsSingle = true)]
-        Pin<TransformSmoothParameters> FSmoothParams;
+        protected Pin<TransformSmoothParameters> FSmoothParams;
 
         [Input("Enabled", IsSingle = true)]
-        IDiffSpread<bool> FInEnabled;
+        protected IDiffSpread<bool> FInEnabled;
 
         [Input("Reset", IsBang = true)]
-        ISpread<bool> FInReset;
+        protected ISpread<bool> FInReset;
 
         [Output("Kinect Runtime", IsSingle = true)]
-        ISpread<KinectRuntime> FOutRuntime;
+        protected ISpread<KinectRuntime> FOutRuntime;
 
         [Output("Kinect Count", IsSingle = true)]
-        ISpread<int> FOutKCnt;
+        protected ISpread<int> FOutKCnt;
 
         [Output("Kinect Status", IsSingle = true)]
-        ISpread<KinectStatus> FOutStatus;
+        protected ISpread<KinectStatus> FOutStatus;
 
         [Output("Is Started", IsSingle = true)]
-        ISpread<bool> FOutStarted;
+        protected ISpread<bool> FOutStarted;
 
         [Output("Color FOV")]
-        ISpread<Vector2D> FOutColorFOV;
+        protected ISpread<Vector2D> FOutColorFOV;
 
         [Output("Depth FOV")]
-        ISpread<Vector2D> FOutDepthFOV;
+        protected ISpread<Vector2D> FOutDepthFOV;
 
         [Output("Accelerometer")]
-        ISpread<Vector4D> FOutAccelerometer;
+        protected ISpread<Vector4D> FOutAccelerometer;
 
         private KinectRuntime runtime = new KinectRuntime();
 

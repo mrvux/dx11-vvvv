@@ -29,10 +29,8 @@ namespace VVVV.DX11.Nodes.MSKinect
         private IntPtr depthread;
         private IntPtr depthwrite;
 
-        private SlimDX.DXGI.Format format;
         private int width;
         private int height;
-        private bool first = true;
 
         [ImportingConstructor()]
         public KinectDepthTextureNode(IPluginHost host)
@@ -42,7 +40,6 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         private void InitBuffers()
         {
-            this.format = SlimDX.DXGI.Format.R16_UInt;
             this.width = 512;
             this.height = 424;
 

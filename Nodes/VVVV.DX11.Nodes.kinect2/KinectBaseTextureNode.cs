@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 namespace VVVV.DX11.Nodes.MSKinect
 {
-    public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceProvider, IDisposable
+    public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceHost, IDisposable
     {
          [DllImport("msvcrt.dll", SetLastError = false)]
         protected static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
@@ -104,7 +104,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             this.FTextureOutput[0].Dispose();
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FTextureOutput[0].Contains(context))
             {
@@ -129,7 +129,7 @@ namespace VVVV.DX11.Nodes.MSKinect
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FTextureOutput[0].Dispose(context);
         }

@@ -15,7 +15,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name = "Geometry", Category = "DX11", Version = "Assimp.Structured", Author = "vux,flateric")]
-    public class AssimpSimpleLoaderStructuredNode : IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public class AssimpSimpleLoaderStructuredNode : IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         [Input("Path", StringType = StringType.Filename)]
         protected IDiffSpread<string> FInPath;
@@ -132,7 +132,7 @@ namespace VVVV.DX11.Nodes.AssetImport
             this.scenes.Clear();
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInvalidate || this.FEmpty)
             {
@@ -200,7 +200,7 @@ namespace VVVV.DX11.Nodes.AssetImport
             }     
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             
         }

@@ -17,22 +17,22 @@ namespace MSKinect.Nodes
     public class KinectSmoothParamsNode : IPluginEvaluate
     {
         [Input("Correction", IsSingle = true, DefaultValue = 0.5)]
-        IDiffSpread<float> FInCorrection;
+        protected IDiffSpread<float> FInCorrection;
 
         [Input("Jitter Radius", IsSingle = true, DefaultValue = 0.05)]
-        IDiffSpread<float> FInJitter;
+        protected IDiffSpread<float> FInJitter;
 
         [Input("Max Deviation Radius", IsSingle = true, DefaultValue = 0.04)]
-        IDiffSpread<float> FInDevRadius;
+        protected IDiffSpread<float> FInDevRadius;
 
         [Input("Prediction", IsSingle = true, DefaultValue = 0.5)]
-        IDiffSpread<float> FInPrediction;
+        protected IDiffSpread<float> FInPrediction;
 
         [Input("Smoothing", IsSingle = true, DefaultValue = 0.5)]
-        IDiffSpread<float> FInSmoothing;
+        protected IDiffSpread<float> FInSmoothing;
 
         [Output("Output", IsSingle = true)]
-        ISpread<TransformSmoothParameters> FOut;
+        protected ISpread<TransformSmoothParameters> FOut;
 
         public void Evaluate(int SpreadMax)
         {

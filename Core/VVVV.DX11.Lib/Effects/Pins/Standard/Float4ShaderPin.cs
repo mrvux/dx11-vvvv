@@ -15,11 +15,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
 {
     public class Float4ShaderPin : AbstractValuePin<Vector4> , IMultiTypeShaderPin
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             Vector4 vec = var.AsVector().GetVector();
@@ -29,6 +24,12 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public bool ChangeType(EffectVariable var)
         {
             return !var.IsColor();
+        }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
+            return (i) => { sv.Set(this.pin[i]); };
         }
     }
 

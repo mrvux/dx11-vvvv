@@ -26,7 +26,7 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11
 {
-    public abstract class AbstractDX11Renderer2DNode : IDX11RendererProvider, IPluginEvaluate, IDisposable, IDX11Queryable
+    public abstract class AbstractDX11Renderer2DNode : IDX11RendererHost, IPluginEvaluate, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
@@ -121,7 +121,7 @@ namespace VVVV.DX11
             this.OnEvaluate(SpreadMax);
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -129,7 +129,7 @@ namespace VVVV.DX11
 
             if (!this.renderers.ContainsKey(context))
             {
-                this.renderers.Add(context, new DX11GraphicsRenderer(this.FHost, context));
+                this.renderers.Add(context, new DX11GraphicsRenderer(context));
             }
 
             //Update what's needed
@@ -158,7 +158,7 @@ namespace VVVV.DX11
             //Just in case
             if (!this.updateddevices.Contains(context))
             {
-                this.Update(null, context);
+                this.Update(context);
             }
 
             if (this.rendereddevices.Contains(context)) { return; }
@@ -219,18 +219,15 @@ namespace VVVV.DX11
                                 context.RenderTargetStack.PushViewport(this.FInViewPort[i].Normalize(cw, ch));
                             }
 
-                            //Call render on all layers
-                            for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                            try
                             {
-                                try
-                                {
-                                    this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.Message);
-                                }
+                                this.FInLayer.RenderAll(context, settings);
                             }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+
 
                             if (viewportpop)
                             {
@@ -239,11 +236,8 @@ namespace VVVV.DX11
                         }
                     }
 
-
                     //Post render
                     this.AfterRender(renderer, context);
-
-
                 }
                 catch (Exception ex)
                 {
@@ -271,7 +265,7 @@ namespace VVVV.DX11
         }
         #endregion
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (this.renderers.ContainsKey(context))
             {

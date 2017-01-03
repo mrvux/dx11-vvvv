@@ -21,49 +21,49 @@ namespace VVVV.MSKinect.Nodes
         IDiffSpread<int> FInIndex;*/
 
         [Input("Enable Color", IsSingle = true, DefaultValue = 1)]
-        IDiffSpread<bool> FInEnableColor;
+        protected IDiffSpread<bool> FInEnableColor;
 
         [Input("Enable IR", IsSingle = true, DefaultValue=1)]
-        IDiffSpread<bool> FInInfrared;
+        protected IDiffSpread<bool> FInInfrared;
 
         [Input("Enable Depth", IsSingle = true, DefaultValue = 1)]
-        IDiffSpread<bool> FInDepthMode;
+        protected IDiffSpread<bool> FInDepthMode;
 
         [Input("Enable Skeleton", IsSingle = true, DefaultValue = 1)]
-        IDiffSpread<bool> FInEnableSkeleton;
+        protected IDiffSpread<bool> FInEnableSkeleton;
 
         [Input("Enable Player", IsSingle = true, DefaultValue = 1)]
-        IDiffSpread<bool> FInEnablePlayer;
+        protected IDiffSpread<bool> FInEnablePlayer;
 
         [Input("Enabled", IsSingle = true)]
-        IDiffSpread<bool> FInEnabled;
+        protected IDiffSpread<bool> FInEnabled;
 
         [Input("Reset", IsBang = true)]
-        ISpread<bool> FInReset;
+        protected ISpread<bool> FInReset;
 
         [Output("Kinect Runtime", IsSingle = true)]
-        ISpread<KinectRuntime> FOutRuntime;
+        protected ISpread<KinectRuntime> FOutRuntime;
 
         [Output("Kinect Count", IsSingle = true)]
-        ISpread<int> FOutKCnt;
+        protected ISpread<int> FOutKCnt;
 
         [Output("Is Available", IsSingle = true)]
-        ISpread<bool> FOutStatus;
+        protected ISpread<bool> FOutStatus;
 
         [Output("Color FOV")]
-        ISpread<Vector2D> FOutColorFOV;
+        protected ISpread<Vector2D> FOutColorFOV;
 
         [Output("Depth FOV")]
-        ISpread<Vector2D> FOutDepthFOV;
+        protected ISpread<Vector2D> FOutDepthFOV;
 
         [Output("Is Started", IsSingle = true)]
-        ISpread<bool> FOutStarted;
+        protected ISpread<bool> FOutStarted;
 
         [Output("DepthRange (cm)" )]
-        ISpread<Vector2D> FDepthrange;
+        protected ISpread<Vector2D> FDepthrange;
 
         [Output("Intrinsics")]
-        ISpread<CameraIntrinsics> intrinsics;
+        protected ISpread<CameraIntrinsics> intrinsics;
 
         private KinectRuntime runtime = new KinectRuntime();
 

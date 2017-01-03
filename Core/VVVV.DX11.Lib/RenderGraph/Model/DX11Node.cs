@@ -34,6 +34,7 @@ namespace VVVV.DX11.RenderGraph.Model
 
             IInternalPluginHost iip = (IInternalPluginHost)this.Hoster;
             this.Interfaces = new DX11NodeInterfaces(iip);
+            this.VirtualConnections = new List<DX11VirtualConnection>();
         }
 
         public IPluginHost Hoster { get; protected set; }
@@ -48,6 +49,20 @@ namespace VVVV.DX11.RenderGraph.Model
             {
                 return this.HdeNode.GetPin("Descriptive Name").GetSlice(0);
             }
+        }
+
+        public List<DX11VirtualConnection> VirtualConnections;
+
+        public DX11VirtualConnection GetVirtualConnection(IPin pin)
+        {
+            foreach (DX11VirtualConnection connection in this.VirtualConnections)
+            {
+                if (connection.sinkPin == pin)
+                {
+                    return connection;
+                }
+            }
+            return null;
         }
 
         public List<DX11InputPin> InputPins { get; set; }
@@ -67,6 +82,25 @@ namespace VVVV.DX11.RenderGraph.Model
             foreach (DX11OutputPin ip in this.OutputPins)
             {
                 if (ip.Name == name) { return ip; }
+            }
+            return null;
+        }
+
+
+        public DX11InputPin GetInput(IPin pin)
+        {
+            foreach (DX11InputPin ip in this.InputPins)
+            {
+                if (ip.HdePin == pin) { return ip; }
+            }
+            return null;
+        }
+
+        public DX11OutputPin GetOutput(IPin pin)
+        {
+            foreach (DX11OutputPin ip in this.OutputPins)
+            {
+                if (ip.HdePin == pin) { return ip; }
             }
             return null;
         }

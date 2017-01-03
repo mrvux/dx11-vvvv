@@ -12,12 +12,7 @@
     <OutputPath>$(OutputPath)\nodes\plugins\dshow\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SlimDX" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition.Codeplex">
-      <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -26,22 +21,6 @@
     </Reference>
     <Reference Include="VVVV.AForge.Video.DirectShow">
       <HintPath>Dependencies\VVVV.AForge.Video.DirectShow.dll</HintPath>
-    </Reference>
-    <Reference Include="VVVV.Core">
-      <HintPath>..\..\Dependencies\x86\VVVV.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VVVV.PluginInterfaces">
-      <HintPath>..\..\Dependencies\x86\VVVV.PluginInterfaces.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VVVV.Utils">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VVVV.Utils3rdParty">
-      <HintPath>..\..\Dependencies\x86\VVVV.Utils3rdParty.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

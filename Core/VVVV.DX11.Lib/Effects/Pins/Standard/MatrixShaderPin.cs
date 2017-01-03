@@ -18,11 +18,11 @@ namespace VVVV.DX11.Internals.Effects.Pins
         private bool uvspace;
         private bool invy;
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
+        private Matrix GetMatrix(int slice)
         {
             if (!uvspace)
             {
-                shaderinstance.SetByName(this.Name, this.pin[slice]);
+                return this.pin[slice];
             }
             else
             {
@@ -34,12 +34,17 @@ namespace VVVV.DX11.Internals.Effects.Pins
                 }
                 else
                 {
-                    m = Matrix.Translation(-0.5f, -0.5f, 0.0f)  * m;
+                    m = Matrix.Translation(-0.5f, -0.5f, 0.0f) * m;
                     m *= Matrix.Translation(0.5f, 0.5f, 0.0f);
                 }
-  
-                shaderinstance.SetByName(this.Name, m);
+                return m;
             }
+        }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (i) => { sv.SetMatrix(this.GetMatrix(i)); };
         }
 
         protected override void SetDefault(InputAttribute attr, EffectVariable var) 

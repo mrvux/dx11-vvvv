@@ -34,7 +34,7 @@ namespace VVVV.DX11.Nodes.MSKinect
         private int height;
 
         [Input("Update", IsBang = true)]
-        ISpread<bool> update;
+        protected ISpread<bool> update;
 
         [ImportingConstructor()]
         public KinectRayTextureNode(IPluginHost host)

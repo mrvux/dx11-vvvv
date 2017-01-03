@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes.AssetImport
             guids[0] = new Guid("AB312E34-8025-40F2-8241-1958793F3D39");
             
             host.CreateNodeOutput("Skeleton", TSliceMode.Dynamic, TPinVisibility.True, out FSkeletonOutput);
-            FSkeletonOutput.SetSubType(guids, "Skeleton");
+            FSkeletonOutput.SetSubType2(typeof(Skeleton), guids, "Skeleton");
         }
 
         public void Evaluate(int SpreadMax)
