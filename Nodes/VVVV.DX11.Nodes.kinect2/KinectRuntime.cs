@@ -46,6 +46,7 @@ namespace VVVV.MSKinect.Lib
 
             this.Runtime = KinectSensor.GetDefault();
             this.Runtime.IsAvailableChanged += Runtime_IsAvailableChanged;
+            this.Runtime.PropertyChanged += Runtime_PropertyChanged;
             return true;
         }
 
@@ -83,14 +84,14 @@ namespace VVVV.MSKinect.Lib
 
         public void EnableSkeleton(bool enable, bool smooth)
         {
-            if (enable && this.bodyreader == null && this.Runtime.IsAvailable)
+            if (this.Runtime != null)
             {
-                this.bodyreader = this.Runtime.BodyFrameSource.OpenReader();
-                this.bodyreader.FrameArrived += this.Runtime_SkeletonFrameReady;
-            }  
-            else
-            {
-                if (this.bodyreader != null)
+                if (enable && this.bodyreader == null)
+                {
+                    this.bodyreader = this.Runtime.BodyFrameSource.OpenReader();
+                    this.bodyreader.FrameArrived += this.Runtime_SkeletonFrameReady;
+                }
+                if (!enable && this.bodyreader != null)
                 {
                     this.bodyreader.FrameArrived -= this.Runtime_SkeletonFrameReady;
                     this.bodyreader.Dispose();
@@ -102,14 +103,15 @@ namespace VVVV.MSKinect.Lib
 
         public void SetPlayer(bool enable)
         {
-            if (enable && this.playerreader == null && this.Runtime.IsAvailable)
+            if (this.Runtime != null)
             {
-                playerreader = this.Runtime.BodyIndexFrameSource.OpenReader();
-                playerreader.FrameArrived += this.Runtime_PlayerFrameReady;
-            }
-            else
-            {
-                if(this.playerreader != null)
+                if (enable && this.playerreader == null)
+                {
+                        playerreader = this.Runtime.BodyIndexFrameSource.OpenReader();
+                        playerreader.FrameArrived += this.Runtime_PlayerFrameReady;
+
+                }
+                if (!enable && this.playerreader != null)
                 {
                     this.playerreader.FrameArrived -= this.Runtime_PlayerFrameReady;
                     this.playerreader.Dispose();
@@ -120,14 +122,14 @@ namespace VVVV.MSKinect.Lib
 
         public void SetDepthMode(bool enable)
         {
-            if (enable && this.depthreader == null && this.Runtime.IsAvailable)
+            if (this.Runtime != null)
             {
-                depthreader = this.Runtime.DepthFrameSource.OpenReader();
-                depthreader.FrameArrived += this.Runtime_DepthFrameReady ;
-            }
-            else
-            {
-                if (this.depthreader != null)
+                if (enable && this.depthreader == null)
+                {
+                    depthreader = this.Runtime.DepthFrameSource.OpenReader();
+                    depthreader.FrameArrived += this.Runtime_DepthFrameReady;
+                }
+                if (!enable && this.depthreader != null)
                 {
                     this.depthreader.FrameArrived -= this.Runtime_DepthFrameReady;
                     this.depthreader.Dispose(); this.depthreader = null;
@@ -137,40 +139,38 @@ namespace VVVV.MSKinect.Lib
 
         public void SetColor(bool enable)
         {
-            if (this.colorreader == null && enable && this.Runtime.IsAvailable)
+            if (this.Runtime != null)
             {
-                colorreader = this.Runtime.ColorFrameSource.OpenReader();
-                colorreader.FrameArrived += this.Runtime_ColorFrameReady;
-            }
-            else
-            {
-                if (this.colorreader != null)
+                if (this.colorreader == null && enable)
+                {
+                    colorreader = this.Runtime.ColorFrameSource.OpenReader();
+                    colorreader.FrameArrived += this.Runtime_ColorFrameReady;
+                }
+                if (this.colorreader != null && !enable)
                 {
                     this.colorreader.FrameArrived -= this.Runtime_ColorFrameReady;
                     this.colorreader.Dispose();
                     this.colorreader = null;
                 }
             }
-            
         }
 
         public void SetInfrared(bool enable)
         {
-            if (this.irreader == null && enable && this.Runtime.IsAvailable)
+            if (this.Runtime != null)
             {
-                irreader = this.Runtime.InfraredFrameSource.OpenReader();
-                irreader.FrameArrived += irreader_FrameArrived;
-            }
-            else
-            {
-                if (this.irreader != null)
+                if (this.irreader == null && enable)
+                {
+                    irreader = this.Runtime.InfraredFrameSource.OpenReader();
+                    irreader.FrameArrived += irreader_FrameArrived;
+                }
+                if (this.irreader != null && !enable)
                 {
                     this.irreader.FrameArrived -= this.irreader_FrameArrived;
                     this.irreader.Dispose();
                     this.irreader = null;
-                }
+                }                
             }
-
         }
 
         void irreader_FrameArrived(object sender, InfraredFrameArrivedEventArgs e)
@@ -217,6 +217,19 @@ namespace VVVV.MSKinect.Lib
                 }
             }
         }
+        void Runtime_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            
+            if (e.PropertyName == "IsOpen" )
+            {
+                if (this.OnReset != null)
+                {
+                    this.OnReset(sender, new EventArgs());
+                }
+            }
+            
+        }
+
 
         #endregion
 
@@ -236,6 +249,7 @@ namespace VVVV.MSKinect.Lib
                         this.SetPlayer(false);
 
                         this.Runtime.Close();
+                        this.Runtime = null;
                     }
                     catch
                     {
