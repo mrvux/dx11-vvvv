@@ -27,13 +27,15 @@
   <Target Name="Clean-Deploy">
     <Delete Files="@(DeployFolder)" />
   </Target>
+  
+  <Target Name="Build-x86">
+    <MSBuild Projects="vvvv-dx11.sln" Properties="Configuration=Release;Platform=x86;DebugSymbols=false;DebugType=None" />
+  </Target>
 
   <Target Name="Build-x64">
     <MSBuild Projects="vvvv-dx11.sln" Properties="Configuration=Release;Platform=x64;DebugSymbols=false;DebugType=None" />
   </Target>
   
-  
-
   <Target Name="Build">
     <Delete Files="Deploy\**\*.*" />
 	
