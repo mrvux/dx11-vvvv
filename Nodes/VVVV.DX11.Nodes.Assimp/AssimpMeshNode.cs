@@ -15,7 +15,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes.AssetImport
 {
     [PluginInfo(Name="Mesh",Category="DX11.Geometry",Version="Assimp",Author="vux,flateric")]
-    public class AssimpMeshNode : IPluginEvaluate,IDisposable,IDX11ResourceProvider
+    public class AssimpMeshNode : IPluginEvaluate,IDisposable,IDX11ResourceHost
     {
         [Input("Scene",IsSingle=true)]
         protected IDiffSpread<AssimpScene> FInScene;
@@ -109,7 +109,7 @@ namespace VVVV.DX11.Nodes.AssetImport
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
 
             if (this.FInvalidate || !this.FOutGeom[0].Contains(context))
@@ -164,21 +164,15 @@ namespace VVVV.DX11.Nodes.AssetImport
             }          
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
-            {
-                if (this.FOutGeom[i] != null) { this.FOutGeom[i].Dispose(context); }
-            }
+            this.FOutGeom.SafeDisposeAll(context);
         }
 
         #region IDisposable Members
         public void Dispose()
         {
-            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
-            {
-                if (this.FOutGeom[i] != null) { this.FOutGeom[i].Dispose(); }
-            }
+            this.FOutGeom.SafeDisposeAll();
         }
         #endregion
 

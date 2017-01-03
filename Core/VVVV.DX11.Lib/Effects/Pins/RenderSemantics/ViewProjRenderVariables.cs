@@ -12,13 +12,36 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 {
+    public class MatrixLayerWorldRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerWorldRenderVariable(EffectVariable var) : base(var) { }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(s.WorldTransform);
+        }
+    }
+
+    public class MatrixLayerInvWorldRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerInvWorldRenderVariable(EffectVariable var) : base(var) { }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Invert(s.WorldTransform));
+        }
+    }
+
     public class MatrixProjRenderVariable : AbstractRenderVariable
     {
         public MatrixProjRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.Projection);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(s.Projection);
         }
     }
 
@@ -26,9 +49,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixInvProjRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Invert(settings.Projection));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Invert(s.Projection));
         }
     }
 
@@ -36,9 +60,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixProjTransposeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Transpose(settings.Projection));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Transpose(s.Projection));
         }
     }
 
@@ -46,9 +71,21 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixInvProjTransposeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Transpose(Matrix.Invert(settings.Projection)));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Transpose(Matrix.Invert(s.Projection)));
+        }
+    }
+
+    public class MatrixLayerWorldViewRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerWorldViewRenderVariable(EffectVariable var) : base(var) { }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(s.WorldTransform * s.View);
         }
     }
 
@@ -56,9 +93,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixViewRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.View);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(s.View);
         }
     }
 
@@ -66,9 +104,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixInvViewRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Invert(settings.View));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Invert(s.View));
         }
     }
 
@@ -76,10 +115,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public CameraPositionRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            Matrix iv = Matrix.Invert(settings.View);
-            shaderinstance.SetByName(this.Name, new Vector3(iv.M41, iv.M42, iv.M43));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => { Matrix iv = Matrix.Invert(s.View); sv.Set(new Vector3(iv.M41, iv.M42, iv.M43)); };
         }
     }
 
@@ -87,9 +126,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixInvViewTransposeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Transpose(Matrix.Invert(settings.View)));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Transpose(Matrix.Invert(s.View)));
         }
     }
 
@@ -97,9 +137,21 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixViewProjRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.ViewProjection);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(s.ViewProjection);
+        }
+    }
+
+    public class MatrixLayerWorldViewProjRenderVariable : AbstractRenderVariable
+    {
+        public MatrixLayerWorldViewProjRenderVariable(EffectVariable var) : base(var) { }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(s.WorldTransform * s.ViewProjection);
         }
     }
 
@@ -108,9 +160,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixInvViewProjRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Invert(settings.ViewProjection));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Invert(s.ViewProjection));
         }
     }
 
@@ -118,9 +171,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixInvViewProjTransposeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Transpose(Matrix.Invert(settings.ViewProjection)));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Transpose(Matrix.Invert(s.ViewProjection)));
         }
     }
 
@@ -129,9 +183,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixViewProjTransposeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Transpose(settings.ViewProjection));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Transpose(s.ViewProjection));
         }
     }
 
@@ -139,9 +194,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public MatrixViewTransposeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, Matrix.Transpose(settings.View));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (s) => sv.SetMatrix(Matrix.Transpose(s.View));
         }
     }
 }

@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes.AssetImport
         protected ISpread<bool> FOutValid;
 
         [Import()]
-        ILogger FLogger;
+        protected ILogger FLogger;
 
         private AssimpScene scene;
 

@@ -21,34 +21,34 @@ namespace VVVV.MSKinect.Nodes
     public class KinectHandNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("Skeleton Count", IsSingle = true)]
-        private ISpread<int> FOutCount;
+        protected ISpread<int> FOutCount;
 
         [Output("User Index")]
-        private ISpread<int> FOutUserIndex;
+        protected ISpread<int> FOutUserIndex;
 
         [Output("Left Position")]
-        private ISpread<Vector3> FOutLPosition;
+        protected ISpread<Vector3> FOutLPosition;
 
         [Output("Left State")]
-        private ISpread<HandState> FOutLState;
+        protected ISpread<HandState> FOutLState;
 
         [Output("Left Confidence")]
-        private ISpread<TrackingConfidence> FOutLConfidence;
+        protected ISpread<TrackingConfidence> FOutLConfidence;
 
         [Output("Right Position")]
-        private ISpread<Vector3> FOutRPosition;
+        protected ISpread<Vector3> FOutRPosition;
 
         [Output("Right Confidence")]
-        private ISpread<TrackingConfidence> FOutRConfidence;
+        protected ISpread<TrackingConfidence> FOutRConfidence;
 
         [Output("Right State")]
-        private ISpread<HandState> FOutRState;
+        protected ISpread<HandState> FOutRState;
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<int> FOutFrameNumber;
+        protected ISpread<int> FOutFrameNumber;
 
 
         private bool FInvalidateConnect = false;
@@ -90,9 +90,6 @@ namespace VVVV.MSKinect.Nodes
                 if (this.lastframe != null)
                 {
                     List<Body> skels = new List<Body>();
-                    float z = float.MaxValue;
-                    int id = -1;
-
                     lock (m_lock)
                     {
 

@@ -180,18 +180,24 @@ namespace VVVV.DX11.Lib.RenderGraph
                 }
             }
 
-            //Got to all parents recursively (eg: make sure all is updated)
-            foreach (DX11InputPin ip in node.InputPins)
+            for (int i = 0; i < node.InputPins.Count; i++)
             {
+                DX11InputPin ip = node.InputPins[i];
                 if (ip.IsConnected && (ip.ParentPin.IsFeedBackPin == false))
                 {
                     this.ProcessNode(ip.ParentPin.ParentNode);
                 }
             }
+            for (int i = 0; i < node.VirtualConnections.Count; i++)
+            {
+                this.ProcessNode(node.VirtualConnections[i].sourceNode);
+            }
+
 
             //Call Update
-            foreach (DX11InputPin ip in node.InputPins)
+            for (int i = 0; i < node.InputPins.Count; i++)
             {
+                DX11InputPin ip = node.InputPins[i];
                 if (ip.IsConnected)
                 {
                     DX11OutputPin parent = ip.ParentPin;
@@ -205,23 +211,17 @@ namespace VVVV.DX11.Lib.RenderGraph
                             if (source.Interfaces.IsResourceProvider)
                             {
                                 source.Interfaces.ResourceProvider.Update(parent.PluginIO, this.context);
-                                if (source.Interfaces.IsMultiResourceProvider)
+
+                                if (this.DoNotDestroy == false)
                                 {
-                                    if (this.DoNotDestroy == false)
+                                    //Mark all output pins as processed
+                                    foreach (DX11OutputPin outpin in source.OutputPins)
                                     {
-                                        //Mark all output pins as processed
-                                        foreach (DX11OutputPin outpin in source.OutputPins)
+                                        this.thisframepins.Add(outpin);
+                                        if (this.lastframepins.Contains(outpin))
                                         {
-                                            this.thisframepins.Add(outpin);
+                                            this.lastframepins.Remove(outpin);
                                         }
-                                    }
-                                }
-                                else
-                                {
-                                    if (this.DoNotDestroy == false)
-                                    {
-                                        //Mark output pin as used this frame
-                                        this.thisframepins.Add(parent);
                                     }
                                 }
                             }
@@ -234,7 +234,14 @@ namespace VVVV.DX11.Lib.RenderGraph
                                     foreach (DX11OutputPin outpin in source.OutputPins)
                                     {
                                         this.thisframepins.Add(outpin);
+
+                                        //Remove from old cache if applicable
+                                        if (this.lastframepins.Contains(outpin))
+                                        {
+                                            this.lastframepins.Remove(outpin);
+                                        }
                                     }
+
                                 }
                             }
                         }
@@ -246,28 +253,17 @@ namespace VVVV.DX11.Lib.RenderGraph
                             this.logger.Log(LogType.Message, ex.StackTrace);
                         }
 
-                        if (this.DoNotDestroy == false)
-                        {
-                            //Remove from old cache if applicable
-                            if (this.lastframepins.Contains(parent))
-                            {
-                                this.lastframepins.Remove(parent);
-                            }
-                        }
+
                     }
                 }
 
             }
 
             //Render if renderer
-            if (node.Interfaces.IsRendererProvider || node.Interfaces.IsRendererHost)
+            if (node.Interfaces.IsRendererHost)
             {
                 try
                 {
-                    if (node.Interfaces.IsRendererProvider)
-                    {
-                        node.Interfaces.RendererProvider.Render(this.context);
-                    }
                     if (node.Interfaces.IsRendererHost)
                     {
                         node.Interfaces.RendererHost.Render(this.context);

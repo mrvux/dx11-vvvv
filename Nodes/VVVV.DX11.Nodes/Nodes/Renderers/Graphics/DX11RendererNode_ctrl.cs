@@ -168,9 +168,6 @@ namespace VVVV.DX11.Nodes
             {
                 this.FKeys.Add(e.KeyCode);
             }
-
-            e.Handled = true;
-            e.SuppressKeyPress = true;
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
@@ -180,15 +177,10 @@ namespace VVVV.DX11.Nodes
                 this.FKeys.Remove(e.KeyCode);
             }
             base.OnKeyUp(e);
-
-            e.Handled = true;
-            e.SuppressKeyPress = true;
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
-            e.Handled = true;
-            //Se.SuppressKeyPress = true;
             base.OnKeyPress(e);
         }
     }

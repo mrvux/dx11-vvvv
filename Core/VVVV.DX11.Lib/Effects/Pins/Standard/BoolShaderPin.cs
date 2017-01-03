@@ -16,16 +16,17 @@ namespace VVVV.DX11.Internals.Effects.Pins
     {
         private bool isbang;
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             attr.DefaultValue = var.AsScalar().GetFloat();
             attr.IsBang = var.IsBang();
             this.isbang = attr.IsBang;
+        }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsScalar();
+            return (i) => { sv.Set(this.pin[i]); };
         }
 
         protected override bool RecreatePin(EffectVariable var)

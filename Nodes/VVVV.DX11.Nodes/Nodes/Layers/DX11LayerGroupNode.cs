@@ -13,7 +13,7 @@ using FeralTic.DX11.Queries;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Group",Category="DX11.Layer",Author="vux")]
-    public class DX11LayerGroupNode : IPluginEvaluate, IDX11LayerProvider, IDX11Queryable, IPartImportsSatisfiedNotification, IDX11UpdateBlocker
+    public class DX11LayerGroupNode : IPluginEvaluate, IDX11LayerHost, IDX11Queryable, IPartImportsSatisfiedNotification, IDX11UpdateBlocker
     {
         [Config("Input Count", DefaultValue = 2, MinValue = 2)]
         protected IDiffSpread<int> FInputCount;
@@ -104,7 +104,7 @@ namespace VVVV.DX11.Nodes
 
         #region IDX11ResourceProvider Members
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.spmax > 0)
             {
@@ -116,12 +116,12 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FOutLayer[0].Dispose(context);
+            this.FOutLayer.SafeDisposeAll(context);
         }
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.spmax > 0)
             {
@@ -183,7 +183,7 @@ namespace VVVV.DX11.Nodes
                             {
                                 for (int i = 0; i < dxpin.IOObject.SliceCount; i++)
                                 {
-                                    dxpin.IOObject[i][context].Render(dxpin.IOObject.PluginIO, context, settings);
+                                    dxpin.IOObject[i][context].Render(context, settings);
                                 }
                             }
                             catch

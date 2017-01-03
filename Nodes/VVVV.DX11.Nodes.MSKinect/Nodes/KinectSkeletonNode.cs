@@ -21,49 +21,49 @@ namespace VVVV.MSKinect.Nodes
     public class KinectSkeletonNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("Skeleton Count", IsSingle = true)]
-        private ISpread<int> FOutCount;
+        protected ISpread<int> FOutCount;
 
         [Output("User Index")]
-        private ISpread<int> FOutUserIndex;
+        protected ISpread<int> FOutUserIndex;
 
         [Output("Position")]
-        private ISpread<Vector3> FOutPosition;
+        protected ISpread<Vector3> FOutPosition;
 
         [Output("Clipping")]
-        private ISpread<Vector4> FOutClipped;
+        protected ISpread<Vector4> FOutClipped;
 
         [Output("Joint ID")]
-        private ISpread<string> FOutJointID;
+        protected ISpread<string> FOutJointID;
 
         [Output("Joint Position")]
-        private ISpread<Vector3> FOutJointPosition;
+        protected ISpread<Vector3> FOutJointPosition;
 
         [Output("Joint Depth Position")]
-        private ISpread<Vector4> FOutJointDepthPosition;
+        protected ISpread<Vector4> FOutJointDepthPosition;
 
         [Output("Joint Color Position")]
-        private ISpread<Vector2> FOutJointColorPosition;
+        protected ISpread<Vector2> FOutJointColorPosition;
 
         [Output("Joint Orientation")]
-        private ISpread<Quaternion> FOutJointOrientation;
+        protected ISpread<Quaternion> FOutJointOrientation;
 
         [Output("Joint World Orientation")]
-        private ISpread<Quaternion> FOutJointWOrientation;
+        protected ISpread<Quaternion> FOutJointWOrientation;
 
         [Output("Joint Orientation From")]
-        private ISpread<string> FOutJointFrom;
+        protected ISpread<string> FOutJointFrom;
 
         [Output("Joint Orientation To")]
-        private ISpread<string> FOutJointTo;
+        protected ISpread<string> FOutJointTo;
 
         [Output("Joint State")]
-        private ISpread<string> FOutJointState;
+        protected ISpread<string> FOutJointState;
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<int> FOutFrameNumber;
+        protected ISpread<int> FOutFrameNumber;
 
 
         private bool FInvalidateConnect = false;
@@ -107,9 +107,6 @@ namespace VVVV.MSKinect.Nodes
                 if (this.lastframe != null)
                 {
                     List<Skeleton> skels = new List<Skeleton>();
-                    float z = float.MaxValue;
-                    int id = -1;
-
                     lock (m_lock)
                     {
 
@@ -164,9 +161,9 @@ namespace VVVV.MSKinect.Nodes
                             this.FOutJointID[jc] = joint.JointType.ToString();
                             this.FOutJointPosition[jc] = new Vector3(joint.Position.X, joint.Position.Y, joint.Position.Z);
 
-                            ColorImagePoint cp = this.runtime.Runtime.MapSkeletonPointToColor(joint.Position, ColorImageFormat.RgbResolution640x480Fps30);
+                            ColorImagePoint cp = this.runtime.Runtime.CoordinateMapper.MapSkeletonPointToColorPoint(joint.Position, ColorImageFormat.RgbResolution640x480Fps30);
                             this.FOutJointColorPosition[jc] = new Vector2(cp.X, cp.Y);
-                            DepthImagePoint dp = this.runtime.Runtime.MapSkeletonPointToDepth(joint.Position, DepthImageFormat.Resolution320x240Fps30);
+                            DepthImagePoint dp = this.runtime.Runtime.CoordinateMapper.MapSkeletonPointToDepthPoint(joint.Position, DepthImageFormat.Resolution320x240Fps30);
                             this.FOutJointDepthPosition[jc] = new Vector4(dp.X, dp.Y, dp.Depth, dp.PlayerIndex);
 
                             this.FOutJointOrientation[jc] = new Quaternion(bo.Quaternion.X, bo.Quaternion.Y, bo.Quaternion.Z, bo.Quaternion.W);

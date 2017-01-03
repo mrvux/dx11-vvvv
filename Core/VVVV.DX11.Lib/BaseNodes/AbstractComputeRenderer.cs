@@ -16,7 +16,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    public abstract class BaseComputeRenderer : IPluginEvaluate, IDX11RendererProvider, IDisposable, IPartImportsSatisfiedNotification
+    public abstract class BaseComputeRenderer : IPluginEvaluate, IDX11RendererHost, IDisposable, IPartImportsSatisfiedNotification
     {
         [Import()]
         protected IIOFactory iofactory;
@@ -55,7 +55,7 @@ namespace VVVV.DX11.Nodes
             this.OnEvaluate(SpreadMax);
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.settings.ContainsKey(context))
             {
@@ -68,7 +68,7 @@ namespace VVVV.DX11.Nodes
             this.updateddevices.Add(context);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (this.settings.ContainsKey(context))
             {
@@ -90,7 +90,7 @@ namespace VVVV.DX11.Nodes
 
             if (!this.updateddevices.Contains(context))
             {
-                this.Update(null, context);
+                this.Update(context);
             }
 
             if (this.FInEnabled[0])
@@ -99,10 +99,11 @@ namespace VVVV.DX11.Nodes
 
                 this.PreRender(context, rs);
 
-                for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                if (this.FInLayer.IsConnected)
                 {
-                    this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, rs);
+                    this.FInLayer.RenderAll(context, rs);
                 }
+
 
                 this.PostRender(context);
             }

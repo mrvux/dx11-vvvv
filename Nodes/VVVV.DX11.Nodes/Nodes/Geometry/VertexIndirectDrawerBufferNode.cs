@@ -16,7 +16,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "VertexIndirect", Category = "DX11.Drawer", Version = "Buffer", Author = "vux")]
-    public class VertexIndirectDrawerBufferNode : IPluginEvaluate, IDX11ResourceProvider
+    public class VertexIndirectDrawerBufferNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", CheckIfChanged = true)]
         protected Pin<DX11Resource<DX11VertexGeometry>> FInGeom;
@@ -63,7 +63,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
@@ -83,14 +83,14 @@ namespace VVVV.DX11.Nodes
                     DX11VertexIndirectDrawer drawer = (DX11VertexIndirectDrawer)geom.Drawer;
                     var argBuffer = drawer.IndirectArgs.Buffer;
 
-                    if (this.FInI.PluginIO.IsConnected)
+                    if (this.FInI.IsConnected)
                     {
                         int instOffset = this.FInInstOffset[i];
                         ResourceRegion region = new ResourceRegion(instOffset, 0, 0, instOffset + 4, 1, 1);
                         context.CurrentDeviceContext.CopySubresourceRegion(this.FInI[i][context].Buffer, 0, region, argBuffer, 0, 4, 0, 0);
                     }
 
-                    if (this.FInV.PluginIO.IsConnected)
+                    if (this.FInV.IsConnected)
                     {
                         int vOffset = this.FInVtxOffset[i];
                         ResourceRegion region = new ResourceRegion(vOffset, 0, 0, vOffset + 4, 1, 1);
@@ -102,7 +102,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(DX11RenderContext OnDevice, bool force)
         {
             //Not ownding resource eg: do nothing
         }

@@ -20,7 +20,7 @@ namespace VVVV.DX11.Nodes
     public class DX11IsocahedronNode : DX11BasePrimitiveNode
     {
         [Input("Radius",DefaultValue=1)]
-        IDiffSpread<float> FSize;
+        protected IDiffSpread<float> FSize;
 
         protected override DX11IndexedGeometry GetGeom(DX11RenderContext context, int slice)
         {

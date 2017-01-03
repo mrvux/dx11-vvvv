@@ -22,7 +22,7 @@ using VVVV.DX11.Vlc.Player;
 namespace VVVV.Nodes.VideoPlayer
 {
     [PluginInfo(Name = "FileStream", Category = "DX11.Texture", Version = "Vlc", AutoEvaluate = true, Author="vux",Credits="ft")]
-    public class VLCNodeSPR : IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public class VLCNodeSPR : IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         #region Fields
         private IPluginHost FHost;
@@ -299,19 +299,11 @@ namespace VVVV.Nodes.VideoPlayer
 
             }
 
-            for (int i = 0; i < this.FTextureOut.SliceCount; i++)
-            {
-                if (this.FTextureOut[i] != null)
-                {
-                    this.FTextureOut[i].Dispose();
-                }
-            }
-
-
+            this.FTextureOut.SafeDisposeAll();
         }
         #endregion
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Stopwatch w = Stopwatch.StartNew();
 
@@ -373,12 +365,9 @@ namespace VVVV.Nodes.VideoPlayer
             this.FPinOutCopyTime.SetValue(0, w.ElapsedMilliseconds);
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < this.FTextureOut.SliceCount; i++)
-            {
-                this.FTextureOut[i].Dispose(context);
-            }
+            this.FTextureOut.SafeDisposeAll(context);
         }
     }
 }

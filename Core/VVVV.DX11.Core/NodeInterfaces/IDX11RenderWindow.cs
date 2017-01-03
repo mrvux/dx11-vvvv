@@ -6,11 +6,21 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11
 {
-    public interface IDX11RenderWindow
+    public interface IAttachableWindow
     {
-        DX11RenderContext RenderContext { get; set; }
+        void AttachContext(DX11RenderContext renderContext);
         IntPtr WindowHandle { get; }
-        bool IsVisible { get; }
+    }
+
+    public interface IDX11RenderStartPoint : IDX11RenderGraphPart
+    {
+        DX11RenderContext RenderContext { get; }
+        bool Enabled { get; }
         void Present();
+    }
+
+    public interface IDX11RenderWindow : IDX11RenderStartPoint , IAttachableWindow
+    {
+
     }
 }

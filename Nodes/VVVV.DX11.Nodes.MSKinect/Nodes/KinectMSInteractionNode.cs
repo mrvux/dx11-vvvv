@@ -34,13 +34,13 @@ namespace VVVV.DX11.Nodes.Nodes
     public class KinectMSInteractionNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("User Info")]
-        private ISpread<UserInfo> FOutUI;
+        protected ISpread<UserInfo> FOutUI;
 
         [Output("Skeleton Id")]
-        private ISpread<int> FOutSkelId;
+        protected ISpread<int> FOutSkelId;
 
         private bool FInvalidateConnect = false;
 
@@ -50,7 +50,7 @@ namespace VVVV.DX11.Nodes.Nodes
         private UserInfo[] infos = new UserInfo[InteractionStream.FrameUserInfoArrayLength];
 
         [Import()]
-        ILogger log;
+        protected ILogger log;
 
         public KinectMSInteractionNode()
         {
@@ -159,7 +159,7 @@ namespace VVVV.DX11.Nodes.Nodes
                         // Hand data to Interaction framework to be processed
                         this.stream.ProcessDepth(frame.GetRawPixelData(), frame.Timestamp);
                     }
-                    catch (InvalidOperationException ex)
+                    catch
                     {
                         // DepthFrame functions may throw when the sensor gets
                         // into a bad state.  Ignore the frame in that case.
@@ -170,9 +170,6 @@ namespace VVVV.DX11.Nodes.Nodes
 
         void stream_InteractionFrameReady(object sender, InteractionFrameReadyEventArgs e)
         {
-            long timestamp = 0;
-
-
             using (InteractionFrame interactionFrame = e.OpenInteractionFrame())
             {
                 if (interactionFrame != null)

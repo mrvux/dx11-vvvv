@@ -199,7 +199,7 @@ namespace VVVV.MSKinect.Lib
                         this.Runtime.Open();
                         this.IsStarted = true;
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         this.IsStarted = false;
                     }

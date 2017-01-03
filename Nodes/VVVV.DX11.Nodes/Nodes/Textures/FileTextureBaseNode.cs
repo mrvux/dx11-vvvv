@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes
         }
     }
 
-    public abstract class FileTextureBaseNode<T> : IPluginEvaluate, IDX11ResourceProvider, IDisposable where T : IDX11Resource
+    public abstract class FileTextureBaseNode<T> : IPluginEvaluate, IDX11ResourceHost, IDisposable where T : IDX11Resource
     {
         [Input("Filename", StringType = StringType.Filename)]
         protected IDiffSpread<string> FInPath;
@@ -118,7 +118,7 @@ namespace VVVV.DX11.Nodes
         protected abstract void LoadInfo(int slice, string path);
         protected abstract void MarkInvalid(int slice);
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInvalidate || this.FDestroyed)
             {
@@ -172,7 +172,7 @@ namespace VVVV.DX11.Nodes
             }*/
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (force || !this.FInKeep[0])
             {
@@ -194,10 +194,7 @@ namespace VVVV.DX11.Nodes
         #region IDisposable Members
         public void Dispose()
         {
-            for (int i = 0; i < this.FTextureOutput.SliceCount; i++)
-            {
-                if (this.FTextureOutput[i] != null) { this.FTextureOutput[i].Dispose(); }
-            }
+            this.FTextureOutput.SafeDisposeAll();
         }
         #endregion
     }

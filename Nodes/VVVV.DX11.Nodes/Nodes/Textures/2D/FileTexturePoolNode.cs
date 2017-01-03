@@ -12,7 +12,7 @@ using VVVV.DX11.Lib;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "FileTexture", Category = "DX11", Version = "2d.Pooled", Author = "vux")]
-    public class FileTexturePoolNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class FileTexturePoolNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Filename", StringType = StringType.Filename)]
         protected IDiffSpread<string> FInPath;
@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInvalidate || !this.pools.ContainsKey(context))
             {
@@ -89,7 +89,7 @@ namespace VVVV.DX11.Nodes
                     }
                     else
                     {
-                        this.FTextureOutput[i].Data.Remove(context);
+                        this.FTextureOutput[i].Remove(context);
                     }
                     
 
@@ -105,7 +105,7 @@ namespace VVVV.DX11.Nodes
             this.FInvalidate = true;
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (force || !this.FInKeep[0])
             {

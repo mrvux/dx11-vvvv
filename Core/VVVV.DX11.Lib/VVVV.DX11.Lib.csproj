@@ -54,6 +54,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BaseNodes\ReadBackStructNode.cs" />
+    <Compile Include="Devices\Allocators\DX11PooledAdapterDeviceManager.cs" />
     <Compile Include="Devices\Allocators\DX11AllAdapterDeviceManager.cs" />
     <Compile Include="Devices\Allocators\DX11AutoAdapterDeviceManager.cs" />
     <Compile Include="Devices\Allocators\DX11PerMonitorDeviceManager.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Effects\DX11ShaderData.cs" />
     <Compile Include="Effects\DX11ShaderInclude.cs" />
     <Compile Include="Effects\DX11ShaderNode.cs" />
+    <Compile Include="Effects\DX11ShaderVariableCache.cs" />
     <Compile Include="Effects\DX11ShaderVariableManager.cs" />
     <Compile Include="Effects\DX11StreamOutShaderNode.cs" />
     <Compile Include="Effects\EffectVariableExtensions.cs" />
@@ -91,6 +93,8 @@
     <Compile Include="Effects\Pins\ResourceShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\BuffersShaderPins.cs" />
     <Compile Include="Effects\Pins\Resources\SamplerShaderPin.cs" />
+    <Compile Include="Effects\Pins\Resources\Texture3dShaderPin.cs" />
+    <Compile Include="Effects\Pins\Resources\Texture2dShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\TextureArrayShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\TextureShaderPin.cs" />
     <Compile Include="Effects\Pins\Standard\BoolShaderPin.cs" />
@@ -123,6 +127,7 @@
     <Compile Include="RenderGraph\Model\DX11NodeInterfaces.cs" />
     <Compile Include="RenderGraph\Model\DX11OutputPin.cs" />
     <Compile Include="RenderGraph\Model\DX11Pin.cs" />
+    <Compile Include="RenderGraph\Model\DX11VirtualConnection.cs" />
     <Compile Include="RenderGraph\Pins\DX11SingleResourceConnectionHandler.cs" />
     <Compile Include="RenderGraph\Pins\DX11ResourceConnectionHandler.cs" />
     <Compile Include="RenderGraph\Pins\DX11ResourceInputPin.cs" />

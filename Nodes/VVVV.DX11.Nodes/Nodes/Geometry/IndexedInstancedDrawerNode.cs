@@ -16,7 +16,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "IndexedInstancer", Category = "DX11.Drawer", Version = "", Author = "vux")]
-    public class IndexedInstancedDrawerNode : IPluginEvaluate, IDX11ResourceProvider
+    public class IndexedInstancedDrawerNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", CheckIfChanged = true)]
         protected Pin<DX11Resource<DX11IndexedGeometry>> FInGeom;
@@ -61,7 +61,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
@@ -82,7 +82,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             //Not ownding resource eg: do nothing
         }

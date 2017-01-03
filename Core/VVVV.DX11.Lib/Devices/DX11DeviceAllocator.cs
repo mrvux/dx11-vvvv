@@ -15,17 +15,17 @@ namespace VVVV.DX11.Lib.Devices
     {
         private IDX11RenderContextManager devicemanager;
 
-        private List<IDX11RenderWindow> renderwindows;
+        private List<IAttachableWindow> renderwindows;
 
         public event RenderContextDisposingDelegate RenderContextDisposing;
 
         public DX11DeviceAllocator(IDX11RenderContextManager devicemgr)
         {
             this.devicemanager = devicemgr;
-            this.renderwindows = new List<IDX11RenderWindow>();
+            this.renderwindows = new List<IAttachableWindow>();
         }
 
-        public void AddRenderWindow(IDX11RenderWindow window)
+        public void AddRenderWindow(IAttachableWindow window)
         {
             if (!this.renderwindows.Contains(window))
             {
@@ -33,7 +33,7 @@ namespace VVVV.DX11.Lib.Devices
             }
         }
 
-        public void RemoveRenderWindow(IDX11RenderWindow window)
+        public void RemoveRenderWindow(IAttachableWindow window)
         {
             if (this.renderwindows.Contains(window))
             {
@@ -62,7 +62,7 @@ namespace VVVV.DX11.Lib.Devices
                     DXGIScreen screen = this.GetScreen(window);
 
                     //Assign primary window device 
-                    window.RenderContext = this.devicemanager.GetRenderContext(screen);
+                    window.AttachContext(this.devicemanager.GetRenderContext(screen));
                 }
 
                 //Get List of existing devices
@@ -92,7 +92,7 @@ namespace VVVV.DX11.Lib.Devices
             {
                 foreach (IDX11RenderWindow window in this.renderwindows)
                 {
-                    window.RenderContext = this.devicemanager.RenderContexts[0];
+                    window.AttachContext(this.devicemanager.RenderContexts[0]);
                 }
             }
         }

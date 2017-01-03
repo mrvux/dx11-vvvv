@@ -33,4 +33,18 @@ namespace VVVV.DX11.Lib.Effects.Pins
             get { return this.pin.SliceCount; }
         }
     }
+
+
+    public abstract class AbstractV1ColorPin : AbstractShaderPin<VVVV.PluginInterfaces.V1.IColorIn>
+    {
+        public override bool Constant
+        {
+            get { return this.pin.SliceCount == 1; }
+        }
+
+        public override int SliceCount
+        {
+            get { return this.pin.SliceCount; }
+        }
+    }
 }

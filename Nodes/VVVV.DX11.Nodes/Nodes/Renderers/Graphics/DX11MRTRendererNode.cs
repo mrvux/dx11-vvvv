@@ -118,7 +118,7 @@ namespace VVVV.DX11
         {
             if (this.resetbuffers || !this.FOutBuffers[0].Contains(context))
             {
-                this.DisposeBuffers(context);
+                this.FOutBuffers.SafeDisposeAll(context);
 
                 for (int i = 0; i < this.FInTargetCount[0]; i++)
                 {
@@ -138,7 +138,7 @@ namespace VVVV.DX11
         #region Destroy
         protected override void OnDestroy(DX11RenderContext context, bool force)
         {
-            this.DisposeBuffers(context);        
+            this.FOutBuffers.SafeDisposeAll(context); 
         }
         #endregion
 
@@ -186,23 +186,7 @@ namespace VVVV.DX11
         #region On Dispose
         protected override void OnDispose()
         {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
-            {
-                if (this.FOutBuffers[i] != null)
-                {
-                    this.FOutBuffers[i].Dispose();
-                }
-            }
-        }
-        #endregion
-
-        #region Dispose Buffers
-        private void DisposeBuffers(DX11RenderContext context)
-        {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
-            {
-                this.FOutBuffers[i].Dispose(context);
-            }
+            this.FOutBuffers.SafeDisposeAll();
         }
         #endregion
     }

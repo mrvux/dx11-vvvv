@@ -20,7 +20,7 @@ using FeralTic.DX11.Utils;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="GeometryBuffer",Category="DX11.Geometry",Version="Join",Author="vux")]
-    public unsafe class GeometryBufferJoinNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public unsafe class GeometryBufferJoinNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         IPluginHost FHost;
 
@@ -85,7 +85,7 @@ namespace VVVV.DX11.Nodes
 				for (int i = 0; i < this.FInLayout.SliceCount; i++)
 				{
 
-					if (this.FInLayout.PluginIO.IsConnected && this.FInLayout[i] != null)
+					if (this.FInLayout.IsConnected && this.FInLayout[i] != null)
 					{
                         this.inputlayout[i] = this.FInLayout[i];
 					}
@@ -119,7 +119,7 @@ namespace VVVV.DX11.Nodes
         }
 
         #region IDX11Resource Members
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInvalidate)
             {
@@ -160,7 +160,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutput[0].Dispose(context);
         }

@@ -16,7 +16,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Topology", Category = "DX11.Geometry", Version = "", Author = "vux")]
-    public class GeometryTopologyNode : IPluginEvaluate, IDX11ResourceProvider
+    public class GeometryTopologyNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In",CheckIfChanged=true)]
         protected Pin<DX11Resource<IDX11Geometry>> FInGeom;
@@ -46,7 +46,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -66,7 +66,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }
