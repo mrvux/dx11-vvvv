@@ -77,7 +77,9 @@
     <Compile Include="Nodes\Textures\1D\DynamicTexture1DColorNode.cs" />
     <Compile Include="Nodes\Textures\1D\InfoTexture1DNode.cs" />
     <Compile Include="Nodes\Textures\1D\WriterTexture1dNode.cs" />
+    <Compile Include="Nodes\Textures\2D\record.cs" />
     <Compile Include="Nodes\Textures\2D\TextureLoader.cs" />
+    <Compile Include="Nodes\Textures\2D\Writer2.cs" />
     <Compile Include="Nodes\Textures\2D\WriterTextureCompressedNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceDepthTextureArray.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
@@ -235,6 +237,9 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
