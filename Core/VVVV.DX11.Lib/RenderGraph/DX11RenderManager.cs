@@ -10,6 +10,7 @@ using VVVV.PluginInterfaces.V1;
 using FeralTic.DX11;
 using VVVV.Core.Logging;
 using VVVV.DX11.Lib.RenderGraph.Listeners;
+using System.Threading.Tasks;
 
 namespace VVVV.DX11.Lib.RenderGraph
 {
@@ -25,7 +26,7 @@ namespace VVVV.DX11.Lib.RenderGraph
         private ILogger logger;
         private IDX11GraphBuilder gb;
 
-        private List<IDX11RenderWindow> oldwindows = new List<IDX11RenderWindow>();
+        private List<DX11Node> oldwindows = new List<DX11Node>();
 
         public bool Enabled { get; set; }
 
@@ -81,15 +82,15 @@ namespace VVVV.DX11.Lib.RenderGraph
         public void Reset()
         {
             
-            List<IDX11RenderWindow> windows = this.FindRenderWindows();
-            foreach (IDX11RenderWindow win in windows)
+            List<DX11Node> windows = this.FindRenderWindows();
+            foreach (DX11Node win in windows)
             {
-                this.allocator.AddRenderWindow(win);
+                this.allocator.AddRenderWindow(win.Interfaces.RenderWindow);
             }
 
-            foreach (IDX11RenderWindow old in this.oldwindows)
+            foreach (DX11Node old in this.oldwindows)
             {
-                if (!windows.Contains(old)) { this.allocator.RemoveRenderWindow(old); }
+                if (!windows.Contains(old)) { this.allocator.RemoveRenderWindow(old.Interfaces.RenderWindow); }
             }
 
             this.allocator.Reallocate();
@@ -128,6 +129,15 @@ namespace VVVV.DX11.Lib.RenderGraph
    
         }
 
+
+        public bool AllowThreadPresentation { get; set; }
+        public bool AllowThreadPerDevice { get; set; }
+
+        public bool IsThreadPerDeviceAllowed
+        {
+            get { return this.graph.HasOldInterface == false; }
+        }
+
         public void Render()
         {
             if (!this.Enabled)
@@ -135,12 +145,34 @@ namespace VVVV.DX11.Lib.RenderGraph
                 return;
             }
 
-            foreach (DX11RenderContext dev in this.RenderGraphs.Keys)
+            if (this.AllowThreadPerDevice && this.IsThreadPerDeviceAllowed)
             {
-                this.RenderGraphs[dev].Render(this.FindRenderWindows(dev));
-                this.RenderGraphs[dev].EndFrame();
+                List<DX11RenderContext> devices = this.RenderGraphs.Keys.ToList();
+
+                Task[] renderTasks = new Task[devices.Count];
+                for (int i = 0; i < devices.Count; i++)
+                {
+                    int index = i;
+                    renderTasks[i] = Task.Run(() => this.RenderDevice(devices[index]));
+                }
+                Task.WaitAll(renderTasks);
+            }
+            else
+            {
+                foreach (DX11RenderContext dev in this.RenderGraphs.Keys)
+                {
+                    RenderDevice(dev);
+                }
             }
         }
+
+        private void RenderDevice(DX11RenderContext dev)
+        {
+            var renderWindows = this.FindRenderStartPoints(dev);
+            this.RenderGraphs[dev].Render(renderWindows);
+            this.RenderGraphs[dev].EndFrame();
+        }
+
 
         /// <summary>
         /// Presents all render windows (regardless of device)
@@ -152,17 +184,24 @@ namespace VVVV.DX11.Lib.RenderGraph
                 return;
             }
 
-            foreach (IDX11RenderWindow window in this.FindRenderWindows())
+            List<DX11Node> startPoints = this.FindRenderStartPoints();
+
+            if (!this.AllowThreadPresentation)
             {
-                try
+                foreach (DX11Node window in startPoints)
                 {
-                    window.Present();
+                    this.PresentWindow(window);
                 }
-                catch (Exception ex)
+            }
+            else
+            {
+                Task[] presentTasks = new Task[startPoints.Count];
+                for (int i = 0; i < presentTasks.Length; i++)
                 {
-                    this.logger.Log(LogType.Error, "Failed to present render window");
-                    this.logger.Log(ex);
+                    int index = i;
+                    presentTasks[i] = Task.Run(() => this.PresentWindow(startPoints[index]));
                 }
+                Task.WaitAll(presentTasks);
             }
 
             foreach (DX11RenderContext ctx in this.RenderGraphs.Keys)
@@ -171,15 +210,28 @@ namespace VVVV.DX11.Lib.RenderGraph
             }
         }
 
-        #region Find Renderers
-        private List<DX11Node> FindRenderWindows(DX11RenderContext device)
+        private void PresentWindow(DX11Node window)
+        {
+            try
+            {
+                window.Interfaces.RenderStartPoint.Present();
+            }
+            catch (Exception ex)
+            {
+                this.logger.Log(LogType.Error, "Failed to present render window");
+                this.logger.Log(ex);
+            }
+        }
+
+
+
+        private List<DX11Node> FindRenderWindows()
         {
             List<DX11Node> renderers = new List<DX11Node>();
-
             foreach (DX11Node n in this.graph.RenderWindows)
             {
                 IDX11RenderWindow window = n.Interfaces.RenderWindow;
-                if (window.RenderContext == device && window.IsVisible)
+                if (window.Enabled)
                 {
                     renderers.Add(n);
                 }
@@ -187,26 +239,34 @@ namespace VVVV.DX11.Lib.RenderGraph
             return renderers;
         }
 
-        private List<IDX11RenderWindow> FindRenderWindows()
+        private List<DX11Node> FindRenderStartPoints()
         {
-            List<IDX11RenderWindow> renderers = new List<IDX11RenderWindow>();
-
-            foreach (DX11Node n in this.graph.RenderWindows)
+            List<DX11Node> renderers = new List<DX11Node>();
+            foreach (DX11Node n in this.graph.RenderStartPoints)
             {
 
-                IDX11RenderWindow window = n.Interfaces.RenderWindow;
-                //We only care about the window in case it's visible
-
-                if (window.IsVisible)
+                IDX11RenderStartPoint window = n.Interfaces.RenderStartPoint;
+                if (window.Enabled)
                 {
-                    renderers.Add(window);
+                    renderers.Add(n);
                 }
             }
             return renderers;
         }
-        #endregion
 
+        private List<DX11Node> FindRenderStartPoints(DX11RenderContext context)
+        {
+            List<DX11Node> renderers = new List<DX11Node>();
+            foreach (DX11Node n in this.graph.RenderStartPoints)
+            {
 
-
+                IDX11RenderStartPoint window = n.Interfaces.RenderStartPoint;
+                if (window.Enabled && window.RenderContext == context)
+                {
+                    renderers.Add(n);
+                }
+            }
+            return renderers;
+        }
     }
 }

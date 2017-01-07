@@ -21,37 +21,37 @@ using Microsoft.Kinect.Fusion;
 namespace VVVV.DX11.Nodes.Nodes
 {
     [PluginInfo(Name="Fusion",Category="Kinect",Version="Microsoft",Author="vux")]
-    public unsafe class KinectFusionNode : IPluginEvaluate,IDX11ResourceProvider, IPluginConnections
+    public unsafe class KinectFusionNode : IPluginEvaluate,IDX11ResourceHost, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Input("Voxel Per Meter", DefaultValue = 256)]
-        private IDiffSpread<int> FInVPM;
+        protected IDiffSpread<int> FInVPM;
 
         [Input("Voxel X",DefaultValue=256)]
-        private IDiffSpread<int> FInVX;
+        protected IDiffSpread<int> FInVX;
 
         [Input("Voxel Y", DefaultValue = 256)]
-        private IDiffSpread<int> FInVY;
+        protected IDiffSpread<int> FInVY;
 
         [Input("Voxel Z", DefaultValue = 256)]
-        private IDiffSpread<int> FInVZ;
+        protected IDiffSpread<int> FInVZ;
 
         [Input("Enabled", DefaultValue = 1)]
-        private ISpread<bool> FInEnabled;
+        protected ISpread<bool> FInEnabled;
 
         [Input("Reset", IsBang = true)]
-        private ISpread<bool> FInReset;
+        protected ISpread<bool> FInReset;
 
         [Input("Export Geom", IsBang = true)]
-        private ISpread<bool> FInExport;
+        protected ISpread<bool> FInExport;
 
         [Input("Export Voxels", IsBang = true)]
-        private ISpread<bool> FInVoxels;
+        protected ISpread<bool> FInVoxels;
 
         [Input("Geom Voxel Step", DefaultValue=1)]
-        private ISpread<int> FInGeomVoxelStep;
+        protected ISpread<int> FInGeomVoxelStep;
 
         [Output("Texture", IsSingle = true)]
         protected Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
@@ -60,10 +60,10 @@ namespace VVVV.DX11.Nodes.Nodes
         protected Pin<DX11Resource<IDX11ReadableStructureBuffer>> FPCOut;
 
         [Output("Geometry Out", IsSingle = true)]
-        ISpread<DX11Resource<DX11IndexedGeometry>> FGeomOut;
+        protected ISpread<DX11Resource<DX11IndexedGeometry>> FGeomOut;
 
         [Output("Voxel Buffer Out", IsSingle = true)]
-        ISpread<DX11Resource<IDX11ReadableStructureBuffer>> FOutVoxels;
+        protected ISpread<DX11Resource<IDX11ReadableStructureBuffer>> FOutVoxels;
 
         [Output("WorldCamera")]
         protected ISpread<SlimDX.Matrix> FOutWorldCam;
@@ -81,8 +81,6 @@ namespace VVVV.DX11.Nodes.Nodes
         private int VoxelResolutionY = 256;
         private int VoxelResolutionZ = 256;
         private const ReconstructionProcessor ProcessorType = ReconstructionProcessor.Amp;
-        private float minDepthClip = FusionDepthProcessor.DefaultMinimumDepth;
-        private float maxDepthClip = FusionDepthProcessor.DefaultMaximumDepth;
 
         private FusionFloatImageFrame depthFloatBuffer;
         private FusionPointCloudImageFrame pointCloudBuffer;
@@ -300,13 +298,13 @@ namespace VVVV.DX11.Nodes.Nodes
             }
             catch (Exception ex)
             {
-                Console.Write("Test");
+                Console.Write(ex.Message);
             }
 
             this.processing = false;
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FTextureOutput[0].Contains(context))
             {
@@ -424,7 +422,7 @@ namespace VVVV.DX11.Nodes.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FTextureOutput[0].Dispose(context);
         }

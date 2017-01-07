@@ -14,14 +14,15 @@ namespace VVVV.DX11.Internals.Effects.Pins
 {
     public class FloatShaderPin : AbstractValuePin<float>
     {
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
-        {
-            shaderinstance.SetByName(this.Name, this.pin[slice]);
-        }
-
         protected override void SetDefault(InputAttribute attr, EffectVariable var)
         {
             attr.DefaultValue = var.AsScalar().GetFloat();
+        }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsScalar();
+            return (i) => { sv.Set(this.pin[i]); };
         }
     }
 }

@@ -45,9 +45,25 @@ namespace VVVV {
 						rng.length = this->Range->Length;
 						lay->SetDrawingEffect(pColor, rng);
 						pColor->Release();
+						pointer = System::IntPtr((void*)pColor);
+					}
+					else
+					{
+						pointer = System::IntPtr::Zero;
 					}
 				}
 
+				void Destroy()
+				{
+					if (pointer != System::IntPtr::Zero)
+					{
+						IFW1ColorRGBA *pColor = (IFW1ColorRGBA*)this->pointer.ToPointer();
+						pColor->Release();
+						pointer = System::IntPtr::Zero;
+					}
+				}
+
+				System::IntPtr pointer;
 				System::Boolean Enabled;
 				SlimDX::Color4 Color;
 				SlimDX::DirectWrite::TextRange^ Range;
@@ -70,6 +86,14 @@ namespace VVVV {
 				virtual void Evaluate(int spreadMax) 
 				{
 					this->styleOut->SliceCount = spreadMax;
+
+					for (int i = 0; i < this->styleOut->SliceCount; i++)
+					{
+						if (this->styleOut[i] != nullptr)
+						{
+							this->styleOut[i]->Destroy();
+						}		
+					}
 					 
 					for (int i = 0; i < spreadMax; i++)
 					{
@@ -96,7 +120,7 @@ namespace VVVV {
 				VVVV::PluginInterfaces::V2::IDiffSpread<bool>^ enabled;
 
 				[Output("Style Out")]
-				VVVV::PluginInterfaces::V2::ISpread<ITextStyler^>^ styleOut;
+				VVVV::PluginInterfaces::V2::ISpread<ColorStyler^>^ styleOut;
 			};
 		}
 	}

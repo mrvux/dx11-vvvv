@@ -13,28 +13,28 @@ namespace VVVV.DX11.Nodes.Nodes
     public class KinectUserInteractionInfoNode : IPluginEvaluate
     {
         [Input("User Info")]
-        private Pin<UserInfo> FInUI;
+        protected Pin<UserInfo> FInUI;
 
         [Output("Hand Count")]
-        private ISpread<int> FOutHandCount;
+        protected ISpread<int> FOutHandCount;
 
         [Output("Is Tracked")]
-        private ISpread<bool> FOutIsTracked;
+        protected ISpread<bool> FOutIsTracked;
 
         [Output("Is Pressed")]
-        private ISpread<bool> FOutIsPressed;
+        protected ISpread<bool> FOutIsPressed;
 
         [Output("Position")]
-        private ISpread<Vector2D> FOutHandPos;
+        protected ISpread<Vector2D> FOutHandPos;
 
         [Output("Press Extent")]
-        private ISpread<double> FOutExtent;
+        protected ISpread<double> FOutExtent;
 
         [Output("Hand Type")]
-        private ISpread<string> FOutHandType;
+        protected ISpread<string> FOutHandType;
 
         [Output("Hand Interaction Type")]
-        private ISpread<string> FOutHandInterType;
+        protected ISpread<string> FOutHandInterType;
 
 
 

@@ -13,7 +13,7 @@ using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11.Nodes
 {
-    public class DX11ResourceConsNode<T> : IPluginEvaluate, IDX11ResourceProvider, IPartImportsSatisfiedNotification where T : IDX11Resource
+    public class DX11ResourceConsNode<T> : IPluginEvaluate, IDX11ResourceHost, IPartImportsSatisfiedNotification where T : IDX11Resource
     {
         [Config("Input Count", DefaultValue = 2, MinValue = 2)]
         protected IDiffSpread<int> FInputCount;
@@ -85,12 +85,12 @@ namespace VVVV.DX11.Nodes
         #endregion
 
         #region IDX11ResourceProvider Members
-        public void Update(IPluginIO pin, DX11RenderContext OnDevice)
+        public void Update(DX11RenderContext OnDevice)
         {
 
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext OnDevice, bool force)
+        public void Destroy(DX11RenderContext OnDevice, bool force)
         {
 
         }

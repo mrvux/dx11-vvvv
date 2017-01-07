@@ -11,7 +11,7 @@ using VVVV.Utils.VMath;
 
 namespace VVVV.DX11.Nodes
 {
-    public class TextureArraySetSlice : IDisposable
+    public class TextureArraySetSlice : IDX11Resource, IDisposable
     {
         private DX11RenderContext context;
 

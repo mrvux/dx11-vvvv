@@ -16,12 +16,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public ReadBufferRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            if (settings.ReadBuffer != null)
-            {
-                shaderinstance.SetByName(this.Name, settings.ReadBuffer.SRV);
-            }
+            var sv = shader.Effect.GetVariableByName(this.Name).AsResource();
+            return (s) => sv.SetResource(s.ReadBuffer.SRV);
         }
     }
 
@@ -29,7 +27,7 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public RWBackBufferRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        private void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
         {
             if (settings.BackBuffer != null)
             {
@@ -52,15 +50,21 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
                 } 
             }
         }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            return (s) => this.Apply(shader, s);
+        }
     }
 
     public class IntElemSizeRenderVariable : AbstractRenderVariable
     {
         public IntElemSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.RenderWidth);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set(s.RenderWidth);
         }
     }
 
@@ -68,9 +72,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public IntViewPortCountRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.ViewportCount);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set(s.ViewportCount);
         }
     }
 
@@ -78,9 +83,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public IntViewPortIndexRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.ViewportIndex);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set(s.ViewportIndex);
         }
     }
 
@@ -88,9 +94,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public Float2TargetSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, new Vector2(settings.RenderWidth, settings.RenderHeight));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => sv.Set(new Vector2(s.RenderWidth, s.RenderHeight));
         }
     }
 
@@ -98,9 +105,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public Float3TargetSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, new Vector3(settings.RenderWidth, settings.RenderHeight, settings.RenderDepth));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => sv.Set(new Vector3(s.RenderWidth, s.RenderHeight, s.RenderDepth));
         }
     }
 
@@ -108,12 +116,18 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public Float2InvTargetSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        private Vector2 GetVector(DX11RenderSettings settings)
         {
             Vector2 v = new Vector2(settings.RenderWidth, settings.RenderHeight);
             v.X = 1.0f / v.X;
             v.Y = 1.0f / v.Y;
-            shaderinstance.SetByName(this.Name, v);
+            return v;
+        }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => sv.Set(this.GetVector(s));
         }
     }
 
@@ -121,13 +135,19 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public Float3InvTargetSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        private Vector3 GetVector(DX11RenderSettings settings)
         {
-            Vector3 v = new Vector3(settings.RenderWidth, settings.RenderHeight,settings.RenderDepth);
+            Vector3 v = new Vector3(settings.RenderWidth, settings.RenderHeight, settings.RenderDepth);
             v.X = 1.0f / v.X;
             v.Y = 1.0f / v.Y;
             v.Z = 1.0f / v.Z;
-            shaderinstance.SetByName(this.Name, v);
+            return v;
+        }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => sv.Set(this.GetVector(s));
         }
     }
 
@@ -135,10 +155,16 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public Float4TargetSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        private Vector4 GetVector(DX11RenderSettings settings)
         {
             Vector2 v = new Vector2(settings.RenderWidth, settings.RenderHeight);
-            shaderinstance.SetByName(this.Name, new Vector4(v.X, v.Y, 1.0f / v.X, 1.0f / v.Y));
+            return new Vector4(v.X, v.Y, 1.0f / v.X, 1.0f / v.Y);
+        }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => sv.Set(this.GetVector(s));
         }
     }
 
@@ -146,9 +172,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public Float4VolumeSizeRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, new Vector4(settings.RenderWidth, settings.RenderHeight, settings.RenderDepth, 1.0f));
+            var sv = shader.Effect.GetVariableByName(this.Name).AsVector();
+            return (s) => sv.Set(new Vector4(s.RenderWidth, s.RenderHeight, s.RenderDepth, 1.0f));
         }
     }
 
@@ -156,9 +183,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public IntDrawCountRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, settings.DrawCallCount);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set(s.DrawCallCount);
         }
     }
 
@@ -166,9 +194,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public FloatDrawCountRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            shaderinstance.SetByName(this.Name, (float)settings.DrawCallCount);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set((float)s.DrawCallCount);
         }
     }
 
@@ -176,10 +205,10 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
     {
         public InvFloatDrawCountRenderVariable(EffectVariable var) : base(var) { }
 
-        public override void Apply(DX11ShaderInstance shaderinstance, DX11RenderSettings settings)
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
         {
-            float val = 1.0f / (float)settings.DrawCallCount;
-            shaderinstance.SetByName(this.Name, val);
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set(1.0f / (float)s.DrawCallCount);
         }
     }
 }

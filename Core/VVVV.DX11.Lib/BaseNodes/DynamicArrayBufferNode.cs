@@ -17,7 +17,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
 
-    public abstract class DynamicArrayBuffer<T> : IPluginEvaluate, IDX11ResourceProvider, IDisposable where T : struct
+    public abstract class DynamicArrayBuffer<T> : IPluginEvaluate, IDX11ResourceHost, IDisposable where T : struct
     {
         [Input("Element Count", DefaultValue = 1, AutoValidate = false)]
         protected ISpread<int> FInCount;
@@ -65,7 +65,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (this.FInvalidate)
             {
@@ -100,25 +100,18 @@ namespace VVVV.DX11.Nodes
 
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             if (force)
             {
-                this.FOutput[0].Dispose(context);
+                this.FOutput.SafeDisposeAll(context);
             }
         }
 
         #region IDisposable Members
         public void Dispose()
         {
-            try
-            {
-                this.FOutput[0].Dispose();
-            }
-            catch
-            {
-
-            }
+            this.FOutput.SafeDisposeAll();
         }
         #endregion
     }

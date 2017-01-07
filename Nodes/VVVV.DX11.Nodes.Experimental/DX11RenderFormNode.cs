@@ -21,7 +21,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 {
     [PluginInfo(Name="Renderer",Category="DX11", Version="Form", Author="vux",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererProvider
+    public class DX11RenderFormNode2 : IPluginEvaluate, IDisposable, IDX11RenderWindow,IDX11RendererHost
     {
         #region Input Pins
         IPluginHost FHost;
@@ -58,7 +58,10 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         protected ISpread<bool> FInResize;
 
         [Input("Rate", Visibility = PinVisibility.OnlyInspector,DefaultValue=30)]
-        protected ISpread<int> FInRate;
+        protected IDiffSpread<int> FInRate;
+
+        [Input("Flip Sequential", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInFlipSequential;
 
         [Input("Background Color", DefaultColor = new double[] { 0, 0, 0, 1 }, Order = 3)]
         protected ISpread<RGBAColor> FInBgColor;
@@ -84,19 +87,12 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
         private bool FInvalidateSwapChain;
         private bool FResized = false;
-        private DX11RenderContext primary;
         private DX11SwapChain swapchain;
         private Form form;
         private DX11GraphicsRenderer renderer;
 
         private int prevx = 400;
         private int prevy = 300;
-
-        private int prevpx;
-        private int prevpy;
-
-        private bool setfull = false;
-        private bool invalidate;
         #endregion
 
 		[ImportingConstructor()]
@@ -110,7 +106,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.form.Height = 300;
             //this.form.
             //this.form.ResizeEnd += form_ResizeEnd;
-            this.invalidate = true;
             this.form.Show();
             this.form.ShowIcon = false;
 
@@ -141,7 +136,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.SetBorder();
             }
 
-            if (this.FInResize[0])
+            if (this.FInResize[0] || this.FInRate.IsChanged || this.FInFlipSequential.IsChanged)
             {
                 this.FInvalidateSwapChain = true;
             }
@@ -160,11 +155,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.updateddevices.Clear();
             this.rendereddevices.Clear();
             
-
-            if (this.FInFullScreen.IsChanged)
-            {
-                this.setfull = true;
-            }
         }
         #endregion
 
@@ -175,7 +165,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         }
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -186,10 +176,11 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             if (this.FResized || this.FInvalidateSwapChain || this.swapchain == null)
             {
                 if (this.swapchain != null) { this.swapchain.Dispose(); }
-                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, false);
+                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, this.FInFlipSequential[0]);
+                this.FInvalidateSwapChain = false;
             }
 
-            if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(this.FHost, context); }
+            if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(context); }
             this.updateddevices.Add(context);
 
             if (this.FInFullScreen[0] != this.swapchain.IsFullScreen)
@@ -207,8 +198,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     this.swapchain.Resize();
 
                     this.swapchain.SetFullScreen(true);
-
-                    this.setfull = false;
                 }
                 else
                 {
@@ -224,7 +213,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
         }
         #endregion
@@ -255,13 +244,17 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         #endregion
 
         #region Render Window
+
+        private DX11RenderContext attachedContext;
+
+        public void AttachContext(DX11RenderContext renderContext)
+        {
+            this.attachedContext = renderContext;
+        }
+
         public DX11RenderContext RenderContext
         {
-            get { return this.primary; }
-            set
-            {
-                this.primary = value;
-            }
+            get { return this.attachedContext; }
         }
 
         public IntPtr WindowHandle
@@ -269,7 +262,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             get { return this.form.Handle; }
         }
 
-        public bool IsVisible
+        public bool Enabled
         {
             get { return this.form.Visible; }
         }
@@ -300,7 +293,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         {
             Device device = context.Device;
 
-            if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
+            if (!this.updateddevices.Contains(context)) { this.Update(context); }
 
             if (this.rendereddevices.Contains(context)) { return; }
 
@@ -319,7 +312,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 }
 
                 //Only call render if layer connected
-                if (this.FInLayer.PluginIO.IsConnected)
+                if (this.FInLayer.IsConnected)
                 {
                     float cw = (float)this.form.ClientSize.Width;
                     float ch = (float)this.form.ClientSize.Height;
@@ -338,7 +331,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     //Call render on all layers
                     for (int j = 0; j < this.FInLayer.SliceCount; j++)
                     {
-                        this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
+                        this.FInLayer[j][context].Render(context, settings);
                     }
                 }
                 renderer.CleanTargets();

@@ -12,7 +12,7 @@ using VVVV.Utils.VMath;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Switch", Category="DX11.Texture", Version="2d", Author="vux")]
-    public class SwitchTexture2DNode : IPluginEvaluate, IDX11ResourceProvider, IPartImportsSatisfiedNotification
+    public class SwitchTexture2DNode : IPluginEvaluate, IDX11ResourceHost, IPartImportsSatisfiedNotification
     {
         [Input("Switch", Order=-5)]
         protected ISpread<int> FInSwitch;
@@ -33,23 +33,45 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.FOutput.SliceCount = SpreadMax;
+            
 
-            for (int i = 0; i < SpreadMax; i++)
+            if (this.FInSwitch.SliceCount == 1)
             {
-                int idx = VMath.Zmod(FInSwitch[i], FInputs.Count);
-
+                int idx = VMath.Zmod(FInSwitch[0], FInputs.Count);
                 var pin = FInputs[idx].IOObject;
 
-                this.FOutput[i] = pin.PluginIO.IsConnected ? pin[i] : new DX11Resource<DX11Texture2D>();
+                if (pin.SliceCount > 0)
+                {
+                    this.FOutput.SliceCount = pin.SliceCount;
+                    for (int i = 0; i < pin.SliceCount; i++)
+                    {
+                        this.FOutput[i] = pin.IsConnected ? pin[i] : new DX11Resource<DX11Texture2D>();
+                    }
+                }
+                else
+                {
+                    this.FOutput.SliceCount = SpreadMax;
+                }
+            }
+            else
+            {
+                this.FOutput.SliceCount = SpreadMax;
+                for (int i = 0; i < SpreadMax; i++)
+                {
+                    int idx = VMath.Zmod(FInSwitch[i], FInputs.Count);
+
+                    var pin = FInputs[idx].IOObject;
+
+                    this.FOutput[i] = pin.IsConnected ? pin[i] : new DX11Resource<DX11Texture2D>();
+                }
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
 
         }

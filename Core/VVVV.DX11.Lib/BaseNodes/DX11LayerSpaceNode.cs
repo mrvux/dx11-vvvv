@@ -15,7 +15,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerProvider
+    public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerHost
     {
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
@@ -34,7 +34,7 @@ namespace VVVV.DX11.Nodes
 
         #region IDX11ResourceProvider Members
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             if (!this.FOutLayer[0].Contains(context))
             {
@@ -43,12 +43,12 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FOutLayer[0].Dispose(context);
+            this.FOutLayer.SafeDisposeAll(context);
         }
 
-        public void Render(IPluginIO pin, DX11RenderContext context, DX11RenderSettings settings)
+        public void Render(DX11RenderContext context, DX11RenderSettings settings)
         {
             if (this.FLayerIn.SliceCount == 0) { return; }
 
@@ -56,35 +56,44 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FLayerIn.IsConnected)
                 {
+
                     Matrix view = settings.View;
                     Matrix projection = settings.Projection;
                     Matrix vp = settings.ViewProjection;
+                    Matrix crop = settings.Crop;
+                    Matrix aspect = settings.Aspect;
+                    Matrix rawProj = settings.RawProjection;
                     bool depthonly = settings.DepthOnly;
 
-                    this.UpdateSettings(settings);
-
-                    for (int i = 0; i < this.FLayerIn.SliceCount;i++)
+                    for (int i = 0; i< this.LayerCount;i++)
                     {
-                        this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
+                        this.UpdateSettings(settings,i);
+
+                        this.FLayerIn.RenderAll(context, settings);
                     }
-                        
 
                     settings.View = view;
                     settings.Projection = projection;
                     settings.ViewProjection = vp;
                     settings.DepthOnly = depthonly;
+                    settings.Crop = crop;
+                    settings.Aspect = aspect;
+                    settings.RawProjection = rawProj;
                 }
             }
             else
             {
-                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                {
-                    this.FLayerIn[i][context].Render(this.FLayerIn.PluginIO, context, settings);
-                }
+                this.FLayerIn.RenderAll(context, settings);
             }
         }
 
-        protected abstract void UpdateSettings(DX11RenderSettings settings);
+        protected abstract int LayerCount
+        {
+            get;
+        }
+
+
+        protected abstract void UpdateSettings(DX11RenderSettings settings, int slice);
 
 
         #endregion

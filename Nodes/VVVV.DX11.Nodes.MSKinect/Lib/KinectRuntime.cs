@@ -261,7 +261,7 @@ namespace VVVV.MSKinect.Lib
 
                         this.IsStarted = true;
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         this.IsStarted = false;
                     }

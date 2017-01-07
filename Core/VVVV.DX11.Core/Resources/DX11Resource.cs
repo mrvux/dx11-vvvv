@@ -18,6 +18,8 @@ namespace VVVV.DX11
     {
         private Dictionary<DX11RenderContext, IDX11Resource> resources = new Dictionary<DX11RenderContext, IDX11Resource>();
 
+        private object syncRoot = new object();
+
         public DX11Resource()
         {
             this.resources = new Dictionary<DX11RenderContext, IDX11Resource>();
@@ -43,8 +45,11 @@ namespace VVVV.DX11
 
         public bool Contains(DX11RenderContext context)
         {
-            if (this.resources == null) { return false; }
-            return this.resources.ContainsKey(context);
+            lock (syncRoot)
+            {
+                if (this.resources == null) { return false; }
+                return this.resources.ContainsKey(context);
+            }
         }
 
         /// <summary>
@@ -52,17 +57,20 @@ namespace VVVV.DX11
         /// </summary>
         public void Dispose()
         {
-            //Dispose resource for all devices
-            foreach (DX11RenderContext context in this.resources.Keys)
+            lock (syncRoot)
             {
-                if (resources[context] is IDisposable)
+                //Dispose resource for all devices
+                foreach (DX11RenderContext context in this.resources.Keys)
                 {
-                    IDisposable d = resources[context] as IDisposable;
-                    d.Dispose();
+                    if (resources[context] is IDisposable)
+                    {
+                        IDisposable d = resources[context] as IDisposable;
+                        d.Dispose();
+                    }
+                    //resources[dev].Dispose();
                 }
-                //resources[dev].Dispose();
+                resources.Clear();
             }
-            resources.Clear();
         }
 
         /// <summary>
@@ -71,15 +79,29 @@ namespace VVVV.DX11
         /// <param name="device">Device to dispose resource</param>
         public void Dispose(DX11RenderContext context)
         {
-            if (this.resources.ContainsKey(context))
+            lock (syncRoot)
             {
-                //this.resources[device].Dispose();
-                if (resources[context] is IDisposable)
+                if (this.resources.ContainsKey(context))
                 {
-                    IDisposable d = resources[context] as IDisposable;
-                    d.Dispose();
+                    //this.resources[device].Dispose();
+                    if (resources[context] is IDisposable)
+                    {
+                        IDisposable d = resources[context] as IDisposable;
+                        d.Dispose();
+                    }
+                    this.resources.Remove(context);
                 }
-                this.resources.Remove(context);
+            }
+        }
+
+        public void Remove(DX11RenderContext context)
+        {
+            lock (syncRoot)
+            {
+                if (this.resources.ContainsKey(context))
+                {
+                    this.resources.Remove(context);
+                }
             }
         }
 
@@ -92,18 +114,24 @@ namespace VVVV.DX11
         {
             get
             {
-                if (this.resources.ContainsKey(context))
+                lock (syncRoot)
                 {
-                    return (T)this.resources[context];
-                }
-                else
-                {
-                    return default(T);
+                    if (this.resources.ContainsKey(context))
+                    {
+                        return (T)this.resources[context];
+                    }
+                    else
+                    {
+                        return default(T);
+                    }
                 }
             }
             set
             {
-                this.resources[context] = value;
+                lock (syncRoot)
+                {
+                    this.resources[context] = value;
+                }
             }
         }
 

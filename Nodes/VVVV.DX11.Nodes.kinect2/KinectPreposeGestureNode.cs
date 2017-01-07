@@ -73,8 +73,6 @@ namespace VVVV.MSKinect.Nodes
             GestureStatistics.matchTimes = new List<StatisticsEntryMatch>();
         }
 
-        private bool first = true;
-
         public void Evaluate(int SpreadMax)
         {
 

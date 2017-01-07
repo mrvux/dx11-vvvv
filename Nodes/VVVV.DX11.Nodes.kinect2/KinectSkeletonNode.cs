@@ -21,40 +21,40 @@ namespace VVVV.MSKinect.Nodes
     public class KinectSkeletonNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        protected Pin<KinectRuntime> FInRuntime;
 
         [Output("Skeleton Count", IsSingle = true)]
-        private ISpread<int> FOutCount;
+        protected ISpread<int> FOutCount;
 
         [Output("User Index")]
-        private ISpread<string> FOutUserIndex;
+        protected ISpread<string> FOutUserIndex;
 
         [Output("Short Index")]
-        private ISpread<int> FOutShortIndex;
+        protected ISpread<int> FOutShortIndex;
 
         [Output("Position")]
-        private ISpread<Vector3> FOutPosition;
+        protected ISpread<Vector3> FOutPosition;
 
         [Output("Clipping")]
-        private ISpread<Vector4> FOutClipped;
+        protected ISpread<Vector4> FOutClipped;
 
         [Output("Joint ID")]
-        private ISpread<string> FOutJointID;
+        protected ISpread<string> FOutJointID;
 
         [Output("Joint Position")]
-        private ISpread<Vector3> FOutJointPosition;
+        protected ISpread<Vector3> FOutJointPosition;
 
         [Output("Joint Position RGB")]
-        private ISpread<Vector2> FOutJointPositionRGB;
+        protected ISpread<Vector2> FOutJointPositionRGB;
 
         [Output("Joint Orientation")]
-        private ISpread<Quaternion> FOutJointOrientation;
+        protected ISpread<Quaternion> FOutJointOrientation;
 
         [Output("Joint State")]
-        private ISpread<string> FOutJointState;
+        protected ISpread<string> FOutJointState;
 
         [Output("Frame Number", IsSingle = true)]
-        private ISpread<long> FOutFrameNumber;
+        protected ISpread<long> FOutFrameNumber;
 
 
         private bool FInvalidateConnect = false;
@@ -97,9 +97,6 @@ namespace VVVV.MSKinect.Nodes
                 {
                     List<Body> skels = new List<Body>();
                     List<int> indices = new List<int>();
-                    float z = float.MaxValue;
-                    int id = -1;
-
                     lock (m_lock)
                     {
 

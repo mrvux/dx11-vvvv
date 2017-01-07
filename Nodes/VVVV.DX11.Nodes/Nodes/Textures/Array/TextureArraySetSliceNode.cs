@@ -20,7 +20,7 @@ using VVVV.DX11.Lib.Rendering;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "SetSlice", Category = "DX11.Texture2D", Version = "", Author="vux")]
-    public class TextureArraySetSliceNode : IPluginEvaluate, IDX11ResourceProvider, IDisposable
+    public class TextureArraySetSliceNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Texture In", IsSingle = true)]
         protected Pin<DX11Resource<DX11Texture2D>> FTexIn;
@@ -49,7 +49,7 @@ namespace VVVV.DX11.Nodes
         [Output("Texture Array", IsSingle = true)]
         protected ISpread<DX11Resource<DX11RenderTextureArray>> FOutTB;
 
-        private TextureArraySetSlice generator;
+        private DX11Resource<TextureArraySetSlice> generators = new DX11Resource<TextureArraySetSlice>();
 
         public void Evaluate(int SpreadMax)
         {
@@ -59,17 +59,24 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            if (this.generator != null) { this.generator.Dispose(); this.generator = null; }
+            if (this.generators != null && this.generators.Contains(context))
+            {
+                this.generators.Dispose(context);
+            }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
-            if (generator == null) { generator = new TextureArraySetSlice(context); }
-
-            if (this.FTexIn.PluginIO.IsConnected)
+            if (!this.generators.Contains(context))
             {
+                this.generators[context] = new TextureArraySetSlice(context);
+            }
+
+            if (this.FTexIn.IsConnected)
+            {
+                var generator = this.generators[context];
                 if (this.FReset[0])
                 {
                     generator.Reset(this.FTexIn[0][context], this.Width[0], this.Height[0], this.Depth[0], this.Format[0]);
@@ -85,7 +92,12 @@ namespace VVVV.DX11.Nodes
 
         public void Dispose()
         {
-            if (this.generator != null) { this.generator.Dispose(); }
+            if (this.generators != null)
+            {
+                this.generators.Dispose();
+                this.generators = null;
+            }
+                    
         }
     }
 }

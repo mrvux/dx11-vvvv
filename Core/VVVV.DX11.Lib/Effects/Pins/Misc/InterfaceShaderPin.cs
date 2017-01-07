@@ -68,9 +68,10 @@ namespace VVVV.DX11.Internals.Effects.Pins
             return ename[0];
         }
 
-        public override void SetVariable(DX11ShaderInstance shaderinstance, int slice)
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
         {
-            shaderinstance.Effect.GetVariableByName(this.Name).AsInterface().ClassInstance = shaderinstance.Effect.GetVariableByName(this.pin[slice].Name).AsClassInstance();
+            var sv = instance.Effect.GetVariableByName(this.Name).AsInterface();
+            return (i) => sv.ClassInstance = instance.Effect.GetVariableByName(this.pin[i].Name).AsClassInstance();
         }
-    }
+}
 }

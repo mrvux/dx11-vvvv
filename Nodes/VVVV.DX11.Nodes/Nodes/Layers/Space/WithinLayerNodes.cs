@@ -1,13 +1,19 @@
 ﻿using VVVV.PluginInterfaces.V2;
 
 using SlimDX;
+using System;
 
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "WithinView", Category = "DX11.Layer", Version = "")]
     public class WithinViewNode : AbstractDX11LayerSpaceNode
     {
-        protected override void UpdateSettings(DX11RenderSettings settings)
+        protected override int LayerCount
+        {
+            get { return 1; }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             settings.View = Matrix.Identity;
             settings.ViewProjection = settings.Projection;
@@ -23,7 +29,12 @@ namespace VVVV.DX11.Nodes
         [Input("Preserve Crop", DefaultValue = 0, IsSingle = true)]
         protected ISpread<bool> FCrop;
 
-        protected override void UpdateSettings(DX11RenderSettings settings)
+        protected override int LayerCount
+        {
+            get { return 1; }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             settings.View = Matrix.Identity;
 
@@ -43,7 +54,12 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "DepthOnly", Category = "DX11.Layer", Version = "")]
     public class DepthOnlyNode : AbstractDX11LayerSpaceNode
     {
-        protected override void UpdateSettings(DX11RenderSettings settings)
+        protected override int LayerCount
+        {
+            get { return 1; }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             settings.DepthOnly = true;
 
@@ -59,11 +75,20 @@ namespace VVVV.DX11.Nodes
         [Input("Projection")]
         protected ISpread<Matrix> FProjection;
 
-        protected override void UpdateSettings(DX11RenderSettings settings)
+        [Input("Aspect Ratio")]
+        protected ISpread<Matrix> FAspect;
+
+        [Input("Crop")]
+        protected ISpread<Matrix> FCrop;
+
+        protected override int LayerCount
         {
-            settings.Projection = FProjection[0];
-            settings.View = FView[0];
-            settings.ViewProjection = settings.View * settings.Projection;
+            get { return SpreadUtils.SpreadMax(FView, FProjection, FAspect, FCrop); }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
+        {
+            settings.ApplyTransforms(FView[slice], FProjection[slice], FAspect[slice], FCrop[slice]);
         }
     }
 
@@ -78,8 +103,13 @@ namespace VVVV.DX11.Nodes
 
         [Input("Top Left", IsSingle = true, Order = 51)]
         protected ISpread<bool> FTopLeft;
-        
-		protected override void UpdateSettings(DX11RenderSettings settings)
+
+        protected override int LayerCount
+        {
+            get { return 1; }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             float f = this.FDoubleScale[0] ? 2.0f : 1.0f;
 
@@ -109,7 +139,12 @@ namespace VVVV.DX11.Nodes
         [Input("Alignment", DefaultEnumEntry = "FitIn", EnumName = "AspectRatioAlignment", IsSingle = true)]
         protected ISpread<EnumEntry> FAlign;
 
-        protected override void UpdateSettings(DX11RenderSettings settings)
+        protected override int LayerCount
+        {
+            get { return 1; }
+        }
+
+        protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             float w = settings.RenderWidth;
             float h = settings.RenderHeight;

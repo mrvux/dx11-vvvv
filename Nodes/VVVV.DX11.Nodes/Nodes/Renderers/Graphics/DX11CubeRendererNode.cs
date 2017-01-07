@@ -26,7 +26,7 @@ using FeralTic.DX11.Queries;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Renderer", Category = "DX11",Version="CubeTexture", Author = "vux")]
-    public class DX11CubeRendererNode : IDX11RendererProvider, IPluginEvaluate, IDisposable, IDX11Queryable
+    public class DX11CubeRendererNode : IDX11RendererHost, IPluginEvaluate, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
@@ -148,7 +148,7 @@ namespace VVVV.DX11.Nodes
         }
 
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -177,7 +177,7 @@ namespace VVVV.DX11.Nodes
             //Just in case
             if (!this.updateddevices.Contains(context))
             {
-                this.Update(null, context);
+                this.Update(context);
             }
 
             if (this.rendereddevices.Contains(context)) { return; }
@@ -236,26 +236,18 @@ namespace VVVV.DX11.Nodes
                             context.RenderTargetStack.Push(target.SliceRTV[i]);
                         }
 
-                        
-
-                        for (int j = 0; j < this.FInLayer.SliceCount; j++)
+                        try
                         {
-                            try
-                            {
-                                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+                            this.FInLayer.RenderAll(context, settings);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
                         }
 
                         context.RenderTargetStack.Pop();
                     }
-
-                    
                 }
-
 
                 if (this.EndQuery != null)
                 {
@@ -266,7 +258,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             this.FOutCubeTexture[0].Dispose(context);
             this.FOutCubeDepthTexture[0].Dispose(context);

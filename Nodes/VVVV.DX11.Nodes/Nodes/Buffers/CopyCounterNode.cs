@@ -5,11 +5,12 @@ using VVVV.PluginInterfaces.V1;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using System;
 
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "CopyCounter", Category = "DX11.Buffer", Version = "", Author = "vux")]
-    public class CopyCounterNode : IPluginEvaluate, IDX11ResourceProvider
+    public class CopyCounterNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Buffer In", DefaultValue = 1,IsSingle=true)]
         protected Pin<DX11Resource<IDX11RWResource>> FInBuffer;
@@ -25,7 +26,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
@@ -43,12 +44,14 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            if (this.FOutBuffer[0] != null)
-            {
-                this.FOutBuffer[0].Dispose(context);
-            }
+            this.FOutBuffer.SafeDisposeAll(context);
+        }
+
+        public void Dispose()
+        {
+            this.FOutBuffer.SafeDisposeAll();
         }
     }
 }

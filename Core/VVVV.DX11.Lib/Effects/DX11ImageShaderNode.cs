@@ -88,18 +88,17 @@ namespace VVVV.DX11.Nodes.Layers
     }
 
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
-    public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceProvider
+    public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         private int tid = 0;
 
         private RenderTargetView[] nullrtvs = new RenderTargetView[8];
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
+        private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
 
         private DX11ImageShaderVariableManager varmanager;
-        private Dictionary<DX11RenderContext, DX11ShaderData> deviceshaderdata = new Dictionary<DX11RenderContext, DX11ShaderData>();
-        private bool shaderupdated;
-
+        private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
         private int spmax = 0;
 
         private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
@@ -147,8 +146,9 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
                 this.varmanager.RebuildTextureCache();
-
+                this.shaderVariableCache.Clear();
                 this.varmanager.RebuildPassCache(tid);
+                this.deviceshaderdata.Dispose();
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
@@ -175,9 +175,6 @@ namespace VVVV.DX11.Nodes.Layers
                     this.varmanager.UpdateShaderPins();
                 }
             }
-
-
-            this.shaderupdated = true;
             this.FInvalidate = true;
         }
         #endregion
@@ -248,6 +245,8 @@ namespace VVVV.DX11.Nodes.Layers
                 this.varmanager.RebuildPassCache(tid);
             }
 
+            this.varmanager.ApplyUpdates();
+
             this.FOut.Stream.IsChanged = true;
         }
         #endregion
@@ -270,24 +269,21 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
-            if (!this.deviceshaderdata.ContainsKey(context))
+            if (!this.deviceshaderdata.Contains(context))
             {
-                this.deviceshaderdata.Add(context, new DX11ShaderData(context));
-                this.deviceshaderdata[context].SetEffect(this.FShader);
+                this.deviceshaderdata[context] = new DX11ShaderData(context, this.FShader);
+            }
+            if (!this.shaderVariableCache.Contains(context))
+            {
+                this.shaderVariableCache[context] = new DX11ShaderVariableCache(context, this.deviceshaderdata[context].ShaderInstance, this.varmanager);
             }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
-            if (this.shaderupdated)
-            {
-                shaderdata.SetEffect(this.FShader);
-                this.shaderupdated = false;
-            }
-
             context.RenderStateStack.Push(new DX11RenderState());
 
             this.OnBeginQuery(context);
@@ -371,8 +367,8 @@ namespace VVVV.DX11.Nodes.Layers
                     }
 
                     this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, r);
-
-                    this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
+                    var variableCache = this.shaderVariableCache[context];
+                    variableCache.ApplyGlobals(r);
 
                     DX11Texture2D lastrt = initial;
                     DX11ResourcePoolEntry<DX11RenderTarget2D> lasttmp = null;
@@ -521,11 +517,10 @@ namespace VVVV.DX11.Nodes.Layers
                             r.RenderWidth = w;
                             r.RenderHeight = h;
                             r.BackBuffer = elem.Element;
-                            this.varmanager.ApplyGlobal(shaderdata.ShaderInstance);
 
-                            //Apply settings (note that textures swap is handled later)
-                            this.varmanager.ApplyPerObject(context, shaderdata.ShaderInstance, or, i);
-
+                            //Apply settings (we do both here, as texture size semantic might ahve 
+                            variableCache.ApplyGlobals(r);
+                            variableCache.ApplySlice(or, i);
                             //Bind last render target
                             this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
 
@@ -659,16 +654,13 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
-            //this.FOutLayer[0].Dispose(OnDevice.Device);
-
-            if (this.deviceshaderdata.ContainsKey(context))
+            if (force)
             {
-                this.deviceshaderdata[context].Dispose();
-                this.deviceshaderdata.Remove(context);
+                this.deviceshaderdata.Dispose(context);
+                this.shaderVariableCache.Dispose(context);
             }
-
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
             {
                 entry.UnLock();
@@ -680,10 +672,8 @@ namespace VVVV.DX11.Nodes.Layers
         #region Dispose
         public void Dispose()
         {
-            foreach (DX11ShaderData sd in this.deviceshaderdata.Values)
-            {
-                sd.Dispose();
-            }
+            this.deviceshaderdata.Dispose();
+            this.shaderVariableCache.Dispose();
 
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
             {

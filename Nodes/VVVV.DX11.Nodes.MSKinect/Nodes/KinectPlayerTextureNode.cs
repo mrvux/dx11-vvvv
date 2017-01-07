@@ -32,10 +32,10 @@ namespace VVVV.DX11.Nodes.MSKinect
         private int[] colors = new int[9];
 
         [Input("Back Color", DefaultColor = new double[] { 0, 0, 0, 0 })]
-        private IDiffSpread<RGBAColor> FInBgColor;
+        protected IDiffSpread<RGBAColor> FInBgColor;
 
         [Input("Player Color", DefaultColor = new double[] { 1, 0, 0, 0 })]
-        private IDiffSpread<RGBAColor> FInPlayerColor;
+        protected IDiffSpread<RGBAColor> FInPlayerColor;
 
         private int width;
         private int height;

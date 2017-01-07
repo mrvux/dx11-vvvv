@@ -15,7 +15,7 @@ using SlimDX.Direct3D11;
 namespace VVVV.DX11.Nodes.Textures
 {
     [PluginInfo(Name = "FromSharedTexture", Category = "DX11.Texture", Version = "2d", Author = "velcrome")]
-    public class PointerTextureNode : IPluginEvaluate, IDX11ResourceProvider
+    public class PointerTextureNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Pointer", AsInt=true)]
         protected IDiffSpread<uint> FPointer;
@@ -57,7 +57,7 @@ namespace VVVV.DX11.Nodes.Textures
 
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
 
             if (this.FInvalidate)
@@ -90,7 +90,7 @@ namespace VVVV.DX11.Nodes.Textures
             }           
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             for (int i = 0; i < FTextureOutput.SliceCount; i++)
                 this.FTextureOutput[i].Dispose(context);

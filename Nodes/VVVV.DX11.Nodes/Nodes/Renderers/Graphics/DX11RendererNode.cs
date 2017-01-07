@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name="Renderer",Category="DX11",Author="vux,tonfilm",AutoEvaluate=true,
         InitialWindowHeight=300,InitialWindowWidth=400,InitialBoxWidth=400,InitialBoxHeight=300, InitialComponentMode=TComponentMode.InAWindow)]
-    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererProvider, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor
+    public partial class DX11RendererNode : IPluginEvaluate, IDisposable, IDX11RendererHost, IDX11RenderWindow, IDX11Queryable, IUserInputWindow, IBackgroundColor, IPartImportsSatisfiedNotification
     {
         #region Touch Stuff
         private object m_touchlock = new object();
@@ -192,6 +192,12 @@ namespace VVVV.DX11.Nodes
         [Input("Show Cursor", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInShowCursor;
 
+        [Input("Refresh Rate", DefaultValue = 60, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<int> FInRefreshRate;
+
+        [Input("Flip Sequential", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInFlipSequential;
+
         [Input("Fullscreen", Order = 5)]
         protected IDiffSpread<bool> FInFullScreen;
 
@@ -251,7 +257,7 @@ namespace VVVV.DX11.Nodes
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
-        [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        [Output("Control", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector, AllowFeedback =true)]
         protected ISpread<Control> FOutCtrl;
 
         [Output("Node Ref", Order = 201, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
@@ -276,16 +282,12 @@ namespace VVVV.DX11.Nodes
 
         private bool FInvalidateSwapChain;
         private bool FResized = false;
-        private DX11RenderContext primary;
         private bool FirstFrame = true;
         #endregion
 
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
-            this.FOutCtrl[0] = this;
-            this.FOutRef[0] = (INode)this.FHost;
-
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             if (this.FOutBackBuffer[0] == null)
             {
@@ -308,7 +310,7 @@ namespace VVVV.DX11.Nodes
                 this.depthmanager.FormatChanged = false; //Clear flag ok
             }
             
-            if (FInAASamplesPerPixel.IsChanged || this.FInBufferCount.IsChanged)
+            if (FInAASamplesPerPixel.IsChanged || this.FInBufferCount.IsChanged || this.FInFlipSequential.IsChanged || this.FInRefreshRate.IsChanged)
             {
                 this.depthmanager.NeedReset = true;
                 this.FInvalidateSwapChain = true;
@@ -385,7 +387,7 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
             
-            if (!this.updateddevices.Contains(context)) { this.Update(null, context); }
+            if (!this.updateddevices.Contains(context)) { this.Update(context); }
 
             if (this.rendereddevices.Contains(context)) { return; }
 
@@ -425,14 +427,14 @@ namespace VVVV.DX11.Nodes
                     }
 
                     //Only call render if layer connected
-                    if (this.FInLayer.PluginIO.IsConnected)
+                    if (this.FInLayer.IsConnected)
                     {
                         int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
                         rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
 
                         settings.ViewportCount = rtmax;
 
-                        bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
+                        bool viewportpop = this.FInViewPort.IsConnected;
 
                         for (int i = 0; i < rtmax; i++)
                         {
@@ -486,10 +488,7 @@ namespace VVVV.DX11.Nodes
 
 
             //Call render on all layers
-            for (int j = 0; j < this.FInLayer.SliceCount; j++)
-            {
-                this.FInLayer[j][context].Render(this.FInLayer.PluginIO, context, settings);
-            }
+            this.FInLayer.RenderAll(context, settings);
 
             if (viewportpop)
             {
@@ -498,7 +497,7 @@ namespace VVVV.DX11.Nodes
         }
 
         #region Update
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -521,8 +520,10 @@ namespace VVVV.DX11.Nodes
                     sd.Count = maxlevels;
                 }
 
-                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, 60,
-                    this.FInBufferCount[0], false);
+                this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, this.FInRefreshRate[0],
+                    this.FInBufferCount[0], this.FInFlipSequential[0]);
+
+                this.FInvalidateSwapChain = false;
 
                 #if DEBUG
                 this.FOutBackBuffer[0][context].Resource.DebugName = "BackBuffer";
@@ -543,7 +544,7 @@ namespace VVVV.DX11.Nodes
             }
 
             
-            if (!this.renderers.ContainsKey(context)) { this.renderers.Add(context, new DX11GraphicsRenderer(this.FHost, context)); }
+            if (!this.renderers.ContainsKey(context)) { this.renderers.Add(context, new DX11GraphicsRenderer(context)); }
 
             this.depthmanager.Update(context, sc.Width, sc.Height, sd);
 
@@ -552,7 +553,7 @@ namespace VVVV.DX11.Nodes
         #endregion
 
         #region Destroy
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             //if (this.FDepthManager != null) { this.FDepthManager.Dispose(); }
 
@@ -589,13 +590,17 @@ namespace VVVV.DX11.Nodes
             this.FResized = false;
         }
 
+
+        private DX11RenderContext attachedContext;
+
+        public void AttachContext(DX11RenderContext renderContext)
+        {
+            this.attachedContext = renderContext;
+        }
+
         public DX11RenderContext RenderContext
         {
-            get { return this.primary; }
-            set
-            {
-                this.primary = value;
-            }
+            get { return this.attachedContext; }
         }
 
         public IntPtr WindowHandle
@@ -656,6 +661,12 @@ namespace VVVV.DX11.Nodes
             this.Name = "DX11RendererNode";
             this.ResumeLayout(false);
 
+        }
+
+        public void OnImportsSatisfied()
+        {
+            this.FOutCtrl[0] = this;
+            this.FOutRef[0] = (INode)this.FHost;
         }
     }
 }

@@ -29,7 +29,6 @@ namespace VVVV.DX11.Nodes.MSKinect
         private IntPtr depthread;
         private IntPtr depthwrite;
 
-        private SlimDX.DXGI.Format format;
         private int width;
         private int height;
 
@@ -41,7 +40,6 @@ namespace VVVV.DX11.Nodes.MSKinect
 
         private void InitBuffers()
         {
-            this.format = SlimDX.DXGI.Format.R8G8B8A8_UNorm;
             this.width = 1920;
             this.height = 1080;
 

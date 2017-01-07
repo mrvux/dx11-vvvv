@@ -3,7 +3,6 @@ branches:
   # whitelist
   only:
     - master
-    - io
 
 image: Visual Studio 2015
 
@@ -16,7 +15,10 @@ build:
 
 artifacts:
   # pushing a single file
+  - path: Zip/vvvv-packs-dx11-x86.zip
+    name: 32 Bits build
   - path: Zip/vvvv-packs-dx11-x64.zip
+    name: 64 Bits build
 
 environment:
   priv_key:

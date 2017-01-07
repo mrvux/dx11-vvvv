@@ -16,7 +16,7 @@ using FeralTic.DX11.Resources;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "DefaultDrawer", Category = "DX11.Drawer", Version = "", Author = "vux")]
-    public class DX11DefaultIndexDrawerNode : IPluginEvaluate, IDX11ResourceProvider
+    public class DX11DefaultIndexDrawerNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", CheckIfChanged = true)]
         protected Pin<DX11Resource<IDX11Geometry>> FInGeom;
@@ -49,7 +49,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Update(IPluginIO pin, DX11RenderContext context)
+        public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
 
@@ -86,7 +86,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
-        public void Destroy(IPluginIO pin, DX11RenderContext context, bool force)
+        public void Destroy(DX11RenderContext context, bool force)
         {
             //Not ownding resource eg: do nothing
         }

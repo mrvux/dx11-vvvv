@@ -23,13 +23,8 @@ namespace VVVV.DX11.Lib.Rendering
 
         public void SetRenderTargets(params IDX11RenderTargetView[] irtvs)
         {
-            this.rtvs = irtvs;// new RenderTargetView[irtvs.Length];
-            /*for (int i = 0; i < irtvs.Length; i++)
-            {
-                this.rtvs[i] = irtvs[i].RTV;
-            }*/
+            this.rtvs = irtvs;
         }
-
 
         public DX11DepthStencil DepthStencil { get; set; }
 
@@ -37,13 +32,10 @@ namespace VVVV.DX11.Lib.Rendering
 
         public bool EnableDepth { get; set; }
 
-        //public DepthBufferManager DepthBuffer { get; protected set; }
-
-        public DX11GraphicsRenderer(IPluginHost host, DX11RenderContext context)
+        public DX11GraphicsRenderer(DX11RenderContext context)
         {
             this.ViewPortManager = new ViewPortManager(context);
             this.context = context;
-            //this.DepthBuffer = new DepthBufferManager(host);
         }
 
         #region Set render targets
@@ -80,7 +72,6 @@ namespace VVVV.DX11.Lib.Rendering
         public void CleanTargets()
         {
             this.context.RenderTargetStack.Pop();
-            //this.context.CurrentDeviceContext.OutputMerger.SetTargets(new RenderTargetView[0]);
         }
 
 

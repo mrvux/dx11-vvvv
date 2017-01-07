@@ -13,6 +13,7 @@ using VVVV.DX11.Lib.Effects.Pins;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using SlimDX;
 
 namespace VVVV.DX11.Internals.Effects.Pins
 {
@@ -29,34 +30,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
             {
                 return null;
             }
-        }
-    }
-
-    public class Texture2DShaderPin : ResourceShaderPin<DX11Texture2D, Texture2D>
-    {
-
-        protected override ShaderResourceView GetSRV(DX11RenderContext context,int slice)
-        {
-            try
-            {
-                if (this.pin[slice].Contains(context))
-                {
-                    return this.pin[slice][context].SRV;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        protected override ShaderResourceView GetDefaultSRV(DX11RenderContext context)
-        {
-            return context.DefaultTextures.WhiteTexture.SRV;
         }
     }
 
@@ -77,22 +50,6 @@ namespace VVVV.DX11.Internals.Effects.Pins
         protected override ShaderResourceView GetDefaultSRV(DX11RenderContext context)
         {
             return context.DefaultTextures.WhiteTexture.SRV;
-        }
-    }
-
-    public class Texture3DShaderPin : ResourceShaderPin<DX11Texture3D, Texture3D>
-    {
-        protected override ShaderResourceView GetSRV(DX11RenderContext context, int slice)
-        {
-            try
-            {
-                return this.pin[slice][context].SRV;
-            }
-            catch
-            {
-                return null;
-            }
-
         }
     }
 }

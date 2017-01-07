@@ -21,15 +21,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VVVV.Nodes.Generic, Version=32.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="VVVV.Nodes.Generic">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\x86\VVVV.Nodes.Generic.dll</HintPath>
+      <HintPath>..\..\Dependencies\$(Platform)\VVVV.Nodes.Generic.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
+    <Compile Include="Nodes\Devices\RenderOptionsNode.cs" />
+    <Compile Include="Nodes\Devices\EnumDevicesNode.cs" />
     <Compile Include="Nodes\Geometry\DispatchIndirectBufferNode.cs" />
     <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
     <Compile Include="Nodes\Geometry\IndexIndirectDrawerBufferNode.cs" />
@@ -41,19 +43,21 @@
     <Compile Include="Nodes\Layers\DX11LayerDispatcherNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerApplyOnlyNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerEnabledNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPreservePipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerScissorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSpreadNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPixelViewportNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerBlendFactorNode.cs" />
+    <Compile Include="Legacy\DX11LayerBlendFactorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerTagNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerStencilRefNode.cs" />
+    <Compile Include="Legacy\DX11LayerStencilRefNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerOrderNode.cs" />
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerZSortOrderNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerGetSliceOrderNode.cs" />
+    <Compile Include="Nodes\Layers\Space\WorldLayerNode.cs" />
     <Compile Include="Nodes\Layers\Space\SliceviewPortNode.cs" />
     <Compile Include="Nodes\Layers\Space\ViewPortBillboardNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
@@ -68,6 +72,7 @@
     <Compile Include="Nodes\RenderStates\Advanced\DX11BlendFactorStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
     <Compile Include="Nodes\RenderStates\RenderStatePresetNode.cs" />
+    <Compile Include="Nodes\RenderStates\SamplerStateAnisotropicNode.cs" />
     <Compile Include="Nodes\RenderStates\SamplerStatePresetNode.cs" />
     <Compile Include="Nodes\Textures\1D\DynamicTexture1DColorNode.cs" />
     <Compile Include="Nodes\Textures\1D\InfoTexture1DNode.cs" />
@@ -90,7 +95,7 @@
     <Compile Include="Nodes\Buffers\ReadBackBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\CopyCounterNode.cs" />
-    <Compile Include="Nodes\Devices\DX11RenderContextNode.cs" />
+    <Compile Include="Nodes\Devices\InfoDX11Node.cs" />
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
     <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\BoundingBoxGeometryNode.cs" />

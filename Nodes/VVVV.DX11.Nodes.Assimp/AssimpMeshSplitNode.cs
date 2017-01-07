@@ -42,8 +42,6 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Output("Indices", Order = 15, BinName="Indices Count", BinOrder=16)]
         protected ISpread<ISpread<int>> indices;
 
-        private bool FInvalidate = false;
-
 
         [ImportingConstructor()]
         public AssimpMeshSplitNode(IPluginHost host)
