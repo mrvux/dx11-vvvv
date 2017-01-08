@@ -21,9 +21,6 @@ namespace VVVV.MSKinect.Nodes
         [Input("Index", IsSingle = true)]
         IDiffSpread<int> FInIndex;
         */
-        [Input("Depth Camera Intrinsics")]
-        protected ISpread<CameraIntrinsics> FOutDepthCameraIntrinsics2;
-
         [Input("Enable Color", IsSingle = true, DefaultValue = 1)]
         protected IDiffSpread<bool> FInEnableColor;
 
@@ -174,6 +171,7 @@ namespace VVVV.MSKinect.Nodes
                                                         (double)this.runtime.Runtime.DepthFrameSource.DepthMaxReliableDistance);
 
                     this.FOutDepthCameraIntrinsics[0] = this.runtime.Runtime.CoordinateMapper.GetDepthCameraIntrinsics();
+                    //runtime only reports ID of the physically connected device. It seems Kinect Tools injected stream does not report ID of the device.
                     this.FOutKinectID[0] = this.runtime.Runtime.UniqueKinectId;
                 }
             }
