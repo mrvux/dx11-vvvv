@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="KinectBaseTextureNode.cs" />
     <Compile Include="KinectBodyIndexRawTextureNode.cs" />
+    <Compile Include="KinectCameraIntrinsics.cs" />
     <Compile Include="KinectDepthTextureNodeRaw.cs" />
     <Compile Include="KinectPreposeGestureStatusNode.cs" />
     <Compile Include="KinectPreposeGestureNode.cs" />
