@@ -63,7 +63,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.FOutValid.SliceCount = 1;
+            this.FOutValid.SliceCount = SpreadMax;
 
             if (this.FTextureIn.PluginIO.IsConnected)
             {
@@ -88,17 +88,17 @@ namespace VVVV.DX11.Nodes
 
                             FStreamOut.Flush(true);
 
-                            this.FOutValid[0] = true;
+                            this.FOutValid[i] = true;
                         }
                         catch (Exception ex)
                         {
                             FLogger.Log(ex);
-                            this.FOutValid[0] = false;
+                            this.FOutValid[i] = false;
                         }
                     }
                     else
                     {
-                        this.FOutValid[0] = false;
+                        this.FOutValid[i] = false;
                     }
                 }
             }
