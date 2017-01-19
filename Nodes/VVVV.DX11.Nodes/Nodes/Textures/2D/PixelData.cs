@@ -31,6 +31,9 @@ namespace VVVV.DX11.Nodes
         [Output("Output")]
         public ISpread<Stream> FStreamOut;
 
+        [Output("Output Stride")]
+        public ISpread<int> strideOut;
+
         [Output("Valid")]
         protected ISpread<bool> FOutValid;
 
@@ -88,6 +91,7 @@ namespace VVVV.DX11.Nodes
 
                         var db = staging.LockForRead();
 
+                        strideOut[0] = db.RowPitch;
 
                         MemoryStream ms = new MemoryStream((int)db.Data.Length);
                         db.Data.CopyTo(ms);
