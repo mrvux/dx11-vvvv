@@ -91,8 +91,9 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Output("Shader Signature", Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<DX11Resource<DX11Shader>> FOutShader;
-        
-      
+
+        [Output("Current Effect", Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<DX11Effect> currentEffectOut;
 
         #endregion
 
@@ -110,6 +111,7 @@ namespace VVVV.DX11.Nodes.Layers
                 this.varmanager.SetShader(shader);
                 this.shaderVariableCache.Clear();
                 this.deviceshaderdata.Dispose();
+                this.currentEffectOut[0] = shader;
             }
 
             //Only set technique if new, otherwise do it on update/evaluate
