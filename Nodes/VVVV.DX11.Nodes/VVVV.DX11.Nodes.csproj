@@ -38,6 +38,8 @@
     <Compile Include="Nodes\Geometry\IndexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinAdvancedNode.cs" />
     <Compile Include="Nodes\Geometry\NullIndirectBufferDrawer.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11DispatcherXYNode.cs" />
+    <Compile Include="Nodes\Geometry\Primitives\DX11DispatcherXNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentZNode.cs" />
     <Compile Include="Nodes\Geometry\RawBufferAsGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
