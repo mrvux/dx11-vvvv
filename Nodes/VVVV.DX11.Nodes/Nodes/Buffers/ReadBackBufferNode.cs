@@ -21,8 +21,11 @@ namespace VVVV.DX11.Nodes
         [Config("Layout")]
         protected IDiffSpread<string> FLayout;
 
-        [Input("Input")]
+        [Input("Input", AutoValidate =false)]
         protected Pin<DX11Resource<IDX11ReadableStructureBuffer>> FInput;
+
+        [Input("Enabled", DefaultValue = 1, IsSingle =true)]
+        protected ISpread<bool> doRead;
 
         List<IIOContainer> outspreads = new List<IIOContainer>();
         string[] layout;
@@ -45,8 +48,13 @@ namespace VVVV.DX11.Nodes
         #region IPluginEvaluate Members
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInput.IsConnected)
+            if (this.doRead.SliceCount == 0)
+                return;
+
+            if (this.FInput.IsConnected && this.doRead[0])
             {
+                this.FInput.Sync();
+
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 
                 IDX11ReadableStructureBuffer b= this.FInput[0][this.AssignedContext];

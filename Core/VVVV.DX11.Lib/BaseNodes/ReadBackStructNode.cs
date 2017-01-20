@@ -21,7 +21,7 @@ namespace VVVV.DX11.Nodes
 {
     public unsafe abstract class ReadBackBufferBaseNode<T> : IPluginEvaluate, IDX11ResourceDataRetriever where T: struct
     {
-        [Input("Input")]
+        [Input("Input", AutoValidate =false)]
         protected Pin<DX11Resource<IDX11RWStructureBuffer>> FInput;
 
         [Input("Enabled", DefaultValue = 1, IsSingle = true)]
@@ -52,6 +52,8 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FInput.IsConnected && this.FInEnabled[0])
             {
+                this.FInput.Sync();
+
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 
                 if (this.AssignedContext == null)
