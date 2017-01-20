@@ -22,7 +22,7 @@ namespace VVVV.DX11.Nodes
     public unsafe abstract class ReadBackBufferBaseNode<T> : IPluginEvaluate, IDX11ResourceDataRetriever where T: struct
     {
         [Input("Input", AutoValidate =false)]
-        protected Pin<DX11Resource<IDX11RWStructureBuffer>> FInput;
+        protected Pin<DX11Resource<IDX11StructuredBuffer>> FInput;
 
         [Input("Enabled", DefaultValue = 1, IsSingle = true)]
         protected ISpread<bool> FInEnabled;
@@ -62,7 +62,7 @@ namespace VVVV.DX11.Nodes
                     return;
                 }
 
-                IDX11RWStructureBuffer b = this.FInput[0][this.AssignedContext];
+                IDX11StructuredBuffer b = this.FInput[0][this.AssignedContext];
                 if (b != null)
                 {
                     if (Marshal.SizeOf(typeof(T)) != b.Stride)
