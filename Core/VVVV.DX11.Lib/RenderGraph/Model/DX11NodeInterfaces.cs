@@ -15,7 +15,11 @@ namespace VVVV.DX11.RenderGraph.Model
         private readonly IDX11UpdateBlocker updateBlocker;
 
         //Obsolete ones to remove
+
+        #pragma warning disable 0618 //We still support in core
         private readonly IDX11ResourceProvider resourceProvider;
+        #pragma warning restore 0618
+
 
         private readonly IDX11LayerHost layerHost;
         private readonly IDX11ResourceHost resourceHost;
@@ -31,7 +35,11 @@ namespace VVVV.DX11.RenderGraph.Model
             this.dataRetriever = this.IsAssignable<IDX11ResourceDataRetriever>() ? this.Instance<IDX11ResourceDataRetriever>() : null;
             this.updateBlocker = this.IsAssignable<IDX11UpdateBlocker>() ? this.Instance<IDX11UpdateBlocker>() : null;
 
+            #pragma warning disable 0618 //We still support in core
             this.resourceProvider = this.IsAssignable<IDX11ResourceProvider>() ? this.Instance<IDX11ResourceProvider>() : null;
+            #pragma warning restore 0618
+
+
             this.resourceHost = this.IsAssignable<IDX11ResourceHost>() ? this.Instance<IDX11ResourceHost>() : null;
             this.rendererHost = this.IsAssignable<IDX11RendererHost>() ? this.Instance<IDX11RendererHost>() : null;
             this.layerHost = this.IsAssignable<IDX11LayerHost>() ? this.Instance<IDX11LayerHost>() : null;
@@ -83,10 +91,12 @@ namespace VVVV.DX11.RenderGraph.Model
             get { return this.renderWindow; }
         }
 
+        #pragma warning disable 0618 //We still support in core
         public IDX11ResourceProvider ResourceProvider
         {
             get { return this.resourceProvider; }
         }
+        #pragma warning restore 0618
 
         public IDX11LayerHost LayerHost
         {

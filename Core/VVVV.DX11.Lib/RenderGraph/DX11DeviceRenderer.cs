@@ -292,7 +292,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 {
                     foreach (DX11OutputPin outpin in node.OutputPins)
                     {
-                        //Call destroy
+                        #pragma warning disable 0618 //We still support in core
                         IDX11ResourceProvider provider = outpin.ParentNode.Interfaces.ResourceProvider;
                         try
                         {
@@ -302,6 +302,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                         {
                             logger.Log(ex);
                         }
+                        #pragma warning restore 0618
                     }
                 }
                 if (node.Interfaces.IsResourceHost)
