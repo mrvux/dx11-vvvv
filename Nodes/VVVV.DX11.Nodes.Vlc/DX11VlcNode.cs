@@ -313,7 +313,7 @@ namespace VVVV.Nodes.VideoPlayer
 
                 if (vlc != null)
                 {
-                    if (vlc.IsValid)
+                    if (vlc.IsValid && vlc.Width > 0 && vlc.Height > 0)
                     {
                         DX11DynamicTexture2D t;
                         if (!this.FTextureOut[cnt].Contains(context))
@@ -343,14 +343,19 @@ namespace VVVV.Nodes.VideoPlayer
                         {
                             IntPtr ptr = vlc.frontBuffer;
 
-                            if (vlc.Width * 4 == t.GetRowPitch())
+                            if (ptr != IntPtr.Zero)
                             {
-                                t.WriteData(ptr, vlc.Width * vlc.Height * 4);
+                                if (vlc.Width * 4 == t.GetRowPitch())
+                                {
+                                    t.WriteData(ptr, vlc.Width * vlc.Height * 4);
+                                }
+                                else
+                                {
+                                    t.WriteDataPitch(ptr, vlc.Width * vlc.Height * 4);
+                                }
                             }
-                            else
-                            {
-                                t.WriteDataPitch(ptr, vlc.Width * vlc.Height * 4);
-                            }
+
+
                         }
                     }
                     else

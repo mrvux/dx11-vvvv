@@ -191,7 +191,7 @@ namespace VVVV.DX11.Vlc.Player
                     int newh = trackInfo.video.i_height;
 
                     this.SizeChanged = this.Realloc(neww, newh);
-                    this.valid = true;
+                    this.valid = neww > 0 && newh > 0;
 
                     this.w = neww;
                     this.h = newh;
@@ -330,8 +330,8 @@ namespace VVVV.DX11.Vlc.Player
         {
             if (this.w != w || this.h != h)
             {
-                if (this.buffer0 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer0); }
-                if (this.buffer1 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer1); }
+                if (this.buffer0 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer0); this.buffer0 = IntPtr.Zero; }
+                if (this.buffer1 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer1); this.buffer1 = IntPtr.Zero; }
                 this.buffer0 = Marshal.AllocHGlobal(w * h * 4 + 32);
                 this.buffer1 = Marshal.AllocHGlobal(w * h * 4 + 32);
 
@@ -344,8 +344,8 @@ namespace VVVV.DX11.Vlc.Player
         public void Dispose()
         {
             LibVlcMethods.libvlc_media_player_stop(mediaPlayer);
-            if (this.buffer0 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer0); }
-            if (this.buffer1 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer1); }
+            if (this.buffer0 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer0); this.buffer0 = IntPtr.Zero; }
+            if (this.buffer1 != IntPtr.Zero) { Marshal.FreeHGlobal(this.buffer1); this.buffer1 = IntPtr.Zero; }
             this.valid = false;
 
             try
