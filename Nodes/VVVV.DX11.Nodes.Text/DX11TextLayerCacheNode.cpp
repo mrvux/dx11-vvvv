@@ -66,10 +66,13 @@ namespace VVVV {
 					this->FOutLayer[0][context]->Render = gcnew RenderDelegate<DX11RenderSettings^>(this, &DX11TextLayerCacheNode::Render);
 				}
 
-				if (!this->fontrenderers->ContainsKey(context))
+				if (!this->FTextRenderer->IsConnected)
 				{
-					IFW1FontWrapper* pw = FontWrapperFactory::GetWrapper(context, this->dwFactory);
-					this->fontrenderers->Add(context, IntPtr(pw));
+					if (!this->fontrenderers->ContainsKey(context))
+					{
+						IFW1FontWrapper* pw = FontWrapperFactory::GetWrapper(context, this->dwFactory);
+						this->fontrenderers->Add(context, IntPtr(pw));
+					}
 				}
 			}
 
@@ -89,7 +92,15 @@ namespace VVVV {
 					float w = (float)settings->RenderWidth;
 					float h = (float)settings->RenderHeight;
 
-					IFW1FontWrapper* fw = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
+					IFW1FontWrapper* fw = 0;
+					if (this->FTextRenderer->IsConnected)
+					{
+						fw = (IFW1FontWrapper*)FTextRenderer[0][context]->NativePointer().ToPointer();
+					}
+					else
+					{
+						fw = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
+					}
 
 					IFW1GlyphRenderStates* pRenderStates;
 					fw->GetRenderStates(&pRenderStates);

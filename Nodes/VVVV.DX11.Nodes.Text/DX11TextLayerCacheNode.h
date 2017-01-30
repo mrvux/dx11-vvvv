@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FW1FontWrapper.h"
+#include "TextFontRenderer.h"
 #include <map>
 
 using namespace VVVV::PluginInterfaces::V2;
@@ -32,6 +33,9 @@ namespace VVVV {
 				virtual void Update(DX11RenderContext^ OnDevice);
 				virtual void Destroy(DX11RenderContext^ OnDevice, bool force);
 			private:
+				[Input("Text Renderer", Visibility = PinVisibility::OnlyInspector)]
+				Pin<DX11Resource<TextFontRenderer^>^>^ FTextRenderer;
+
 				[Input("Text Format", AutoValidate = false)]
 				Pin<TextFormat^>^ textFormat;
 

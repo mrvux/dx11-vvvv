@@ -40,10 +40,13 @@ void DX11TextLayerNode::Update(DX11RenderContext^ context)
         this->FOutLayer[0][context]->Render = gcnew RenderDelegate<DX11RenderSettings^>(this,&DX11TextLayerNode::Render);
     }
 
-	if (!this->fontrenderers->ContainsKey(context))
+	if (!this->FTextRenderer->IsConnected)
 	{
-		IFW1FontWrapper* pw = FontWrapperFactory::GetWrapper(context, this->dwFactory);
-		this->fontrenderers->Add(context,IntPtr(pw));
+		if (!this->fontrenderers->ContainsKey(context))
+		{
+			IFW1FontWrapper* pw = FontWrapperFactory::GetWrapper(context, this->dwFactory);
+			this->fontrenderers->Add(context, IntPtr(pw));
+		}
 	}
 }
 
@@ -63,7 +66,16 @@ void DX11TextLayerNode::Render(DX11RenderContext^ context, DX11RenderSettings^ s
 		float w = (float)settings->RenderWidth;
 		float h = (float)settings->RenderHeight;
 
-		IFW1FontWrapper* fw = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
+		IFW1FontWrapper* fw = 0;
+		if (this->FTextRenderer->IsConnected)
+		{
+			fw = (IFW1FontWrapper*)FTextRenderer[0][context]->NativePointer().ToPointer();
+		}
+		else
+		{
+			fw  = (IFW1FontWrapper*)this->fontrenderers[context].ToPointer();
+		}
+
 
 		ID3D11Device* dev = (ID3D11Device*)context->Device->ComPointer.ToPointer();
 		ID3D11DeviceContext* pContext = (ID3D11DeviceContext*)context->CurrentDeviceContext->ComPointer.ToPointer();

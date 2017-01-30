@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TextFontRenderer.h"
 #include "FW1FontWrapper.h"
 #include <map>
 
@@ -31,6 +32,9 @@ namespace VVVV {
 				virtual void Update(DX11RenderContext^ OnDevice);
 				virtual void Destroy(DX11RenderContext^ OnDevice, bool force);
 			private:
+				[Input("Text Renderer", Visibility = PinVisibility::OnlyInspector)]
+				Pin<DX11Resource<TextFontRenderer^>^>^ FTextRenderer;
+
 				ITransformIn^ FInTr;
 
 				[Input("Render State")]
