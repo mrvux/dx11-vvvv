@@ -26,7 +26,7 @@ namespace VVVV.DX11.Lib.Rendering
             this.rtvs = irtvs;
         }
 
-        public DX11DepthStencil DepthStencil { get; set; }
+        public IDX11DepthStencil DepthStencil { get; set; }
 
         public eDepthBufferMode DepthMode { get; set; }
 

@@ -20,7 +20,7 @@ using VVVV.DX11.Internals.Helpers;
 
 namespace VVVV.DX11.Lib.Rendering
 {
-    public enum eDepthBufferMode { None, Standard, ReadOnly }
+    public enum eDepthBufferMode { None, Standard, ReadOnly, WriteOnly }
 
     public class DepthBufferManager : IDisposable
     {
@@ -34,6 +34,8 @@ namespace VVVV.DX11.Lib.Rendering
         private IIOContainer<Pin<DX11Resource<DX11DepthStencil>>> depthinputpin;
 
         private IIOContainer<Pin<DX11Resource<DX11DepthStencil>>> depthoutputpin;
+
+        private DX11Resource<DX11WriteOnlyDepthStencil> writeOnlyDepth;
 
         private IIOContainer<IDiffSpread<EnumEntry>> depthformatpin;
 
@@ -89,6 +91,21 @@ namespace VVVV.DX11.Lib.Rendering
                     }
                 }
 
+                if (this.currentmode == eDepthBufferMode.WriteOnly)
+                {
+                    if (this.writeOnlyDepth != null)
+                    {
+                        this.writeOnlyDepth.Dispose();
+                        this.writeOnlyDepth = null;
+                    }
+
+                    if (this.depthformatpin != null)
+                    {
+                        this.depthformatpin.Dispose();
+                        this.depthformatpin = null;
+                    }
+                }
+
                 this.currentmode = spread[0];
                 if (this.currentmode == eDepthBufferMode.Standard)
                 {
@@ -117,6 +134,21 @@ namespace VVVV.DX11.Lib.Rendering
                     this.depthinputpin = this.factory.CreateIOContainer<Pin<DX11Resource<DX11DepthStencil>>>(oattr);
                 }
 
+                if (this.currentmode == eDepthBufferMode.WriteOnly)
+                {
+                    this.writeOnlyDepth = new DX11Resource<DX11WriteOnlyDepthStencil>();
+
+                    ConfigAttribute dfAttr = new ConfigAttribute("Depth Buffer Format");
+                    dfAttr.EnumName = DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.DepthStencil);
+                    dfAttr.DefaultEnumEntry = DX11EnumFormatHelper.NullDeviceFormats.GetAllowedFormats(FormatSupport.DepthStencil)[0];
+                    dfAttr.IsSingle = true;
+
+                    this.depthformatpin = this.factory.CreateIOContainer<IDiffSpread<EnumEntry>>(dfAttr);
+                    this.depthformatpin.IOObject[0] = new EnumEntry(dfAttr.EnumName, 1);
+
+                    this.depthformatpin.IOObject.Changed += depthformatpin_Changed;
+                }
+
                 this.NeedReset = true;
             }
         }
@@ -125,6 +157,31 @@ namespace VVVV.DX11.Lib.Rendering
         {
             this.NeedReset = true;
             this.FormatChanged = true;
+        }
+
+        private SampleDescription TrySampleDescription(DX11RenderContext context, SampleDescription sd)
+        {
+            if (sd.Count > 1)
+            {
+                if (!context.IsAtLeast101)
+                {
+                    host.Log(TLogType.Warning, "Device Feature Level Needs at least 10.1 to create Multisampled Depth Buffer, rolling back to 1");
+                    sd.Count = 1;
+                }
+            }
+
+            Format depthfmt = DeviceFormatHelper.GetFormat(this.depthformatpin.IOObject[0].Name);
+
+            List<SampleDescription> sds = context.GetMultisampleFormatInfo(depthfmt);
+            int maxlevels = sds[sds.Count - 1].Count;
+
+            if (sd.Count > maxlevels)
+            {
+                host.Log(TLogType.Warning, "Multisample count too high for this depth format, reverted to: " + maxlevels);
+                sd.Count = maxlevels;
+            }
+
+            return sd;
         }
 
         public void Update(DX11RenderContext context, int w, int h,SampleDescription sd)
@@ -139,25 +196,9 @@ namespace VVVV.DX11.Lib.Rendering
                         this.depthoutputpin.IOObject[0].Dispose(context);
                     }
 
-                    if (sd.Count > 1)
-                    {
-                        if (!context.IsAtLeast101)
-                        {
-                            host.Log(TLogType.Warning, "Device Feature Level Needs at least 10.1 to create Multisampled Depth Buffer, rolling back to 1");
-                            sd.Count = 1;
-                        }
-                    }
-
                     Format depthfmt = DeviceFormatHelper.GetFormat(this.depthformatpin.IOObject[0].Name);
 
-                    List<SampleDescription> sds = context.GetMultisampleFormatInfo(depthfmt);
-                    int maxlevels = sds[sds.Count - 1].Count;
-
-                    if (sd.Count > maxlevels)
-                    {
-                        host.Log(TLogType.Warning, "Multisample count too high for this depth format, reverted to: " + maxlevels);
-                        sd.Count = maxlevels;
-                    }
+                    sd = this.TrySampleDescription(context, sd);
 
                     ds = new DX11DepthStencil(context, w, h, sd, depthfmt);
                     #if DEBUG
@@ -166,6 +207,24 @@ namespace VVVV.DX11.Lib.Rendering
                     this.depthoutputpin.IOObject[0][context] = ds;
                 } 
             }
+
+            if (this.currentmode == eDepthBufferMode.WriteOnly)
+            {
+                DX11WriteOnlyDepthStencil ds;
+                if (this.NeedReset || !this.writeOnlyDepth.Contains(context))
+                {
+                    this.writeOnlyDepth.Dispose(context);
+
+                    Format depthfmt = DeviceFormatHelper.GetFormat(this.depthformatpin.IOObject[0].Name);
+
+                    sd = this.TrySampleDescription(context, sd);
+
+                    ds = new DX11WriteOnlyDepthStencil(context, w, h, sd, depthfmt);
+                    this.writeOnlyDepth[context] = ds;
+                }
+            }
+
+
         }
 
         public void Destroy(DX11RenderContext context)
@@ -185,7 +244,7 @@ namespace VVVV.DX11.Lib.Rendering
             get { return this.currentmode != eDepthBufferMode.None; }
         }
 
-        public DX11DepthStencil GetDepthStencil(DX11RenderContext context)
+        public IDX11DepthStencil GetDepthStencil(DX11RenderContext context)
         {
             if (this.currentmode == eDepthBufferMode.ReadOnly)
             {
@@ -198,7 +257,14 @@ namespace VVVV.DX11.Lib.Rendering
                     return null;
                 }
             }
-            if (this.currentmode == eDepthBufferMode.Standard) { return this.depthoutputpin.IOObject[0][context]; }
+            if (this.currentmode == eDepthBufferMode.Standard)
+            {
+                return this.depthoutputpin.IOObject[0][context];
+            }
+            if (this.currentmode == eDepthBufferMode.WriteOnly)
+            {
+                return this.writeOnlyDepth[context];
+            }
             return null;           
         }
 
@@ -230,6 +296,14 @@ namespace VVVV.DX11.Lib.Rendering
                     this.depthoutputpin.IOObject[0].Dispose();
                 }
             }
+
+            if (this.currentmode == eDepthBufferMode.WriteOnly)
+            {
+                if (this.writeOnlyDepth != null)
+                {
+                    this.writeOnlyDepth.Dispose();
+                }
+            }
         }
 
         public void Clear(DX11RenderContext context, float depthValue = 1.0f)
@@ -237,6 +311,10 @@ namespace VVVV.DX11.Lib.Rendering
             if (this.currentmode == eDepthBufferMode.Standard)
             {
                 context.CurrentDeviceContext.ClearDepthStencilView(this.depthoutputpin.IOObject[0][context].DSV, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, depthValue, 0);
+            }
+            if (this.currentmode == eDepthBufferMode.WriteOnly)
+            {
+                context.CurrentDeviceContext.ClearDepthStencilView(this.writeOnlyDepth[context].DSV, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, depthValue, 0);
             }
         }
     }
