@@ -76,7 +76,10 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public void Dispose()
         {
-            this.container.Dispose();
+            if (this.container != null)
+            {
+                this.container.Dispose();
+            }
         }
     }
 
