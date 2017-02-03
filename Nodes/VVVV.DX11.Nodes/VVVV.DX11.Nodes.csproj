@@ -39,6 +39,7 @@
     <Compile Include="Nodes\Geometry\DispatchIndirect1DNode.cs" />
     <Compile Include="Nodes\Geometry\IndexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementJoinAdvancedNode.cs" />
+    <Compile Include="Nodes\Geometry\InputElementPresetNode.cs" />
     <Compile Include="Nodes\Geometry\NullIndirectBufferDrawer.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11DispatcherXYNode.cs" />
     <Compile Include="Nodes\Geometry\Primitives\DX11DispatcherXNode.cs" />

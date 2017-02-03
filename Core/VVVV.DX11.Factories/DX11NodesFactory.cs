@@ -26,6 +26,7 @@ using System.Windows.Forms;
 
 using DWriteFactory = SlimDX.DirectWrite.Factory;
 using System.IO;
+using FeralTic.DX11.Utils;
 
 namespace VVVV.DX11.Factories
 {
@@ -67,6 +68,7 @@ namespace VVVV.DX11.Factories
             Environment.SetEnvironmentVariable("Path", varpath, EnvironmentVariableTarget.Process);
 
             DX11EnumFormatHelper.CreateNullDeviceFormat();
+
 
             this.hdehost = hdehost;
             this.ioreg = ioreg;
@@ -159,6 +161,7 @@ namespace VVVV.DX11.Factories
 
             this.BuildAAEnum();
             this.RegisterStateEnums();
+            this.BuildVertexLayoutsEnum();
 		}
 
         void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
@@ -172,6 +175,11 @@ namespace VVVV.DX11.Factories
         {
             string[] aa = new string[] { "1", "2", "4", "8", "16", "32" };
             this.hdehost.UpdateEnum("DX11_AASamples", "1", aa);
+        }
+
+        private void BuildVertexLayoutsEnum()
+        {
+            this.hdehost.UpdateEnum(VertexLayoutsHelpers.VertexLayoutsEnumName, "Pos3Norm3Tex2", VertexLayoutsHelpers.Entries.ToArray());
         }
 
         private void RegisterStateEnums()
