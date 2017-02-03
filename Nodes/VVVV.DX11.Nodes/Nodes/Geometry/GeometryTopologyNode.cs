@@ -32,7 +32,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInGeom.PluginIO.IsConnected)
+            if (this.FInGeom.IsConnected)
             {
                 this.FOutGeom.SliceCount = SpreadMax;
 
