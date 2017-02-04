@@ -31,11 +31,16 @@ namespace VVVV.DX11.Nodes
         [Input("Keep In Memory", DefaultValue = 0,Order=6)]
         protected ISpread<bool> FKeep;
 
+        [Input("Preferred Buffer Type", DefaultValue = 0, Order = 6, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<DX11BufferUploadType> FBufferType;
+
         [Input("Apply", IsBang = true, DefaultValue = 1,Order=7)]
         protected ISpread<bool> FApply;
 
         [Output("Buffer")]
-        protected ISpread<DX11Resource<DX11DynamicStructuredBuffer<T>>> FOutput;
+        protected ISpread<DX11Resource<IDX11ReadableStructureBuffer>> FOutput;
+
+        DX11BufferUploadType bufferType = DX11BufferUploadType.Dynamic;
 
         [Output("Is Valid")]
         protected ISpread<bool> FValid;
@@ -67,7 +72,7 @@ namespace VVVV.DX11.Nodes
                 {
                     this.FOutput.SliceCount = 1;
                     this.FValid.SliceCount = 1;
-                    if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicStructuredBuffer<T>>(); }
+                    if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<IDX11ReadableStructureBuffer>(); }
                 }
                 else
                 {
@@ -97,7 +102,7 @@ namespace VVVV.DX11.Nodes
 
                 if (this.FOutput[0].Contains(context))
                 {
-                    if (this.FOutput[0][context].ElementCount != count)
+                    if (this.FOutput[0][context].ElementCount != count || this.bufferType != this.FBufferType[0])
                     {
                         this.FOutput[0].Dispose(context);
                     }
@@ -107,8 +112,17 @@ namespace VVVV.DX11.Nodes
                 {
                     if (count > 0)
                     {
-                        this.FOutput[0][context] = new DX11DynamicStructuredBuffer<T>(context, count);
+                        if (this.FBufferType[0] == DX11BufferUploadType.Dynamic)
+                        {
+                            this.FOutput[0][context] = new DX11DynamicStructuredBuffer<T>(context, count);
+                        }
+                        else
+                        {
+                            this.FOutput[0][context] = new DX11CopyDestStructuredBuffer<T>(context, count);
+                        }
+                        
                         this.FValid[0] = true;
+                        this.bufferType = this.FBufferType[0];
                     }
                     else
                     {
@@ -117,8 +131,7 @@ namespace VVVV.DX11.Nodes
                     }
                 }
 
-                DX11DynamicStructuredBuffer<T> b = this.FOutput[0][context];
-
+                
                 if (this.tempbuffer.Length != count)
                 {
                     Array.Resize<T>(ref this.tempbuffer, count);
@@ -132,20 +145,37 @@ namespace VVVV.DX11.Nodes
                     if (needconvert)
                     {
                         this.WriteArray(count);
-                        b.WriteData(this.tempbuffer);
+                        if (this.FBufferType[0] == DX11BufferUploadType.Dynamic)
+                        {
+                            DX11DynamicStructuredBuffer<T> b = (DX11DynamicStructuredBuffer<T>)this.FOutput[0][context];
+                            b.WriteData(this.tempbuffer);
+                        }
+                        else
+                        {
+                            DX11CopyDestStructuredBuffer<T> b = (DX11CopyDestStructuredBuffer<T>)this.FOutput[0][context];
+                            b.WriteData(this.tempbuffer);
+                        }
+                            
                     }
                     else
                     {
-                        b.WriteData(this.FInData.Stream.Buffer,0, this.FInData.SliceCount);
+                        if (this.FBufferType[0] == DX11BufferUploadType.Dynamic)
+                        {
+                            DX11DynamicStructuredBuffer<T> b = (DX11DynamicStructuredBuffer<T>)this.FOutput[0][context];
+                            b.WriteData(this.FInData.Stream.Buffer, 0, this.FInData.SliceCount);
+                        }
+                        else
+                        {
+                            DX11CopyDestStructuredBuffer<T> b = (DX11CopyDestStructuredBuffer<T>)this.FOutput[0][context];
+                            b.WriteData(this.FInData.Stream.Buffer, 0, this.FInData.SliceCount);
+                        }
                     }
                 } 
-                catch
+                catch (Exception ex)
                 {
+                    this.iofactory.PluginHost.Log(TLogType.Error, ex.Message);
 
                 }
-
- 
-                
             }
 
         }
