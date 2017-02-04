@@ -2,9 +2,43 @@ ChangeLog
 =========
 
 # Upcoming
+* [Nodes] Dynamicbuffers now have different upload option (Dynamic/Default/Immutable)
+* [Nodes] InputElement (DX11.Geometry Preset) new node (bunch of commonly used presets in an enum to avoid InputElement join boilerplate)
+* [Nodes] Vlc node reports file as invalid if they are parsing late, instead of ptotential crash.
+* [Nodes] TextSettings (DX11.Advanded) Allows to create a different text engine, can be provide to text nodes (this allows larger glyph texture sizes for example, to bypass the 512 limit).
+* [Nodes] Readback structured buffer nodes can now read any structured buffer.
+* [Nodes] new node BufferData (DX11.RawBuffer) : gets raw buffer data as a stream.
+* [Nodes] DispatcherX DispatcherXY (DX11.Drawer) convenience nodes for 1d/2d dispatch, which does thread group calculations (avoid to replicate this everywhere)
+* [Nodes] New node DynamicBuffer (DX11.Buffer Raw) : Dynamic raw buffer from stream
+* [Nodes] New node PixelData (DX11.Texture), reads raw pixel data in a stream (does not convert to image format)
+* [Nodes] Kinect2 (Devices) has Depth Camera Intrinsics pin (user:id144)
+* [Nodes] Add TextFormat(DirectWrite.Advanced)
+* [Nodes] new Enabled (DX11.Layer) : Blocks render and evaluate if disabled (same as group does but lightweight version)
+* [Nodes] Renderer (DX11) : Now accepts key presses again (was removed due to some old beep issue in 4v)  (user: azeno)
+* [Build] Build and deployments are now automated, so release cycle for alpha (on Git Release) is much more frequent
+* [Nodes] Add Anisotropic (DX11 Sampler) node
+* [Nodes] ViewProjection (DX11.Layer) is now spreadable, allows to fully repeat a layer with different view/projection settings.
+* [Nodes] Add World (DX11.Layer). Allows to move a whole layer independently of the camera. Shader can access it via WORLDLAYER semantic (WORLDLAYERINVERSE, WORLDLAYERVIEW, WORLDLAYERVIEWPROJECTION are also added for convenience)
+* [Nodes] Standard (eg: All Layer shaders) large performance improvements (better caching and runtime calls),and much more GC friendly.
+* [Nodes] Standard (eg: All Layer shaders) have some optimisation if rendering a single geometry several times.
+* [Nodes] VideoIn (DX11.DShow) : Fix potential error on delete.
+* [Nodes] GetSlice (DX11.TextureArray) and GetSlice (DX11.DepthTextureArray) , fix potential error on delete.
+* [Nodes] All platonic solid : Isocahedron, Octahedron, Tetrahedron have a radius parameter.
+* [Nodes] Renderer (DX11) now has a Flip Sequential option, which should help in case of tearing.
+* [Core] Better caching of interfaces, and better registration for windows (eg: improved performances)
+* [Core+Nodes] All parts of the pack are now using IDX11RendererHost, IDX11LayerHost, IDX11ResourceHost instead of provider. This removes IPluginIO as parameter, which creates some issues in many scenarios (just for even being there). Old provider are still there and working alongside but marked as obsolete (and will be removed in next release). Layer version could not run alongside and has been removed. This will need a recompile if a plugin is a custom layer node.
+* [Core] Effect pass can now have topology annotation, in order to force a shader to use a specific topology (This is particularily useful for point sprites (which expect points), or tesselation shaders (which expects a fix control point topology), and avoid to have user guess with topology node.
+* [Nodes] new Zip (TextStyle) and bin version. (user: sebl)
+* [Nodes] Text styles were not spreadable properly. (user: sebl)
+* [Nodes] Fix Cylinder (DX11.Geometry) radius issue
+* [Nodes] Info (Assimp.Mesh) Fix spread indexing.
+* [Nodes] Add Viewport (DX11.Layer Indexed) Reapply the whole layer for each viewport.
+* [Nodes] Texture Array renderer does not apply
+* [Nodes] Layer nodes are now consistent in behavior. If not enabled they do not apply their eventual change, but still render upstream.
+* [Core] Add Tag (DX11.RenderState) node. For advanced usage, allows to attach an object to a state (for custom validator usage for example)
 * [Core] All Depth formats are now working (64 bits version was not (even if rarely used)
 * [Nodes] Add Text (DX11.Geometry)
-* [Nodes] Add Renderer (DX11 TextureSpread), allows to render to multiple textures.
+* [Nodes] Add Renderer (DX11 TextureSpread), allows to render to multiple textures (not texture array, real spread of texture, size/format can be different)
 * [Core] Standard shaders now support multi pass, with the following 2 restrictions: Vertex Input signatur must be the same on all passes (runtime with not validate other passes nor check for equality), and runtime does not reset stages (so make sure to set optional stages to 0).
 * [Core] Render states and object settings can now share a Tag node
 * [Nodes] Add Tag (DX11.RenderState) node
