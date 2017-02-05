@@ -2,6 +2,7 @@ ChangeLog
 =========
 
 # Upcoming
+* [Core]  Renderer nodes now have a WriteOnly depth mode (in case depth is not needed for reading, this is the recommended mode)
 * [Nodes] Dynamicbuffers now have different upload option (Dynamic/Default/Immutable)
 * [Nodes] InputElement (DX11.Geometry Preset) new node (bunch of commonly used presets in an enum to avoid InputElement join boilerplate)
 * [Nodes] Vlc node reports file as invalid if they are parsing late, instead of ptotential crash.
@@ -32,8 +33,7 @@ ChangeLog
 * [Nodes] Text styles were not spreadable properly. (user: sebl)
 * [Nodes] Fix Cylinder (DX11.Geometry) radius issue
 * [Nodes] Info (Assimp.Mesh) Fix spread indexing.
-* [Nodes] Add Viewport (DX11.Layer Indexed) Reapply the whole layer for each viewport.
-* [Nodes] Texture Array renderer does not apply
+* [Nodes] Add Viewport (DX11.Layer Indexed) Set a new viewport depending on camera index from renderer
 * [Nodes] Layer nodes are now consistent in behavior. If not enabled they do not apply their eventual change, but still render upstream.
 * [Core] Add Tag (DX11.RenderState) node. For advanced usage, allows to attach an object to a state (for custom validator usage for example)
 * [Core] All Depth formats are now working (64 bits version was not (even if rarely used)
