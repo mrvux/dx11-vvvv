@@ -12,7 +12,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Anisotropicr", Category = "DX11", Version = "Sampler", Author = "vux")]
+    [PluginInfo(Name = "Anisotropic", Category = "DX11", Version = "Sampler", Author = "vux")]
     public class DX11SamplerStateAnisotropicNode : IPluginEvaluate
     {
         [Input("Address Mode", DefaultEnumEntry = "Wrap")]
