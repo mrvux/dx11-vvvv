@@ -31,6 +31,7 @@ using FeralTic.DX11.Queries;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using VVVV.DX11.Nodes.Renderers.Graphics.Touch;
+using VVVV.DX11.Windows;
 
 namespace VVVV.DX11.Nodes
 {
@@ -283,11 +284,15 @@ namespace VVVV.DX11.Nodes
         private bool FInvalidateSwapChain;
         private bool FResized = false;
         private bool FirstFrame = true;
+
+        private WindowDisplayCursor cursorDisplay;
         #endregion
 
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
+            this.cursorDisplay.HideCursor = !this.FInShowCursor[0];
+
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             if (this.FOutBackBuffer[0] == null)
             {
@@ -509,19 +514,45 @@ namespace VVVV.DX11.Nodes
 
             if (this.FResized || this.FInvalidateSwapChain || this.FOutBackBuffer[0][context] == null)
             {
-                this.FOutBackBuffer[0].Dispose(context);
+                //Set preset first
+                int bufferCount = this.FInBufferCount[0];
 
-                List<SampleDescription> sds = context.GetMultisampleFormatInfo(Format.R8G8B8A8_UNorm);
-                int maxlevels = sds[sds.Count - 1].Count;
-
-                if (sd.Count > maxlevels)
+                if (bufferCount < 1)
                 {
-                    logger.Log(LogType.Warning, "Multisample count too high for this format, reverted to: " + maxlevels);
-                    sd.Count = maxlevels;
+                    logger.Log(LogType.Warning, "Less than one buffer specified, seting to 1");
+                    bufferCount = 1;
                 }
 
+                if (this.FInFlipSequential[0])
+                {
+                    if (bufferCount < 2)
+                    {
+                        logger.Log(LogType.Warning, "Flip sequential mode requires at least 2 buffers, setting to 2");
+                        bufferCount = 2;
+                    }
+                    if (sd.Count > 1)
+                    {
+                        logger.Log(LogType.Warning, "Flip sequential mode does not support Multisampling, disabling");
+                        sd.Count = 1;
+                    }
+                }
+                else
+                {
+                    List<SampleDescription> sds = context.GetMultisampleFormatInfo(Format.R8G8B8A8_UNorm);
+                    int maxlevels = sds[sds.Count - 1].Count;
+
+                    if (sd.Count > maxlevels)
+                    {
+                        logger.Log(LogType.Warning, "Multisample count too high for this format, reverted to: " + maxlevels);
+                        sd.Count = maxlevels;
+                    }
+                }
+
+                this.FOutBackBuffer.SafeDisposeAll(context);
+
+
                 this.FOutBackBuffer[0][context] = new DX11SwapChain(context, this.Handle, Format.R8G8B8A8_UNorm, sd, this.FInRefreshRate[0],
-                    this.FInBufferCount[0], this.FInFlipSequential[0]);
+                    bufferCount, this.FInFlipSequential[0]);
 
                 this.FInvalidateSwapChain = false;
 
@@ -533,17 +564,6 @@ namespace VVVV.DX11.Nodes
 
             DX11SwapChain sc = this.FOutBackBuffer[0][context];
 
-            if (this.FResized)
-            {
-                
-                //if (!sc.IsFullScreen)
-                //{
-                   // sc.Resize();
-               // }
-               //this.FInvalidateSwapChain = true;
-            }
-
-            
             if (!this.renderers.ContainsKey(context)) { this.renderers.Add(context, new DX11GraphicsRenderer(context)); }
 
             this.depthmanager.Update(context, sc.Width, sc.Height, sd);
@@ -629,17 +649,6 @@ namespace VVVV.DX11.Nodes
                 }
             }
         }
-
-        /*private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // DX11RendererNode
-            // 
-            this.Name = "DX11RendererNode";
-            this.ResumeLayout(false);
-
-        }*/
 
         public IntPtr InputWindowHandle
         {
