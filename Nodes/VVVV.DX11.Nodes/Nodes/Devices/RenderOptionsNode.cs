@@ -27,11 +27,11 @@ namespace VVVV.DX11.Nodes
         [Input("Threaded Presentation")]
         protected IDiffSpread<bool> FInThreadedPresentation;
 
-        [Input("Thread per Device")]
+       /* [Input("Thread per Device")]
         protected IDiffSpread<bool> FInThreadPerDevice;
 
-        [Output("Thread Per Device Allowed")]
-        protected ISpread<bool> FOutThreadPerDeviceAllowed;
+       /* [Output("Thread Per Device Allowed")
+        protected ISpread<bool> FOutThreadPerDeviceAllowed;*/
 
         #region IPluginEvaluate Members
         public void Evaluate(int SpreadMax)
@@ -39,9 +39,9 @@ namespace VVVV.DX11.Nodes
             var rm = DX11GlobalDevice.RenderManager;
             rm.Enabled = !FinDisableAllRendering[0];
             rm.AllowThreadPresentation = FInThreadedPresentation[0];
-            rm.AllowThreadPerDevice = FInThreadPerDevice[0];
+            /*rm.AllowThreadPerDevice = FInThreadPerDevice[0];
 
-            FOutThreadPerDeviceAllowed[0] = rm.AllowThreadPerDevice;
+            FOutThreadPerDeviceAllowed[0] = rm.AllowThreadPerDevice;*/
         }
         #endregion
     }

@@ -93,6 +93,7 @@
     <Compile Include="Effects\Pins\RenderSemantics\GeometryRenderVariable.cs" />
     <Compile Include="Effects\Pins\RenderSemantics\GlobalRenderVariables.cs" />
     <Compile Include="Effects\Pins\RenderSemantics\ViewProjRenderVariables.cs" />
+    <Compile Include="Effects\Pins\RenderSemantics\WorldLayerRenderVariables.cs" />
     <Compile Include="Effects\Pins\RenderSemantics\WorldRenderVariables.cs" />
     <Compile Include="Effects\Pins\ResourceShaderPin.cs" />
     <Compile Include="Effects\Pins\Resources\BuffersShaderPins.cs" />

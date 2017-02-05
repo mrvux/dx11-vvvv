@@ -17,9 +17,14 @@ namespace VVVV.DX11.Lib.Effects.Registries
             this.RegisterType("float4x4", "WORLDINVERSE", false, (var, host, factory) => new MatrixWorldInvRenderVariable(var));
             this.RegisterType("float4x4", "WORLDINVERSETRANSPOSE", false, (var, host, factory) => new MatrixWorldInverseTransposeRenderVariable(var));
 
+            this.RegisterType("float4x4", "WORLDLAYER", false, (var, host, factory) => new MatrixWorldLayerRenderVariable(var));
+            this.RegisterType("float4x4", "WORLDLAYERINVERSETRANSPOSE", false, (var, host, factory) => new MatrixWorldLayerInverseTransposeRenderVariable(var));
+
             this.RegisterType("float4x4", "WORLDVIEW", false, (var, host, factory) => new MatrixWorldViewRenderVariable(var));
+            this.RegisterType("float4x4", "WORLDLAYERVIEW", false, (var, host, factory) => new MatrixWorldLayerViewRenderVariable(var));
 
             this.RegisterType("float4x4", "WORLDVIEWPROJECTION", false, (var, host, factory) => new MatrixWorldViewProjRenderVariable(var));
+            this.RegisterType("float4x4", "WORLDLAYERVIEWPROJECTION", false, (var, host, factory) => new MatrixWorldLayerViewProjectionRenderVariable(var));
 
             this.RegisterType("int", "DRAWINDEX", false, (var, host, factory) => new IntDrawIndexRenderVariable(var));
             this.RegisterType("float", "DRAWINDEX", false, (var, host, factory) => new FloatDrawIndexRenderVariable(var));
