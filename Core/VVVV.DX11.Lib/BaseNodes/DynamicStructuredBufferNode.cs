@@ -128,7 +128,7 @@ namespace VVVV.DX11.Nodes
                     bufferElementCount = this.tempbuffer.Length;
                 }
 
-                bool needContextCopy = false;
+               
                 if (!this.FOutput[0].Contains(context))
                 {
                     if (count > 0)
@@ -136,12 +136,10 @@ namespace VVVV.DX11.Nodes
                         if (this.FBufferType[0] == DX11BufferUploadType.Dynamic)
                         {
                             this.FOutput[0][context] = new DX11DynamicStructuredBuffer<T>(context, count);
-                            needContextCopy = true;
                         }
                         else if (this.FBufferType[0] == DX11BufferUploadType.Default)
                         {
                             this.FOutput[0][context] = new DX11CopyDestStructuredBuffer<T>(context, count);
-                            needContextCopy = true;
                         }
                         else
                         {
@@ -158,6 +156,7 @@ namespace VVVV.DX11.Nodes
                     }
                 }
 
+                bool needContextCopy = this.FBufferType[0] != DX11BufferUploadType.Immutable;
                 if (needContextCopy)
                 {
                     try
