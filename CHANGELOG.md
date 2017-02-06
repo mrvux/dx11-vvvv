@@ -2,6 +2,7 @@ ChangeLog
 =========
 
 # Upcoming
+* [Girlpower] Many new help patches and examples.
 * [Core]  Renderer nodes now have a WriteOnly depth mode (in case depth is not needed for reading, this is the recommended mode)
 * [Nodes] Dynamicbuffers now have different upload option (Dynamic/Default/Immutable)
 * [Nodes] InputElement (DX11.Geometry Preset) new node (bunch of commonly used presets in an enum to avoid InputElement join boilerplate)
