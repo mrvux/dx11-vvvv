@@ -15,13 +15,6 @@ namespace VVVV.DX11.RenderGraph.Model
         private List<DX11Node> renderwindows = new List<DX11Node>();
         private List<DX11Node> renderStartPoints = new List<DX11Node>();
 
-        private List<DX11Node> oldInterfaceNodes = new List<DX11Node>();
-
-        public bool HasOldInterface
-        {
-            get { return this.oldInterfaceNodes.Count > 0; }
-        }
-
         public DX11Graph()
         {
 
@@ -53,10 +46,6 @@ namespace VVVV.DX11.RenderGraph.Model
             {
                 this.renderStartPoints.Add(node);
             }
-            if (node.Interfaces.IsResourceProvider)
-            {
-                this.oldInterfaceNodes.Add(node);
-            }
         }
 
         public void RemoveNode(DX11Node node)
@@ -64,7 +53,6 @@ namespace VVVV.DX11.RenderGraph.Model
             this.nodes.Remove(node);
             this.renderwindows.Remove(node);
             this.renderStartPoints.Remove(node);
-            this.oldInterfaceNodes.Remove(node);
         }
 
         public DX11Node FindNode(INode2 hdenode)

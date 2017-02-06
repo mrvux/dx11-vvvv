@@ -133,11 +133,6 @@ namespace VVVV.DX11.Lib.RenderGraph
         public bool AllowThreadPresentation { get; set; }
         public bool AllowThreadPerDevice { get; set; }
 
-        public bool IsThreadPerDeviceAllowed
-        {
-            get { return this.graph.HasOldInterface == false; }
-        }
-
         public void Render()
         {
             if (!this.Enabled)
@@ -145,7 +140,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 return;
             }
 
-            if (this.AllowThreadPerDevice && this.IsThreadPerDeviceAllowed)
+            if (this.AllowThreadPerDevice)
             {
                 List<DX11RenderContext> devices = this.RenderGraphs.Keys.ToList();
 

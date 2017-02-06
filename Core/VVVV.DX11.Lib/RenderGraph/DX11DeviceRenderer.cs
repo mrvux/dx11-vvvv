@@ -138,11 +138,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                         //In case node has been deleted, we already called dispose
                         if (this.graph.Nodes.Contains(unused.ParentNode))
                         {
-                            if (unused.ParentNode.Interfaces.IsResourceProvider)
-                            {
-                                unused.ParentNode.Interfaces.ResourceProvider.Destroy(unused.PluginIO, this.context, false);
-                            }
-                            else if (unused.ParentNode.Interfaces.IsResourceHost)
+                            if (unused.ParentNode.Interfaces.IsResourceHost)
                             {
                                 unused.ParentNode.Interfaces.ResourceHost.Destroy(this.context, false);
                             }
@@ -208,24 +204,7 @@ namespace VVVV.DX11.Lib.RenderGraph
 
                         try
                         {
-                            if (source.Interfaces.IsResourceProvider)
-                            {
-                                source.Interfaces.ResourceProvider.Update(parent.PluginIO, this.context);
-
-                                if (this.DoNotDestroy == false)
-                                {
-                                    //Mark all output pins as processed
-                                    foreach (DX11OutputPin outpin in source.OutputPins)
-                                    {
-                                        this.thisframepins.Add(outpin);
-                                        if (this.lastframepins.Contains(outpin))
-                                        {
-                                            this.lastframepins.Remove(outpin);
-                                        }
-                                    }
-                                }
-                            }
-                            else if (source.Interfaces.IsResourceHost)
+                            if (source.Interfaces.IsResourceHost)
                             {
                                 source.Interfaces.ResourceHost.Update(this.context);
                                 if (this.DoNotDestroy == false)
@@ -288,26 +267,16 @@ namespace VVVV.DX11.Lib.RenderGraph
         {
             foreach (DX11Node node in this.graph.Nodes)
             {
-                if (node.Interfaces.IsResourceProvider)
-                {
-                    foreach (DX11OutputPin outpin in node.OutputPins)
-                    {
-                        #pragma warning disable 0618 //We still support in core
-                        IDX11ResourceProvider provider = outpin.ParentNode.Interfaces.ResourceProvider;
-                        try
-                        {
-                            provider.Destroy(outpin.PluginIO, this.context, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Log(ex);
-                        }
-                        #pragma warning restore 0618
-                    }
-                }
                 if (node.Interfaces.IsResourceHost)
                 {
-                    node.Interfaces.ResourceHost.Destroy(this.context, true);
+                    try
+                    {
+                        node.Interfaces.ResourceHost.Destroy(this.context, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Log(ex);
+                    }
                 }
             }
 
