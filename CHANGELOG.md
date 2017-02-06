@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-# Upcoming
+# 1.0.0 (Release 06/02/2017)
 * [Girlpower] Many new help patches and examples.
 * [Core]  Renderer nodes now have a WriteOnly depth mode (in case depth is not needed for reading, this is the recommended mode)
 * [Nodes] Dynamicbuffers now have different upload option (Dynamic/Default/Immutable)
