@@ -24,7 +24,7 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Input("Reload", IsBang = true, IsSingle = true)]
         protected ISpread<bool> FInReload;
 
-        [Input("Keep In Memory", IsBang = true, IsSingle = true)]
+        [Input("Keep In Memory", IsSingle = true)]
         protected ISpread<bool> FInKeep;
 
         [Output("Output", Order = 1)]
