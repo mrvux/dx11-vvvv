@@ -20,10 +20,7 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Input("Scene",IsSingle=true)]
         protected IDiffSpread<AssimpScene> FInScene;
 
-        [Input("Mesh Index", IsSingle = true)]
-        protected IDiffSpread<int> FInMeshIdx;
-
-        [Output("Output", Order = 5)]
+        [Output("Output")]
         protected Pin<DX11Resource<DX11IndexedGeometry>> FOutGeom;
 
         [Output("Bone Names")]
@@ -56,7 +53,7 @@ namespace VVVV.DX11.Nodes.AssetImport
         {
             
             this.FInvalidate = false;
-            if (this.FInScene.IsChanged || this.FInMeshIdx.IsChanged)
+            if (this.FInScene.IsChanged)
             {
                 //Destroy old mesh
                 for (int i = 0; i < this.FOutGeom.SliceCount; i++)
