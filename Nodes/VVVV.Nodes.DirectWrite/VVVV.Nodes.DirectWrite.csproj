@@ -28,6 +28,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="VVVV.Nodes.Generic">
       <HintPath>..\..\Dependencies\$(Platform)\VVVV.Nodes.Generic.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
