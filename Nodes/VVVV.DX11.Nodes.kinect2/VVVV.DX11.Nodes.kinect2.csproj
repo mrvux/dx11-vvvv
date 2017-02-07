@@ -103,6 +103,14 @@
       <Link>Kinect20.VisualGestureBuilder.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\..\Dependencies\x64\Kinect2\Prepose\Antlr4.Runtime.v4.5.dll">
+      <Link>Antlr4.Runtime.v4.5.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\x64\Kinect2\Prepose\BigRationalLibrary.dll">
+      <Link>BigRationalLibrary.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\..\Dependencies\x64\Kinect2\Prepose\libz3.dll">
       <Link>libz3.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
