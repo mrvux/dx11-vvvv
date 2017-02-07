@@ -36,7 +36,7 @@ namespace VVVV.DX11.Lib.Effects
         protected bool FInvalidate;
         public INodeInfo Source { get; set; }
 
-        [Input("Iterastion Count", Order = 10000, DefaultValue = 1,MinValue=1,Visibility=PinVisibility.OnlyInspector)]
+        [Input("Iteration Count", Order = 10000, DefaultValue = 1,MinValue=1,Visibility=PinVisibility.OnlyInspector)]
         protected ISpread<int> FIter;
 
         [Input("Enabled", Order = 10000, DefaultValue = 1)]
