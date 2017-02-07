@@ -25,6 +25,9 @@
     <Reference Include="Microsoft.Kinect.Face">
       <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.Face.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Kinect.Face">
+      <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.Face.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Kinect.Fusion">
       <HintPath>..\..\Dependencies\x64\Kinect2\Microsoft.Kinect.Fusion.dll</HintPath>
     </Reference>
@@ -98,6 +101,10 @@
     </Content>
     <Content Include="..\..\Dependencies\x64\Kinect2\Kinect20.VisualGestureBuilder.dll">
       <Link>Kinect20.VisualGestureBuilder.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\x64\Kinect2\Prepose\libz3.dll">
+      <Link>libz3.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
