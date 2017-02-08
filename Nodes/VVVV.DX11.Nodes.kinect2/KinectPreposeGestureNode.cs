@@ -29,7 +29,7 @@ namespace VVVV.MSKinect.Nodes
         [Input("Kinect Runtime")]
         protected Pin<KinectRuntime> FInRuntime;
 
-        [Input("Pose File")]
+        [Input("Pose String")]
         protected IDiffSpread<string> FInScript;
 
         [Input("Tracking Id")]
@@ -120,25 +120,37 @@ namespace VVVV.MSKinect.Nodes
 
             if (this.FInScript.IsChanged)
             {
-                string str = this.FInScript[0];
-                var app = PreposeGestures.App.ReadAppText(str);
 
-                this.FOutGestures.SliceCount = app.Gestures.Count;
-                this.FOutGestures.AssignFrom(app.Gestures.Select(gs => gs.Name));
-
-                
-
-                this.source.Gestures.Clear();
-                foreach (Gesture g in app.Gestures)
+                try
                 {
-                    this.source.AddGesture(g);
-                }
+                    string str = this.FInScript[0];
+                    var app = PreposeGestures.App.ReadAppText(str);
 
-                
+                    this.FOutGestures.SliceCount = app.Gestures.Count;
+                    this.FOutGestures.AssignFrom(app.Gestures.Select(gs => gs.Name));
+
+
+
+                    this.source.Gestures.Clear();
+                    foreach (Gesture g in app.Gestures)
+                    {
+                        this.source.AddGesture(g);
+                    }
+
+                    this.FOutValid[0] = true;
+                }
+                catch
+                {
+                    this.FOutValid[0] = false;
+                    this.source.Gestures.Clear();
+                } 
             }
 
-            this.source.myMatcher.Precision = Convert.ToInt32(this.FInPrecision[0] * 100.0);
+            if (this.source != null)
+            {
+                this.source.myMatcher.Precision = Convert.ToInt32(this.FInPrecision[0] * 100.0);
 
+            }
             this.FOutPaused[0] = this.reader != null ? this.reader.IsPaused : true;
             this.FOuTrackingId[0] = this.source.TrackingId.ToString();
         }
