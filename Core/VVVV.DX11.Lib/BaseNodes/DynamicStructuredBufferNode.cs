@@ -164,12 +164,12 @@ namespace VVVV.DX11.Nodes
                         if (this.FBufferType[0] == DX11BufferUploadType.Dynamic)
                         {
                             DX11DynamicStructuredBuffer<T> b = (DX11DynamicStructuredBuffer<T>)this.FOutput[0][context];
-                            b.WriteData(bufferToCopy, 0, bufferToCopy.Length);
+                            b.WriteData(bufferToCopy, 0, b.ElementCount);
                         }
                         else if (this.FBufferType[0] == DX11BufferUploadType.Default)
                         {
                             DX11CopyDestStructuredBuffer<T> b = (DX11CopyDestStructuredBuffer<T>)this.FOutput[0][context];
-                            b.WriteData(bufferToCopy, 0, bufferToCopy.Length);
+                            b.WriteData(bufferToCopy, 0, b.ElementCount);
                         }
 
                     }
