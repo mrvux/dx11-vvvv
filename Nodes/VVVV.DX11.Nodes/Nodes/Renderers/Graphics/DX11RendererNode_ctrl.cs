@@ -39,6 +39,8 @@ namespace VVVV.DX11.Nodes
             this.Resize += DX11RendererNode_Resize;
             this.Load += new EventHandler(DX11RendererNode_Load);
             this.MouseWheel += new System.Windows.Forms.MouseEventHandler(DX11RendererNode_MouseWheel);
+            this.GotFocus += DX11RendererNode_GotFocus;
+            this.LostFocus += DX11RendererNode_LostFocus;
 
             Touchdown += OnTouchDownHandler;
             Touchup += OnTouchUpHandler;
@@ -46,6 +48,22 @@ namespace VVVV.DX11.Nodes
 
             this.depthmanager = new DepthBufferManager(host,iofactory);
             
+        }
+
+        private void DX11RendererNode_LostFocus(object sender, EventArgs e)
+        {
+            if (this.FInDisableShortCuts[0])
+            {
+                this.hde.EnableShortCuts();
+            }
+        }
+
+        private void DX11RendererNode_GotFocus(object sender, EventArgs e)
+        {
+            if (this.FInDisableShortCuts[0])
+            {
+                this.hde.DisableShortCuts();
+            }
         }
 
         private bool touchsupport;

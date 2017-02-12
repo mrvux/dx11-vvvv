@@ -193,6 +193,9 @@ namespace VVVV.DX11.Nodes
         [Input("Show Cursor", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<bool> FInShowCursor;
 
+        [Input("Disable Shortcuts", DefaultValue = 0,IsSingle =true, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInDisableShortCuts;
+
         [Input("Refresh Rate", DefaultValue = 60, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<int> FInRefreshRate;
 
