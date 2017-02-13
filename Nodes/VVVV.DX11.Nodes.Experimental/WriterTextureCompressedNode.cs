@@ -17,6 +17,18 @@ using System.IO;
 
 namespace VVVV.DX11.Nodes
 {
+    public enum DdsBlockType
+    {
+        BC1 = SlimDX.DXGI.Format.BC1_UNorm,
+        BC2 = SlimDX.DXGI.Format.BC2_UNorm,
+        BC3 = SlimDX.DXGI.Format.BC3_UNorm,
+        BC4 = SlimDX.DXGI.Format.BC4_UNorm,
+        BC7 = SlimDX.DXGI.Format.BC7_UNorm,
+        BC6S = SlimDX.DXGI.Format.BC6_SFloat16,
+        BC6U = SlimDX.DXGI.Format.BC6_UFloat16,
+    }
+
+
     [PluginInfo(Name = "BlockWriter", Category = "DX11.Texture", Version = "2d", Author = "vux", AutoEvaluate = true)]
     public class BlockWriterTextureNode : IPluginEvaluate, IDX11ResourceDataRetriever
     {

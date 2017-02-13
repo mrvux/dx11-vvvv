@@ -6,22 +6,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using VVVV.DX11.Nodes;
 
 namespace FeralTic.DX11.Resources
 {
 
     public enum eImageFormat { Bmp = 1, Jpeg = 2, Png = 3, Tiff = 4, Gif = 5, Hdp = 6,Dds = 128, Tga = 129 }
 
-    public enum DdsBlockType
-    {
-        BC1 = SlimDX.DXGI.Format.BC1_UNorm,
-        BC2 = SlimDX.DXGI.Format.BC2_UNorm,
-        BC3 = SlimDX.DXGI.Format.BC3_UNorm,
-        BC4 = SlimDX.DXGI.Format.BC4_UNorm,
-        BC7 = SlimDX.DXGI.Format.BC7_UNorm,
-        BC6S = SlimDX.DXGI.Format.BC6_SFloat16,
-        BC6U = SlimDX.DXGI.Format.BC6_UFloat16,
-    }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct ImageMetadata
