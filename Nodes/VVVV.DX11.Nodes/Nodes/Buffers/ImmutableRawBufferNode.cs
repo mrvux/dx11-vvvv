@@ -28,9 +28,6 @@ namespace VVVV.DX11.Nodes
         [Output("Buffer", IsSingle = true)]
         protected ISpread<DX11Resource<DX11ImmutableRawBuffer>> FOutput;
 
-        [Output("Is Valid")]
-        protected ISpread<bool> FValid;
-
         private bool FInvalidate;
         private bool FFirst = true;
 
@@ -39,7 +36,6 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             this.FOutput.SliceCount = 1;
-            this.FValid.SliceCount = SpreadMax;
             this.FInvalidate = false;
 
             if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11ImmutableRawBuffer>(); }
@@ -52,24 +48,25 @@ namespace VVVV.DX11.Nodes
                 {
                     var inStream = this.streamInput[0];
 
-                    if (this.dataStream != null && this.dataStream.Length  != inStream.Length)
+                    if (this.dataStream != null && this.dataStream.Length != inStream.Length)
                     {
                         this.dataStream.Dispose();
                         this.dataStream = null;
                     }
 
-                    if (this.dataStream == null)
+                    if (this.dataStream == null && inStream.Length > 0)
                     {
                         this.dataStream = new DataStream(inStream.Length, true, true);
                     }
 
+                    if (this.dataStream != null)
+                    {
+                        inStream.Position = 0;
+                        dataStream.Position = 0;
 
-                    inStream.Position = 0;
-                    dataStream.Position = 0;
-
-                    inStream.CopyTo(dataStream);
-                    dataStream.Position = 0;
-                    
+                        inStream.CopyTo(dataStream);
+                        dataStream.Position = 0;
+                    }
                 }
                 else
                 {
@@ -82,7 +79,6 @@ namespace VVVV.DX11.Nodes
 
                 this.FInvalidate = true;
                 this.FFirst = false;
-                this.FOutput.Stream.IsChanged = true;
             }
         }
 
@@ -97,6 +93,7 @@ namespace VVVV.DX11.Nodes
                     this.FOutput[0].Dispose(context);
                 }
                 this.FOutput[0][context] = new DX11ImmutableRawBuffer(context, this.dataStream, (int)this.dataStream.Length);
+                this.FInvalidate = false;
             }
 
         }

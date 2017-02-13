@@ -28,9 +28,6 @@ namespace VVVV.DX11.Nodes
         [Output("Buffer", IsSingle = true)]
         protected ISpread<DX11Resource<DX11DynamicRawBuffer>> FOutput;
 
-        [Output("Is Valid")]
-        protected ISpread<bool> FValid;
-
         private bool FInvalidate;
         private bool FFirst = true;
 
@@ -39,7 +36,6 @@ namespace VVVV.DX11.Nodes
         public void Evaluate(int SpreadMax)
         {
             this.FOutput.SliceCount = 1;
-            this.FValid.SliceCount = SpreadMax;
             this.FInvalidate = false;
 
             if (this.FOutput[0] == null) { this.FOutput[0] = new DX11Resource<DX11DynamicRawBuffer>(); }
@@ -58,17 +54,22 @@ namespace VVVV.DX11.Nodes
                         this.dataStream = null;
                     }
 
-                    if (this.dataStream == null)
+                    if (this.dataStream == null && inStream.Length > 0)
                     {
                         this.dataStream = new DataStream(inStream.Length, true, true);
                     }
 
 
-                    inStream.Position = 0;
-                    dataStream.Position = 0;
+                    if (this.dataStream != null)
+                    {
 
-                    inStream.CopyTo(dataStream);
-                    dataStream.Position = 0;
+                        inStream.Position = 0;
+                        dataStream.Position = 0;
+
+                        inStream.CopyTo(dataStream);
+                        dataStream.Position = 0;
+                    }
+
                     
                 }
                 else
@@ -106,6 +107,7 @@ namespace VVVV.DX11.Nodes
                 }
 
                 this.FOutput[0][context].WriteData(this.dataStream.DataPointer, (int)this.dataStream.Length);
+                this.FInvalidate = false;
             }
 
         }
