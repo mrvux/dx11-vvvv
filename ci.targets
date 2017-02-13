@@ -44,6 +44,7 @@
     <Copy SourceFiles="@(GirlPowerNodes)" DestinationFolder="Deploy\Release\x86\packs\dx11\nodes\%(GirlPowerNodes.RecursiveDir)" />
     <Copy SourceFiles="@(GirlPower)" DestinationFolder="Deploy\Release\x86\packs\dx11\girlpower\%(GirlPower.RecursiveDir)" />
     <Exec WorkingDirectory="Deploy\Release\x86\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x86.zip packs" LogStandardErrorAsError="true" />
+	<Exec WorkingDirectory="Deploy\Release\x86\packs\dx11\core\" Command="..\..\..\..\..\..\Tools\7zA.exe a -tzip ..\..\..\..\..\..\Zip\vvvv-dx11-core-x86.zip -x!VVVV.DX11.Lib.dll" LogStandardErrorAsError="true" />
 	
     <CallTarget Targets="Build-x64" />
 	<Exec WorkingDirectory="Deploy\Release\x64\packs\DX11\nodes\plugins\vlc\" Command="..\..\..\..\..\..\..\..\Tools\7zA.exe x ..\..\..\..\..\..\..\..\Dependencies\x64\vlc-plugins.zip" LogStandardErrorAsError="true" />
@@ -52,5 +53,6 @@
 	<Copy SourceFiles="@(NuiDatabase)" DestinationFolder="Deploy\Release\x64\packs\dx11\nodes\plugins\kinect2\NuiDatabase\%(NuiDatabase.RecursiveDir)" />
     <Copy SourceFiles="@(vgbtechs)" DestinationFolder="Deploy\Release\x64\packs\dx11\nodes\plugins\kinect2\vgbtechs\%(vgbtechs.RecursiveDir)" />
     <Exec WorkingDirectory="Deploy\Release\x64\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x64.zip packs" LogStandardErrorAsError="true" />
+	<Exec WorkingDirectory="Deploy\Release\x64\packs\dx11\core\" Command="..\..\..\..\..\..\Tools\7zA.exe a -tzip ..\..\..\..\..\..\Zip\vvvv-dx11-core-x64.zip -x!VVVV.DX11.Lib.dll" LogStandardErrorAsError="true" />
   </Target>
 </Project>
