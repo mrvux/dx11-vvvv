@@ -128,22 +128,6 @@ Formatted from last test report
 * Skeleton (DX11.Geometry Lines)
 * Skeleton (Kinect Microsoft)
 
-# DirectWrite
-* Spacing (DirectWrite Styles)
-* PairKerning (DirectWrite Styles)
-* Typography (DirectWrite Styles)
-* Cons (DirectWrite Styles)
-* HitTest (String DirectWrite)
-* ClusterMetrics (DirectWrite TextLayout)
-* LineMetrics (DirectWrite TextLayout)
-* TextLayoutMetrics (DirectWrite)
-* Cons (TextObject)
-* TextObject (Text)
-* CaretPosition (String DirectWrite)
-* CaretRange (String DirectWrite)
-* TextFormat (DirectWrite Advanced)
-
-
 # Bullet
 * DynamicBuffer (DX11 Bullet.RigidBody)
 * GetSoftBodyBuffer (Bullet)
