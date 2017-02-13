@@ -1,6 +1,13 @@
 ChangeLog
 =========
 
+# Upcoming
+* [Help] Vlc (Dx11.Texture2D) help patch
+
+# 1.0.1
+* [Nodes] Fixed last minute issue in DynamicBuffer 
+* [Deployment] Sorted Kinect2 missing libraries.
+
 # 1.0.0 (Release 06/02/2017)
 * [Girlpower] Many new help patches and examples.
 * [Core]  Renderer nodes now have a WriteOnly depth mode (in case depth is not needed for reading, this is the recommended mode)

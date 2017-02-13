@@ -1,0 +1,4 @@
+Contributing
+=========
+
+# Work in progress
