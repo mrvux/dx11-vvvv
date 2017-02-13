@@ -13,7 +13,6 @@ using MSKinect.Nodes;
 
 namespace VVVV.DX11.Integration.Tests
 {
-    [TestClass]
     public partial class HelpFilesTests
     {
         [TestMethod]

@@ -14,7 +14,7 @@ using MSKinect.Nodes;
 namespace VVVV.DX11.Integration.Tests
 {
     [TestClass]
-    public class HelpFilesTests
+    public partial class HelpFilesTests
     {
         const string helpFilesRelativePath = "../../../../girlpower/nodes/plugins";
 
