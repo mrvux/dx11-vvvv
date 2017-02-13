@@ -8,6 +8,10 @@ Here is a list of (looked after) contributions:
 * Bug fixes : You can look at [Issues](https://github.com/mrvux/dx11-vvvv/issues) and check for the up-for-grabs flags (in case of issues it either means it's very specific, or that I miss the hardware combination to fix it myself).
 * Enhancements : Same as above, but for additional features/nodes.
 
+Note: All new contributions should be provided as Pull Requests.
+
+The only exception to it is Missing Help patches, which can be submitted as issue with a zip (ideally, if you only need to work on help, you can clone [Girlpower](https://github.com/mrvux/dx11-vvvv-girlpower/tree/master) instead of the whole dx11 repository
+
 ## Bugs and Issues
 
 Please log a new issue in the GitHub repo.
