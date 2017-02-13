@@ -6,12 +6,7 @@ This is a reported list of missing help patches, per library.
 Formatted from last test report
 
 # Nodes
-* DynamicBuffer (DX11 DirectionalLight)
-* DynamicBuffer (DX11 PointLight)
-* DynamicBuffer (DX11 SpotLight)
 * Renderer (DX11 MRT)
-* ImmutableBuffer (DX11.Buffer Raw)
-* DynamicBuffer (DX11.Buffer Raw)
 * BufferData (DX11.RawBuffer)
 * IndexIndirect (DX11.Drawer Buffer)
 * VertexIndirect (DX11.Drawer Buffer)
@@ -79,7 +74,6 @@ Formatted from last test report
 * FrameDelay (DX11.Texture 2d)
 * Info (DX11.Texture 2d)
 * StencilView (DX11.Texture 2d)
-* Switch (DX11.Texture 2d)
 * Writer (DX11.Texture 2d)
 * Info (DX11.Texture 3d)
 * Writer (DX11.Texture 3d)
@@ -123,9 +117,6 @@ Formatted from last test report
 * ParentNode (Assimp)
 * Node (Assimp)
 
-# DShow
-* VideoIn (DX11 DShow)
-
 # Kinect 1
 * SmoothSettings (Kinect Microsoft)
 * Gesture (Kinect Microsoft)
@@ -136,9 +127,6 @@ Formatted from last test report
 * Player (Kinect Microsoft)
 * Skeleton (DX11.Geometry Lines)
 * Skeleton (Kinect Microsoft)
-
-# QR Code
-* QRCode (DX11.Texture)
 
 # DirectWrite
 * Spacing (DirectWrite Styles)
