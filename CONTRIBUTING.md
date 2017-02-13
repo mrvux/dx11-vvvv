@@ -4,8 +4,8 @@ One of the easiest ways to contribute is to participate in discussions and discu
 You can also contribute by submitting pull requests with code changes.
 
 Here is a list of (looked after) contributions:
-* Submitting missing help patches : Please look into Missing Help page to see which nodes require help file.
-* Bug fixes : You can look at issues in Issues and check for the up-for-grabs flags (in case of issues it either means it's very specific, or that I miss the hardware combination to fix it myself).
+* Submitting missing help patches : Please look into [Missing Help](https://github.com/mrvux/dx11-vvvv/blob/master/MISSINGHELP.md) page to see which nodes require help file.
+* Bug fixes : You can look at [Issues](https://github.com/mrvux/dx11-vvvv/issues) and check for the up-for-grabs flags (in case of issues it either means it's very specific, or that I miss the hardware combination to fix it myself).
 * Enhancements : Same as above, but for additional features/nodes.
 
 ## Bugs and Issues
