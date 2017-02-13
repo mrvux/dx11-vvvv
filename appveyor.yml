@@ -23,7 +23,6 @@ artifacts:
     name: 32 Bits (Core libraries only)
   - path: Zip/vvvv-dx11-core-x64.zip
     name: 64 Bits (Core libraries only)
-	
 
 environment:
   priv_key:
