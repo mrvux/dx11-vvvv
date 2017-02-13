@@ -27,7 +27,7 @@ Set up targets, see screenshots below.
 
 ![open-configuration-manager!](https://raw.github.com/mrvux/dx11-vvvv/master/images/OpenConfigurationManager.png)
 
-![set-targets!](https://raw.github.com/mrvux/dx11-vvvv/master/master/SetTargets.png)
+![set-targets!](https://raw.github.com/mrvux/dx11-vvvv/master/images/SetTargets.png)
 
 Now, if you hit the Rebuild Solution button and you will gain a brand new lib and packs folders under Deploy/Debug folder.
 
