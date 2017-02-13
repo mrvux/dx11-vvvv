@@ -36,9 +36,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    
     <Compile Include="HelpFilesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup Condition="$(Platform) == 'x64'">
+    <Compile Include="HelpFilesKinect2Test.cs" />
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
       <Project>{71c0786d-2640-4e39-aa7b-83602f36f3a3}</Project>
@@ -67,10 +72,6 @@
       <Project>{6a0afb1f-8219-4a08-85f7-b7f19b66ac16}</Project>
       <Name>VVVV.DX11.Nodes.DShow</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.kinect2\VVVV.DX11.Nodes.kinect2.csproj">
-      <Project>{f7a2d9c3-515c-4045-b8d1-4ae0cc8802cd}</Project>
-      <Name>VVVV.DX11.Nodes.kinect2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.MSKinect\VVVV.DX11.Nodes.MSKinect.csproj">
       <Project>{cae46b4a-cb79-4e39-b318-bf76a2cb256f}</Project>
       <Name>VVVV.DX11.Nodes.MSKinect</Name>
@@ -97,6 +98,13 @@
       <Name>VVVV.Nodes.DirectWrite</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup Condition="$(Platform) == 'x64'">
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.kinect2\VVVV.DX11.Nodes.kinect2.csproj">
+      <Project>{f7a2d9c3-515c-4045-b8d1-4ae0cc8802cd}</Project>
+      <Name>VVVV.DX11.Nodes.kinect2</Name>
+    </ProjectReference>
+  </ItemGroup>
+  
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
