@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="vvvv.DX11.References.targets" />
+
+  <PropertyGroup Condition="'$(IncludeVVVVCore)' != 'True'">
+    <IncludeVVVVCore>False</IncludeVVVVCore>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TestsOutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\tests\</TestsOutputPath>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
+	  <OutputPath>$(SolutionDir)\Deploy\$(Configuration)\$(Platform)\packs\dx11\</OutputPath>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
@@ -44,27 +52,27 @@
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition.Codeplex">
       <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
-	  <Private>False</Private>
+	  <Private>$(IncludeVVVVCore)</Private>
     </Reference>
 	<Reference Include="SlimDX">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\SlimDX.dll</HintPath>
-	  <Private>False</Private>
+    <Private>$(IncludeVVVVCore)</Private>
     </Reference>
     <Reference Include="VVVV.Core">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Core.dll</HintPath>
-	  <Private>False</Private>
+      <Private>$(IncludeVVVVCore)</Private>
     </Reference>
     <Reference Include="VVVV.Utils">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Utils.dll</HintPath>
-	  <Private>False</Private>
+      <Private>$(IncludeVVVVCore)</Private>
     </Reference>
 	<Reference Include="VVVV.Hosting">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Hosting.dll</HintPath>
-	  <Private>False</Private>
+    <Private>$(IncludeVVVVCore)</Private>
     </Reference>
     <Reference Include="VVVV.PluginInterfaces">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
-	  <Private>False</Private>
+      <Private>$(IncludeVVVVCore)</Private>
     </Reference>
   </ItemGroup>
 </Project>

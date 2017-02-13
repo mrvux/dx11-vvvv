@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludeVVVVCore>True</IncludeVVVVCore>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\vvvv.DX11.Build.targets" />
+  <PropertyGroup>
+    <ProjectGuid>{352D259C-FC16-4E03-BBBC-A1C720F7684A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VVVV.DX11.Integration.Tests</RootNamespace>
+    <AssemblyName>VVVV.DX11.Integration.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <OutputPath>$(TestsOutputPath)\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="HelpFilesTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
+      <Project>{71c0786d-2640-4e39-aa7b-83602f36f3a3}</Project>
+      <Name>VVVV.DX11.Core</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
+      <Project>{c6ee17bb-1f48-44ea-8131-d299bc57748c}</Project>
+      <Name>VVVV.DX11.Lib</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9ead0f44-e6aa-4363-be4d-d944c1d35044}</Project>
+      <Name>FeralTic</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Assimp\VVVV.DX11.Nodes.Assimp.csproj">
+      <Project>{5eb993e1-cf42-433c-9463-0e46fc8c4fd6}</Project>
+      <Name>VVVV.DX11.Nodes.Assimp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Bullet\VVVV.Nodes.Bullet.csproj">
+      <Project>{220f0ecf-6a3b-4def-9c34-95ed87dfe439}</Project>
+      <Name>VVVV.Nodes.Bullet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.DShow\VVVV.DX11.Nodes.DShow.csproj">
+      <Project>{6a0afb1f-8219-4a08-85f7-b7f19b66ac16}</Project>
+      <Name>VVVV.DX11.Nodes.DShow</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.kinect2\VVVV.DX11.Nodes.kinect2.csproj">
+      <Project>{f7a2d9c3-515c-4045-b8d1-4ae0cc8802cd}</Project>
+      <Name>VVVV.DX11.Nodes.kinect2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.MSKinect\VVVV.DX11.Nodes.MSKinect.csproj">
+      <Project>{cae46b4a-cb79-4e39-b318-bf76a2cb256f}</Project>
+      <Name>VVVV.DX11.Nodes.MSKinect</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.QrCode\VVVV.DX11.Nodes.QrCode.csproj">
+      <Project>{347bf0f2-19e1-4b2b-b125-8ac265cb034a}</Project>
+      <Name>VVVV.DX11.Nodes.QrCode</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Text3d\VVVV.DX11.Nodes.Text3d.csproj">
+      <Project>{57dc2927-df1a-4204-9b1f-a9fa90d6f36e}</Project>
+      <Name>VVVV.DX11.Nodes.Text3d</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Vlc\VVVV.DX11.Nodes.Vlc.csproj">
+      <Project>{c6f7d284-30a7-4ef0-9d9c-4b635bdb3f1e}</Project>
+      <Name>VVVV.DX11.Nodes.Vlc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes\VVVV.DX11.Nodes.csproj">
+      <Project>{08972d1a-d674-4cc1-bf56-fdb04e5fe730}</Project>
+      <Name>VVVV.DX11.Nodes</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.Nodes.DirectWrite\VVVV.Nodes.DirectWrite.csproj">
+      <Project>{63dd04ac-9df1-43b2-937f-82c30a2eb280}</Project>
+      <Name>VVVV.Nodes.DirectWrite</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
