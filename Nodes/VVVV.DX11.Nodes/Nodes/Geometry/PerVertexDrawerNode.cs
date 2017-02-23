@@ -19,13 +19,13 @@ namespace VVVV.DX11.Nodes
     public class DX11PerVertexIndexDrawerNode : IPluginEvaluate, IDX11ResourceHost
     {
         [Input("Geometry In", CheckIfChanged = true)]
-        protected Pin<DX11Resource<DX11IndexedGeometry>> FInGeom;
+        protected Pin<DX11Resource<IDX11Geometry>> FInGeom;
 
         [Input("Enabled",DefaultValue=1)]
         protected IDiffSpread<bool> FInEnabled;
 
         [Output("Geometry Out")]
-        protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutGeom;
+        protected ISpread<DX11Resource<IDX11Geometry>> FOutGeom;
 
         bool invalidate = false;
 
@@ -37,7 +37,7 @@ namespace VVVV.DX11.Nodes
             {
                 this.FOutGeom.SliceCount = SpreadMax;
 
-                for (int i = 0; i < SpreadMax; i++) { if (this.FOutGeom[i] == null) { this.FOutGeom[i] = new DX11Resource<DX11IndexedGeometry>(); } }
+                for (int i = 0; i < SpreadMax; i++) { if (this.FOutGeom[i] == null) { this.FOutGeom[i] = new DX11Resource<IDX11Geometry>(); } }
 
                 invalidate = this.FInGeom.IsChanged || this.FInEnabled.IsChanged;
 
@@ -57,13 +57,24 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FInEnabled[i] && this.FInGeom[i].Contains(context))
                 {
-                    DX11IndexedGeometry v = (DX11IndexedGeometry)this.FInGeom[i][context].ShallowCopy();
+                    IDX11Geometry g = this.FInGeom[i][context];
 
-                    DX11PerVertexIndexedDrawer drawer = new DX11PerVertexIndexedDrawer();
-                    v.AssignDrawer(drawer);
+                    if (g != null)
+                    {
+                        if (g is DX11IndexedGeometry)
+                        {
+                            DX11IndexedGeometry v = (DX11IndexedGeometry)this.FInGeom[i][context].ShallowCopy();
 
-                    this.FOutGeom[i][context] = v;
+                            DX11PerVertexIndexedDrawer drawer = new DX11PerVertexIndexedDrawer();
+                            v.AssignDrawer(drawer);
 
+                            this.FOutGeom[i][context] = v;
+                        }
+                        else
+                        {
+                            this.FOutGeom[i][context] = g;
+                        }
+                    }
                 }
                 else
                 {

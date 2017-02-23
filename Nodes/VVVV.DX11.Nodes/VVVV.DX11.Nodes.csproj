@@ -101,12 +101,12 @@
     <Compile Include="Nodes\Buffers\CopyCounterNode.cs" />
     <Compile Include="Nodes\Devices\InfoDX11Node.cs" />
     <Compile Include="Nodes\Generics\ConsNodes.cs" />
-    <Compile Include="Nodes\Geometry\AsVertexGeometryNode.cs" />
+    <Compile Include="Nodes\Geometry\PerVertexDrawerNode.cs" />
     <Compile Include="Nodes\Geometry\BoundingBoxGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\InputElementSplitNode.cs" />
     <Compile Include="Nodes\Geometry\LayoutGeometryGetNode.cs" />
     <Compile Include="Nodes\Geometry\DX11DefaultDrawerNode.cs" />
-    <Compile Include="Nodes\Geometry\GenericInstancerNode.cs" />
+    <Compile Include="Nodes\Geometry\InstancerNode.cs" />
     <Compile Include="Nodes\Geometry\GeometryBufferJoinNode.cs" />
     <Compile Include="Nodes\Geometry\GeometryTopologyNode.cs" />
     <Compile Include="Nodes\Geometry\IndexedGeometryBufferJoinNode.cs" />
