@@ -217,10 +217,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
 
         public void Dispose()
         {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
-            {
-                this.FOutBuffers[i].Dispose();
-            }
+            this.FOutBuffers.SafeDisposeAll();
         }
     }
 }
