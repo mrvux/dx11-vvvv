@@ -3,27 +3,31 @@
   <ItemGroup>
     <Reference Include="System.ComponentModel.Composition.Codeplex">
       <HintPath>$(SolutionDir)\Dependencies\mixed\System.ComponentModel.Composition.Codeplex.dll</HintPath>
-	  <Private>False</Private>
+	  <Private>$(IncludeVVVVCore)</Private>
     </Reference>
 	<Reference Include="SlimDX">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\SlimDX.dll</HintPath>
-	  <Private>False</Private>
+    <Private>$(IncludeVVVVCore)</Private>
     </Reference>
     <Reference Include="VVVV.Core">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Core.dll</HintPath>
-	  <Private>False</Private>
+      <Private>$(IncludeVVVVCore)</Private>
     </Reference>
     <Reference Include="VVVV.Utils">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Utils.dll</HintPath>
-	  <Private>False</Private>
+      <Private>$(IncludeVVVVCore)</Private>
     </Reference>
 	<Reference Include="VVVV.Hosting">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Hosting.dll</HintPath>
-	  <Private>False</Private>
+    <Private>$(IncludeVVVVCore)</Private>
+  </Reference>
+  <Reference Include="VVVV.PluginInterfaces">
+    <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
+    <Private>$(IncludeVVVVCore)</Private>
     </Reference>
-    <Reference Include="VVVV.PluginInterfaces">
-      <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.PluginInterfaces.dll</HintPath>
-	  <Private>False</Private>
-    </Reference>
+  <Reference Include="VVVV.Nodes.Generic">
+    <HintPath>$(SolutionDir)\Dependencies\$(Platform)\VVVV.Nodes.Generic.dll</HintPath>
+    <Private>$(IncludeVVVVCore)</Private>
+  </Reference>
   </ItemGroup>
 </Project>
