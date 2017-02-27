@@ -20,7 +20,7 @@ namespace VVVV.DX11.Nodes
     public class RawBufferStreamDataNode : IPluginEvaluate, IDX11ResourceDataRetriever, IPartImportsSatisfiedNotification
     {
         [Input("Buffer In", IsSingle = true, AutoValidate = false)]
-        protected Pin<DX11Resource<DX11RawBuffer>> FBufferIn;
+        protected Pin<DX11Resource<IDX11Buffer>> FBufferIn;
 
         [Input("Enabled", DefaultValue = 1, IsSingle = true)]
         protected ISpread<bool> FRead;
@@ -79,7 +79,7 @@ namespace VVVV.DX11.Nodes
 
                         if (this.lastBuffer != null)
                         {
-                            if (rawBuffer.Size != lastBuffer.Size)
+                            if (rawBuffer.Buffer.Description.SizeInBytes != lastBuffer.Size)
                             {
                                 this.lastStream.Dispose();
                                 this.lastStream = null;
@@ -90,8 +90,8 @@ namespace VVVV.DX11.Nodes
 
                         if (this.lastBuffer == null)
                         {
-                            this.lastBuffer = new DX11StagingRawBuffer(context.Device, rawBuffer.Size);
-                            this.lastStream = new MemoryStream(rawBuffer.Size);
+                            this.lastBuffer = new DX11StagingRawBuffer(context.Device, rawBuffer.Buffer.Description.SizeInBytes);
+                            this.lastStream = new MemoryStream(rawBuffer.Buffer.Description.SizeInBytes);
                         }
 
                         context.CurrentDeviceContext.CopyResource(rawBuffer.Buffer, this.lastBuffer.Buffer);
