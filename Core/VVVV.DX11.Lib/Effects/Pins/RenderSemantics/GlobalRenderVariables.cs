@@ -9,6 +9,7 @@ using SlimDX;
 
 using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11;
+using FeralTic.DX11.Resources;
 
 namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
 {
@@ -22,6 +23,29 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
             return (s) => sv.SetResource(s.ReadBuffer.SRV);
         }
     }
+
+    public class ReadOnlyDepthRenderVariable : AbstractRenderVariable
+    {
+        public ReadOnlyDepthRenderVariable(EffectVariable var) : base(var) { }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsResource();
+            return (s) =>
+            {
+                if (shader.RenderContext.RenderTargetStack.Current.ReadonlyDepth)
+                {
+                    var ds = shader.RenderContext.RenderTargetStack.Current.DepthStencil;
+                    sv.SetResource(((IDX11ReadableResource)ds).SRV);
+                }
+                else
+                {
+                    sv.SetResource(null);
+                }
+            };
+        }
+    }
+
 
     public class RWBackBufferRenderVariable : AbstractRenderVariable
     {

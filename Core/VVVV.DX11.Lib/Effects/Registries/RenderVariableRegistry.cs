@@ -47,6 +47,9 @@ namespace VVVV.DX11.Lib.Effects.Registries
             this.RegisterType("Texture2D", "READBUFFER", false, (var, host, factory) => new ReadBufferRenderVariable(var));
             this.RegisterType("Texture3D", "READBUFFER", false, (var, host, factory) => new ReadBufferRenderVariable(var));
             this.RegisterType("StructuredBuffer", "READBUFFER", false, (var, host, factory) => new ReadBufferRenderVariable(var));
+            
+            this.RegisterType("Texture2D", "READONLYDEPTHTEXTURE", false, (var, host, factory) => new ReadOnlyDepthRenderVariable(var));
+            this.RegisterType("Texture2DMS", "READONLYDEPTHTEXTURE", false, (var, host, factory) => new ReadOnlyDepthRenderVariable(var));
 
             this.RegisterType("float2", "TARGETSIZE", false, (var, host, factory) => new Float2TargetSizeRenderVariable(var));
             this.RegisterType("float2", "INVTARGETSIZE", false, (var, host, factory) => new Float2InvTargetSizeRenderVariable(var));
