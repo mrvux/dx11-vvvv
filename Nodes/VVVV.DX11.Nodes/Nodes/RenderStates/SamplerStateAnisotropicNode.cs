@@ -18,7 +18,7 @@ namespace VVVV.DX11.Nodes
         [Input("Address Mode", DefaultEnumEntry = "Wrap")]
         protected IDiffSpread<TextureAddressMode> FInAddress;
 
-        [Input("Maximum Anisotropy", DefaultValue = 1)]
+        [Input("Maximum Anisotropy", DefaultValue = 1, MinValue =0, MaxValue =16)]
         protected IDiffSpread<int> FInMaximumAnisotropy;
 
         [Input("Border Color", DefaultColor = new double[] { 0, 0, 0, 1 })]
@@ -42,9 +42,9 @@ namespace VVVV.DX11.Nodes
                         AddressV = this.FInAddress[i],
                         AddressW = this.FInAddress[i],
                         BorderColor = this.FInBorderColor[i],
-                        ComparisonFunction =  Comparison.Always,
+                        ComparisonFunction = Comparison.Always,
                         Filter = Filter.Anisotropic,
-                        MaximumAnisotropy = this.FInMaximumAnisotropy[i],
+                        MaximumAnisotropy = this.FInMaximumAnisotropy[i] < 0 ? 0 : this.FInMaximumAnisotropy[i] > 16 ? 16 : this.FInMaximumAnisotropy[i],
                         MaximumLod = float.MaxValue,
                         MinimumLod = float.MinValue,
                         MipLodBias = 0
