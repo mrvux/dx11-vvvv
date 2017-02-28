@@ -15,25 +15,15 @@ namespace VVVV.Nodes.Bullet
 		[Input("Radius", DefaultValue = 0.5)]
         protected IDiffSpread<float> FRadius;
 
-		[Input("Resolution X", DefaultValue = 10)]
-        protected IDiffSpread<int> FResX;
-
-		[Input("Resolution Y", DefaultValue = 10)]
-        protected IDiffSpread<int> FResY;
-
 		public override void Evaluate(int SpreadMax)
 		{
-			if (this.BasePinsChanged
-				|| this.FRadius.IsChanged
-				|| this.FResX.IsChanged 
-				|| this.FResY.IsChanged
-				)
+			if (this.BasePinsChanged || this.FRadius.IsChanged)
 			{
 				this.FShapes.SliceCount = SpreadMax;
 
 				for (int i = 0; i < SpreadMax; i++)
 				{
-					SphereShapeDefinition sphere = new SphereShapeDefinition(Math.Abs(this.FRadius[i]),this.FResX[i],this.FResY[i]);
+                    SphereShapeDefinition sphere = new SphereShapeDefinition(Math.Abs(this.FRadius[i]));
 					sphere.Mass = this.FMass[i];
 					this.SetBaseParams(sphere, i);
 					this.FShapes[i] = sphere;

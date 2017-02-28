@@ -13,14 +13,10 @@ namespace VVVV.DataTypes.Bullet
 	public class SphereShapeDefinition : AbstractRigidShapeDefinition
 	{
 		private float radius;
-		private int resx = 10;
-		private int resy = 10;
 
-		public SphereShapeDefinition(float radius,int resx,int resy)
+		public SphereShapeDefinition(float radius)
 		{
 			this.radius = radius;
-			this.resx = resx;
-			this.resy = resy;
 		}
 
 		public override int ShapeCount
