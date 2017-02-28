@@ -155,7 +155,7 @@ namespace VVVV.DX11.Nodes.Bullet
                             geom.VertexBuffer = BufferHelper.CreateVertexBuffer(context, verts, false, true);
 
                             geom.HasBoundingBox = false;
-
+                            geom.Topology = SlimDX.Direct3D11.PrimitiveTopology.TriangleList;
                             DX11IndexBuffer ibo = new DX11IndexBuffer(context, indices,false,true);
                             geom.IndexBuffer = ibo;
                             this.FOutput[i][context] = geom;
