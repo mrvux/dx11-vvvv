@@ -46,13 +46,10 @@
     <Compile Include="Nodes\Geometry\RawBufferAsGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerDispatcherNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerApplyOnlyNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerEnabledNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerPreservePipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerScissorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSpreadNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerPixelViewportNode.cs" />
     <Compile Include="Legacy\DX11LayerBlendFactorNode.cs" />

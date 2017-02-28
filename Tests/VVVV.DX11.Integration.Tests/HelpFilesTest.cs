@@ -34,7 +34,7 @@ namespace VVVV.DX11.Integration.Tests
                 if (typeof(IPluginEvaluate).IsAssignableFrom(t) && !t.IsAbstract)
                 {
                     var attr = t.GetCustomAttributes<PluginInfoAttribute>().FirstOrDefault();
-                    if (attr != null)
+                    if (attr != null && !attr.Systemname.Contains("Legacy"))
                     {
                         string nodeName = attr.Systemname;
                         string helpFile = nodeName + " help.v4p";

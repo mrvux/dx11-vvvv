@@ -40,12 +40,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DX11RenderFormNodePooled.cs" />
-    <Compile Include="DX11RenderFormNode.cs" />
-    <Compile Include="EnumDevicesNode.cs" />
-    <Compile Include="RenderOptionsNode.cs" />
-    <Compile Include="TextureLoader.cs" />
-    <Compile Include="WriterTextureCompressedNode.cs" />
+    <Compile Include="Layers\DX11LayerApplyOnlyNode.cs" />
+    <Compile Include="Layers\DX11LayerPreferTechniqueNode.cs" />
+    <Compile Include="Layers\DX11LayerPreservePipelineNode.cs" />
+    <Compile Include="Renderers\DX11RenderFormNodePooled.cs" />
+    <Compile Include="Renderers\DX11RenderFormNode.cs" />
+    <Compile Include="Devices\EnumDevicesNode.cs" />
+    <Compile Include="Devices\RenderOptionsNode.cs" />
+    <Compile Include="Textures\TextureLoader.cs" />
+    <Compile Include="Textures\WriterTextureCompressedNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
