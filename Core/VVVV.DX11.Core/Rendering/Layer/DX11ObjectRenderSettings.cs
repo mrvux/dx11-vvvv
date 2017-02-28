@@ -28,6 +28,14 @@ namespace VVVV.DX11
         /// </summary>
         public IDX11Geometry Geometry;
 
+        /// <summary>
+        /// Geometry is from layer
+        /// </summary>
+#pragma warning disable 0618
+        [Obsolete("Will be replaced soon by new layout cache")]
+        public bool GeometryFromLayer;
+#pragma warning restore 0618
+
         public int IterationIndex;
 
         public int IterationCount;

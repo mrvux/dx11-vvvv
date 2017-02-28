@@ -469,6 +469,9 @@ namespace VVVV.DX11.Nodes.Layers
                     settings.DrawCallCount = spmax; //Set number of draw calls
 
                     var objectsettings = this.objectSettings[context];
+#pragma warning disable 0618
+                    objectsettings.GeometryFromLayer = false;
+#pragma warning restore 0618
                     var orderedobjectsettings = this.orderedObjectSettings[context];
                     var variableCache = this.shaderVariableCache[context];
                     variableCache.ApplyGlobals(settings);
@@ -490,7 +493,6 @@ namespace VVVV.DX11.Nodes.Layers
                             objSettings.IterationIndex = 0;
                             objSettings.WorldTransform = this.mworld[i % this.mworldcount];
                             objSettings.RenderStateTag = stateConnected ? this.FInState[i].Tag : null;
-
                             orderedobjectsettings.Add(objSettings);
                         }
 
@@ -506,15 +508,25 @@ namespace VVVV.DX11.Nodes.Layers
                     }
 
                     bool singleGeometry = this.FGeometry.SliceCount == 1 || settings.Geometry != null;
-                    if (settings.Geometry != null)
+                    if (settings.Geometry != null && this.FGeometry.IsConnected == false)
                     {
+#pragma warning disable 0618
+                        objectsettings.GeometryFromLayer = true;
+#pragma warning restore 0618
+
                         objectsettings.Geometry = settings.Geometry;
-                        shaderdata.SetInputAssembler(ctx, objectsettings.Geometry, 0);
+                        singleGeometry = true;
+                        if (!shaderdata.SetInputAssemblerFromLayer(ctx, objectsettings.Geometry, 0))
+                        {
+                            return;
+                        }
                     }
                     else if (singleGeometry)
                     {
                         pg = this.FGeometry[0];
                         objectsettings.Geometry = pg[context];
+
+
                         if (objectsettings.Geometry == null)
                         {
                             objectsettings.Geometry = new DX11InvalidGeometry();
