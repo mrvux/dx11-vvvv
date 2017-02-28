@@ -93,7 +93,7 @@ namespace VVVV.DX11.Nodes
                             this.lastBuffer = new DX11StagingRawBuffer(context.Device, rawBuffer.Buffer.Description.SizeInBytes);
                             this.lastStream = new MemoryStream(rawBuffer.Buffer.Description.SizeInBytes);
                         }
-
+                        lastStream.Position = 0;
                         context.CurrentDeviceContext.CopyResource(rawBuffer.Buffer, this.lastBuffer.Buffer);
 
                         DataStream ds = this.lastBuffer.MapForRead(context.CurrentDeviceContext);
