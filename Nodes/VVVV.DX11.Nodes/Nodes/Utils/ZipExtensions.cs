@@ -43,7 +43,7 @@ namespace VVVV.DX11.Nodes.Nodes.Utils
         }
 
         [PluginInfo(Name = "Unzip", Category = "TextStyle", Help = UnzipInfo.HELP, Tags = UnzipInfo.TAGS)]
-        public class ValueUnzipNode : Unzip<double>
+        public class ValueUnzipNode : Unzip<ITextStyler>
         {
 
         }
