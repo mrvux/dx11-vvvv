@@ -12,16 +12,12 @@ namespace VVVV.DataTypes.Bullet
 	public class CylinderShapeDefinition : AbstractRigidShapeDefinition
 	{
 		private float hw,hh,hd;
-		private int resx = 10;
-		private int resy = 10;
 
-		public CylinderShapeDefinition(float hwidth, float hheight, float hdepth,int resx,int resy)
+		public CylinderShapeDefinition(float hwidth, float hheight, float hdepth)
 		{
 			this.hw = hwidth;
 			this.hh = hheight;
 			this.hd = hdepth;
-			this.resx = resx;
-			this.resy = resy;
 		}
 
 		public override int ShapeCount

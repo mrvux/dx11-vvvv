@@ -19,27 +19,17 @@ namespace VVVV.Nodes.Bullet
 		[Input("Length", DefaultValue = 1.0)]
         protected IDiffSpread<float> FLength;
 
-		[Input("Resolution X", DefaultValue = 10)]
-        protected IDiffSpread<int> FResX;
-
-		[Input("Resolution Y", DefaultValue = 10)]
-        protected IDiffSpread<int> FResY;
-
-
 		public override void Evaluate(int SpreadMax)
 		{
 			if (this.BasePinsChanged
 				|| this.FRadius.IsChanged
-				|| this.FLength.IsChanged
-				|| this.FResX.IsChanged
-				|| this.FResY.IsChanged
-				)
+				|| this.FLength.IsChanged)
 			{
 				this.FShapes.SliceCount = SpreadMax;
 
 				for (int i = 0; i < SpreadMax; i++)
 				{
-					CylinderShapeDefinition cyl = new CylinderShapeDefinition(Math.Abs(this.FRadius[i]), Math.Abs(this.FRadius[i]), Math.Abs(this.FLength[i]),this.FResX[i],this.FResY[i]);
+                    CylinderShapeDefinition cyl = new CylinderShapeDefinition(Math.Abs(this.FRadius[i]), Math.Abs(this.FRadius[i]), Math.Abs(this.FLength[i]));
 					cyl.Mass = this.FMass[i];
 					this.SetBaseParams(cyl, i);
 					this.FShapes[i] = cyl;
