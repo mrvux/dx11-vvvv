@@ -29,7 +29,7 @@ namespace VVVV.Nodes.Bullet
 		[Input("Position")]
         protected ISpread<Vector3D> FPosition;
 
-		[Input("Rotation")]
+		[Input("Rotation", DefaultValues = new double[] { 0, 0, 0 ,1})]
         protected ISpread<Vector4D> FRotation;
 
 		[Input("Linear Velocity")]
