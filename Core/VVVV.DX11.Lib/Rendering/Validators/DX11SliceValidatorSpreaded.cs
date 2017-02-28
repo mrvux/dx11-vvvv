@@ -10,12 +10,12 @@ namespace VVVV.DX11.Validators
         public bool Enabled { get; set; }
         private DX11RenderSettings settings;
 
-        public List<int> Index { get; set; }
+        public List<int> Index = new List<int>();
 
         public void SetGlobalSettings(DX11RenderSettings settings)
         {
             this.settings = settings;
-            this.Index = new List<int>();
+
         }
 
 
