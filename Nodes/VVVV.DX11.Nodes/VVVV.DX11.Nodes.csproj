@@ -45,7 +45,6 @@
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentZNode.cs" />
     <Compile Include="Nodes\Geometry\RawBufferAsGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
-    <Compile Include="Nodes\Layers\DX11LayerDispatcherNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerEnabledNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerScissorNode.cs" />

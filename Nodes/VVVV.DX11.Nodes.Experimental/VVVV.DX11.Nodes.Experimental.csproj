@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Layers\DX11LayerApplyOnlyNode.cs" />
+    <Compile Include="Layers\DX11LayerDispatcherNode.cs" />
     <Compile Include="Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Layers\DX11LayerPreservePipelineNode.cs" />
     <Compile Include="Renderers\DX11RenderFormNodePooled.cs" />
