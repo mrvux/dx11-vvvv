@@ -44,6 +44,7 @@
     <Compile Include="Layers\DX11LayerDispatcherNode.cs" />
     <Compile Include="Layers\DX11LayerPreferTechniqueNode.cs" />
     <Compile Include="Layers\DX11LayerPreservePipelineNode.cs" />
+    <Compile Include="Layers\DX11RWRenderSemanticsNode.cs" />
     <Compile Include="Renderers\DX11RenderFormNodePooled.cs" />
     <Compile Include="Renderers\DX11RenderFormNode.cs" />
     <Compile Include="Devices\EnumDevicesNode.cs" />
