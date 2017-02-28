@@ -67,38 +67,41 @@ namespace VVVV.DX11.Nodes
         {
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                DX11VertexGeometry geom = (DX11VertexGeometry)this.FInGeom[i][context].ShallowCopy();
-
-                if (this.FInEnabled[i])
+                DX11VertexGeometry geom;
+                if (this.invalidate || (!this.FOutGeom[i].Contains(context)))
                 {
+                    geom = (DX11VertexGeometry)this.FInGeom[i][context].ShallowCopy();
 
-                    if (this.FInGeom.IsChanged || this.FInCnt.IsChanged)
-                    {
-                        DX11VertexIndirectDrawer ind = new DX11VertexIndirectDrawer();
-                        geom.AssignDrawer(ind);
+                    DX11VertexIndirectDrawer ind = new DX11VertexIndirectDrawer();
+                    geom.AssignDrawer(ind);
 
-                        ind.Update(context, this.FInCnt[i]);
-                    }
+                    ind.Update(context, this.FInCnt[i]);
 
-                    DX11VertexIndirectDrawer drawer = (DX11VertexIndirectDrawer)geom.Drawer;
-                    var argBuffer = drawer.IndirectArgs.Buffer;
-
-                    if (this.FInI.IsConnected)
-                    {
-                        int instOffset = this.FInInstOffset[i];
-                        ResourceRegion region = new ResourceRegion(instOffset, 0, 0, instOffset + 4, 1, 1);
-                        context.CurrentDeviceContext.CopySubresourceRegion(this.FInI[i][context].Buffer, 0, region, argBuffer, 0, 4, 0, 0);
-                    }
-
-                    if (this.FInV.IsConnected)
-                    {
-                        int vOffset = this.FInVtxOffset[i];
-                        ResourceRegion region = new ResourceRegion(vOffset, 0, 0, vOffset + 4, 1, 1);
-                        context.CurrentDeviceContext.CopySubresourceRegion(this.FInV[i][context].Buffer, 0, region, argBuffer, 0, 0, 0, 0);
-                    }
-
-                    this.FOutGeom[i][context] = geom;
+                    this.invalidate = false;
                 }
+                else
+                {
+                    geom = this.FOutGeom[i][context];
+                }
+
+                DX11VertexIndirectDrawer drawer = (DX11VertexIndirectDrawer)geom.Drawer;
+                var argBuffer = drawer.IndirectArgs.Buffer;
+
+                if (this.FInI.IsConnected)
+                {
+                    int instOffset = this.FInInstOffset[i];
+                    ResourceRegion region = new ResourceRegion(instOffset, 0, 0, instOffset + 4, 1, 1);
+                    context.CurrentDeviceContext.CopySubresourceRegion(this.FInI[i][context].Buffer, 0, region, argBuffer, 0, 4, 0, 0);
+                }
+
+                if (this.FInV.IsConnected)
+                {
+                    int vOffset = this.FInVtxOffset[i];
+                    ResourceRegion region = new ResourceRegion(vOffset, 0, 0, vOffset + 4, 1, 1);
+                    context.CurrentDeviceContext.CopySubresourceRegion(this.FInV[i][context].Buffer, 0, region, argBuffer, 0, 0, 0, 0);
+                }
+
+                this.FOutGeom[i][context] = geom;
             }
         }
 
