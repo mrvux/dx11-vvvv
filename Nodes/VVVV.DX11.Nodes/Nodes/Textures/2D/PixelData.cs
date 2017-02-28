@@ -147,7 +147,16 @@ namespace VVVV.DX11.Nodes
 
                         FStreamOut[0] = this.lastStream;
                         FStreamOut.Flush(true);
+                        this.FOutValid[0] = true;
                     }
+                    else
+                    {
+                        this.FOutValid[0] = false;
+                    }
+                }
+                else
+                {
+                    this.FOutValid[0] = false;
                 }
             }
         }
