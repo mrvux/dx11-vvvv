@@ -28,6 +28,7 @@
     <Compile Include="DataTypes\Constraints\P2PSingleConstraintDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\CompoundShapeDefinition.cs" />
+    <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\ConvexHullSoftShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\TriMeshSoftShapeDefinition.cs" />
     <Compile Include="Internals\Bodies\BodyCustomData.cs">
@@ -88,11 +89,13 @@
     <Compile Include="Nodes\Bodies\Interactions\Soft\BulletSoftSetNodeMassNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Soft\BulletUpdateSoftBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetBoundingSphereNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\RigidDynamicBufferNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyBufferNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyMesh.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Nodes\Shapes\Create\Rigid\BulletPlaneShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
     <Compile Include="Nodes\Vehicle\BuletGetWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletDriveVehicleNode.cs" />
