@@ -99,11 +99,11 @@ namespace VVVV.DataTypes.Bullet
 		public void Unregister(TypedConstraint cst)
 		{
 			this.constraints.Remove(cst);
-			this.World.RemoveConstraint(cst);
-			cst.Dispose();
+            this.World.RemoveConstraint(cst);
+            
 		}
 
-		public List<TypedConstraint> Constraints
+        public List<TypedConstraint> Constraints
 		{
 			get { return this.constraints; }
 		}
@@ -207,7 +207,9 @@ namespace VVVV.DataTypes.Bullet
 				}
 			}
 
-			cnt = this.Constraints.Count;
+            List<TypedConstraint> deleteContraints = new List<TypedConstraint>();
+
+            cnt = this.Constraints.Count;
 			for (int i = 0; i < cnt; i++)
 			{
 				TypedConstraint cst = this.constraints[i];
@@ -219,18 +221,25 @@ namespace VVVV.DataTypes.Bullet
 				cd.Created = false;
 				if (cd.MarkedForDeletion)
 				{
-					if (this.ConstraintDeleted != null)
-					{
-						this.ConstraintDeleted(cst, cd.Id);
-					}
-					this.Unregister(cst);
+                    deleteContraints.Add(cst);
 				}
                 else
                 {
                     cd.LifeTime += dt;
                 }
 			}
-		}
+
+            for (int i = 0; i < deleteContraints.Count; i++)
+            {
+                TypedConstraint cst = deleteContraints[i];
+                ConstraintCustomData cd = (ConstraintCustomData)cst.UserObject;
+                if (this.ConstraintDeleted != null)
+                {
+                    this.ConstraintDeleted(cst, cd.Id);
+                }
+                this.Unregister(cst);
+            }
+        }
 		#endregion
 
 		#region Info
@@ -289,19 +298,6 @@ namespace VVVV.DataTypes.Bullet
 		#region Destroy
 		public void Destroy()
 		{
-            /*foreach (TypedConstraint tc in this.constraints)
-            {
-                tc.Dispose();
-            }
-            foreach (RigidBody rb in this.bodies)
-            {
-                rb.Dispose();
-            }
-            foreach (SoftBody sb in this.softbodies)
-            {
-                sb.Dispose();
-            }*/
-
             dynamicsWorld.Dispose();
 			solver.Dispose();
 			overlappingPairCache.Dispose();
