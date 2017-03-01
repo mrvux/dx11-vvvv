@@ -16,30 +16,40 @@ namespace VVVV.Bullet.Nodes.Vehicle
         protected Pin<RaycastVehicle> FInVehicle;
 
         [Output("Transform")]
-        protected ISpread<Matrix4x4> FOutTransform;
+        protected ISpread<ISpread<Matrix4x4>> FOutTransform;
 
         public void Evaluate(int SpreadMax)
         {
-
             if (FInVehicle.PluginIO.IsConnected)
             {
-                FOutTransform.SliceCount = this.FInVehicle[0].NumWheels;
+                FOutTransform.SliceCount = this.FInVehicle.SliceCount;
 
-                RaycastVehicle v = this.FInVehicle[0];
-
-                for (int i = 0; i < v.NumWheels; i++)
+                for (int i = 0; i < this.FInVehicle.SliceCount;i++)
                 {
-                    WheelInfo wi = v.GetWheelInfo(i);
+                    this.FOutTransform[i].SliceCount = this.FInVehicle[i].NumWheels;
 
-                    Matrix m = wi.WorldTransform;
+                    RaycastVehicle v = this.FInVehicle[i];
 
-                    Matrix4x4 mn = new Matrix4x4(m.M11, m.M12, m.M13, m.M14,
-								m.M21, m.M22, m.M23, m.M24, m.M31, m.M32, m.M33, m.M34,
-								m.M41, m.M42, m.M43, m.M44);
-                    //wi.r
+                    for (int j = 0; j < v.NumWheels; j++)
+                    {
+                        WheelInfo wi = v.GetWheelInfo(j);
 
-                    this.FOutTransform[i] = mn;
+                        Matrix m = wi.WorldTransform;
+
+                        Matrix4x4 mn = new Matrix4x4(m.M11, m.M12, m.M13, m.M14,
+                                    m.M21, m.M22, m.M23, m.M24, m.M31, m.M32, m.M33, m.M34,
+                                    m.M41, m.M42, m.M43, m.M44);
+                        //wi.r
+
+                        this.FOutTransform[i][j] = mn;
+                    }
                 }
+                    
+
+            }
+            else
+            {
+                this.FOutTransform.SliceCount = 0;
             }
         }
     }

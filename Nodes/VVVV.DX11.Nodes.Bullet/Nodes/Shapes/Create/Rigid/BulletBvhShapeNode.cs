@@ -19,7 +19,7 @@ namespace VVVV.Bullet.Nodes.Shapes.Create.Rigid
         [Input("Indices")]
         protected ISpread<ISpread<int>> FIndices;
 
-        [Input("Apply",IsBang=true)]
+        [Input("Apply",IsBang=true, Order = 10000)]
         protected ISpread<bool> FApply;
 
         public override void Evaluate(int SpreadMax)

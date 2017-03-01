@@ -29,7 +29,7 @@ namespace VVVV.Bullet.Nodes.World
         [Input("Mode", DefaultEnumEntry = "MaxDebugDrawMode")]
         protected ISpread<DebugDrawModes> drawMode;
 
-        [Input("Enabled", IsSingle = true)]
+        [Input("Enabled", IsSingle = true, DefaultValue =1)]
         protected ISpread<bool> enabled;
 
         [Output("Layer Out")]
