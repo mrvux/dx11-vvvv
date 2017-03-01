@@ -46,8 +46,16 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
         [Output("Vehicle")]
         protected ISpread<RaycastVehicle> FOutVehicle;
 
+        private BulletRigidSoftWorld lastworld;
+
         public override void Evaluate(int SpreadMax)
         {
+            if (this.lastworld != this.FWorld[0])
+            {
+                this.FOutVehicle.SliceCount = 0;
+                this.lastworld = this.FWorld[0];
+            }
+
             for (int i = 0; i < SpreadMax; i++)
             {
                 if (this.CanCreate(i))
