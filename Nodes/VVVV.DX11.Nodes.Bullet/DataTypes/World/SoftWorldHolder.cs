@@ -81,7 +81,7 @@ namespace VVVV.DataTypes.Bullet
 		}
 		#endregion
 
-		#region Rigid Registry
+		#region Contraints Registry
 		//Cache so we speed up process
 		private List<TypedConstraint> constraints = new List<TypedConstraint>();
 
@@ -289,24 +289,26 @@ namespace VVVV.DataTypes.Bullet
 		#region Destroy
 		public void Destroy()
 		{
+            /*foreach (TypedConstraint tc in this.constraints)
+            {
+                tc.Dispose();
+            }
+            foreach (RigidBody rb in this.bodies)
+            {
+                rb.Dispose();
+            }
+            foreach (SoftBody sb in this.softbodies)
+            {
+                sb.Dispose();
+            }*/
 
-			dynamicsWorld.Dispose();
+            dynamicsWorld.Dispose();
 			solver.Dispose();
 			overlappingPairCache.Dispose();
 			dispatcher.Dispose();
 			collisionConfiguration.Dispose();
-			foreach (RigidBody rb in this.bodies)
-			{
-				rb.Dispose();
-			}
-			foreach (SoftBody sb in this.softbodies)
-			{
-				sb.Dispose();
-			}
-			foreach (TypedConstraint tc in this.constraints)
-			{
-				tc.Dispose();
-			}
+ 
+
 
 			this.bodies.Clear();
 			this.softbodies.Clear();

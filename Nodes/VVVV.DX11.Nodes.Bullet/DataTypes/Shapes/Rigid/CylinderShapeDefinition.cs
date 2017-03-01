@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 using BulletSharp;
+using FeralTic;
 
 namespace VVVV.DataTypes.Bullet
 {
 	public class CylinderShapeDefinition : AbstractRigidShapeDefinition
 	{
-		private float hw,hh,hd;
+		private float radius;
+        private float halfLength;
+        private Axis axis;
 
-		public CylinderShapeDefinition(float hwidth, float hheight, float hdepth)
+		public CylinderShapeDefinition(float radius, float length, Axis axis)
 		{
-			this.hw = hwidth;
-			this.hh = hheight;
-			this.hd = hdepth;
+            this.radius = radius;
+            this.halfLength = length * 0.5f;
+            this.axis = axis;
 		}
 
 		public override int ShapeCount
@@ -24,10 +27,18 @@ namespace VVVV.DataTypes.Bullet
 
 		protected override CollisionShape CreateShape()
 		{
-			//Cylinder are around Z axis in vvvv
-			//If we need Y/X axis, we can rotate, so i use Z
-			CollisionShape shape = new CylinderShapeZ(this.hw,this.hh,this.hd);
-			return shape;
+            if (axis == Axis.X)
+            {
+                return new CylinderShapeX(this.radius, this.halfLength, this.radius);
+            }
+            else if (axis == Axis.Y)
+            {
+                return new CylinderShape(this.radius, this.halfLength, this.radius);
+            }
+            else
+            {
+                return new CylinderShapeZ(this.radius, this.halfLength, this.radius);
+            }
 		}
 	}
 }

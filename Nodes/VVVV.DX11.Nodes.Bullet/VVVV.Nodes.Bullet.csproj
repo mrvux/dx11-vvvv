@@ -20,12 +20,15 @@
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\BulletSharp.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTypes\Constraints\AbstractConstraintDefinition.cs" />
     <Compile Include="DataTypes\Constraints\AbstractSingleBodyConstraintDef.cs" />
     <Compile Include="DataTypes\Constraints\P2PSingleConstraintDefinition.cs" />
+    <Compile Include="DataTypes\DebugView\BulletDebugView.cs" />
+    <Compile Include="DataTypes\DebugView\BulletImmediateWorldDebugRenderer.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\CompoundShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
@@ -140,12 +143,15 @@
     <Compile Include="Nodes\World\BulletRayCastNode.cs" />
     <Compile Include="Nodes\World\BulletSoftRayCastNode.cs" />
     <Compile Include="Nodes\World\BulletSoftWorldNode.cs" />
+    <Compile Include="Nodes\World\BulletWorldDebugLayerNode.cs" />
+    <Compile Include="Nodes\World\BulletWorldDebugViewNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ArrayMax.cs" />
     <Compile Include="Utils\BulletExtensionMethods.cs" />
     <Compile Include="Utils\BulletUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="effects\" />
     <Folder Include="Nodes\Constraints\Single\Details\" />
     <Folder Include="Nodes\Shapes\Retrieve\Soft\" />
   </ItemGroup>
