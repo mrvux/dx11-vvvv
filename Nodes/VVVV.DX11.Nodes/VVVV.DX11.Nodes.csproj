@@ -56,6 +56,7 @@
     <Compile Include="Legacy\DX11LayerStencilRefNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerOrderNode.cs" />
     <Compile Include="Nodes\Layers\DX11ResetCounterNode.cs" />
+    <Compile Include="Nodes\Layers\DX11ResetCounterNodeAdvanced.cs" />
     <Compile Include="Nodes\Layers\Order\LayerZSortOrderNode.cs" />
     <Compile Include="Nodes\Layers\Order\LayerGetSliceOrderNode.cs" />
     <Compile Include="Nodes\Layers\ReadonlyDepthStencilNode.cs" />
@@ -63,7 +64,9 @@
     <Compile Include="Nodes\Layers\Space\SliceviewPortNode.cs" />
     <Compile Include="Nodes\Layers\Space\ViewPortBillboardNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
+    <Compile Include="Nodes\Renderers\Buffers\DX11MultiBufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
+    <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRendererAdvanced.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11SpreadRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dArrayRendererNode.cs" />
