@@ -35,6 +35,7 @@
     <Compile Include="DataTypes\Shapes\Soft\ConvexHullSoftShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\TriMeshSoftShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Vehicle\VehicleSettings.cs" />
+    <Compile Include="DataTypes\Shapes\Vehicle\WheelInfoSettings.cs" />
     <Compile Include="DataTypes\World\ObjectLifetimeContainer.cs" />
     <Compile Include="Internals\Bodies\BodyCustomData.cs">
       <SubType>Code</SubType>
