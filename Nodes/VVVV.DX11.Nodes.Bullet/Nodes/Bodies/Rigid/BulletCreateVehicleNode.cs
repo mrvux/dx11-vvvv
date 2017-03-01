@@ -24,8 +24,8 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
         int upIndex = 1;
         int forwardIndex = 2;
         float CUBE_HALF_EXTENTS = 1;
-        Vector3 wheelDirectionCS0 = new Vector3(0, -1, 0);
-        Vector3 wheelAxleCS = new Vector3(-1, 0, 0);
+        /*Vector3 wheelDirectionCS0 = new Vector3(0, -1, 0);
+        Vector3 wheelAxleCS = new Vector3(-1, 0, 0);*/
 
 
         [Output("Vehicle")]
@@ -54,9 +54,6 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
 
 
                     CompoundShape compound = new CompoundShape();
-
-                    //List<AbstractRigidShapeDefinition> children = new List<AbstractRigidShapeDefinition>();
-
 
                     CollisionShape chassisShape = shapedef.GetShape(sc);
                     Matrix localTrans = Matrix.Translation(Vector3.UnitY);
@@ -95,24 +92,24 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
                     carChassis.ActivationState = ActivationState.DisableDeactivation;
                     this.FWorld[0].World.AddAction(vehicle);
 
-                    float connectionHeight = 1.2f;
                     bool isFrontWheel = true;
+
 
                     // choose coordinate system
                     vehicle.SetCoordinateSystem(rightIndex, upIndex, forwardIndex);
 
-                    Vector3 connectionPointCS0 = new Vector3(CUBE_HALF_EXTENTS - (0.3f * constructionSettings.WheelWidth), connectionHeight, 2 * CUBE_HALF_EXTENTS - constructionSettings.WheelRadius);
-                    WheelInfo a = vehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
+                    Vector3 connectionPointCS0 = new Vector3(CUBE_HALF_EXTENTS - (0.3f * constructionSettings.WheelWidth), constructionSettings.ConnectionHeight, 2 * CUBE_HALF_EXTENTS - constructionSettings.WheelRadius);
+                    WheelInfo a = vehicle.AddWheel(connectionPointCS0, constructionSettings.wheelDirection.ToBulletVector() , constructionSettings.wheelAxis.ToBulletVector(), constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
 
-                    connectionPointCS0 = new Vector3(-CUBE_HALF_EXTENTS + (0.3f * constructionSettings.WheelWidth), connectionHeight, 2 * CUBE_HALF_EXTENTS - constructionSettings.WheelRadius);
-                    vehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
+                    connectionPointCS0 = new Vector3(-CUBE_HALF_EXTENTS + (0.3f * constructionSettings.WheelWidth), constructionSettings.ConnectionHeight, 2 * CUBE_HALF_EXTENTS - constructionSettings.WheelRadius);
+                    vehicle.AddWheel(connectionPointCS0, constructionSettings.wheelDirection.ToBulletVector(), constructionSettings.wheelAxis.ToBulletVector(), constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
 
                     isFrontWheel = false;
-                    connectionPointCS0 = new Vector3(-CUBE_HALF_EXTENTS + (0.3f * constructionSettings.WheelWidth), connectionHeight, -2 * CUBE_HALF_EXTENTS + constructionSettings.WheelRadius);
-                    vehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
+                    connectionPointCS0 = new Vector3(-CUBE_HALF_EXTENTS + (0.3f * constructionSettings.WheelWidth), constructionSettings.ConnectionHeight, -2 * CUBE_HALF_EXTENTS + constructionSettings.WheelRadius);
+                    vehicle.AddWheel(connectionPointCS0, constructionSettings.wheelDirection.ToBulletVector(), constructionSettings.wheelAxis.ToBulletVector(), constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
 
-                    connectionPointCS0 = new Vector3(CUBE_HALF_EXTENTS - (0.3f * constructionSettings.WheelWidth), connectionHeight, -2 * CUBE_HALF_EXTENTS + constructionSettings.WheelRadius);
-                    vehicle.AddWheel(connectionPointCS0, wheelDirectionCS0, wheelAxleCS, constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
+                    connectionPointCS0 = new Vector3(CUBE_HALF_EXTENTS - (0.3f * constructionSettings.WheelWidth), constructionSettings.ConnectionHeight, -2 * CUBE_HALF_EXTENTS + constructionSettings.WheelRadius);
+                    vehicle.AddWheel(connectionPointCS0, constructionSettings.wheelDirection.ToBulletVector(), constructionSettings.wheelAxis.ToBulletVector(), constructionSettings.SuspensionRestLength, constructionSettings.WheelRadius, tuning, isFrontWheel);
 
 
                     for (i = 0; i < vehicle.NumWheels; i++)

@@ -26,6 +26,11 @@ public static class BulletExtensions
 	{
 		return new Vector3D(vec.X, vec.Y, vec.Z);
 	}
+
+    public static BulletSharp.Vector3 ToBulletVector(this SlimDX.Vector3 vec)
+    {
+        return new BulletSharp.Vector3(vec.X, vec.Y, vec.Z);
+    }
 }
 
 

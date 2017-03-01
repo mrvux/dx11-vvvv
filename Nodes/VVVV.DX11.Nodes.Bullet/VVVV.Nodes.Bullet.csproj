@@ -126,7 +126,6 @@
     <Compile Include="Nodes\Contacts\BulletGetContactPointDetails.cs" />
     <Compile Include="Nodes\Shapes\Create\Compound\BulletCompoundShapeGroupNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Compound\BulletCompoundSpreadNode.cs" />
-    <Compile Include="Nodes\Shapes\Create\Compound\BulletVehicleNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\AbstractBulletRigidShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBoxShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhShapeNode.cs" />
