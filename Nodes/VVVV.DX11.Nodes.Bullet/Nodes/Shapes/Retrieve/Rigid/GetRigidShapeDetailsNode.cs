@@ -15,7 +15,7 @@ namespace VVVV.Nodes.Bullet
 	public class GetRigidShapeDetailsNode : IPluginEvaluate
 	{
 		[Input("Shape")]
-        protected ISpread<CollisionShape> FShapes;
+        protected Pin<CollisionShape> FShapes;
 
 		[Output("Type")]
         protected ISpread<BroadphaseNativeType> FType;
@@ -41,42 +41,56 @@ namespace VVVV.Nodes.Bullet
 
 		public void Evaluate(int SpreadMax)
 		{
-			this.FType.SliceCount = SpreadMax;
-			this.FAABBMin.SliceCount = SpreadMax;
-			this.FAABBMax.SliceCount = SpreadMax;
-			this.FCustom.SliceCount = SpreadMax;
-			this.FHasCustomObj.SliceCount = SpreadMax;
-			this.FCustomObj.SliceCount = SpreadMax;
-			this.FScaling.SliceCount = SpreadMax;
+            if (this.FShapes.IsConnected)
+            {
+                this.FType.SliceCount = SpreadMax;
+                this.FAABBMin.SliceCount = SpreadMax;
+                this.FAABBMax.SliceCount = SpreadMax;
+                this.FCustom.SliceCount = SpreadMax;
+                this.FHasCustomObj.SliceCount = SpreadMax;
+                this.FCustomObj.SliceCount = SpreadMax;
+                this.FScaling.SliceCount = SpreadMax;
 
-			for (int i = 0; i < SpreadMax; i++)
-			{
-				CollisionShape shape = FShapes[i];
+                for (int i = 0; i < SpreadMax; i++)
+                {
+                    CollisionShape shape = FShapes[i];
 
-				ShapeCustomData sc = (ShapeCustomData)shape.UserObject;
+                    ShapeCustomData sc = (ShapeCustomData)shape.UserObject;
 
-				Vector3 min;
-				Vector3 max;
-				shape.GetAabb(Matrix.Identity, out min, out max);
+                    Vector3 min;
+                    Vector3 max;
+                    shape.GetAabb(Matrix.Identity, out min, out max);
 
-				this.FAABBMin[i] = min.ToVVVVector();
-				this.FAABBMax[i] = max.ToVVVVector();
-				this.FScaling[i] = shape.LocalScaling.ToVVVVector();
+                    this.FAABBMin[i] = min.ToVVVVector();
+                    this.FAABBMax[i] = max.ToVVVVector();
+                    this.FScaling[i] = shape.LocalScaling.ToVVVVector();
 
-				FType[i] = shape.ShapeType;
-				this.FCustom[i] = sc.CustomString;
-				if (sc.CustomObject != null)
-				{
-					this.FHasCustomObj[i] = true;
-					this.FCustomObj[i] = sc.CustomObject;
-				}
-				else
-				{
-					this.FHasCustomObj[i] = false;
-					this.FCustomObj[i] = null;
-				}
-				
-			}
+                    FType[i] = shape.ShapeType;
+                    this.FCustom[i] = sc.CustomString;
+                    if (sc.CustomObject != null)
+                    {
+                        this.FHasCustomObj[i] = true;
+                        this.FCustomObj[i] = sc.CustomObject;
+                    }
+                    else
+                    {
+                        this.FHasCustomObj[i] = false;
+                        this.FCustomObj[i] = null;
+                    }
+
+                }
+            }
+            else
+            {
+                this.FType.SliceCount = 0;
+                this.FAABBMin.SliceCount = 0;
+                this.FAABBMax.SliceCount = 0;
+                this.FCustom.SliceCount = 0;
+                this.FHasCustomObj.SliceCount = 0;
+                this.FCustomObj.SliceCount = 0;
+                this.FScaling.SliceCount = 0;
+            }
+
 		}
 	}
 }
