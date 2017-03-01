@@ -54,7 +54,14 @@ namespace VVVV.Nodes.Bullet
 
         private CollisionWorld.AllHitsRayResultCallback cb;
 
-		public void Evaluate(int SpreadMax)
+        List<double> fraction = new List<double>();
+        List<Vector3D> position = new List<Vector3D>();
+        List<Vector3D> normal = new List<Vector3D>();
+        List<RigidBody> body = new List<RigidBody>();
+        List<int> bodyid = new List<int>();
+        List<int> qidx = new List<int>();
+
+        public void Evaluate(int SpreadMax)
 		{
 
 
@@ -63,12 +70,12 @@ namespace VVVV.Nodes.Bullet
 				this.FHit.SliceCount = SpreadMax;
                 this.FHitCount.SliceCount = SpreadMax;
 
-				List<double> fraction = new List<double>();
-				List<Vector3D> position = new List<Vector3D>();
-				List<Vector3D> normal = new List<Vector3D>();
-				List<RigidBody> body = new List<RigidBody>();
-				List<int> bodyid = new List<int>();
-				List<int> qidx = new List<int>();
+                fraction.Clear();
+                position.Clear();
+                normal.Clear();
+                body.Clear();
+                bodyid.Clear();
+                qidx.Clear();
                 
 
 				for (int i = 0; i < SpreadMax; i++)

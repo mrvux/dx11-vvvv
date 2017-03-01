@@ -24,15 +24,15 @@ namespace VVVV.DX11.Nodes.Bullet
 		[Input("Bodies")]
         protected ISpread<SoftBody> FBodies;
 
-		[Output("Is Valid")]
-        protected ISpread<bool> FValid;
-
 		IPluginHost FHost;
 
         [Output("Output", Order = 5)]
         protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutput;
 
-		[ImportingConstructor()]
+        [Output("Is Valid", Order = 100)]
+        protected ISpread<bool> FValid;
+
+        [ImportingConstructor()]
 		public BulletGetSoftBodyMesh(IPluginHost host)
 		{
             this.FHost = host;

@@ -16,7 +16,7 @@ namespace VVVV.Internals.Bullet
 		public int Id { get; set; }
 		public string Custom { get; set; }
 
-		//I dont delete body directly, that sucks as can cause many crashes
+		//I dont delete body directly, that cause many crashes
 		//Instead they deleted just before the time step on world node
 		public bool MarkedForDeletion { get; set; }
 		public bool Created { get; set; }

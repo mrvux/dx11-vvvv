@@ -32,11 +32,11 @@ namespace VVVV.Bullet.Nodes.World
         [Input("Enabled", IsSingle = true)]
         protected ISpread<bool> enabled;
 
-        [Output("Debug Text")]
-        protected ISpread<TextObject> textObjects;
-
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> layer;
+
+        [Output("Debug Text")]
+        protected ISpread<TextObject> textObjects;
 
         private BulletRigidSoftWorld currentWorld;
 

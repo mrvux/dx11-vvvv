@@ -14,7 +14,7 @@ namespace VVVV.Nodes.Bullet
 	public class BulletGetSoftBodyDetailsNode : IPluginEvaluate
 	{
 		[Input("Bodies")]
-        protected ISpread<SoftBody> FBodies;
+        protected Pin<SoftBody> FBodies;
 
 		[Output("Nodes")]
         protected ISpread<ISpread<Vector3D>> FOutNodes;
@@ -36,40 +36,52 @@ namespace VVVV.Nodes.Bullet
 	
 		public void  Evaluate(int SpreadMax)
 		{
-			this.FOutNodes.SliceCount = this.FBodies.SliceCount;
-			this.FOutCustom.SliceCount = SpreadMax;
-			this.FOutId.SliceCount = SpreadMax;
-			this.FOutMass.SliceCount = SpreadMax;
-			
-			for (int i = 0; i < SpreadMax; i++)
-			{
-				
-				SoftBody sb = this.FBodies[i];
-				this.FOutNodes[i].SliceCount = sb.Nodes.Count;
-                //sb.Nodes[0].
+            if (this.FBodies.IsConnected)
+            {
+                this.FOutNodes.SliceCount = SpreadMax;
+                this.FOutCustom.SliceCount = SpreadMax;
+                this.FOutId.SliceCount = SpreadMax;
+                this.FOutMass.SliceCount = SpreadMax;
+                this.FHasCustomObj.SliceCount = SpreadMax;
 
-				for (int j = 0; j < sb.Nodes.Count; j++)
-				{
-					this.FOutNodes[i][j] =sb.Nodes[j].X.ToVVVVector();
-				}
+                for (int i = 0; i < SpreadMax; i++)
+                {
 
-				this.FOutMass[i] = sb.TotalMass;
+                    SoftBody sb = this.FBodies[i];
+                    this.FOutNodes[i].SliceCount = sb.Nodes.Count;
+                    //sb.Nodes[0].
 
-				SoftBodyCustomData custom = (SoftBodyCustomData)sb.UserObject;
-				this.FOutCustom[i] = custom.Custom;
-				this.FOutId[i] = custom.Id;
-				
-				if (custom.CustomObject != null)
-				{
-					this.FHasCustomObj[i] = true;
-					this.FCustomObj[i] = custom.CustomObject;
-				}
-				else
-				{
-					this.FHasCustomObj[i] = false;
-					this.FCustomObj[i] = null;
-				}
-			}
+                    for (int j = 0; j < sb.Nodes.Count; j++)
+                    {
+                        this.FOutNodes[i][j] = sb.Nodes[j].X.ToVVVVector();
+                    }
+
+                    this.FOutMass[i] = sb.TotalMass;
+
+                    SoftBodyCustomData custom = (SoftBodyCustomData)sb.UserObject;
+                    this.FOutCustom[i] = custom.Custom;
+                    this.FOutId[i] = custom.Id;
+
+                    if (custom.CustomObject != null)
+                    {
+                        this.FHasCustomObj[i] = true;
+                        this.FCustomObj[i] = custom.CustomObject;
+                    }
+                    else
+                    {
+                        this.FHasCustomObj[i] = false;
+                        this.FCustomObj[i] = null;
+                    }
+                }
+            }
+            else
+            {
+                this.FOutNodes.SliceCount = 0;
+                this.FOutCustom.SliceCount = 0;
+                this.FOutId.SliceCount = 0;
+                this.FOutMass.SliceCount = 0;
+                this.FHasCustomObj.SliceCount = 0;
+            }
 		}
 	}
 }
