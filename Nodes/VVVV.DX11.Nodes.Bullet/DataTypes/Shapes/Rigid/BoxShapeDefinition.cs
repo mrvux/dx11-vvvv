@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using BulletSharp;
 
-using SlimDX.Direct3D9;
-
-using VVVV.Internals.Bullet.EX9;
-
 namespace VVVV.DataTypes.Bullet
 {
 	public class BoxShapeDefinition : AbstractRigidShapeDefinition
@@ -31,13 +27,5 @@ namespace VVVV.DataTypes.Bullet
 			CollisionShape shape = new BoxShape(this.w,this.h,this.d);
 			return shape;
 		}
-
-		protected override BulletMesh CreateMesh(Device device)
-		{
-			//Build the box mesh
-            return null;// new BulletMesh(Mesh.CreateBox(device, this.w * 2.0f, this.h * 2.0f, this.d * 2.0f));
-		}
-
-
 	}
 }

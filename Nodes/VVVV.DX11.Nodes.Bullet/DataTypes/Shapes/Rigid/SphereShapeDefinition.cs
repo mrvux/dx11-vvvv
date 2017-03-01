@@ -4,10 +4,6 @@ using System.Text;
 
 using BulletSharp;
 
-using SlimDX.Direct3D9;
-
-using VVVV.Internals.Bullet.EX9;
-
 namespace VVVV.DataTypes.Bullet
 {
 	public class SphereShapeDefinition : AbstractRigidShapeDefinition
@@ -29,11 +25,6 @@ namespace VVVV.DataTypes.Bullet
 			CollisionShape shape = new SphereShape(this.radius);
 			//shape.CalculateLocalInertia(this.Mass);
 			return shape;
-		}
-
-		protected override BulletMesh CreateMesh(Device device)
-		{
-            return null;// new BulletMesh(Mesh.CreateSphere(device, this.radius, resx, resy));	
 		}
 	}
 }

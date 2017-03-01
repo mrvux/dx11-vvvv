@@ -17,18 +17,11 @@ namespace VVVV.Nodes.Bullet
 		[Input("Vertices")]
         protected IDiffSpread<ISpread<Vector3D>> FVertices;
 
-		[Input("Indices")]
-        protected IDiffSpread<ISpread<int>> FIndices;
-
 		public override void Evaluate(int SpreadMax)
 		{
-			int spmax = ArrayMax.Max(FVertices.SliceCount,
-				FIndices.SliceCount,
-				this.BasePinsSpreadMax);
+			int spmax = ArrayMax.Max(FVertices.SliceCount, this.BasePinsSpreadMax);
 
-			if (this.FVertices.IsChanged
-				|| this.FIndices.IsChanged
-				|| this.BasePinsChanged)
+			if (this.FVertices.IsChanged || this.BasePinsChanged)
 			{
 				this.FShapes.SliceCount = spmax;
 
@@ -36,19 +29,13 @@ namespace VVVV.Nodes.Bullet
 				{
 					//Vector3D size = this.FSize[i];
 					Vector3[] vertices = new Vector3[this.FVertices[i].SliceCount];
-					int[] inds = new int[this.FIndices[i].SliceCount];
 
 					for (int j = 0; j < this.FVertices[i].SliceCount; j++)
 					{
 						vertices[j] = this.FVertices[i][j].ToBulletVector();
 					}
 
-					for (int j = 0; j < this.FIndices[i].SliceCount; j++)
-					{
-						inds[j] = Convert.ToInt16(this.FIndices[i][j]);
-					}
-
-					ConvexHullShapeDefinition chull = new ConvexHullShapeDefinition(vertices, inds);
+					ConvexHullShapeDefinition chull = new ConvexHullShapeDefinition(vertices);
 					chull.Mass = this.FMass[i];
 					this.SetBaseParams(chull, i);
 

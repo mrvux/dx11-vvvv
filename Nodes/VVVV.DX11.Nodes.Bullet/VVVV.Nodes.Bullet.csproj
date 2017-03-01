@@ -37,7 +37,6 @@
     <Compile Include="Internals\Bodies\SoftBodyCustomData.cs" />
     <Compile Include="Internals\Constraints\ConstraintCustomData.cs" />
     <Compile Include="Internals\ObjectCustomData.cs" />
-    <Compile Include="Internals\Meshes\BulletMesh.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\AbstractRigidShapeDefinition.cs">
       <SubType>Code</SubType>
     </Compile>

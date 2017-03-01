@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SlimDX.Direct3D9;
 using BulletSharp;
 using System.IO;
 using System.Runtime.InteropServices;
-using VVVV.Internals.Bullet.EX9;
 
 namespace VVVV.DataTypes.Bullet
 {
@@ -52,11 +50,6 @@ namespace VVVV.DataTypes.Bullet
 			//hs.LocalScaling = new Vector3(this.sx, 1.0f, this.sz);
 			return hs;
 			
-		}
-
-		protected override BulletMesh CreateMesh(Device device)
-		{
-            return null;
 		}
 	}
 }
