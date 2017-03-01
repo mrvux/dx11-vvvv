@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BulletSharp;
 using BulletSharp.SoftBody;
+using VVVV.Bullet.DataTypes.World;
 using VVVV.Internals.Bullet;
 
 namespace VVVV.DataTypes.Bullet
@@ -36,59 +37,66 @@ namespace VVVV.DataTypes.Bullet
 		public event ConstraintDeletedDelegate ConstraintDeleted;
 		public event WorldResetDelegate WorldHasReset;
 
-		#region Rigid Registry
-		//Cache so we speed up process
-		private List<RigidBody> bodies = new List<RigidBody>(); 
+        private ObjectLifetimeContainer<RigidBody, BodyCustomData> bodyContainer;
+        private ObjectLifetimeContainer<SoftBody, SoftBodyCustomData> softBodyContainer;
+        private ObjectLifetimeContainer<TypedConstraint, ConstraintCustomData> constraintContainer;
 
+        public BulletRigidSoftWorld()
+        {
+            this.bodyContainer = new ObjectLifetimeContainer<RigidBody, BodyCustomData>(b => (BodyCustomData)b.UserObject);
+            this.softBodyContainer = new ObjectLifetimeContainer<SoftBody, SoftBodyCustomData>(s => (SoftBodyCustomData)s.UserObject);
+            this.constraintContainer = new ObjectLifetimeContainer<TypedConstraint, ConstraintCustomData>(c => (ConstraintCustomData)c.UserObject);
+        }
+
+        #region Rigid Registry
 		public void Register(RigidBody body)
 		{
 			this.World.AddRigidBody(body);
-			this.bodies.Add(body);
+            this.bodyContainer.RegisterObject(body);
 		}
 
-		public void Unregister(RigidBody body)
-		{
-			this.bodies.Remove(body);
-			this.World.RemoveRigidBody(body);
-			body.Dispose();
-		}
+        private void RemoveRigidBody(RigidBody body, BodyCustomData cdata)
+        {
+            this.World.RemoveRigidBody(body);
+            if (this.RigidBodyDeleted != null)
+            {
+                this.RigidBodyDeleted(body, cdata.Id);
+            }
+        }
 
 		public List<RigidBody> RigidBodies
 		{
-			get { return this.bodies; }
+			get { return this.bodyContainer.ObjectList; }
 		}
 		#endregion
 
 		#region Soft Registry
-		//Cache so we speed up process
-		private List<SoftBody> softbodies = new List<SoftBody>();
-
 		public void Register(SoftBody body)
 		{
 			this.World.AddSoftBody(body);
-			this.softbodies.Add(body);
+			this.softBodyContainer.RegisterObject(body);
 		}
 
-		public void Unregister(SoftBody body)
-		{
-			this.softbodies.Remove(body);
-			this.World.RemoveCollisionObject(body);
-		}
+        private void RemoveSoftBody(SoftBody body, SoftBodyCustomData cdata)
+        {
+            this.World.RemoveCollisionObject(body);
+            if (this.SoftBodyDeleted != null)
+            {
+                this.SoftBodyDeleted(body, cdata.Id);
+            }
+        }
 
 		public List<SoftBody> SoftBodies
 		{
-			get { return this.softbodies; }
+			get { return this.softBodyContainer.ObjectList; }
 		}
 		#endregion
 
 		#region Contraints Registry
-		//Cache so we speed up process
-		private List<TypedConstraint> constraints = new List<TypedConstraint>();
-
 		public void Register(TypedConstraint cst, bool collideconnected)
 		{
 			this.World.AddConstraint(cst, !collideconnected);
-			this.constraints.Add(cst);
+            this.constraintContainer.RegisterObject(cst);
 		}
 
 		public void Register(TypedConstraint cst)
@@ -96,16 +104,18 @@ namespace VVVV.DataTypes.Bullet
 			this.Register(cst, true);
 		}
 
-		public void Unregister(TypedConstraint cst)
+		public void RemoveConctraint(TypedConstraint cst, ConstraintCustomData cdata)
 		{
-			this.constraints.Remove(cst);
             this.World.RemoveConstraint(cst);
-            
+            if (this.ConstraintDeleted != null)
+            {
+                this.ConstraintDeleted(cst, cdata.Id);
+            }
 		}
 
         public List<TypedConstraint> Constraints
 		{
-			get { return this.constraints; }
+			get { return this.constraintContainer.ObjectList; }
 		}
 		#endregion
 
@@ -157,88 +167,9 @@ namespace VVVV.DataTypes.Bullet
 		#region Process Deletion
 		internal void ProcessDelete(double dt)
 		{
-            List<RigidBody> todelete = new List<RigidBody>();
-            List<int> deleteid = new List<int>();
-
-			int cnt = this.RigidBodies.Count;
-			for (int i = 0; i < cnt; i++)
-			{
-				RigidBody body = this.RigidBodies[i];
-				BodyCustomData bd = (BodyCustomData)body.UserObject;
-                if (!bd.Created)
-                {
-                    bd.LifeTime += dt;
-                }
-				bd.Created = false;
-				if (bd.MarkedForDeletion)
-				{
-                    todelete.Add(body);
-                    deleteid.Add(bd.Id);
-				}
-			}
-
-            for (int i = 0; i < todelete.Count;i++ )
-            {
-                RigidBody body = todelete[i];
-                if (this.RigidBodyDeleted != null)
-                {
-                    this.RigidBodyDeleted(body, deleteid[i]);
-                }
-                this.Unregister(body);
-            }
-
-            cnt = this.SoftBodies.Count;
-			for (int i = 0; i < cnt; i++)
-			{
-				SoftBody body = this.SoftBodies[i];
-				BodyCustomData bd = (BodyCustomData)body.UserObject;
-                if (!bd.Created)
-                {
-                    bd.LifeTime += dt;
-                }
-				bd.Created = false;
-				if (bd.MarkedForDeletion)
-				{
-					if (this.SoftBodyDeleted != null)
-					{
-						this.SoftBodyDeleted(body, bd.Id);
-					}
-					this.Unregister(body);
-				}
-			}
-
-            List<TypedConstraint> deleteContraints = new List<TypedConstraint>();
-
-            cnt = this.Constraints.Count;
-			for (int i = 0; i < cnt; i++)
-			{
-				TypedConstraint cst = this.constraints[i];
-				ConstraintCustomData cd = (ConstraintCustomData)cst.UserObject;
-                if (!cd.Created)
-                {
-                    cd.LifeTime += dt;
-                }
-				cd.Created = false;
-				if (cd.MarkedForDeletion)
-				{
-                    deleteContraints.Add(cst);
-				}
-                else
-                {
-                    cd.LifeTime += dt;
-                }
-			}
-
-            for (int i = 0; i < deleteContraints.Count; i++)
-            {
-                TypedConstraint cst = deleteContraints[i];
-                ConstraintCustomData cd = (ConstraintCustomData)cst.UserObject;
-                if (this.ConstraintDeleted != null)
-                {
-                    this.ConstraintDeleted(cst, cd.Id);
-                }
-                this.Unregister(cst);
-            }
+            this.bodyContainer.Process(dt, this.RemoveRigidBody);
+            this.softBodyContainer.Process(dt, this.RemoveSoftBody);
+            this.constraintContainer.Process(dt, this.RemoveConctraint);
         }
 		#endregion
 
@@ -303,12 +234,12 @@ namespace VVVV.DataTypes.Bullet
 			overlappingPairCache.Dispose();
 			dispatcher.Dispose();
 			collisionConfiguration.Dispose();
- 
 
 
-			this.bodies.Clear();
-			this.softbodies.Clear();
-			this.constraints.Clear();
+
+            this.bodyContainer.Clear();
+			this.softBodyContainer.Clear();
+			this.constraintContainer.Clear();
 			this.created = false;
 		}
 		#endregion
