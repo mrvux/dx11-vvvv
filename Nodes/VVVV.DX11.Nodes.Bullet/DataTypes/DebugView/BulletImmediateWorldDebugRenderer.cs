@@ -32,6 +32,7 @@ namespace VVVV.Bullet.DataTypes
         //Lines and triangle strip
         private DX11VertexGeometry dynamicLine;
         private DX11VertexGeometry dynamicLineTriangle;
+        private DX11VertexGeometry arcLine;
         private InputLayout lineLayout;
 
         private DX11RenderState defaultRenderState = new DX11RenderState();
@@ -74,6 +75,14 @@ namespace VVVV.Bullet.DataTypes
             this.dynamicLineTriangle.VertexBuffer = BufferHelper.CreateDynamicVertexBuffer(context, 12 * 3);
             this.dynamicLineTriangle.VertexSize = Pos3Vertex.VertexSize;
             this.dynamicLineTriangle.VerticesCount = 3;
+
+
+            this.arcLine = new DX11VertexGeometry(context);
+            this.arcLine.InputLayout = Pos3Vertex.Layout;
+            this.arcLine.Topology = PrimitiveTopology.LineStrip;
+            this.arcLine.VertexBuffer = BufferHelper.CreateDynamicVertexBuffer(context, 12 * 2048);
+            this.arcLine.VertexSize = Pos3Vertex.VertexSize;
+            this.arcLine.VerticesCount = 2048;
 
             this.dynamicLine.ValidateLayout(this.solidColorShader.EffectPass, out this.lineLayout);
         }
@@ -123,12 +132,45 @@ namespace VVVV.Bullet.DataTypes
 
         public void DrawArc(ref Vector3 center, ref Vector3 normal, ref Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Color color, bool drawSect)
         {
-
+            DrawArc(ref center, ref normal, ref axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect, 10.0f);
         }
 
         public void DrawArc(ref Vector3 center, ref Vector3 normal, ref Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Color color, bool drawSect, float stepDegrees)
         {
+            Vector3 vx = axis;
+            Vector3 vy = Vector3.Cross(normal, axis);
+            float step = stepDegrees * ((float)Math.PI / 180.0f);
+            int nSteps = (int)((maxAngle - minAngle) / step);
+            if (nSteps == 0)
+                nSteps = 1;
 
+            Vector3 next = center + radiusA * vx * (float)Math.Cos(minAngle) + radiusB * vy * (float)Math.Sin(minAngle);
+
+            if (drawSect)
+                DrawLine(ref center, ref next, color);
+
+            var ds = context.CurrentDeviceContext.MapSubresource(this.dynamicLine.VertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None).Data;
+            ds.Position = 0;
+            ds.Write(next);
+            for (int i = 1; i <= nSteps; i++)
+            {
+                float angle = minAngle + (maxAngle - minAngle) * (float)i / (float)nSteps;
+                next = center + radiusA * vx * (float)Math.Cos(angle) + radiusB * vy * (float)Math.Sin(angle);
+                ds.Write(next);
+            }
+            context.CurrentDeviceContext.UnmapSubresource(this.dynamicLine.VertexBuffer, 0);
+
+
+            Matrix m = Matrix.Identity;
+            this.solidColorShader.ApplyWorld(*(SlimDX.Matrix*)&m);
+            this.solidColorShader.ApplyColor(new SlimDX.Color4(color.ToArgb()));
+
+            this.solidColorShader.ApplyPass();
+            this.arcLine.Bind(this.lineLayout);
+            this.context.CurrentDeviceContext.Draw(nSteps+1, 0);
+
+            if (drawSect)
+                DrawLine(ref center, ref next, color);
         }
 
         public void DrawBox(ref Vector3 bbMin, ref Vector3 bbMax, Color color)
