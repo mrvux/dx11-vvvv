@@ -29,18 +29,22 @@
     <Compile Include="DataTypes\Constraints\P2PSingleConstraintDefinition.cs" />
     <Compile Include="DataTypes\DebugView\BulletDebugView.cs" />
     <Compile Include="DataTypes\DebugView\BulletImmediateWorldDebugRenderer.cs" />
+    <Compile Include="DataTypes\RigidBodyPose.cs" />
+    <Compile Include="DataTypes\RigidBodyProperties.cs" />
+    <Compile Include="DataTypes\RigidBodyExtensionMethods.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\CompoundShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\ConvexHullSoftShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\TriMeshSoftShapeDefinition.cs" />
-    <Compile Include="DataTypes\Shapes\Vehicle\VehicleSettings.cs" />
-    <Compile Include="DataTypes\Shapes\Vehicle\WheelInfoSettings.cs" />
+    <Compile Include="DataTypes\Info\VehicleSettings.cs" />
+    <Compile Include="DataTypes\Info\WheelInfoSettings.cs" />
     <Compile Include="DataTypes\World\ObjectLifetimeContainer.cs" />
     <Compile Include="Internals\Bodies\BodyCustomData.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Internals\Bodies\SoftBodyCustomData.cs" />
+    <Compile Include="Internals\BulletRogidBodyListListener.cs" />
     <Compile Include="Internals\Constraints\ConstraintCustomData.cs" />
     <Compile Include="Internals\ObjectCustomData.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\AbstractRigidShapeDefinition.cs">
@@ -81,6 +85,9 @@
     </Compile>
     <Compile Include="DataTypes\World\SoftWorldHolder.cs" />
     <Compile Include="Internals\Shapes\SoftShapeCustomData.cs" />
+    <Compile Include="Nodes\Base\RigidBodyMotionPropertiesJoinNode.cs" />
+    <Compile Include="Nodes\Base\RigidBodyPropertiesJoinNode.cs" />
+    <Compile Include="Nodes\Base\RigidBodyPoseJoinNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\AbstractBodyInteractionNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\BulletDestroyBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\AbstractBodyForceNode.cs" />
@@ -93,6 +100,9 @@
     <Compile Include="Nodes\Bodies\Interactions\Soft\BulletSoftNodeApplyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Soft\BulletSoftSetNodeMassNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Soft\BulletUpdateSoftBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletCreateDynamicBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedDynamicBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletCreateStaticBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetBoundingSphereNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
@@ -102,8 +112,13 @@
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyMesh.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Nodes\Bodies\Vehicle\BulletWheelConstuctionInfo.cs" />
+    <Compile Include="Nodes\Bodies\Vehicle\BulletWheelSettingsNode.cs" />
+    <Compile Include="Nodes\Constraints\Dual\CreateDualSliderConstraintNode.cs" />
+    <Compile Include="Nodes\Constraints\Single\Create\CreateSliderConstraintNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletPlaneShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Vehicle\BulletVehicleWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BuletGetWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletDriveVehicleNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\AbstractRigidBodyCreator.cs" />
@@ -154,6 +169,7 @@
     <Compile Include="Utils\BulletUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DataTypes\Shapes\Vehicle\" />
     <Folder Include="effects\" />
     <Folder Include="Nodes\Constraints\Single\Details\" />
     <Folder Include="Nodes\Shapes\Retrieve\Soft\" />

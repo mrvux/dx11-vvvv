@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using BulletSharp;
+using VVVV.Bullet.DataTypes;
 using VVVV.DataTypes.Bullet;
 using VVVV.Hosting.Pins.Input;
 using VVVV.PluginInterfaces.V2;
@@ -13,11 +14,8 @@ namespace VVVV.Nodes.Bullet
 	public abstract class AbstractBulletRigidShapeNode : IPluginEvaluate
 	{
 		#region Pins
-		[Input("Position",DefaultValues=new double[] { 0,0,0})]
-		protected IDiffSpread<Vector3D> FTranslate;
-
-		[Input("Rotation", DefaultValues = new double[] { 0, 0, 0,1 })]
-		protected IDiffSpread<Vector4D> FRotate;
+		[Input("Pose", CheckIfChanged =true)]
+		protected Pin<RigidBodyPose> FPose;
 
 		[Input("Scaling", DefaultValues = new double[] { 1.0, 1.0,1.0 })]
 		protected IDiffSpread<Vector3D> FScaling;
@@ -46,7 +44,7 @@ namespace VVVV.Nodes.Bullet
 				return this.FCustom.IsChanged
 					|| this.FCustomObj.IsChanged
 					|| this.FMass.IsChanged
-					|| this.FRotate.IsChanged
+					|| this.FPose.IsChanged
 					|| this.FScaling.IsChanged;
 			}
 		}
@@ -58,7 +56,7 @@ namespace VVVV.Nodes.Bullet
 				return ArrayMax.Max(this.FCustom.SliceCount,
 					this.FCustomObj.SliceCount,
 					this.FMass.SliceCount,
-					this.FRotate.SliceCount,
+					this.FPose.SliceCount,
 					this.FScaling.SliceCount);
 			}
 		}
@@ -67,8 +65,7 @@ namespace VVVV.Nodes.Bullet
 		#region Set Local Transform
 		protected void SetBaseParams(AbstractRigidShapeDefinition sd, int sliceindex)
 		{
-			sd.Translation = this.FTranslate[sliceindex].ToBulletVector();
-			sd.Rotation = this.FRotate[sliceindex].ToBulletQuaternion();
+            sd.Pose = FPose.IsConnected ? FPose[sliceindex] : RigidBodyPose.Default;
 			sd.Scaling = this.FScaling[sliceindex].Abs().ToBulletVector();
 			sd.CustomString = this.FCustom[sliceindex];
 			sd.CustomObject = this.FCustomObj[sliceindex];

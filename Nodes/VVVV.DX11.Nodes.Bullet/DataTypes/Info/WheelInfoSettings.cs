@@ -7,7 +7,7 @@ using SlimDX;
 
 namespace VVVV.Bullet.DataTypes.Vehicle
 {
-    public class WheelInfoSettings
+    public sealed class WheelInfoSettings
     {
         public WheelInfoSettings()
         {
@@ -33,5 +33,7 @@ namespace VVVV.Bullet.DataTypes.Vehicle
         public float ConnectionHeight = 1.2f;
         public Vector3 wheelDirection = new Vector3(0, -1, 0);
         public Vector3 wheelAxis = new Vector3(-1, 0, 0);
+        public Vector3 localPosition;
+        public bool isFrontWheel;
     }
 }

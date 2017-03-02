@@ -8,6 +8,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VMath;
 using VVVV.DataTypes.Bullet;
 using SlimDX;
+using VVVV.Bullet.DataTypes;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -39,8 +40,7 @@ namespace VVVV.Nodes.Bullet
                 {
                     PlaneShapeDefinition plane = new PlaneShapeDefinition(new BulletSharp.Vector3(this.normal[i].X, this.normal[i].Y, this.normal[i].Z), this.w[i]);
                     plane.Mass = 0.0f;
-                    plane.Rotation = BulletSharp.Quaternion.Identity;
-                    plane.Translation = BulletSharp.Vector3.Zero;
+                    plane.Pose = RigidBodyPose.Default;
                     plane.CustomObject = this.FCustomObj[i];
                     plane.CustomString = this.FCustom[i];
 

@@ -59,11 +59,7 @@ namespace VVVV.DataTypes.Bullet
 				ShapeCustomData sc = new ShapeCustomData();
 				sc.Id = 0;
 				sc.ShapeDef = shapedef;
-
-				Matrix tr = Matrix.Translation(shapedef.Translation);
-				Matrix rot = Matrix.RotationQuaternion(shapedef.Rotation);
-
-				shape.AddChildShape(Matrix.Multiply(rot, tr), shapedef.GetShape(sc));
+				shape.AddChildShape((Matrix)shapedef.Pose , shapedef.GetShape(sc));
 			}
 			return shape;
 		}

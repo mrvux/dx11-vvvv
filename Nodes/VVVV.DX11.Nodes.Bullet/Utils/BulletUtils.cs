@@ -15,5 +15,5 @@ namespace VVVV.Bullet.Utils
 			Matrix rot = Matrix.RotationQuaternion(new Quaternion((float)rx, (float)ry, (float)rz, (float)rw));
 			return new DefaultMotionState(Matrix.Multiply(rot, tr));
 		}
-	}
+    }
 }

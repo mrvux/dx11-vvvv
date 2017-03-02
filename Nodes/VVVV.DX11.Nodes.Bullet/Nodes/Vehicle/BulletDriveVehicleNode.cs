@@ -56,4 +56,33 @@ namespace VVVV.Bullet.Nodes.Bodies.Interactions.Vehicle
             obj.ApplyEngineForce(this.FEngineForce[slice], VMath.Zmod(this.FEngineForceWheel[slice], obj.NumWheels));
         }
     }
+
+    [PluginInfo(Name = "Info", Category = "Bullet", Version = "Vehicle", Author = "vux",
+Help = "Info about bullet vehicle", AutoEvaluate = true)]
+    public class BulletGetVehicleData : IPluginEvaluate
+    {
+        [Input("Input", Order = 10)]
+        protected Pin<RaycastVehicle> input;
+
+        [Output("Speed")]
+        protected ISpread<float> speed;
+
+        public void Evaluate(int SpreadMax)
+        {
+            if (this.input.IsConnected)
+            {
+                this.speed.SliceCount = input.SliceCount;
+                for (int i = 0; i < SpreadMax; i++)
+                {
+                    var v = this.input[i];
+                    this.speed[i] = v.CurrentSpeedKmHour;
+                }
+            }
+            else
+            {
+                this.speed.SliceCount = 0;
+            }
+ 
+        }
+    }
 }

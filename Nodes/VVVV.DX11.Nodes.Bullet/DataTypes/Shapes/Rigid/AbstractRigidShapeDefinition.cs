@@ -5,6 +5,7 @@ using System.Text;
 using BulletSharp;
 
 using SlimDX.Direct3D9;
+using VVVV.Bullet.DataTypes;
 using VVVV.Internals.Bullet;
 
 namespace VVVV.DataTypes.Bullet
@@ -12,9 +13,7 @@ namespace VVVV.DataTypes.Bullet
 	public abstract class AbstractRigidShapeDefinition
 	{
 		private float mass;
-		protected Quaternion localRotation = Quaternion.Identity;
-		protected Vector3 localTranslation = Vector3.Zero;
-		
+
 		public abstract int ShapeCount { get; }
 
 		public virtual float Mass
@@ -23,19 +22,9 @@ namespace VVVV.DataTypes.Bullet
 			set { mass = value; }
 		}
 
-		public Vector3 Scaling { get; set; }
+        public RigidBodyPose Pose;
+        public Vector3 Scaling;
 
-		public Quaternion Rotation
-		{
-			get { return this.localRotation; }
-			set { this.localRotation = value; }
-		}
-
-		public Vector3 Translation
-		{
-			get { return this.localTranslation; }
-			set { this.localTranslation = value; }
-		}
 
 		public string CustomString { get; set; }
 		public ICloneable CustomObject { get; set; }

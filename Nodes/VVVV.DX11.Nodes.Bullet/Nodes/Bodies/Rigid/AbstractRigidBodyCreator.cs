@@ -65,7 +65,7 @@ namespace VVVV.Nodes.Bullet
 		[Input("Custom Object")]
         protected Pin<ICloneable> FCustomObj;
 
-		[Input("Do Create", IsBang = true)]
+		[Input("Do Create", IsBang = true, Order =1000)]
         protected ISpread<bool> FDoCreate;
 
 		protected virtual void OnWorldConnected() { }
