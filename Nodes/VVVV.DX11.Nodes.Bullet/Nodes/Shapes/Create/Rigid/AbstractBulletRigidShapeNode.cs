@@ -53,11 +53,11 @@ namespace VVVV.Nodes.Bullet
 		{
 			get
 			{
-				return ArrayMax.Max(this.FCustom.SliceCount,
-					this.FCustomObj.SliceCount,
-					this.FMass.SliceCount,
-					this.FPose.SliceCount,
-					this.FScaling.SliceCount);
+				return SpreadUtils.SpreadMax(this.FCustom,
+					this.FCustomObj,
+					this.FMass,
+					this.FPose,
+					this.FScaling);
 			}
 		}
 		#endregion
