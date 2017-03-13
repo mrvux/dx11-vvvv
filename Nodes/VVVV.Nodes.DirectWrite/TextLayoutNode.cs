@@ -24,10 +24,10 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         [Input("Paragraph Alignment")]
         protected IDiffSpread<ParagraphAlignment> FParaAlign;
 
-        [Input("Maximum Width", DefaultValue=100)]
+        [Input("Maximum Width", DefaultValue=100, MinValue =0.0)]
         protected IDiffSpread<float> FMaxWidth;
 
-        [Input("Maximum Height", DefaultValue = 50)]
+        [Input("Maximum Height", DefaultValue = 50, MinValue = 0.0)]
         protected IDiffSpread<float> FMaxHeight;
 
         [Output("Output")]
@@ -64,7 +64,9 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                 //then create new outputs
                 for (int i = 0; i < SpreadMax; i++)
                 {
-                    var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], this.FMaxWidth[i], this.FMaxHeight[i]);
+                    float maxw = this.FMaxWidth[i] > 0.0f ? this.FMaxWidth[i] : 0.0f;
+                    float maxh = this.FMaxHeight[i] > 0.0f ? this.FMaxHeight[i] : 0.0f;
+                    var tl = new TextLayout(this.dwFactory, this.FText[i], this.FFormat[i], maxw, maxh);
                     var align = (int)this.FTextAlign[i];
                     tl.TextAlignment = (TextAlignment)align;
                     tl.ParagraphAlignment = this.FParaAlign[i];
