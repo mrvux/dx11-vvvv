@@ -52,7 +52,7 @@ namespace VVVV.DX11.Nodes
 
         private void DX11RendererNode_LostFocus(object sender, EventArgs e)
         {
-            if (this.FInDisableShortCuts[0])
+            if (this.FInDisableShortCuts.SliceCount > 0 && this.FInDisableShortCuts[0])
             {
                 this.hde.EnableShortCuts();
             }
@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes
 
         private void DX11RendererNode_GotFocus(object sender, EventArgs e)
         {
-            if (this.FInDisableShortCuts[0])
+            if (this.FInDisableShortCuts.SliceCount > 0 && this.FInDisableShortCuts[0])
             {
                 this.hde.DisableShortCuts();
             }
