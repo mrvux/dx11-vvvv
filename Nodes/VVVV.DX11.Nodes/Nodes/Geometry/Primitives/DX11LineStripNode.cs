@@ -21,14 +21,17 @@ namespace VVVV.DX11.Nodes
         [Input("Loop", DefaultValue = 0.0)]
         protected IDiffSpread<bool> FLoop;
 
+        [Input("Build Adjacency", DefaultValue = 0.0)]
+        protected IDiffSpread<bool> FBuildAdjacency;
+
         protected override DX11VertexGeometry GetGeom(DX11RenderContext context, int slice)
         {
-            return context.Primitives.LineStrip3d(this.FVerts[slice].ToList(),this.FLoop[slice]);
+            return context.Primitives.LineStrip3d(this.FVerts[slice].ToList(), this.FLoop[slice], this.FBuildAdjacency[slice]);
         }
 
         protected override bool Invalidate()
         {
-            return this.FVerts.IsChanged || this.FLoop.IsChanged;
+            return this.FVerts.IsChanged || this.FLoop.IsChanged || this.FBuildAdjacency.IsChanged;
         }
 
         protected override int GetSpreadMax(int spreadmax)
