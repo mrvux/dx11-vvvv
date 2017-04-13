@@ -22,35 +22,35 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "ViewportBillBoard", Category = "DX11.Layer", Version = "Advanced", Author = "vux")]
     public class ViewportBillBoardNode : AbstractDX11LayerSpaceNode
     {
-        [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+        [Input("Transform In", Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<Matrix> FTransformIn;
 
-        [Input("Viewport", IsSingle = true)]
+        [Input("Viewport")]
         protected ISpread<Viewport> vp;
 
-        [Input("Double Scale", IsSingle = true, Order = 50)]
+        [Input("Double Scale", Order = 50)]
         protected ISpread<bool> FDoubleScale;
 
-        [Input("Top Left", IsSingle = true, Order = 51)]
+        [Input("Top Left", Order = 51)]
         protected ISpread<bool> FTopLeft;
 
         protected override int LayerCount
         {
-            get { return 1; }
+            get { return SpreadUtils.SpreadMax(FTransformIn, vp, FDoubleScale, FTopLeft); }
         }
 
         protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
-            float f = this.FDoubleScale[0] ? 2.0f : 1.0f;
+            float f = this.FDoubleScale[slice] ? 2.0f : 1.0f;
 
-            float w = vp[0].Width;
-            float h = vp[0].Height;
+            float w = vp[slice].Width;
+            float h = vp[slice].Height;
 
 
             settings.View = Matrix.Identity;
             settings.Projection = Matrix.Scaling(f / w, f / h, 1.0f) * FTransformIn[0];
 
-            if (FTopLeft[0])
+            if (FTopLeft[slice])
             {
                 float tx = w * 0.5f;
                 float ty = h * 0.5f;

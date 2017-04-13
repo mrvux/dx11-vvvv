@@ -106,17 +106,17 @@ namespace VVVV.DX11.Nodes
 
         protected override int LayerCount
         {
-            get { return 1; }
+            get { return SpreadUtils.SpreadMax(FTransformIn, FDoubleScale, FTopLeft); }
         }
 
         protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
-            float f = this.FDoubleScale[0] ? 2.0f : 1.0f;
+            float f = this.FDoubleScale[slice] ? 2.0f : 1.0f;
 
             settings.View = Matrix.Identity;
-            settings.Projection = Matrix.Scaling(f / settings.RenderWidth,f / settings.RenderHeight, 1.0f) * FTransformIn[0];
+            settings.Projection = Matrix.Scaling(f / settings.RenderWidth,f / settings.RenderHeight, 1.0f) * FTransformIn[slice];
 
-            if (FTopLeft[0])
+            if (FTopLeft[slice])
             {
                 float tx = (float)settings.RenderWidth * 0.5f;
                 float ty = (float)settings.RenderHeight * 0.5f;
