@@ -160,7 +160,7 @@ namespace VVVV.DX11.Nodes
                         mx += incx;
 
                         inch++;
-                        if (inch == CresY)
+                        if (inch == CresX)
                         {
                             inch = 0;
                             mx = -0.5f;
