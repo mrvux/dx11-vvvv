@@ -74,6 +74,11 @@ namespace VVVV.DX11.Factories
             this.ioreg = ioreg;
             this.logger = logger;
 
+            //Workaround for vvvv < 35.6
+            var versionProperty = hdehost.GetType().GetProperty("Version");
+            if (versionProperty == null)
+                this.hdehost.RootNode.Removed += new Core.CollectionDelegate<INode2>(RootNode_Removed);
+
             DX11ResourceRegistry reg = new DX11ResourceRegistry();
 
             this.ioreg.Register(reg, true);
@@ -163,6 +168,12 @@ namespace VVVV.DX11.Factories
             this.BuildVertexLayoutsEnum();
 		}
 
+        //Workaround for vvvv < 35.6
+        void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
+        {
+            this.devicemanager?.Dispose();
+            this.devicemanager = null;
+        }
 
         private void BuildAAEnum()
         {
@@ -284,7 +295,8 @@ namespace VVVV.DX11.Factories
 
         public void Dispose()
         {
-            this.devicemanager.Dispose();
+            this.devicemanager?.Dispose();
+            this.devicemanager = null;
         }
     }
 }
