@@ -196,11 +196,6 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FOut.SliceCount = 1;
             }
 
-            if (this.FInTechnique.IsChanged)
-            {
-                this.techniquechanged = true;
-            }
-
             if (this.FOut[0] == null)
             {
                 this.FOut[0] = new DX11Resource<IDX11Geometry>();
@@ -230,11 +225,8 @@ namespace VVVV.DX11.Nodes.Layers
             if (this.FInTechnique.IsChanged)
             {
                 tid = this.FInTechnique[0].Index;
-
-                
-                //this.varmanager.RebuildPassCache(tid);
+                this.techniquechanged = true;
             }
-            this.techniquechanged = this.FInTechnique.IsChanged;
             this.FOut.Stream.IsChanged = true;
             this.FOutBuffer.Stream.IsChanged = true;
 
