@@ -49,6 +49,9 @@ namespace VVVV.DX11.Nodes
         [Output("Texture Array", IsSingle = true)]
         protected ISpread<DX11Resource<DX11RenderTextureArray>> FOutTB;
 
+        [Output("Texture Slices Out", Order = 3)]
+        protected ISpread<DX11Resource<DX11Texture2D>> FOutSliceTextures;
+
         private DX11Resource<TextureArraySetSlice> generators = new DX11Resource<TextureArraySetSlice>();
 
         public void Evaluate(int SpreadMax)
@@ -56,6 +59,15 @@ namespace VVVV.DX11.Nodes
             if (this.FOutTB[0] == null)
             {
                 this.FOutTB[0] = new DX11Resource<DX11RenderTextureArray>();
+            }
+
+            if (this.Depth.IsChanged)
+            {
+                this.FOutSliceTextures.SliceCount = this.Depth[0];
+                for (int i = 0; i < this.Depth[0]; i++)
+                {
+                    this.FOutSliceTextures[i] = new DX11Resource<DX11Texture2D>();
+                }
             }
         }
 
@@ -80,13 +92,25 @@ namespace VVVV.DX11.Nodes
                 if (this.FReset[0])
                 {
                     generator.Reset(this.FTexIn[0][context], this.Width[0], this.Height[0], this.Depth[0], this.Format[0]);
-                    this.FOutTB[0][context] = generator.Result;
+                    this.WriteResult(generator, context);
                 }
                 else if (this.FWrite[0])
                 {
                     generator.Apply(this.FTexIn[0][context], this.Width[0], this.Height[0], this.Depth[0], this.Format[0], this.FSliceIndex[0]);
-                    this.FOutTB[0][context] = generator.Result;
+                    this.WriteResult(generator, context);
                 }
+            }
+        }
+
+        private void WriteResult(TextureArraySetSlice generator, DX11RenderContext context)
+        {
+            DX11RenderTextureArray result = generator.Result;
+            this.FOutTB[0][context] = generator.Result;
+
+            for (int i = 0; i < this.FOutSliceTextures.SliceCount; i++)
+            {
+                DX11Texture2D slice = DX11Texture2D.FromTextureAndSRV(context, result.Resource, result.SliceRTV[i].SRV);
+                this.FOutSliceTextures[i][context] = slice;
             }
         }
 
