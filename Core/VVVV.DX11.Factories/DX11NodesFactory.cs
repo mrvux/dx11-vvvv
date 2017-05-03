@@ -73,7 +73,6 @@ namespace VVVV.DX11.Factories
             this.hdehost = hdehost;
             this.ioreg = ioreg;
             this.logger = logger;
-            this.hdehost.RootNode.Removed += new Core.CollectionDelegate<INode2>(RootNode_Removed);
 
             DX11ResourceRegistry reg = new DX11ResourceRegistry();
 
@@ -163,12 +162,6 @@ namespace VVVV.DX11.Factories
             this.RegisterStateEnums();
             this.BuildVertexLayoutsEnum();
 		}
-
-        void RootNode_Removed(Core.IViewableCollection<INode2> collection, INode2 item)
-        {
-            this.devicemanager.Dispose();
-        }
-
 
 
         private void BuildAAEnum()
@@ -291,7 +284,7 @@ namespace VVVV.DX11.Factories
 
         public void Dispose()
         {
-            Console.WriteLine("Dispose");
+            this.devicemanager.Dispose();
         }
     }
 }
