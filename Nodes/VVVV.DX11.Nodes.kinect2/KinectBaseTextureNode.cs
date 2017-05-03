@@ -24,13 +24,13 @@ namespace VVVV.DX11.Nodes.MSKinect
         protected static extern IntPtr memcpy(IntPtr dest, IntPtr src, int count);
 
         [Input("Kinect Runtime", Order = -20)]
-        private Pin<KinectRuntime> FInRuntime;
+        public Pin<KinectRuntime> FInRuntime;
 
         [Output("Texture", IsSingle = true)]
-        Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
+        public Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
 
         [Output("Frame Index", IsSingle = true, Order = 10)]
-        private ISpread<long> FOutFrameIndex;
+        public ISpread<long> FOutFrameIndex;
 
         protected long frameindex = -1;
 

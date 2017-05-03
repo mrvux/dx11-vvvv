@@ -20,13 +20,13 @@ namespace VVVV.DX11.Nodes.MSKinect
     public abstract class KinectBaseTextureNode : IPluginEvaluate, IPluginConnections, IDX11ResourceHost
     {
         [Input("Kinect Runtime")]
-        private Pin<KinectRuntime> FInRuntime;
+        public Pin<KinectRuntime> FInRuntime;
 
         [Output("Texture", IsSingle = true)]
-        Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
+        public Pin<DX11Resource<DX11DynamicTexture2D>> FTextureOutput;
 
         [Output("Frame Index", IsSingle = true, Order = 10)]
-        private ISpread<int> FOutFrameIndex;
+        public ISpread<int> FOutFrameIndex;
 
         protected int frameindex = -1;
 
