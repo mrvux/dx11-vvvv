@@ -10,6 +10,7 @@ using VVVV.DX11.Internals;
 using SlimDX.DXGI;
 using FeralTic.DX11.Utils;
 using VVVV.DX11.Lib;
+using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes.Geometry
 {

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VVVV.DX11.Nodes</RootNamespace>
     <AssemblyName>VVVV.DX11.Nodes</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\plugins\base</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -15,6 +15,7 @@ using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 using FeralTic.DX11.Queries;
 using VVVV.DX11.Lib;
+using VVVV.DX11.Internals.Helpers;
 
 namespace VVVV.DX11.Nodes
 {
