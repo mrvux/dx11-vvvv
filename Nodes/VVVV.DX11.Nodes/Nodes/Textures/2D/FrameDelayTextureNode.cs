@@ -7,8 +7,8 @@ using VVVV.PluginInterfaces.V1;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using System.ComponentModel.Composition;
-using VVVV.DX11.Lib.Devices;
 using VVVV.Core.Logging;
+using VVVV.DX11.Lib.Devices;
 
 namespace VVVV.DX11.Nodes
 {

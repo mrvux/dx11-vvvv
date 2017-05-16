@@ -6,20 +6,11 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VMath;
 using System.ComponentModel.Composition;
 using VVVV.PluginInterfaces.V1;
-using VVVV.Hosting.Pins.Config;
-using SlimDX.Direct3D11;
-using VVVV.Hosting.Pins;
-
 using SlimDX.DXGI;
-
-using Device = SlimDX.Direct3D11.Device;
-using VVVV.DX11.Internals.Helpers;
 using VVVV.DX11.Lib.Rendering;
-using VVVV.DX11.Lib.Devices;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
-using VVVV.Core.Logging;
 
 
 namespace VVVV.DX11

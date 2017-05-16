@@ -7,9 +7,6 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 
 using SlimDX.Direct3D11;
-
-using VVVV.DX11.Lib.Devices;
-
 using System.ComponentModel.Composition;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;

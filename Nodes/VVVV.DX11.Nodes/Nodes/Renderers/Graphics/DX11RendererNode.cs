@@ -12,13 +12,11 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VMath;
 using VVVV.Utils.VColor;
 using VVVV.PluginInterfaces.V1;
-using VVVV.DX11.Internals;
 using System.Drawing;
 
 using System.ComponentModel.Composition;
 using VVVV.Core.Logging;
 using System.Diagnostics;
-using VVVV.DX11.Lib.Devices;
 using VVVV.DX11.Lib.Rendering;
 
 using VVVV.Utils.IO;

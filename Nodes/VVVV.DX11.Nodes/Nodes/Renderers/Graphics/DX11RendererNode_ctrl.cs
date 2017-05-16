@@ -5,20 +5,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
-using SlimDX.D3DCompiler;
 using VVVV.PluginInterfaces.V1;
 using System.ComponentModel.Composition;
-using VVVV.DX11.Internals.Helpers;
 using VVVV.PluginInterfaces.V2;
-using VVVV.Hosting.Pins.Config;
 using VVVV.Utils.VMath;
-using VVVV.DX11.Lib.Devices;
 using VVVV.DX11.Lib.Rendering;
-using FeralTic.DX11;
-using VVVV.PluginInterfaces.V2.Graph;
-using VVVV.Utils.ManagedVCL;
 using VVVV.DX11.Nodes.Renderers.Graphics.Touch;
 
 namespace VVVV.DX11.Nodes

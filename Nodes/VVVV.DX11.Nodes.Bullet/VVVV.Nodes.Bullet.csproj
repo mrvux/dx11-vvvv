@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VVVV.Bullet</RootNamespace>
     <AssemblyName>VVVV.Nodes.Bullet</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\plugins\bullet</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

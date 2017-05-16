@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VVVV.Nodes.DirectWrite</RootNamespace>
     <AssemblyName>VVVV.Nodes.DirectWrite</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\plugins\directwrite</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpDX">

@@ -12,16 +12,10 @@ using Device = SlimDX.Direct3D11.Device;
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
 
-using VVVV.Utils.VColor;
-using VVVV.Utils.VMath;
-
-using VVVV.Hosting.Pins;
-
 using FeralTic.DX11.Resources;
-using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11;
-using VVVV.DX11.Internals.Helpers;
 using FeralTic.DX11.Queries;
+using VVVV.DX11.Lib;
 
 namespace VVVV.DX11.Nodes
 {

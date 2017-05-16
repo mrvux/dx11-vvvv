@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VVVV.DX11.Nodes.QrCode</RootNamespace>
     <AssemblyName>VVVV.DX11.Nodes.QrCode</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\plugins\qrcode</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Gma.QrCodeNet.Encoding">

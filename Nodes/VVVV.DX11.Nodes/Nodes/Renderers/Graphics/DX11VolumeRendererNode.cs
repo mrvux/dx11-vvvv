@@ -8,17 +8,12 @@ using VVVV.PluginInterfaces.V1;
 using SlimDX;
 using VVVV.Utils.VMath;
 
-using VVVV.DX11.Lib.Devices;
 using SlimDX.Direct3D11;
 using System.ComponentModel.Composition;
-using VVVV.Hosting.Pins;
-using VVVV.DX11.Internals.Helpers;
-using VVVV.DX11.Internals;
-using VVVV.DX11.Lib.Rendering;
-
 using FeralTic.DX11;
 using FeralTic.DX11.Queries;
 using FeralTic.DX11.Resources;
+using VVVV.DX11.Lib;
 
 namespace VVVV.DX11.Nodes.Renderers.Graphics
 {

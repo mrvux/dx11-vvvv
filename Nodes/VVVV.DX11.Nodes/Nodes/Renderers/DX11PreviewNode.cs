@@ -8,9 +8,7 @@ using System.Windows.Forms;
 
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
-using SlimDX;
 using SlimDX.DXGI;
-using VVVV.DX11.Lib.Devices;
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VColor;

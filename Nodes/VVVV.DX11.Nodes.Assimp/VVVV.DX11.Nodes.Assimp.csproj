@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VVVV.DX11.Nodes.Assimp</RootNamespace>
     <AssemblyName>VVVV.DX11.Nodes.Assimp</AssemblyName>
-    <OutputPath>$(OutputPath)\nodes\plugins\</OutputPath>
+    <OutputPath>$(OutputPath)\nodes\plugins\assimp</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

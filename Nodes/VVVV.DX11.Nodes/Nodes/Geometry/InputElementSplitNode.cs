@@ -6,12 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 using System.ComponentModel.Composition;
 using SlimDX.Direct3D11;
-using VVVV.DX11.Internals;
 using SlimDX.DXGI;
-using VVVV.DX11.Internals.Helpers;
-using VVVV.Hosting.Pins.Input;
-using VVVV.DX11.Lib.Devices;
-using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes.Geometry
 {

@@ -27,7 +27,7 @@ namespace VVVV.DX11.Integration.Tests
             StringBuilder sb = new StringBuilder();
 
             string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            path = Path.Combine(path, helpFilesRelativePath);
+            path = Path.Combine(path, helpFilesRelativePath,"base");
 
             foreach (Type t in assembly.GetExportedTypes())
             {
@@ -61,7 +61,7 @@ namespace VVVV.DX11.Integration.Tests
             StringBuilder sb = new StringBuilder();
 
             string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            path = Path.Combine(path, helpFilesRelativePath);
+            path = Path.Combine(path, helpFilesRelativePath,"directwrite");
 
             foreach (Type t in assembly.GetExportedTypes())
             {
@@ -95,7 +95,7 @@ namespace VVVV.DX11.Integration.Tests
             StringBuilder sb = new StringBuilder();
 
             string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            path = Path.Combine(path, helpFilesRelativePath);
+            path = Path.Combine(path, helpFilesRelativePath,"assimp");
 
             foreach (Type t in assembly.GetExportedTypes())
             {
@@ -197,7 +197,7 @@ namespace VVVV.DX11.Integration.Tests
             StringBuilder sb = new StringBuilder();
 
             string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            path = Path.Combine(path, helpFilesRelativePath);
+            path = Path.Combine(path, helpFilesRelativePath,"qrcode");
 
             foreach (Type t in assembly.GetExportedTypes())
             {
@@ -231,7 +231,7 @@ namespace VVVV.DX11.Integration.Tests
             StringBuilder sb = new StringBuilder();
 
             string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            path = Path.Combine(path, helpFilesRelativePath);
+            path = Path.Combine(path, helpFilesRelativePath, "text3d");
 
             foreach (Type t in assembly.GetExportedTypes())
             {

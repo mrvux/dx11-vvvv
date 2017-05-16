@@ -5,16 +5,7 @@ using System.Text;
 using System.ComponentModel.Composition;
 
 using VVVV.PluginInterfaces.V2;
-
-
-using FeralTic.DX11;
-using FeralTic.DX11.Queries;
-
 using VVVV.DX11.Lib.Devices;
-using VVVV.DX11.Lib.RenderGraph;
-using SlimDX.Direct3D11;
-using FeralTic.Utils;
-
 
 namespace VVVV.DX11.Nodes
 {

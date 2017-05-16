@@ -13,7 +13,6 @@ using VVVV.PluginInterfaces.V1;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using SlimDX.DXGI;
-using VVVV.DX11.Internals.Helpers;
 using VVVV.DX11.Internals;
 using FeralTic.DX11.Utils;
 
