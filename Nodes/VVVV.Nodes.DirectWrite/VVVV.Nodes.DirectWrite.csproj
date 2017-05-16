@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HitTestTextNode.cs" />
+    <Compile Include="MeasureTextNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextFormatAdvancedNode.cs" />
     <Compile Include="TextFormatNode.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="TextObjectNode.cs" />
     <Compile Include="TextPositionNode.cs" />
     <Compile Include="TextRangeNode.cs" />
+    <Compile Include="ZipTextStyles.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">

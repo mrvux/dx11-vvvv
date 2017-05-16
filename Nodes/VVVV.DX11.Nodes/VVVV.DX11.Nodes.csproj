@@ -85,7 +85,6 @@
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSlice.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSliceNode.cs" />
-    <Compile Include="Nodes\Utils\ZipExtensions.cs" />
     <Compile Include="Nodes\Validators\RemoveSliceValidatorNode.cs" />
     <Compile Include="ShaderUtils.cs" />
     <EmbeddedResource Include="effects\quad.fx" />
@@ -197,7 +196,6 @@
     <Compile Include="Nodes\Textures\FileTextureBaseNode.cs" />
     <Compile Include="Nodes\Textures\FileTextureNodes.cs" />
     <Compile Include="Nodes\Utils\CameraFrustrumNode.cs" />
-    <Compile Include="Nodes\Utils\MeasureTextNode.cs" />
     <Compile Include="Nodes\Validators\FrustrumTestNode.cs" />
     <Compile Include="Nodes\Validators\SelectValidatorNode.cs" />
     <Compile Include="Nodes\Validators\ViewportValidatorNode.cs" />
