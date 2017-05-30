@@ -118,7 +118,7 @@ namespace VVVV.DX11.Nodes.Textures
 
         public void Dispose()
         {
-            try { tex.Dispose(); }
+            try { tex?.Dispose(); }
             catch { }
         }
 
