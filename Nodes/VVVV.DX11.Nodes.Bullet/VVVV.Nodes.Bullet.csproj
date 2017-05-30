@@ -127,7 +127,6 @@
     <Compile Include="Nodes\Vehicle\BuletGetWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletDriveVehicleNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyDetailsNode.cs" />
-    <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSplitRigidBody.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletCreateSoftBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyDetailsNode.cs" />
     <Compile Include="Nodes\Constraints\DestroyConstraintNode.cs" />
