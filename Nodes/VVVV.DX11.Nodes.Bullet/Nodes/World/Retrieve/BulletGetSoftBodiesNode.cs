@@ -39,6 +39,10 @@ namespace VVVV.Nodes.Bullet
                 }
                 this.FSoftBodies.Flush(true);
             }
+            else
+            {
+                this.FSoftBodies.SliceCount = 0;
+            }
         }
     }
 }
