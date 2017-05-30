@@ -6,6 +6,7 @@ using VVVV.PluginInterfaces.V2;
 using BulletSharp.SoftBody;
 using VVVV.Utils.VMath;
 using VVVV.Internals.Bullet;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {

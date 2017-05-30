@@ -13,8 +13,7 @@ using VVVV.Internals.Bullet;
 
 
 using BulletSharp;
-
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -123,10 +122,9 @@ namespace VVVV.Nodes.Bullet
 				if (this.FKinematic[i]) { body.CollisionFlags |= CollisionFlags.KinematicObject; }
 				if (this.FStatic[i]) { body.CollisionFlags |= CollisionFlags.StaticObject; }
 
-				BodyCustomData bd = new BodyCustomData();
+				BodyCustomData bd = new BodyCustomData(this.FWorld[0].GetNewBodyId());
 
 				body.UserObject = bd;
-				bd.Id = this.FWorld[0].GetNewBodyId();
 				bd.Custom = this.FCustom[i];
 				
 				if (this.FCustomObj.PluginIO.IsConnected)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BulletSharp;
 using VVVV.DataTypes.Bullet;
 using VVVV.Internals.Bullet;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Bullet.DataTypes
 {
@@ -55,8 +56,7 @@ namespace VVVV.Bullet.DataTypes
             rigidBody.CollisionFlags = CollisionFlags.None;
             rigidBody.ApplyProperties(ref bodyProperties);
 
-            BodyCustomData customData = new BodyCustomData();
-            customData.Id = world.GetNewBodyId();
+            BodyCustomData customData = new BodyCustomData(world.GetNewBodyId());
 
             rigidBody.UserObject = customData;
 

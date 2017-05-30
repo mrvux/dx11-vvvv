@@ -10,6 +10,7 @@ using VVVV.Internals.Bullet;
 using VVVV.Utils.VMath;
 using VVVV.Bullet.Utils;
 using VVVV.Bullet.DataTypes.Vehicle;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Bullet.Nodes.Bodies.Rigid
 {
@@ -82,10 +83,9 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
                     RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(mass, ms, compound, localInertia);
                     RigidBody carChassis = new RigidBody(rbInfo);
 
-                    BodyCustomData bd = new BodyCustomData();
+                    BodyCustomData bd = new BodyCustomData(this.FWorld[0].GetNewBodyId());
 
                     carChassis.UserObject = bd;
-                    bd.Id = this.FWorld[0].GetNewBodyId();
                     bd.Custom = this.FCustom[i];
 
                     this.FWorld[0].Register(carChassis);

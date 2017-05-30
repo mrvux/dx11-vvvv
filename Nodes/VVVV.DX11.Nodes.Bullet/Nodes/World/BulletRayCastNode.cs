@@ -9,7 +9,7 @@ using VVVV.DataTypes.Bullet;
 
 using BulletSharp;
 using VVVV.Internals.Bullet;
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {

@@ -9,8 +9,7 @@ using VVVV.DataTypes.Bullet;
 using VVVV.Internals.Bullet;
 
 using BulletSharp.SoftBody;
-
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -74,8 +73,7 @@ namespace VVVV.Nodes.Bullet
 						body.Friction = this.FFriction[i];
 						body.Restitution = this.FRestitution[i];
 
-						SoftBodyCustomData bd = new SoftBodyCustomData();
-						bd.Id = this.FWorld[0].GetNewBodyId();
+						SoftBodyCustomData bd = new SoftBodyCustomData(this.FWorld[0].GetNewBodyId());
 						bd.Custom = this.FCustom[i];
 						bd.HasUV = shapedef.HasUV;
 						bd.UV = shapedef.GetUV(body);

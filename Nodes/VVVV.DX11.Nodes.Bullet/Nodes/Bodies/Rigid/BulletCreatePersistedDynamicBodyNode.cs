@@ -43,7 +43,7 @@ namespace VVVV.Nodes.Bullet
         protected ISpread<int> idOutput;
 
 
-        private BulletRogidBodyListListener persistedList = new BulletRogidBodyListListener();
+        private BulletRigidBodyListListener persistedList = new BulletRigidBodyListListener();
 
         public void Evaluate(int SpreadMax)
         {

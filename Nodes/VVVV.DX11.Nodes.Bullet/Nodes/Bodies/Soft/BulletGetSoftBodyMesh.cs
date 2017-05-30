@@ -13,7 +13,7 @@ using BulletSharp.SoftBody;
 
 using VVVV.Internals.Bullet;
 using FeralTic.DX11.Utils;
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.DX11.Nodes.Bullet
 {

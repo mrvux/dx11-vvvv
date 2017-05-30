@@ -39,8 +39,7 @@ namespace VVVV.Nodes.Bullet
 					{
 						T cst = this.CreateConstraint(this.FBodies[i], i);
 
-						ConstraintCustomData cust = new ConstraintCustomData();
-						cust.Id = this.FWorld[0].GetNewConstraintId();
+						ConstraintCustomData cust = new ConstraintCustomData(this.FWorld[0].GetNewConstraintId());
 						cust.Custom = this.FCustom[i];
 						cust.IsSingle = true;
 

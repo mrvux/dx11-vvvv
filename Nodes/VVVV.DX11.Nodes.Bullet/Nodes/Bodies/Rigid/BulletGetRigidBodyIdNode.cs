@@ -8,6 +8,7 @@ using VVVV.Utils.VMath;
 using VVVV.Internals.Bullet;
 using System.ComponentModel.Composition;
 using VVVV.Core.Logging;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {

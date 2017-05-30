@@ -8,7 +8,7 @@ using VVVV.DataTypes.Bullet;
 
 namespace VVVV.Bullet.Internals
 {
-    public class BulletRogidBodyListListener
+    public class BulletRigidBodyListListener
     {
         private BulletRigidSoftWorld currentWorld;
         private List<RigidBody> currentBodyList = new List<RigidBody>();

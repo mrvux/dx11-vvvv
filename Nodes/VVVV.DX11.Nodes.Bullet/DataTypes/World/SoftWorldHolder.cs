@@ -5,6 +5,8 @@ using BulletSharp;
 using BulletSharp.SoftBody;
 using VVVV.Bullet.DataTypes.World;
 using VVVV.Internals.Bullet;
+using VVVV.Bullet.DataTypes;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
@@ -15,8 +17,8 @@ namespace VVVV.DataTypes.Bullet
 
 	//Just to make it easier to manage than having million of stuff in
 	//World node. Can also easily switch broadphases
-	public class BulletRigidSoftWorld
-	{
+	public class BulletRigidSoftWorld : IRigidBodyCollection, ISoftBodyCollection
+    {
 		private DefaultCollisionConfiguration collisionConfiguration;
 		private CollisionDispatcher dispatcher;
 		private SequentialImpulseConstraintSolver solver;

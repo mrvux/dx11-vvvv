@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VVVV.Bullet.Core;
 using VVVV.Internals.Bullet;
 
 namespace VVVV.Bullet.DataTypes.World

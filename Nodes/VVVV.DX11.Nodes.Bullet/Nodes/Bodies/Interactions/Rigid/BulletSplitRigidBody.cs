@@ -9,7 +9,7 @@ using VVVV.DataTypes.Bullet;
 
 using BulletSharp;
 using VVVV.Internals.Bullet;
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -49,8 +49,7 @@ namespace VVVV.Nodes.Bullet
 					rb.Friction = obj.Friction;
 					//rb.CollisionShape = shape;
 
-					BodyCustomData copy = new BodyCustomData();
-					copy.Id = this.FWorld[0].GetNewBodyId();
+					BodyCustomData copy = new BodyCustomData(this.FWorld[0].GetNewBodyId());
 					copy.Custom = bc.Custom;
 
 					rb.UserObject = copy;

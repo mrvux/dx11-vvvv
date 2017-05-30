@@ -24,9 +24,9 @@ namespace VVVV.Bullet.DataTypes
         private SolidColorTransformed solidColorShader;
 
         //Bulk of geometries
-        private IDX11Geometry box;
-        private IDX11Geometry sphere;
-        private IDX11Geometry cylinder;
+        private DX11IndexedGeometry box;
+        private DX11IndexedGeometry sphere;
+        private DX11IndexedGeometry cylinder;
         private InputLayout boxSphereColorLayout;
 
         //Lines and triangle strip
@@ -350,6 +350,36 @@ namespace VVVV.Bullet.DataTypes
             {
                 this.solidColorShader.Dispose();
                 this.solidColorShader = null;
+            }
+            if (this.dynamicLine != null)
+            {
+                this.dynamicLine.Dispose();
+                this.dynamicLine = null;
+            }
+            if (this.dynamicLineTriangle != null)
+            {
+                this.dynamicLineTriangle.Dispose();
+                this.dynamicLineTriangle = null;
+            }
+            if (this.boxSphereColorLayout != null)
+            {
+                this.boxSphereColorLayout.Dispose();
+                this.boxSphereColorLayout = null;
+            }
+            if (this.box != null)
+            {
+                this.box.Dispose();
+                this.box = null;
+            }
+            if (this.sphere != null)
+            {
+                this.sphere.Dispose();
+                this.sphere = null;
+            }
+            if (this.cylinder != null)
+            {
+                this.cylinder.Dispose();
+                this.cylinder = null;
             }
         }
     }
