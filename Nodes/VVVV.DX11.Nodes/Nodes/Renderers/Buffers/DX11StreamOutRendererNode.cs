@@ -213,10 +213,7 @@ namespace VVVV.DX11.Nodes
 
         public void Dispose()
         {
-            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
-            {
-                this.FOutGeom[i]?.Dispose();
-            }
+            this.FOutGeom.SafeDisposeAll();
         }
     }
 

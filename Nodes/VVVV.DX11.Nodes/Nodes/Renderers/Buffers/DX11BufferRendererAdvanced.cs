@@ -199,10 +199,7 @@ namespace VVVV.DX11.Nodes
 
         public void Dispose()
         {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
-            {
-                if (this.FOutBuffers[i] != null) { this.FOutBuffers[i].Dispose(); }
-            }
+            this.FOutBuffers.SafeDisposeAll();
         }
     }
 }
