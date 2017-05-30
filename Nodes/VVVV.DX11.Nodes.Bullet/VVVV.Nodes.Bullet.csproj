@@ -107,7 +107,7 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletGetBoundingSphereNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
-    <Compile Include="Nodes\Bodies\Rigid\RigidDynamicBufferNode.cs" />
+    <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyBufferNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyMesh.cs">
@@ -122,11 +122,7 @@
     <Compile Include="Nodes\Shapes\Create\Vehicle\BulletVehicleWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BuletGetWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletDriveVehicleNode.cs" />
-    <Compile Include="Nodes\Bodies\Rigid\AbstractRigidBodyCreator.cs" />
-    <Compile Include="Nodes\Bodies\Rigid\BulletCreateRigidBodyNode.cs" />
-    <Compile Include="Nodes\Bodies\Rigid\BulletCreateVehicleNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyDetailsNode.cs" />
-    <Compile Include="Nodes\Bodies\Rigid\BulletPersistentBodyCreator.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSplitRigidBody.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletCreateSoftBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyDetailsNode.cs" />
@@ -162,11 +158,11 @@
     <Compile Include="Nodes\World\Retrieve\BulletGetConstraintsNode.cs" />
     <Compile Include="Nodes\World\Retrieve\BulletGetSoftBodiesNode.cs" />
     <Compile Include="Nodes\World\Retrieve\BulletGetRigidBodiesNode.cs" />
-    <Compile Include="Nodes\World\BulletRayCastIgnoreNode.cs" />
-    <Compile Include="Nodes\World\BulletRayCastNode.cs" />
-    <Compile Include="Nodes\World\BulletSoftRayCastNode.cs" />
+    <Compile Include="Nodes\World\RayCast\BulletRayCastIgnoreNode.cs" />
+    <Compile Include="Nodes\World\RayCast\BulletRayCastNode.cs" />
+    <Compile Include="Nodes\World\RayCast\BulletSoftRayCastNode.cs" />
     <Compile Include="Nodes\World\BulletSoftWorldNode.cs" />
-    <Compile Include="Nodes\World\BulletWorldDebugLayerNode.cs" />
+    <Compile Include="Nodes\Direct3D11\BulletWorldDebugLayerNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ArrayMax.cs" />
     <Compile Include="Utils\BulletExtensionMethods.cs" />

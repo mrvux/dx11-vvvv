@@ -68,15 +68,8 @@ namespace VVVV.Nodes.Bullet
 		[Import()]
         protected ILogger FLogger;
 
-
-		//[Import()]
-		//VVVV. FLog;
-
-
 		public void Evaluate(int SpreadMax)
 		{
-
-
 			if (this.FBodies.PluginIO.IsConnected)
 			{
 				this.FId.SliceCount = this.FBodies.SliceCount;
@@ -94,8 +87,6 @@ namespace VVVV.Nodes.Bullet
 				this.FKinematic.SliceCount = this.FBodies.SliceCount;
                 this.FShapeTransform.SliceCount = this.FBodies.SliceCount;
                 this.FAlive.SliceCount = this.FBodies.SliceCount;
-
-
 
                 List<Matrix4x4> transforms = new List<Matrix4x4>();
                 List<Vector3> scaling = new List<Vector3>();
@@ -138,9 +129,6 @@ namespace VVVV.Nodes.Bullet
 
                             mn *= VMath.Scale(child.LocalScaling.ToVVVVector());
                             this.FShapeTransform[i][j] = mn;
-							//comp.
-							//comp.GetChildTransform(
-							//this.FShapes[i][j].
 						}
 					}
 					else
@@ -149,10 +137,7 @@ namespace VVVV.Nodes.Bullet
 						this.FShapes[i][0] = shape;
 						this.FShapeTransform[i].SliceCount = 1;
 
-
-
                         this.FShapeTransform[i][0] = VMath.Scale(shape.LocalScaling.ToVVVVector());
-						//transforms.Add(VMath.IdentityMatrix);
 					}
 
 
@@ -165,16 +150,11 @@ namespace VVVV.Nodes.Bullet
 					this.FStatic[i] = body.IsStaticObject;
 					this.FKinematic[i] = body.IsKinematicObject;
 
-
-					//this.FShapeCount[i] = sc.ShapeDef.ShapeCount;
 					this.FId[i] = bd.Id;
 					this.FIsNew[i] = bd.Created;
 					this.FCustom[i] = bd.Custom;
                     this.FAlive[i] = bd.LifeTime;
 				}
-
-				//this.FShapeTransform.SliceCount = transforms.Count;
-				//this.FShapeTransform.AssignFrom(transforms);
 			}
 			else
 			{

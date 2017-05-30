@@ -38,9 +38,6 @@ namespace VVVV.Nodes.Bullet
 		[Output("World",IsSingle=true)]
         protected ISpread<BulletRigidSoftWorld> FWorld;
 
-		[Output("Constraints")]
-        protected ISpread<TypedConstraint> FConstraints;
-
 		BulletRigidSoftWorld internalworld = new BulletRigidSoftWorld();
 
 		[Output("Has Reset", DefaultValue = 0, IsSingle = true, IsBang = true)]
@@ -90,22 +87,12 @@ namespace VVVV.Nodes.Bullet
 				this.internalworld.Iterations = this.FIterations[0];
 			}
 
-			
-
-
 			if (this.internalworld.Enabled)
 			{
 				this.internalworld.ProcessDelete(this.FTimeStep[0]);
 				this.internalworld.Step();
 				//this.internalworld.WorldInfo.SparseSdf.GarbageCollect();
 			}
-
-			this.FConstraints.SliceCount = this.internalworld.Constraints.Count;
-			for (int i = 0; i < this.internalworld.Constraints.Count; i++)
-			{
-				this.FConstraints[i] = this.internalworld.Constraints[i];
-			}
-
 
 			this.FHasReset[0] = hasreset;
 		}
