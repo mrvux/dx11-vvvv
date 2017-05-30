@@ -28,14 +28,6 @@ namespace VVVV.Nodes.Bullet
 		[Output("Id")]
         protected ISpread<int> FId;
 
-		[Import()]
-        protected ILogger FLogger;
-
-
-		//[Import()]
-		//VVVV. FLog;
-
-
 		public void Evaluate(int SpreadMax)
 		{
 			if (this.FBodies.PluginIO.IsConnected)
@@ -65,9 +57,7 @@ namespace VVVV.Nodes.Bullet
 				this.FId.SliceCount = 0;
 				this.FPosition.SliceCount = 0;
                 this.FRadius.SliceCount = 0;
-
 			}
-
 		}
 	}
 }
