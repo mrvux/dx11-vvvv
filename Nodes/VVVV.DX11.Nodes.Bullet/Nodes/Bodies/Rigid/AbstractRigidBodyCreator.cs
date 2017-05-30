@@ -61,9 +61,6 @@ namespace VVVV.Nodes.Bullet
 		[Input("Custom")]
         protected ISpread<string> FCustom;
 
-		[Input("Custom Object")]
-        protected Pin<ICloneable> FCustomObj;
-
 		[Input("Do Create", IsBang = true, Order =1000)]
         protected ISpread<bool> FDoCreate;
 
@@ -127,15 +124,6 @@ namespace VVVV.Nodes.Bullet
 				body.UserObject = bd;
 				bd.Custom = this.FCustom[i];
 				
-				if (this.FCustomObj.PluginIO.IsConnected)
-				{
-					bd.CustomObject = (ICloneable)this.FCustomObj[i].Clone();
-				}
-				else
-				{
-					bd.CustomObject = null;
-				}
-
 				this.FWorld[0].Register(body);
 				id = bd.Id;
 				return body;

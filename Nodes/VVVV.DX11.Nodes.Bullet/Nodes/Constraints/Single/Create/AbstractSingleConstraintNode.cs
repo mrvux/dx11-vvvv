@@ -21,9 +21,6 @@ namespace VVVV.Nodes.Bullet
 		[Input("Custom", Order = 100)]
         protected ISpread<string> FCustom;
 
-		[Input("Custom Object", Order = 101)]
-        protected Pin<ICloneable> FCustomObject;
-
 		[Input("Do Create",IsBang=true,Order=1000)]
         protected ISpread<bool> FDoCreate;
 
@@ -42,11 +39,6 @@ namespace VVVV.Nodes.Bullet
 						ConstraintCustomData cust = new ConstraintCustomData(this.FWorld[0].GetNewConstraintId());
 						cust.Custom = this.FCustom[i];
 						cust.IsSingle = true;
-
-						if (FCustomObject.PluginIO.IsConnected)
-						{
-							cust.CustomObject = FCustomObject[i];
-						}
 
 						cst.UserObject = cust;
 						this.FWorld[0].Register(cst);

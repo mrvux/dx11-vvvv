@@ -49,11 +49,8 @@ namespace VVVV.Bullet.DataTypes.World
                 TType obj = this.objectList[i];
                 TLifeTime lifeTime = getDetailsFunc(obj);
 
-                if (!lifeTime.Created)
-                {
-                    lifeTime.LifeTime += dt;
-                }
-                lifeTime.Created = false;
+                lifeTime.Step(dt);
+
                 if (lifeTime.MarkedForDeletion)
                 {
                     this.deletionList.Add(obj);

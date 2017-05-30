@@ -24,6 +24,22 @@ namespace VVVV.Bullet.Core
         }
 
         /// <summary>
+        /// Steps timer, also sets created to false
+        /// </summary>
+        /// <param name="dt">Delta time</param>
+        public void Step(double dt)
+        {
+            if (this.Created)
+            {
+                this.Created = false;
+            }
+            else
+            {
+                this.LifeTime += dt;
+            }
+        }
+
+        /// <summary>
         /// Custom string
         /// </summary>
         public string Custom { get; set; }
@@ -36,16 +52,11 @@ namespace VVVV.Bullet.Core
         /// <summary>
         /// Tells if body has just been created
         /// </summary>
-        public bool Created { get; set; }
+        public bool Created { get; private set; }
 
         /// <summary>
         /// Body lifetime
         /// </summary>
-        public double LifeTime { get; set; }
-
-        /// <summary>
-        /// Custom object attached to body
-        /// </summary>
-        public ICloneable CustomObject { get; set; }
+        public double LifeTime { get; private set; }
     }
 }

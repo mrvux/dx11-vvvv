@@ -59,12 +59,6 @@ namespace VVVV.Nodes.Bullet
         [Output("Alive Time")]
         protected ISpread<double> FAlive;
 
-		[Output("Has Custom Object")]
-        protected ISpread<bool> FHasCustomObj;
-
-		[Output("Custom Object")]
-        protected ISpread<ICloneable> FCustomObj;
-
 		[Output("Id")]
         protected ISpread<int> FId;
 
@@ -177,19 +171,6 @@ namespace VVVV.Nodes.Bullet
 					this.FIsNew[i] = bd.Created;
 					this.FCustom[i] = bd.Custom;
                     this.FAlive[i] = bd.LifeTime;
-					
-					if (bd.CustomObject != null)
-					{
-						this.FHasCustomObj[i] = true;
-						this.FCustomObj[i] = bd.CustomObject;
-					}
-					else
-					{
-						this.FHasCustomObj[i] = false;
-						this.FCustomObj[i] = null;
-					}
-
-
 				}
 
 				//this.FShapeTransform.SliceCount = transforms.Count;

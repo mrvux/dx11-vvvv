@@ -26,12 +26,6 @@ namespace VVVV.Nodes.Bullet
 		[Output("Custom")]
         protected ISpread<string> FOutCustom;
 
-		[Output("Has Custom Object")]
-        protected ISpread<bool> FHasCustomObj;
-
-		[Output("Custom Object")]
-        protected ISpread<ICloneable> FCustomObj;
-
 		[Output("Id")]
         protected ISpread<int> FOutId;
 	
@@ -43,7 +37,6 @@ namespace VVVV.Nodes.Bullet
                 this.FOutCustom.SliceCount = SpreadMax;
                 this.FOutId.SliceCount = SpreadMax;
                 this.FOutMass.SliceCount = SpreadMax;
-                this.FHasCustomObj.SliceCount = SpreadMax;
 
                 for (int i = 0; i < SpreadMax; i++)
                 {
@@ -62,17 +55,6 @@ namespace VVVV.Nodes.Bullet
                     SoftBodyCustomData custom = (SoftBodyCustomData)sb.UserObject;
                     this.FOutCustom[i] = custom.Custom;
                     this.FOutId[i] = custom.Id;
-
-                    if (custom.CustomObject != null)
-                    {
-                        this.FHasCustomObj[i] = true;
-                        this.FCustomObj[i] = custom.CustomObject;
-                    }
-                    else
-                    {
-                        this.FHasCustomObj[i] = false;
-                        this.FCustomObj[i] = null;
-                    }
                 }
             }
             else
@@ -81,7 +63,6 @@ namespace VVVV.Nodes.Bullet
                 this.FOutCustom.SliceCount = 0;
                 this.FOutId.SliceCount = 0;
                 this.FOutMass.SliceCount = 0;
-                this.FHasCustomObj.SliceCount = 0;
             }
 		}
 	}
