@@ -9,6 +9,7 @@ using VVVV.Utils.VMath;
 using VVVV.DataTypes.Bullet;
 using SlimDX;
 using VVVV.Bullet.DataTypes;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {

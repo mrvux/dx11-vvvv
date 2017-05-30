@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using BulletSharp;
 using FeralTic.DX11;
 using VVVV.Bullet.DataTypes;
-using VVVV.Bullet.DataTypes.DebugView;
 using VVVV.DataTypes.Bullet;
 using VVVV.DX11;
 using VVVV.PluginInterfaces.V2;
@@ -35,13 +34,8 @@ namespace VVVV.Bullet.Nodes.World
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> layer;
 
-        [Output("Debug Text")]
-        protected ISpread<TextObject> textObjects;
-
         private BulletRigidSoftWorld currentWorld;
-
-        //Used to collect texts and warnings
-        private BulletDebugView debugView = new BulletDebugView();
+        private DebugDrawModes mode;
 
         //Immediate view renderer;
         private DX11ContextElement<BulletImmediateWorldDebugRenderer> immediateDebugView = new DX11ContextElement<BulletImmediateWorldDebugRenderer>();
@@ -67,29 +61,15 @@ namespace VVVV.Bullet.Nodes.World
             {
                 if (this.enabled[0])
                 {
-                    this.currentWorld.World.DebugDrawer = this.debugView;
-
-                    DebugDrawModes mode = DebugDrawModes.None;
+                    this.mode = DebugDrawModes.None;
                     for (int i = 0; i < this.drawMode.SliceCount; i++)
                     {
                         mode |= this.drawMode[i];
-                    }
-                    this.debugView.DebugMode = mode;
-
-                    this.debugView.Begin();
-                    this.currentWorld.World.DebugDrawWorld();
-
-                    this.textObjects.SliceCount = this.debugView.TextObjects.Count;
-                    for (int i = 0; i < this.textObjects.SliceCount; i++)
-                    {
-                        this.textObjects[i] = this.debugView.TextObjects[i];
                     }
                 }
                 else
                 {
                     this.currentWorld.World.DebugDrawer = null;
-
-                    this.textObjects.SliceCount = 0;
                 }
             }
 
@@ -114,7 +94,7 @@ namespace VVVV.Bullet.Nodes.World
             if (this.enabled[0] && this.currentWorld != null)
             {
                 var drawer = this.immediateDebugView[context];
-                drawer.DebugMode = this.debugView.DebugMode;
+                drawer.DebugMode = this.mode;
 
                 this.currentWorld.World.DebugDrawer = drawer;
 

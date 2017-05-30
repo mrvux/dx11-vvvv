@@ -8,10 +8,18 @@ using VVVV.DataTypes.Bullet;
 using VVVV.Internals.Bullet;
 using VVVV.Bullet.Core;
 
-namespace VVVV.Bullet.DataTypes
+namespace VVVV.Bullet.Core
 {
+    /// <summary>
+    /// Some extension methods
+    /// </summary>
     public static class RigidBodyExtensionMethods
     {
+        /// <summary>
+        /// Apply rigid body properties
+        /// </summary>
+        /// <param name="rigidBody">Rigid body</param>
+        /// <param name="properties">Properties</param>
         public static void ApplyProperties(this RigidBody rigidBody,  ref RigidBodyProperties properties)
         {
             if (properties.IsActive == false)

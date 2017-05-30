@@ -24,19 +24,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\IConstraintCollection.cs" />
     <Compile Include="Core\IRigidBodyCollection.cs" />
     <Compile Include="Core\ISoftBodyCollection.cs" />
     <Compile Include="Core\ObjectCustomData.cs" />
+    <Compile Include="Core\ObjectLifetimeContainer.cs" />
     <Compile Include="Core\RigidBodyCustomData.cs" />
+    <Compile Include="Core\RigidBodyMotionProperties.cs" />
+    <Compile Include="Core\RigidBodyPose.cs" />
+    <Compile Include="Core\RigidBodyProperties.cs" />
     <Compile Include="Core\SoftBodyCustomData.cs" />
     <Compile Include="DataTypes\Constraints\AbstractConstraintDefinition.cs" />
     <Compile Include="DataTypes\Constraints\AbstractSingleBodyConstraintDef.cs" />
     <Compile Include="DataTypes\Constraints\P2PSingleConstraintDefinition.cs" />
-    <Compile Include="DataTypes\DebugView\BulletDebugView.cs" />
     <Compile Include="DataTypes\DebugView\BulletImmediateWorldDebugRenderer.cs" />
-    <Compile Include="DataTypes\RigidBodyPose.cs" />
-    <Compile Include="DataTypes\RigidBodyProperties.cs" />
-    <Compile Include="DataTypes\RigidBodyExtensionMethods.cs" />
+    <Compile Include="Core\RigidBodyExtensionMethods.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\CompoundShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
@@ -44,7 +46,6 @@
     <Compile Include="DataTypes\Shapes\Soft\TriMeshSoftShapeDefinition.cs" />
     <Compile Include="DataTypes\Info\VehicleSettings.cs" />
     <Compile Include="DataTypes\Info\WheelInfoSettings.cs" />
-    <Compile Include="DataTypes\World\ObjectLifetimeContainer.cs" />
     <Compile Include="Internals\BulletRigidBodyListListener.cs" />
     <Compile Include="Internals\Constraints\ConstraintCustomData.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\AbstractRigidShapeDefinition.cs">
@@ -158,6 +159,7 @@
     <Compile Include="Nodes\Shapes\Create\Soft\BulletTetGenSoftShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Soft\BulletTriMeshShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
+    <Compile Include="Nodes\World\Retrieve\BulletGetConstraintsNode.cs" />
     <Compile Include="Nodes\World\Retrieve\BulletGetSoftBodiesNode.cs" />
     <Compile Include="Nodes\World\Retrieve\BulletGetRigidBodiesNode.cs" />
     <Compile Include="Nodes\World\BulletRayCastIgnoreNode.cs" />
@@ -172,7 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTypes\Shapes\Vehicle\" />
-    <Folder Include="effects\" />
+    <Folder Include="Direct3D11\" />
     <Folder Include="Nodes\Constraints\Single\Details\" />
     <Folder Include="Nodes\Shapes\Retrieve\Soft\" />
   </ItemGroup>

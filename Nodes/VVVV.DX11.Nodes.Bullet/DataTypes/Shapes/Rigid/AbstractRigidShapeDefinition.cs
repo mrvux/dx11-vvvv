@@ -7,6 +7,7 @@ using BulletSharp;
 using SlimDX.Direct3D9;
 using VVVV.Bullet.DataTypes;
 using VVVV.Internals.Bullet;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {

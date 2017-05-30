@@ -5,7 +5,7 @@ using System.Text;
 using VVVV.Utils.VMath;
 
 
-public static class BulletExtensions
+public unsafe static class BulletExtensions
 {
 	public static Vector3D Abs(this Vector3D vec)
 	{
@@ -26,8 +26,6 @@ public static class BulletExtensions
 	{
 		return new Vector3D(vec.X, vec.Y, vec.Z);
 	}
-
-
 
     public static BulletSharp.Vector3 ToBulletVector(this SlimDX.Vector3 vec)
     {

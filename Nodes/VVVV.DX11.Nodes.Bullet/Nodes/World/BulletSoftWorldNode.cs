@@ -38,12 +38,6 @@ namespace VVVV.Nodes.Bullet
 		[Output("World",IsSingle=true)]
         protected ISpread<BulletRigidSoftWorld> FWorld;
 
-		[Output("Rigid Bodies")]
-        protected ISpread<RigidBody> FRigidBodies;
-
-		[Output("SoftBodies")]
-        protected ISpread<SoftBody> FSoftBodies;
-
 		[Output("Constraints")]
         protected ISpread<TypedConstraint> FConstraints;
 
@@ -104,18 +98,6 @@ namespace VVVV.Nodes.Bullet
 				this.internalworld.ProcessDelete(this.FTimeStep[0]);
 				this.internalworld.Step();
 				//this.internalworld.WorldInfo.SparseSdf.GarbageCollect();
-			}
-
-			this.FRigidBodies.SliceCount = this.internalworld.RigidBodies.Count;
-			for (int i = 0; i < this.internalworld.RigidBodies.Count; i++)
-			{
-				this.FRigidBodies[i] = this.internalworld.RigidBodies[i];
-			}
-
-			this.FSoftBodies.SliceCount = this.internalworld.SoftBodies.Count;
-			for (int i = 0; i < this.internalworld.SoftBodies.Count; i++)
-			{
-				this.FSoftBodies[i] = this.internalworld.SoftBodies[i];
 			}
 
 			this.FConstraints.SliceCount = this.internalworld.Constraints.Count;

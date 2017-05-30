@@ -8,6 +8,7 @@ using VVVV.DataTypes.Bullet;
 using VVVV.Hosting.Pins.Input;
 using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VMath;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {

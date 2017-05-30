@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VVVV.Bullet.Core;
-using VVVV.Internals.Bullet;
 
-namespace VVVV.Bullet.DataTypes.World
+namespace VVVV.Bullet.Core
 {
+    /// <summary>
+    /// Container for objects lifetime
+    /// </summary>
+    /// <typeparam name="TType">Object type</typeparam>
+    /// <typeparam name="TLifeTime">Lifetime type, must be of ObjectCustomData type</typeparam>
     public class ObjectLifetimeContainer<TType, TLifeTime> where TLifeTime : ObjectCustomData
     {
         private List<TType> objectList = new List<TType>();
@@ -16,6 +19,9 @@ namespace VVVV.Bullet.DataTypes.World
         private List<TType> deletionList = new List<TType>();
         private List<TLifeTime> idList = new List<TLifeTime>();
 
+        /// <summary>
+        /// Object List
+        /// </summary>
         public List<TType> ObjectList
         {
             get { return this.objectList; }

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using BulletSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using BulletSharp;
 
-namespace VVVV.Bullet.DataTypes
+namespace VVVV.Bullet.Core
 {
     /// <summary>
     /// A simple rigid body pose
@@ -15,7 +15,14 @@ namespace VVVV.Bullet.DataTypes
     [StructLayout(LayoutKind.Sequential)]
     public struct RigidBodyPose
     {
+        /// <summary>
+        /// Object  position
+        /// </summary>
         public Vector3 Position;
+
+        /// <summary>
+        /// Object orientation
+        /// </summary>
         public Quaternion Orientation;
 
 

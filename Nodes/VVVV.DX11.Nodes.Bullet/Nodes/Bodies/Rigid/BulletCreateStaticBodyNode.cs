@@ -11,6 +11,7 @@ using BulletSharp;
 using VVVV.DataTypes.Bullet;
 using VVVV.Bullet.DataTypes;
 using VVVV.Internals.Bullet;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
