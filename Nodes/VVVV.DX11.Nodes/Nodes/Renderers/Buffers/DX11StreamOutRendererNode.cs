@@ -215,7 +215,7 @@ namespace VVVV.DX11.Nodes
         {
             for (int i = 0; i < this.FOutGeom.SliceCount; i++)
             {
-                this.FOutGeom[i].Dispose();
+                this.FOutGeom[i]?.Dispose();
             }
         }
     }

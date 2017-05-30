@@ -13,7 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            this.FOutBackBuffer[0].Dispose();
+            this.FOutBackBuffer[0]?.Dispose();
             this.depthmanager.Dispose();
 
             if (disposing && (components != null))
