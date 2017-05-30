@@ -26,9 +26,7 @@ namespace VVVV.Nodes.Bullet
 			if (this.FBodies.PluginIO.IsConnected)
 			{
 				this.FTransform.SliceCount = this.FBodies.SliceCount;
-
-                List<Matrix4x4> transforms = new List<Matrix4x4>();
-                List<Vector3> scaling = new List<Vector3>();
+                var outputBuffer = this.FTransform.Stream.Buffer;
 
 				for (int i = 0; i < SpreadMax; i++)
 				{
@@ -36,8 +34,9 @@ namespace VVVV.Nodes.Bullet
 
                     BulletSharp.Matrix m = body.MotionState.WorldTransform;
 
-                    this.FTransform[i] = *((SlimDX.Matrix*)&m);
+                    outputBuffer[i] = *((SlimDX.Matrix*)&m);
 				}
+                this.FTransform.Flush(true);
 			}
 			else
 			{
