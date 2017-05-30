@@ -10,6 +10,7 @@ using VVVV.Bullet.DataTypes;
 using VVVV.DataTypes.Bullet;
 using VVVV.DX11;
 using VVVV.PluginInterfaces.V2;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Bullet.Nodes.World
 {
@@ -17,7 +18,7 @@ namespace VVVV.Bullet.Nodes.World
     public class BulletWorldDebugLayerNode : IPluginEvaluate, IDX11ResourceHost, IPartImportsSatisfiedNotification, System.IDisposable
     {
         [Input("World", IsSingle = true)]
-        protected Pin<BulletRigidSoftWorld> worldPin;
+        protected Pin<BulletSoftWorldContainer> worldPin;
 
         [Input("Shape Render State", IsSingle = true)]
         protected ISpread<DX11RenderState> shapeRenderState;
@@ -34,7 +35,7 @@ namespace VVVV.Bullet.Nodes.World
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> layer;
 
-        private BulletRigidSoftWorld currentWorld;
+        private BulletSoftWorldContainer currentWorld;
         private DebugDrawModes mode;
 
         //Immediate view renderer;

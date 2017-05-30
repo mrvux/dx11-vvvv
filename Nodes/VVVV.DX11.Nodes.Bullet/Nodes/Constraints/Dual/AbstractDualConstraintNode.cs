@@ -7,7 +7,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.DataTypes.Bullet;
 
 using BulletSharp;
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -15,7 +15,7 @@ namespace VVVV.Nodes.Bullet
 	public abstract class AbstractDualConstraintNode<T> : IPluginEvaluate where T :TypedConstraint
 	{
 		[Input("World", IsSingle = true,Order=0)]
-		protected Pin<BulletRigidSoftWorld> FWorld;
+		protected Pin<BulletSoftWorldContainer> FWorld;
 
 		[Input("Body 1",Order=1)]
         protected Pin<RigidBody> FBody1;

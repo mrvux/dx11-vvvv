@@ -15,14 +15,11 @@ using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
-	[PluginInfo(Name="SoftWorld",Category="Bullet",Author="vux",AutoEvaluate=true)]
-	public class BulletSoftWorldNode : IPluginEvaluate
+	[PluginInfo(Name="RigidWorld",Category="Bullet",Author="vux",AutoEvaluate=true)]
+	public class BulletRigidWorldNode : IPluginEvaluate
 	{
 		[Input("Gravity",DefaultValues=new double[] { 0.0,-9.8,0.0 })]
         protected IDiffSpread<Vector3D> FGravity;
-
-		[Input("Air Density", DefaultValue = 1.2, IsSingle = true)]
-        protected IDiffSpread<float> FAirDensity;
 
 		[Input("TimeStep", DefaultValue = 0.01, IsSingle = true)]
         protected IDiffSpread<float> FTimeStep;
@@ -37,9 +34,9 @@ namespace VVVV.Nodes.Bullet
         protected ISpread<bool> FReset;
 
 		[Output("World",IsSingle=true)]
-        protected ISpread<BulletSoftWorldContainer> FWorld;
+        protected ISpread<BulletRigidWorldContainer> FWorld;
 
-        BulletSoftWorldContainer internalworld = new BulletSoftWorldContainer();
+        BulletRigidWorldContainer internalworld = new BulletRigidWorldContainer();
 
 		[Output("Has Reset", DefaultValue = 0, IsSingle = true, IsBang = true)]
         protected ISpread<bool> FHasReset;
@@ -63,14 +60,11 @@ namespace VVVV.Nodes.Bullet
 				hasreset = true;
 			}
 
-			if (this.FGravity.IsChanged
-				|| this.FAirDensity.IsChanged
-				|| hasreset)
+			if (this.FGravity.IsChanged || hasreset)
 			{
 				Vector3D g = this.FGravity[0];
 				this.internalworld.SetGravity((float)g.x, (float)g.y, (float)g.z);
-				this.internalworld.WorldInfo.Gravity = new BulletSharp.Vector3((float)g.x, (float)g.y, (float)g.z);
-				this.internalworld.WorldInfo.AirDensity = this.FAirDensity[0];
+				this.internalworld.World.Gravity = new BulletSharp.Vector3((float)g.x, (float)g.y, (float)g.z);
 			}
 
 			if (this.FEnabled.IsChanged || hasreset)

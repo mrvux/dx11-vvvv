@@ -1,30 +1,38 @@
-﻿using System;
+﻿using BulletSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BulletSharp;
-using VVVV.DataTypes.Bullet;
 
-namespace VVVV.Bullet.Internals
+namespace VVVV.Bullet.Core
 {
-    public class BulletRigidBodyListListener
+    /// <summary>
+    /// Rigid body listener, process deleted items 
+    /// </summary>
+    public class RigidBodyListListener
     {
-        private BulletRigidSoftWorld currentWorld;
+        private IRigidBodyContainer currentWorld;
         private List<RigidBody> currentBodyList = new List<RigidBody>();
         private List<int> currentIdList = new List<int>();
 
+        /// <summary>
+        /// List of active bodies
+        /// </summary>
         public List<RigidBody> Bodies
         {
             get { return this.currentBodyList; }
         }
 
+        /// <summary>
+        /// List of active ids
+        /// </summary>
         public List<int> Ids
         {
             get { return this.currentIdList; }
         }
 
-        public void UpdateWorld(BulletRigidSoftWorld inputWorld)
+        public void UpdateWorld(IRigidBodyContainer inputWorld)
         {
             if (currentWorld != inputWorld)
             {

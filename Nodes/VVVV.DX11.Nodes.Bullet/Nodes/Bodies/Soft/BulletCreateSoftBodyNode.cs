@@ -18,7 +18,7 @@ namespace VVVV.Nodes.Bullet
 	public class BulletCreateSoftBodyNode : IPluginEvaluate
 	{
 		[Input("World", IsSingle = true)]
-        protected Pin<BulletRigidSoftWorld> FWorld;
+        protected Pin<BulletSoftWorldContainer> FWorld;
 
 		[Input("Shapes")]
         protected Pin<AbstractSoftShapeDefinition> FShapes;

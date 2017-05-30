@@ -6,16 +6,12 @@ using BulletSharp.SoftBody;
 using VVVV.Internals.Bullet;
 using VVVV.Bullet.Core;
 
-namespace VVVV.DataTypes.Bullet
-{
-	public delegate void WorldResetDelegate();
-	public delegate void RigidBodyDeletedDelegate(RigidBody rb,int id);
-	public delegate void SoftBodyDeletedDelegate(SoftBody rb, int id);
-	public delegate void ConstraintDeletedDelegate(TypedConstraint tc, int id);
 
+namespace VVVV.Bullet.Core
+{
 	//Just to make it easier to manage than having million of stuff in
 	//World node. Can also easily switch broadphases
-	public class BulletRigidSoftWorld : IRigidBodyCollection, ISoftBodyCollection, IConstraintCollection
+	public class BulletSoftWorldContainer : IBulletWorld, IRigidBodyContainer, ISoftBodyCollection, IConstraintCollection
     {
 		private DefaultCollisionConfiguration collisionConfiguration;
 		private CollisionDispatcher dispatcher;
@@ -41,11 +37,16 @@ namespace VVVV.DataTypes.Bullet
         private ObjectLifetimeContainer<SoftBody, SoftBodyCustomData> softBodyContainer;
         private ObjectLifetimeContainer<TypedConstraint, ConstraintCustomData> constraintContainer;
 
-        public BulletRigidSoftWorld()
+        public BulletSoftWorldContainer()
         {
             this.bodyContainer = new ObjectLifetimeContainer<RigidBody, BodyCustomData>(b => (BodyCustomData)b.UserObject);
             this.softBodyContainer = new ObjectLifetimeContainer<SoftBody, SoftBodyCustomData>(s => (SoftBodyCustomData)s.UserObject);
             this.constraintContainer = new ObjectLifetimeContainer<TypedConstraint, ConstraintCustomData>(c => (ConstraintCustomData)c.UserObject);
+        }
+
+        public Dispatcher Dispatcher
+        {
+            get { return this.dispatcher; }
         }
 
         #region Rigid Registry

@@ -4,14 +4,10 @@ using System.Linq;
 using System.Text;
 
 using VVVV.PluginInterfaces.V2;
-using VVVV.Utils.VMath;
-using VVVV.Bullet.Utils;
 
 using BulletSharp;
 using VVVV.DataTypes.Bullet;
-using VVVV.Bullet.DataTypes;
 using VVVV.Internals.Bullet;
-using VVVV.Bullet.Internals;
 using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
@@ -20,7 +16,7 @@ namespace VVVV.Nodes.Bullet
     public class BulletCreateDynamicRigidBodyPeristedNode : IPluginEvaluate
     {
         [Input("World", IsSingle = true)]
-        protected Pin<BulletRigidSoftWorld> worldInput;
+        protected Pin<IRigidBodyContainer> worldInput;
 
         [Input("Shapes")]
         protected Pin<AbstractRigidShapeDefinition> shapesInput;
@@ -44,11 +40,11 @@ namespace VVVV.Nodes.Bullet
         protected ISpread<int> idOutput;
 
 
-        private BulletRigidBodyListListener persistedList = new BulletRigidBodyListListener();
+        private RigidBodyListListener persistedList = new RigidBodyListListener();
 
         public void Evaluate(int SpreadMax)
         {
-            BulletRigidSoftWorld inputWorld = this.worldInput[0];
+            IRigidBodyContainer inputWorld = this.worldInput[0];
             this.persistedList.UpdateWorld(inputWorld);
 
             if (inputWorld != null && this.shapesInput.IsConnected)

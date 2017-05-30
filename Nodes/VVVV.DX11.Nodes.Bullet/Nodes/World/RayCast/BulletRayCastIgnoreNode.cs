@@ -17,7 +17,7 @@ namespace VVVV.Nodes.Bullet
 	public class BulletRayCastFilterNode : IPluginEvaluate
 	{
 		[Input("World", IsSingle = true)]
-        protected Pin<BulletRigidSoftWorld> FWorld;
+        protected Pin<BulletSoftWorldContainer> FWorld;
 
         [Input("Excluded Bodies")]
         protected ISpread<RigidBody> FExcludedBody;

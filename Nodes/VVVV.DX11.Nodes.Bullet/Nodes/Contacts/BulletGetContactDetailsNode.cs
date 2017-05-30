@@ -12,7 +12,7 @@ using System.ComponentModel.Composition;
 using VVVV.Core.Logging;
 using VVVV.Internals.Bullet;
 using VVVV.Utils.VMath;
-
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -20,7 +20,7 @@ namespace VVVV.Nodes.Bullet
 	public class BulletGetContactDetailsNode : IPluginEvaluate
 	{
 		[Input("World")]
-        protected Pin<BulletRigidSoftWorld> FWorld;
+        protected Pin<IBulletWorld> FWorld;
 
 		[Output("Body 1")]
         protected ISpread<RigidBody> FBody1;
@@ -39,14 +39,14 @@ namespace VVVV.Nodes.Bullet
 
 			if (this.FWorld.PluginIO.IsConnected)
 			{
-				int contcnt = this.FWorld[0].World.Dispatcher.NumManifolds;
+				int contcnt = this.FWorld[0].Dispatcher.NumManifolds;
 				this.FBody1.SliceCount = contcnt;
 				this.FBody2.SliceCount = contcnt;
 				this.FContactPoints.SliceCount = contcnt;
 
 				for (int i = 0; i < contcnt; i++)
 				{
-					PersistentManifold pm = this.FWorld[0].World.Dispatcher.GetManifoldByIndexInternal(i);
+					PersistentManifold pm = this.FWorld[0].Dispatcher.GetManifoldByIndexInternal(i);
                     RigidBody b1 = RigidBody.Upcast((CollisionObject)pm.Body0);
                     RigidBody b2 = RigidBody.Upcast((CollisionObject)pm.Body1);
 

@@ -17,7 +17,7 @@ namespace VVVV.Nodes.Bullet
 	public class BulletSplitRigidBodyNode : AbstractBodyInteractionNode<RigidBody>
 	{
 		[Input("World")]
-        protected Pin<BulletRigidSoftWorld> FWorld;
+        protected Pin<BulletSoftWorldContainer> FWorld;
 
 		protected override void ProcessObject(RigidBody obj, int slice)
 		{

@@ -19,7 +19,7 @@ namespace VVVV.Nodes.Bullet
     public class BulletCreateStaticRigidBodyNode : IPluginEvaluate
     {
         [Input("World", IsSingle = true)]
-        protected Pin<BulletRigidSoftWorld> worldInput;
+        protected Pin<BulletSoftWorldContainer> worldInput;
 
         [Input("Shapes")]
         protected Pin<AbstractRigidShapeDefinition> shapesInput;
@@ -54,7 +54,7 @@ namespace VVVV.Nodes.Bullet
                 return;
             }
 
-            BulletRigidSoftWorld world = this.worldInput[0];
+            BulletSoftWorldContainer world = this.worldInput[0];
 
             if (world != null && this.shapesInput.IsConnected)
             {

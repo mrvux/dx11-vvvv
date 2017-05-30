@@ -18,7 +18,7 @@ namespace VVVV.Nodes.Bullet
     public class BulletSoftRayCastNode : IPluginEvaluate
     {
         [Input("World", IsSingle = true)]
-        protected Pin<BulletRigidSoftWorld> FWorld;
+        protected Pin<BulletSoftWorldContainer> FWorld;
 
         [Input("From")]
         protected ISpread<Vector3D> FFrom;
