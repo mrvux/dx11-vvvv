@@ -27,9 +27,6 @@ namespace VVVV.Nodes.Bullet
 		[Input("Custom")]
 		protected IDiffSpread<string> FCustom;
 
-		[Input("Custom Object")]
-		protected IDiffSpread<ICloneable> FCustomObj;
-
 		[Output("Shape")]
 		protected ISpread<AbstractRigidShapeDefinition> FShapes;
 		#endregion
@@ -43,7 +40,6 @@ namespace VVVV.Nodes.Bullet
 			get
 			{
 				return this.FCustom.IsChanged
-					|| this.FCustomObj.IsChanged
 					|| this.FMass.IsChanged
 					|| this.FPose.IsChanged
 					|| this.FScaling.IsChanged;
@@ -55,7 +51,6 @@ namespace VVVV.Nodes.Bullet
 			get
 			{
 				return SpreadUtils.SpreadMax(this.FCustom,
-					this.FCustomObj,
 					this.FMass,
 					this.FPose,
 					this.FScaling);
@@ -69,7 +64,6 @@ namespace VVVV.Nodes.Bullet
             sd.Pose = FPose.IsConnected ? FPose[sliceindex] : RigidBodyPose.Default;
 			sd.Scaling = this.FScaling[sliceindex].Abs().ToBulletVector();
 			sd.CustomString = this.FCustom[sliceindex];
-			sd.CustomObject = this.FCustomObj[sliceindex];
 		}
 		#endregion
 	}

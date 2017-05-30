@@ -24,7 +24,5 @@ namespace VVVV.Internals.Bullet
 			get { return this.def; }
 			set { this.def = value; }
 		}
-
-		public ICloneable CustomObject { get; set; }
 	}
 }

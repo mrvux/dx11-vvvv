@@ -25,15 +25,12 @@ namespace VVVV.Nodes.Bullet
         [Input("Custom")]
         protected IDiffSpread<string> FCustom;
 
-        [Input("Custom Object")]
-        protected IDiffSpread<ICloneable> FCustomObj;
-
         [Output("Shape")]
         protected ISpread<AbstractRigidShapeDefinition> FShapes;
 
         public void Evaluate(int SpreadMax)
 		{
-			if (SpreadUtils.AnyChanged(this.w, this.normal, this.FCustom, this.FCustomObj))
+			if (SpreadUtils.AnyChanged(this.w, this.normal, this.FCustom))
 			{
 				this.FShapes.SliceCount = SpreadMax;
 
@@ -42,7 +39,6 @@ namespace VVVV.Nodes.Bullet
                     PlaneShapeDefinition plane = new PlaneShapeDefinition(new BulletSharp.Vector3(this.normal[i].X, this.normal[i].Y, this.normal[i].Z), this.w[i]);
                     plane.Mass = 0.0f;
                     plane.Pose = RigidBodyPose.Default;
-                    plane.CustomObject = this.FCustomObj[i];
                     plane.CustomString = this.FCustom[i];
 
 					this.FShapes[i] = plane;

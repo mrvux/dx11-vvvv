@@ -32,13 +32,6 @@ namespace VVVV.Nodes.Bullet
 		[Output("Custom")]
         protected ISpread<string> FCustom;
 
-
-		[Output("Has Custom Object")]
-        protected ISpread<bool> FHasCustomObj;
-
-		[Output("Custom Object")]
-        protected ISpread<ICloneable> FCustomObj;
-
 		public void Evaluate(int SpreadMax)
 		{
             if (this.FShapes.IsConnected)
@@ -47,8 +40,6 @@ namespace VVVV.Nodes.Bullet
                 this.FAABBMin.SliceCount = SpreadMax;
                 this.FAABBMax.SliceCount = SpreadMax;
                 this.FCustom.SliceCount = SpreadMax;
-                this.FHasCustomObj.SliceCount = SpreadMax;
-                this.FCustomObj.SliceCount = SpreadMax;
                 this.FScaling.SliceCount = SpreadMax;
 
                 for (int i = 0; i < SpreadMax; i++)
@@ -67,17 +58,6 @@ namespace VVVV.Nodes.Bullet
 
                     FType[i] = shape.ShapeType;
                     this.FCustom[i] = sc.CustomString;
-                    if (sc.CustomObject != null)
-                    {
-                        this.FHasCustomObj[i] = true;
-                        this.FCustomObj[i] = sc.CustomObject;
-                    }
-                    else
-                    {
-                        this.FHasCustomObj[i] = false;
-                        this.FCustomObj[i] = null;
-                    }
-
                 }
             }
             else
@@ -86,8 +66,6 @@ namespace VVVV.Nodes.Bullet
                 this.FAABBMin.SliceCount = 0;
                 this.FAABBMax.SliceCount = 0;
                 this.FCustom.SliceCount = 0;
-                this.FHasCustomObj.SliceCount = 0;
-                this.FCustomObj.SliceCount = 0;
                 this.FScaling.SliceCount = 0;
             }
 

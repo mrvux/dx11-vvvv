@@ -26,16 +26,14 @@ namespace VVVV.DataTypes.Bullet
         public RigidBodyPose Pose;
         public Vector3 Scaling;
 
-
 		public string CustomString { get; set; }
-		public ICloneable CustomObject { get; set; }
 
 		public CollisionShape GetShape(ShapeCustomData sc)
 		{
 			CollisionShape shape = this.CreateShape();
 			shape.LocalScaling = this.Scaling;
 			sc.CustomString = this.CustomString;
-			if (sc.CustomObject != null) { sc.CustomObject = (ICloneable)this.CustomObject.Clone(); }
+			
 			shape.UserObject = sc;
 			shape.CalculateLocalInertia(this.Mass);
 

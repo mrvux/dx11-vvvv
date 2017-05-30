@@ -28,12 +28,15 @@ namespace VVVV.Nodes.Bullet
 			{
                 this.id.SliceCount = this.bodies.SliceCount;
 
+                var ids = this.id.Stream.Buffer;
+
 				for (int i = 0; i < SpreadMax; i++)
 				{
 					RigidBody body = this.bodies[i];
                     BodyCustomData bd = (BodyCustomData)body.UserObject;
-                    this.id[i] = bd.Id;
+                    ids[i] = bd.Id;
                 }
+                this.id.Flush(true);
 			}
 			else
 			{
