@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FeralTic", "FeralTic", "{5F0D7AF2-A20D-44E4-9E22-953026C1DCE4}"
 EndProject
@@ -164,7 +164,6 @@ Global
 		{C8C37C3D-8133-49C1-B227-EE4CFD216FFB}.Release|x86.ActiveCfg = Release|x86
 		{C8C37C3D-8133-49C1-B227-EE4CFD216FFB}.Release|x86.Build.0 = Release|x86
 		{51469F38-9510-4A16-8998-67A55C386059}.Debug|x64.ActiveCfg = Debug|x64
-		{51469F38-9510-4A16-8998-67A55C386059}.Debug|x64.Build.0 = Debug|x64
 		{51469F38-9510-4A16-8998-67A55C386059}.Debug|x86.ActiveCfg = Debug|Win32
 		{51469F38-9510-4A16-8998-67A55C386059}.Debug|x86.Build.0 = Debug|Win32
 		{51469F38-9510-4A16-8998-67A55C386059}.Release|x64.ActiveCfg = Release|x64

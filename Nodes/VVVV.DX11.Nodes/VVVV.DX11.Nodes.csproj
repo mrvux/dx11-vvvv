@@ -234,7 +234,7 @@
     <EmbeddedResource Include="effects\GenerateDispatch1D.fx" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes\plugins" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
