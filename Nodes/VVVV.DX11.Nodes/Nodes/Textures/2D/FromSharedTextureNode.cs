@@ -14,8 +14,8 @@ using SlimDX.Direct3D11;
 
 namespace VVVV.DX11.Nodes.Textures
 {
-    [PluginInfo(Name = "FromSharedTexture", Category = "DX11.Texture", Version = "2d", Author = "velcrome")]
-    public class PointerTextureNode : IPluginEvaluate, IDX11ResourceHost
+    [PluginInfo(Name = "FromSharedTexture", Category = "DX11.Texture", Version = "2d", Author = "vux")]
+    public class PointerTextureNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Pointer", AsInt=true)]
         protected IDiffSpread<uint> FPointer;
@@ -30,54 +30,44 @@ namespace VVVV.DX11.Nodes.Textures
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FPointer.IsChanged)
+            if (this.FPointer.SliceCount == 0)
             {
-                this.FInvalidate = true;
-            }
-            else return;
-
-            SpreadMax = FPointer.SliceCount;
-
-            var oldCount = FTextureOutput.SliceCount;
-            if (FTextureOutput[0] == null) oldCount = 0;
-
-            for (int i = SpreadMax; i < oldCount;i++ )
-            {
-                FTextureOutput[i].Dispose();
+                this.FTextureOutput.SafeDisposeAll();
+                this.FTextureOutput.SliceCount = 0;
+                return;
             }
 
             this.FValid.SliceCount = SpreadMax;
             this.FTextureOutput.SliceCount = SpreadMax;
 
-            for (int i = oldCount; i < SpreadMax; i++)
+
+            if (this.FPointer.IsChanged)
             {
-                FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
+                this.FInvalidate = true;
+                this.FTextureOutput.SafeDisposeAll();
             }
 
+            for (int i = 0; i < SpreadMax; i++)
+            {
+                if (this.FTextureOutput[i] == null)
+                {
+                    FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
+                }
+            }
 
         }
 
         public void Update(DX11RenderContext context)
         {
-
             if (this.FInvalidate)
             {
                 for (int i = 0; i < FTextureOutput.SliceCount; i++)
                 {
-                    if (this.FTextureOutput[i].Contains(context))
-                    {
-                        this.FTextureOutput[i].Dispose(context);
-                    }
-
                     try
                     {
                         int p = unchecked((int) this.FPointer[i]);
                         IntPtr share = new IntPtr(p);
-                        Texture2D tex = context.Device.OpenSharedResource<Texture2D>(share);
-                        ShaderResourceView srv = new ShaderResourceView(context.Device, tex);
-
-                        DX11Texture2D resource = DX11Texture2D.FromTextureAndSRV(context, tex, srv);
-
+                        DX11Texture2D resource = DX11Texture2D.FromSharedHandle(context, share);
                         this.FTextureOutput[i][context] = resource;
                         this.FValid[i] = true;
                     }
@@ -92,8 +82,12 @@ namespace VVVV.DX11.Nodes.Textures
 
         public void Destroy(DX11RenderContext context, bool force)
         {
-            for (int i = 0; i < FTextureOutput.SliceCount; i++)
-                this.FTextureOutput[i].Dispose(context);
+            this.FTextureOutput.SafeDisposeAll(context);
+        }
+
+        public void Dispose()
+        {
+            this.FTextureOutput.SafeDisposeAll();
         }
     }
 }
