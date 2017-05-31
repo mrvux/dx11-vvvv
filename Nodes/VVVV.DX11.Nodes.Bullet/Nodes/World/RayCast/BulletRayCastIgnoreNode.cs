@@ -90,17 +90,21 @@ namespace VVVV.Nodes.Bullet
 
 					this.FWorld[0].World.RayTest(from, to, cb);
 
-					if (cb.HasHit)
-					{
+                    if (cb.HasHit)
+                    {
+
                         this.FHitCount[i] = cb.HitFractions.Count;
 
                         float minfrac = float.MaxValue;
                         RigidBody closest = null;
                         int minidx = 0;
 
-                        for (int h = 0; h < cb.HitFractions.Count; h++ )
+                        for (int h = 0; h < cb.HitFractions.Count; h++)
                         {
                             RigidBody rb = (RigidBody)cb.CollisionObjects[h];
+
+                            BodyCustomData bd = (BodyCustomData)rb.UserObject;
+
                             if (cb.HitFractions[h] < minfrac && !this.FExcludedBody.Contains(rb))
                             {
                                 closest = rb;
@@ -111,8 +115,12 @@ namespace VVVV.Nodes.Bullet
                         if (closest != null)
                         {
                             this.FHit[i] = true;
+
+                            Vector3 diff = to - from;
+                            Vector3 inter = from + diff * cb.HitFractions[minidx];
+
+                            position.Add(inter.ToVVVVector());
                             fraction.Add(cb.HitFractions[minidx]);
-                            position.Add(cb.HitPointWorld[minidx].ToVVVVector());
                             normal.Add(cb.HitNormalWorld[minidx].ToVVVVector());
                             body.Add(closest);
                             qidx.Add(i);
@@ -121,15 +129,15 @@ namespace VVVV.Nodes.Bullet
                         {
                             this.FHit[i] = false;
                         }
-					}
-					else
-					{
-						this.FHit[i] = false;
+                    }
+                    else
+                    {
+                        this.FHit[i] = false;
                         this.FHitCount[i] = 0;
-					}
+                    }
 				}
 
-                this.FHit.SliceCount = fraction.Count;
+                this.FHitFraction.SliceCount = fraction.Count;
                 this.FHitNormal.SliceCount = fraction.Count;
                 this.FHitPosition.SliceCount = fraction.Count;
                 this.FQueryIndex.SliceCount = fraction.Count;
@@ -149,6 +157,7 @@ namespace VVVV.Nodes.Bullet
 				this.FHit.SliceCount = 0;
 				this.FHitFraction.SliceCount = 0;
 				this.FHitPosition.SliceCount = 0;
+                this.FHitNormal.SliceCount = 0;
                 this.FHitCount.SliceCount = 0;
                 this.FQueryIndex.SliceCount = 0;
 			}
