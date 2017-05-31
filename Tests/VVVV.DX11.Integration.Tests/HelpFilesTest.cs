@@ -293,7 +293,7 @@ namespace VVVV.DX11.Integration.Tests
         [TestMethod]
         public void VVVVDX11BulletNodesHelpPatchesTest()
         {
-            /*Assembly assembly = Assembly.GetAssembly(typeof(VVVV.Nodes.Bullet.BulletCompoundSpreadNode));
+            Assembly assembly = Assembly.GetAssembly(typeof(VVVV.Nodes.Bullet.BulletSoftWorldNode));
 
             int missingCount = 0;
             StringBuilder sb = new StringBuilder();
@@ -321,7 +321,7 @@ namespace VVVV.DX11.Integration.Tests
             }
 
             string msg = sb.ToString();
-            Assert.AreEqual(missingCount, 0, "Missing help files: \r\n" + sb.ToString());*/
+            Assert.AreEqual(missingCount, 0, "Missing help files: \r\n" + sb.ToString());
         }
     }
 }
