@@ -185,7 +185,7 @@
     <Compile Include="Nodes\Textures\2D\DynamicTexture2DNode.cs" />
     <Compile Include="Nodes\Textures\2D\FileTexturePoolNode.cs" />
     <Compile Include="Nodes\Textures\2D\FrameDelayTextureNode.cs" />
-    <Compile Include="Nodes\Textures\2D\FromPointerTextureNode.cs" />
+    <Compile Include="Nodes\Textures\2D\FromSharedTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\InfoTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\StencilTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\SwitchTexture2DNode.cs" />

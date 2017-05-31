@@ -9,22 +9,23 @@ namespace VVVV.Internals.Bullet
 	public class SoftShapeCustomData
 	{
 		private int id;
-		private AbstractSoftShapeDefinition def;
+		private AbstractSoftShapeDefinition descriptor;
 
-		public int Id
+        public SoftShapeCustomData(int id, AbstractSoftShapeDefinition descriptor)
+        {
+            this.id = id;
+            this.descriptor = descriptor;
+        }
+
+        public int Id
 		{
 			get { return id; }
-			set { id = value; }
 		}
 
 		//Original shape definition (To build mesh on request)
-		public AbstractSoftShapeDefinition ShapeDef
+		public AbstractSoftShapeDefinition Descriptor
 		{
-			get { return this.def; }
-			set { this.def = value; }
+			get { return this.descriptor; }
 		}
-
-		public ICloneable CustomObject { get; set; }
-
 	}
 }
