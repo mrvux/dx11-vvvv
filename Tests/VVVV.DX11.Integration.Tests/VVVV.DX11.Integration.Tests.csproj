@@ -36,7 +36,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    
     <Compile Include="HelpFilesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -80,6 +79,10 @@
       <Project>{57dc2927-df1a-4204-9b1f-a9fa90d6f36e}</Project>
       <Name>VVVV.DX11.Nodes.Text3d</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Text\VVVV.DX11.Nodes.Text.csproj">
+      <Project>{597da607-77ea-4009-9ea0-db96f71f8077}</Project>
+      <Name>VVVV.DX11.Nodes.Text</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Vlc\VVVV.DX11.Nodes.Vlc.csproj">
       <Project>{c6f7d284-30a7-4ef0-9d9c-4b635bdb3f1e}</Project>
       <Name>VVVV.DX11.Nodes.Vlc</Name>
@@ -94,7 +97,6 @@
       <Name>VVVV.Nodes.DirectWrite</Name>
     </ProjectReference>
   </ItemGroup>
-  
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

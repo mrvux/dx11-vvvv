@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="SharpDX">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\SharpDX.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\SharpDX.D3DCompiler.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\SharpDX.Direct2D1.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\SharpDX.DXGI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\SharpDX.Mathematics.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>$(SolutionDir)\Dependencies\mixed\SharpDX.Direct3D11.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+  </ItemGroup>
+</Project>
