@@ -45,35 +45,38 @@ namespace VVVV.Nodes.Bullet
         public void Evaluate(int SpreadMax)
         {
             IRigidBodyContainer inputWorld = this.worldInput[0];
-            this.persistedList.UpdateWorld(inputWorld);
-
-            if (inputWorld != null && this.shapesInput.IsConnected)
+            if (inputWorld != null)
             {
-                for (int i = 0; i < SpreadMax; i++)
+                this.persistedList.UpdateWorld(inputWorld);
+
+                if (this.shapesInput.IsConnected)
                 {
-                    if (doCreate[i])
+                    for (int i = 0; i < SpreadMax; i++)
                     {
-                        RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
-                        RigidBodyProperties properties = this.initialProperties.IsConnected ? this.initialProperties[i] : RigidBodyProperties.Default;
-                        RigidBodyMotionProperties motionProperties = this.initialMotionProperties.IsConnected ? this.initialMotionProperties[i] : new RigidBodyMotionProperties();
-
-                        ShapeCustomData shapeData = new ShapeCustomData();
-                        shapeData.ShapeDef = this.shapesInput[i];
-
-                        CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
-
-                        //Build mass for dynamic object
-                        Vector3 localinertia = Vector3.Zero;
-                        if (shapeData.ShapeDef.Mass > 0.0f)
+                        if (doCreate[i])
                         {
-                            collisionShape.CalculateLocalInertia(shapeData.ShapeDef.Mass, out localinertia);
+                            RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
+                            RigidBodyProperties properties = this.initialProperties.IsConnected ? this.initialProperties[i] : RigidBodyProperties.Default;
+                            RigidBodyMotionProperties motionProperties = this.initialMotionProperties.IsConnected ? this.initialMotionProperties[i] : new RigidBodyMotionProperties();
+
+                            ShapeCustomData shapeData = new ShapeCustomData();
+                            shapeData.ShapeDef = this.shapesInput[i];
+
+                            CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
+
+                            //Build mass for dynamic object
+                            Vector3 localinertia = Vector3.Zero;
+                            if (shapeData.ShapeDef.Mass > 0.0f)
+                            {
+                                collisionShape.CalculateLocalInertia(shapeData.ShapeDef.Mass, out localinertia);
+                            }
+
+                            Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shapeData.ShapeDef.Mass);
+
+                            createBodyResult.Item1.ApplyMotionProperties(ref motionProperties);
+
+                            this.persistedList.Append(createBodyResult.Item1, createBodyResult.Item2);
                         }
-
-                        Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shapeData.ShapeDef.Mass);
-
-                        createBodyResult.Item1.ApplyMotionProperties(ref motionProperties);
-
-                        this.persistedList.Append(createBodyResult.Item1, createBodyResult.Item2);
                     }
                 }
 
@@ -88,6 +91,12 @@ namespace VVVV.Nodes.Bullet
                     this.bodiesOutput[i] = bodies[i];
                     this.idOutput[i] = ids[i];
                 }
+
+            }
+            else
+            {
+                this.bodiesOutput.SliceCount = 0;
+                this.idOutput.SliceCount = 0;
             }
         }
 

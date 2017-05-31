@@ -43,35 +43,32 @@ namespace VVVV.Nodes.Bullet
 
         public void Evaluate(int SpreadMax)
         {
-            if (SpreadMax == 0)
-            {
-                this.bodiesOutput.SliceCount = 0;
-                this.idOutput.SliceCount = 0;
-                return;
-            }
-
             IRigidBodyContainer world = this.worldInput[0];
-            this.persistedList.UpdateWorld(world);
 
-            if (world != null && this.shapesInput.IsConnected)
+            if (world != null)
             {
-                for (int i = 0; i < SpreadMax; i++)
+                this.persistedList.UpdateWorld(world);
+
+                if (this.shapesInput.IsConnected)
                 {
-                    if (doCreate[i])
+                    for (int i = 0; i < SpreadMax; i++)
                     {
-                        RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
-                        RigidBodyProperties properties = this.initialProperties.IsConnected ? this.initialProperties[i] : RigidBodyProperties.Default;
+                        if (doCreate[i])
+                        {
+                            RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
+                            RigidBodyProperties properties = this.initialProperties.IsConnected ? this.initialProperties[i] : RigidBodyProperties.Default;
 
-                        ShapeCustomData shapeData = new ShapeCustomData();
-                        shapeData.ShapeDef = this.shapesInput[i];
+                            ShapeCustomData shapeData = new ShapeCustomData();
+                            shapeData.ShapeDef = this.shapesInput[i];
 
-                        CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
-                        Vector3 localInertia = Vector3.Zero;
+                            CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
+                            Vector3 localInertia = Vector3.Zero;
 
-                        Tuple<RigidBody, int> bodyCreateResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localInertia, 0.0f);
-                        bodyCreateResult.Item1.CollisionFlags = CollisionFlags.StaticObject;
+                            Tuple<RigidBody, int> bodyCreateResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localInertia, 0.0f);
+                            bodyCreateResult.Item1.CollisionFlags = CollisionFlags.StaticObject;
 
-                        this.persistedList.Append(bodyCreateResult.Item1, bodyCreateResult.Item2);
+                            this.persistedList.Append(bodyCreateResult.Item1, bodyCreateResult.Item2);
+                        }
                     }
                 }
 
@@ -86,6 +83,11 @@ namespace VVVV.Nodes.Bullet
                     this.bodiesOutput[i] = bodies[i];
                     this.idOutput[i] = ids[i];
                 }
+            }
+            else
+            {
+                this.bodiesOutput.SliceCount = 0;
+                this.idOutput.SliceCount = 0;
             }
         }
     }

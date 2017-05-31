@@ -99,6 +99,11 @@ namespace VVVV.Nodes.Bullet
                     this.idOutput[i] = frameIdOutput[i];
                 }
             }
+            else
+            {
+                this.bodiesOutput.SliceCount = 0;
+                this.idOutput.SliceCount = 0;
+            }
         }
     }
 }
