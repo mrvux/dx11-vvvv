@@ -19,6 +19,7 @@ namespace VVVV.Bullet.Core
         /// <param name="id">Object id</param>
         public ObjectCustomData(int id)
         {
+            this.Id = id;
             this.MarkedForDeletion = false;
             this.LifeTime = 0;
         }
