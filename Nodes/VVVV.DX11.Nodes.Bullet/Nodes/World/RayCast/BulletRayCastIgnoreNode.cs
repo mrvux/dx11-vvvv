@@ -17,7 +17,7 @@ namespace VVVV.Nodes.Bullet
 	public class BulletRayCastFilterNode : IPluginEvaluate
 	{
 		[Input("World", IsSingle = true)]
-        protected Pin<BulletSoftWorldContainer> FWorld;
+        protected Pin<IBulletWorld> FWorld;
 
         [Input("Excluded Bodies")]
         protected ISpread<RigidBody> FExcludedBody;
@@ -46,9 +46,6 @@ namespace VVVV.Nodes.Bullet
 		[Output("Body")]
         protected ISpread<RigidBody> FBody;
 
-		[Output("Body Id")]
-        protected ISpread<int> FId;
-
         [Output("Hit Count")]
         protected ISpread<int> FHitCount;
 
@@ -58,27 +55,25 @@ namespace VVVV.Nodes.Bullet
         List<Vector3D> position = new List<Vector3D>();
         List<Vector3D> normal = new List<Vector3D>();
         List<RigidBody> body = new List<RigidBody>();
-        List<int> bodyid = new List<int>();
         List<int> qidx = new List<int>();
 
-        public void Evaluate(int SpreadMax)
+        public void Evaluate(int dummy)
 		{
-
-
 			if (this.FWorld.PluginIO.IsConnected)
 			{
-				this.FHit.SliceCount = SpreadMax;
-                this.FHitCount.SliceCount = SpreadMax;
-
                 fraction.Clear();
                 position.Clear();
                 normal.Clear();
                 body.Clear();
-                bodyid.Clear();
                 qidx.Clear();
-                
 
-				for (int i = 0; i < SpreadMax; i++)
+                //Ignore slice count for excluded bodies, as 0 is allowed (means we do a full search)
+                int spreadMax = SpreadUtils.SpreadMax(FWorld, FFrom, FTo);
+
+                this.FHit.SliceCount = spreadMax;
+                this.FHitCount.SliceCount = spreadMax;
+
+                for (int i = 0; i < spreadMax; i++)
 				{
 					Vector3 from = this.FFrom[i].ToBulletVector();
 					Vector3 to = this.FTo[i].ToBulletVector();
@@ -116,12 +111,10 @@ namespace VVVV.Nodes.Bullet
                         if (closest != null)
                         {
                             this.FHit[i] = true;
-                            BodyCustomData bd = (BodyCustomData)closest.UserObject;
                             fraction.Add(cb.HitFractions[minidx]);
                             position.Add(cb.HitPointWorld[minidx].ToVVVVector());
                             normal.Add(cb.HitNormalWorld[minidx].ToVVVVector());
                             body.Add(closest);
-                            bodyid.Add(bd.Id);
                             qidx.Add(i);
                         }
                         else
@@ -136,20 +129,28 @@ namespace VVVV.Nodes.Bullet
 					}
 				}
 
-				this.FId.AssignFrom(bodyid);
-				this.FHitFraction.AssignFrom(fraction);
-				this.FHitNormal.AssignFrom(normal);
-				this.FHitPosition.AssignFrom(position);
-				this.FQueryIndex.AssignFrom(qidx);
-				this.FBody.AssignFrom(body);
-			}
+                this.FHit.SliceCount = fraction.Count;
+                this.FHitNormal.SliceCount = fraction.Count;
+                this.FHitPosition.SliceCount = fraction.Count;
+                this.FQueryIndex.SliceCount = fraction.Count;
+                this.FBody.SliceCount = fraction.Count;
+
+                for (int i = 0; i < fraction.Count; i++)
+                {
+                    this.FHitFraction[i] = fraction[i];
+                    this.FHitNormal[i] = normal[i];
+                    this.FHitPosition[i] = position[i];
+                    this.FBody[i] = body[i];
+                    this.FQueryIndex[i] = qidx[i];
+                }
+            }
 			else
 			{
 				this.FHit.SliceCount = 0;
-				this.FId.SliceCount = 0;
 				this.FHitFraction.SliceCount = 0;
 				this.FHitPosition.SliceCount = 0;
                 this.FHitCount.SliceCount = 0;
+                this.FQueryIndex.SliceCount = 0;
 			}
 
 		}
