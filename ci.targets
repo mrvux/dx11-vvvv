@@ -40,15 +40,15 @@
     <Delete Files="Deploy\**\*.*" />
 	
 	<CallTarget Targets="Build-x86" />
-	<Exec WorkingDirectory="Deploy\Release\x86\packs\DX11\nodes\plugins\vlc\" Command="..\..\..\..\..\..\..\..\Tools\7zA.exe x ..\..\..\..\..\..\..\..\Dependencies\x86\vlc-plugins.zip" LogStandardErrorAsError="true" />
+    <Exec WorkingDirectory="Deploy\Release\x86\packs\DX11\nodes\plugins\vlc\" Command="..\..\..\..\..\..\..\..\Tools\7zA.exe x ..\..\..\..\..\..\..\..\Dependencies\x86\vlc-plugins.zip" LogStandardErrorAsError="true" />
     <Copy SourceFiles="@(GirlPowerNodes)" DestinationFolder="Deploy\Release\x86\packs\dx11\nodes\%(GirlPowerNodes.RecursiveDir)" />
     <Copy SourceFiles="@(GirlPower)" DestinationFolder="Deploy\Release\x86\packs\dx11\girlpower\%(GirlPower.RecursiveDir)" />
     <Exec WorkingDirectory="Deploy\Release\x86\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x86.zip packs" LogStandardErrorAsError="true" />
 	<Exec WorkingDirectory="Deploy\Release\x86\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x86-lite.zip packs -xr!packs\dx11\nodes\plugins\kinect1 -xr!packs\dx11\nodes\plugins\kinect2 -xr!packs\dx11\nodes\plugins\vlc -xr!packs\dx11\nodes\plugins\bullet" LogStandardErrorAsError="true" />
 	<Exec WorkingDirectory="Deploy\Release\x86\packs\dx11\core\" Command="..\..\..\..\..\..\Tools\7zA.exe a -tzip ..\..\..\..\..\..\Zip\vvvv-dx11-core-x86.zip -x!VVVV.DX11.Lib.dll" LogStandardErrorAsError="true" />
-	<Exec WorkingDirectory="Deploy\Release\x86\packs\dx11\nodes\plugins\bullet" Command="..\..\..\..\..\..\Tools\7zA.exe a -tzip ..\..\..\..\..\..\Zip\vvvv-dx11-nodes-bullet-x86.zip" LogStandardErrorAsError="true" />
-
-    <CallTarget Targets="Build-x64" />
+    <Exec WorkingDirectory="Deploy\Release\x86\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-nodes-bullet-x86.zip packs\dx11\nodes\plugins\bullet" LogStandardErrorAsError="true" />
+    
+	<CallTarget Targets="Build-x64" />
 	<Exec WorkingDirectory="Deploy\Release\x64\packs\DX11\nodes\plugins\vlc\" Command="..\..\..\..\..\..\..\..\Tools\7zA.exe x ..\..\..\..\..\..\..\..\Dependencies\x64\vlc-plugins.zip" LogStandardErrorAsError="true" />
     <Copy SourceFiles="@(GirlPowerNodes)" DestinationFolder="Deploy\Release\x64\packs\dx11\nodes\%(GirlPowerNodes.RecursiveDir)" />
     <Copy SourceFiles="@(GirlPower)" DestinationFolder="Deploy\Release\x64\packs\dx11\girlpower\%(GirlPower.RecursiveDir)" />
@@ -57,6 +57,8 @@
     <Exec WorkingDirectory="Deploy\Release\x64\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x64.zip packs" LogStandardErrorAsError="true" />
 	<Exec WorkingDirectory="Deploy\Release\x64\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-x64-lite.zip packs -xr!packs\dx11\nodes\plugins\kinect1 -xr!packs\dx11\nodes\plugins\kinect2 -xr!packs\dx11\nodes\plugins\vlc -xr!packs\dx11\nodes\plugins\bullet" LogStandardErrorAsError="true" />
 	<Exec WorkingDirectory="Deploy\Release\x64\packs\dx11\core\" Command="..\..\..\..\..\..\Tools\7zA.exe a -tzip ..\..\..\..\..\..\Zip\vvvv-dx11-core-x64.zip -x!VVVV.DX11.Lib.dll" LogStandardErrorAsError="true" />
-	<Exec WorkingDirectory="Deploy\Release\x64\packs\dx11\nodes\plugins\bullet" Command="..\..\..\..\..\..\Tools\7zA.exe a -tzip ..\..\..\..\..\..\Zip\vvvv-dx11-nodes-bullet-x64.zip" LogStandardErrorAsError="true" />
+
+	<Exec WorkingDirectory="Deploy\Release\x64\" Command="..\..\..\Tools\7zA.exe a -tzip ..\..\..\Zip\vvvv-packs-dx11-nodes-bullet-x64.zip packs\dx11\nodes\plugins\bullet" LogStandardErrorAsError="true" />
+	
   </Target>
 </Project>
