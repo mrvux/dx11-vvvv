@@ -18,7 +18,7 @@ namespace VVVV.Bullet.Nodes.World
     public class BulletWorldDebugLayerNode : IPluginEvaluate, IDX11ResourceHost, IPartImportsSatisfiedNotification, System.IDisposable
     {
         [Input("World", IsSingle = true)]
-        protected Pin<BulletSoftWorldContainer> worldPin;
+        protected Pin<IBulletWorld> worldPin;
 
         [Input("Shape Render State", IsSingle = true)]
         protected ISpread<DX11RenderState> shapeRenderState;
@@ -35,7 +35,7 @@ namespace VVVV.Bullet.Nodes.World
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> layer;
 
-        private BulletSoftWorldContainer currentWorld;
+        private IBulletWorld currentWorld;
         private DebugDrawModes mode;
 
         //Immediate view renderer;

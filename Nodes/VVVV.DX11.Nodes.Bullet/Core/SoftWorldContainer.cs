@@ -74,7 +74,7 @@ namespace VVVV.Bullet.Core
 		#region Soft Registry
 		public void Register(SoftBody body)
 		{
-			this.World.AddSoftBody(body);
+			this.dynamicsWorld.AddSoftBody(body);
 			this.softBodyContainer.RegisterObject(body);
 		}
 
@@ -181,10 +181,9 @@ namespace VVVV.Bullet.Core
 			set { worldInfo = value; }
 		}
 
-		public SoftRigidDynamicsWorld World
+		public DynamicsWorld World
 		{
 			get { return this.dynamicsWorld; }
-			set { this.dynamicsWorld = value; }
 		}
 
 		public int ObjectCount

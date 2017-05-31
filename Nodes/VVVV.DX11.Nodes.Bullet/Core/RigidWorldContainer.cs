@@ -141,10 +141,9 @@ namespace VVVV.Bullet.Core
 		#endregion
 
 		#region Info
-		public DiscreteDynamicsWorld World
+		public DynamicsWorld World
 		{
 			get { return this.dynamicsWorld; }
-			set { this.dynamicsWorld = value; }
 		}
 
 		public int ObjectCount

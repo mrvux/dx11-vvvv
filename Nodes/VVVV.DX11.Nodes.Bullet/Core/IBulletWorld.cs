@@ -16,5 +16,10 @@ namespace VVVV.Bullet.Core
         /// Collision dispatcher
         /// </summary>
         Dispatcher Dispatcher { get; }
+
+        /// <summary>
+        /// Dynamics world instance
+        /// </summary>
+        DynamicsWorld World { get; }
     }
 }
