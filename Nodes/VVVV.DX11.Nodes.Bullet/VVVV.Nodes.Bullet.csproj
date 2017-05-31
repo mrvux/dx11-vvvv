@@ -109,8 +109,6 @@
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletSphereShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
     <Compile Include="Nodes\World\BulletRigidWorldNode.cs" />
-    <Compile Include="Nodes\World\Retrieve\BulletGetConstraintsNode.cs" />
-    <Compile Include="Nodes\World\Retrieve\BulletGetSoftBodiesNode.cs" />
     <Compile Include="Nodes\World\Retrieve\BulletGetRigidBodiesNode.cs" />
     <Compile Include="Nodes\World\BulletSoftWorldNode.cs" />
     <Compile Include="Nodes\Direct3D11\BulletWorldDebugLayerNode.cs" />
