@@ -15,6 +15,7 @@
     <Reference Include="System" />
     <Reference Include="AssimpNet">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\AssimpNet.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="BulletSharp">
       <HintPath>$(SolutionDir)\Dependencies\$(Platform)\BulletSharp.dll</HintPath>
@@ -40,6 +41,8 @@
     <Compile Include="Core\RigidBodyProperties.cs" />
     <Compile Include="Core\SoftBodyCustomData.cs" />
     <Compile Include="Core\RigidWorldContainer.cs" />
+    <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
+    <Compile Include="DataTypes\Shapes\Rigid\ConvexHullShapeDefinition.cs" />
     <Compile Include="Direct3D11\BulletImmediateWorldDebugRenderer.cs" />
     <Compile Include="Core\RigidBodyExtensionMethods.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
@@ -97,6 +100,9 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
     <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Rigid\BulletConvexHullShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletPlaneShapeNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyDetailsNode.cs" />
     <Compile Include="Nodes\Contacts\BulletGetContactDetailsNode.cs" />

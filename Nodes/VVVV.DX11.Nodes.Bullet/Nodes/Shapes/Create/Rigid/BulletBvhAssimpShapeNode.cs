@@ -23,6 +23,8 @@ namespace VVVV.Bullet.Nodes.Shapes.Create.Rigid
             {
                 int spmax = ArrayMax.Max(FInMesh.SliceCount, this.BasePinsSpreadMax);
 
+                this.FShapes.SliceCount = spmax;
+
                 for (int i = 0; i < spmax; i++)
                 {
                     BvhShapeDefinition chull = new BvhShapeDefinition(this.FInMesh[i]);
