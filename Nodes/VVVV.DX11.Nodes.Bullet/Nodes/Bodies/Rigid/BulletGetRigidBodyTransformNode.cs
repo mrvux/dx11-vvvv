@@ -11,7 +11,7 @@ using VVVV.Core.Logging;
 
 namespace VVVV.Nodes.Bullet
 {
-	[PluginInfo(Name="BodyTransform",Category="Bullet",
+	[PluginInfo(Name="GetBodyTransform",Category="Bullet",
 		Help = "Retrieves transformation for a rigid body", Author = "vux")]
 	public unsafe class BulletGetRigidBodyTransformNode : IPluginEvaluate
 	{

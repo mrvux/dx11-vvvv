@@ -334,7 +334,7 @@ namespace VVVV.DX11.Integration.Tests
             StringBuilder sb = new StringBuilder();
 
             string path = System.IO.Path.GetDirectoryName(assembly.Location);
-            path = Path.Combine(path, helpFilesRelativePath);
+            path = Path.Combine(path, helpFilesRelativePath, "bullet");
 
             foreach (Type t in assembly.GetExportedTypes())
             {

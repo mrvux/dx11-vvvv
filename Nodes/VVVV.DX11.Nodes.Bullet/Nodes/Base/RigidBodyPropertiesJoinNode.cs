@@ -13,7 +13,7 @@ using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
-    [PluginInfo(Name = "DynamicsProperties", Category = "Bullet", Version ="Properties.Join",
+    [PluginInfo(Name = "DynamicsProperties", Category = "Bullet", Version ="Join",
         Help = "Builds bullet rigid body properties", Author = "vux")]
     public unsafe class BulletRigidBodyPropertiesJoinNode : IPluginEvaluate
     {
