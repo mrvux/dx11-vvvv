@@ -9,12 +9,12 @@ namespace VVVV.Bullet.Core.Filters
 {
     public class EqualsIdRigidBodyFilter : IRigidBodyFilter
     {
-        public int Id;
+        public int? Id;
 
         public bool Filter(RigidBody body)
         {
             BodyCustomData data = (BodyCustomData)body.UserObject;
-            return data.Id == Id;
+            return Id.HasValue ? data.Id == Id : false;
         }
     }
 }

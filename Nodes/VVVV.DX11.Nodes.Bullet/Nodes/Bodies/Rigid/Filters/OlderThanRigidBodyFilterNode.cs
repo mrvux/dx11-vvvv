@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
 {
-    [PluginInfo(Name = "IsOlderThan", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interfact to check for minimum age", AutoEvaluate = true)]
-    public class BulletCreateDynamicRigidBodyNode : IPluginEvaluate
+    [PluginInfo(Name = "IsOlderThan", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interfact to check for minimum age")]
+    public class BulletCreateDynamicRigidBodyNode : IPluginEvaluate, IPartImportsSatisfiedNotification
     {
         [Input("Age", IsSingle = true, DefaultValue = 0.0)]
         protected ISpread<float> age;
@@ -17,7 +18,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
         [Output("Output", IsSingle = true)]
         protected ISpread<MinimumAgeCollisionFilter> output;
 
-        public BulletCreateDynamicRigidBodyNode()
+        public void OnImportsSatisfied()
         {
             this.output[0] = new MinimumAgeCollisionFilter();
         }

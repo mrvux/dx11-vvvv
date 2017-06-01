@@ -1,6 +1,7 @@
 ﻿using BulletSharp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,8 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
 {
-    [PluginInfo(Name = "IsOfShape", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interface to find a body of a specific shape type", AutoEvaluate = true)]
-    public class BulletIsOfShapeFilterNode : IPluginEvaluate
+    [PluginInfo(Name = "IsOfShape", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interface to find a body of a specific shape type")]
+    public class BulletIsOfShapeFilterNode : IPluginEvaluate, IPartImportsSatisfiedNotification
     {
         [Input("Shape Type", IsSingle = true)]
         protected ISpread<BroadphaseNativeType> id;
@@ -18,7 +19,8 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
         [Output("Output", IsSingle = true)]
         protected ISpread<SingleShapeFilter> output;
 
-        public BulletIsOfShapeFilterNode()
+
+        public void OnImportsSatisfied()
         {
             this.output[0] = new SingleShapeFilter();
         }
@@ -27,5 +29,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
         {
             this.output[0].ShapeType = id[0];
         }
+
+
     }
 }
