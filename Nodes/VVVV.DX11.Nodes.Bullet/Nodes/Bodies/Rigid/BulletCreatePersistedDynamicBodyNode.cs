@@ -39,11 +39,17 @@ namespace VVVV.Nodes.Bullet
         [Output("Id")]
         protected ISpread<int> idOutput;
 
+        [Output("Created Bodies")]
+        protected ISpread<RigidBody> createdBodiesOutput;
+
 
         private RigidBodyListListener persistedList = new RigidBodyListListener();
+        private List<RigidBody> frameBodyOutput = new List<RigidBody>();
 
         public void Evaluate(int SpreadMax)
         {
+            this.frameBodyOutput.Clear();
+
             IRigidBodyContainer inputWorld = this.worldInput[0];
             if (inputWorld != null)
             {
@@ -93,11 +99,18 @@ namespace VVVV.Nodes.Bullet
                     this.idOutput[i] = ids[i];
                 }
 
+                this.createdBodiesOutput.SliceCount = this.frameBodyOutput.Count;
+                for (int i = 0; i < frameBodyOutput.Count; i++)
+                {
+                    this.bodiesOutput[i] = frameBodyOutput[i];
+                }
+
             }
             else
             {
                 this.bodiesOutput.SliceCount = 0;
                 this.idOutput.SliceCount = 0;
+                this.createdBodiesOutput.SliceCount = 0;
             }
         }
 
