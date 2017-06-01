@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using BulletSharp;
 using FeralTic;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
-	public class CylinderShapeDefinition : AbstractRigidShapeDefinition
-	{
+	public class CylinderShapeDefinition : DynamicShapeDefinitionBase
+    {
 		private float radius;
         private float halfLength;
         private Axis axis;
@@ -18,12 +19,6 @@ namespace VVVV.DataTypes.Bullet
             this.halfLength = length * 0.5f;
             this.axis = axis;
 		}
-
-		public override int ShapeCount
-		{
-			get { return 1; }
-		}
-
 
 		protected override CollisionShape CreateShape()
 		{

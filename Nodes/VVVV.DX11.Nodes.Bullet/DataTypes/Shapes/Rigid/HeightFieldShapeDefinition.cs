@@ -4,10 +4,11 @@ using System.Text;
 using BulletSharp;
 using System.IO;
 using System.Runtime.InteropServices;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
-	public class HeightFieldShapeDefinition : AbstractRigidShapeDefinition
+	public class HeightFieldShapeDefinition : RigidShapeDefinitionBase
 	{
 		private int w, l;
 		private float[] h;

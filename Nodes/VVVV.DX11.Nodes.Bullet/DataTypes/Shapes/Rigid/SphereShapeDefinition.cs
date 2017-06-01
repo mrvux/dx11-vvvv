@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 
 using BulletSharp;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
-	public class SphereShapeDefinition : AbstractRigidShapeDefinition
+	public class SphereShapeDefinition : DynamicShapeDefinitionBase
 	{
 		private float radius;
 
@@ -15,15 +16,9 @@ namespace VVVV.DataTypes.Bullet
 			this.radius = radius;
 		}
 
-		public override int ShapeCount
-		{
-			get { return 1; }
-		}
-
 		protected override CollisionShape CreateShape()
 		{
 			CollisionShape shape = new SphereShape(this.radius);
-			//shape.CalculateLocalInertia(this.Mass);
 			return shape;
 		}
 	}

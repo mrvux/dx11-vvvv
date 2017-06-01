@@ -5,10 +5,11 @@ using System.Text;
 using BulletSharp;
 using VVVV.DataTypes.Bullet;
 using AssimpNet;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Bullet.DataTypes.Shapes.Rigid
 {
-    public unsafe class BvhShapeDefinition : AbstractRigidShapeDefinition
+    public unsafe class BvhShapeDefinition : RigidShapeDefinitionBase
     {
         private Vector3[] vertices;
         private int[] indices;
@@ -26,17 +27,10 @@ namespace VVVV.Bullet.DataTypes.Shapes.Rigid
 
             Vector3* v = (Vector3*)mesh.Positions();
 
-
-
             for (int i = 0; i < mesh.VerticesCount; i++)
             {
                 this.vertices[i] = v[i];
             }
-        }
-
-        public override int ShapeCount
-        {
-            get { return 1; }
         }
 
         protected override CollisionShape CreateShape()

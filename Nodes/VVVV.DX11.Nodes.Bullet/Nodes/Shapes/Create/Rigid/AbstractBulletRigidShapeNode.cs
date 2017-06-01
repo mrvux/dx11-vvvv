@@ -28,7 +28,7 @@ namespace VVVV.Nodes.Bullet
 		protected IDiffSpread<string> FCustom;
 
 		[Output("Shape")]
-		protected ISpread<AbstractRigidShapeDefinition> FShapes;
+		protected ISpread<RigidShapeDefinitionBase> FShapes;
 		#endregion
 
 		#region Evaluate
@@ -59,7 +59,7 @@ namespace VVVV.Nodes.Bullet
 		#endregion
 
 		#region Set Local Transform
-		protected void SetBaseParams(AbstractRigidShapeDefinition sd, int sliceindex)
+		protected void SetBaseParams(RigidShapeDefinitionBase sd, int sliceindex)
 		{
             sd.Pose = FPose.IsConnected ? FPose[sliceindex] : RigidBodyPose.Default;
 			sd.Scaling = this.FScaling[sliceindex].Abs().ToBulletVector();

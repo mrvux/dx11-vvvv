@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using BulletSharp;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
-    public class PlaneShapeDefinition : AbstractRigidShapeDefinition
+    public class PlaneShapeDefinition : RigidShapeDefinitionBase
     {
         private Vector3 normal;
         private float w;
-
-        public override int ShapeCount
-        {
-            get { return 1; }
-        }
 
         public PlaneShapeDefinition(Vector3 normal, float w)
         {

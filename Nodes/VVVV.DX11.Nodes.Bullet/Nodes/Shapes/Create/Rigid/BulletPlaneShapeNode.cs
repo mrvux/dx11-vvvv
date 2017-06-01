@@ -26,7 +26,7 @@ namespace VVVV.Nodes.Bullet
         protected IDiffSpread<string> FCustom;
 
         [Output("Shape")]
-        protected ISpread<AbstractRigidShapeDefinition> FShapes;
+        protected ISpread<RigidShapeDefinitionBase> FShapes;
 
         public void Evaluate(int SpreadMax)
 		{
@@ -37,7 +37,6 @@ namespace VVVV.Nodes.Bullet
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     PlaneShapeDefinition plane = new PlaneShapeDefinition(new BulletSharp.Vector3(this.normal[i].X, this.normal[i].Y, this.normal[i].Z), this.w[i]);
-                    plane.Mass = 0.0f;
                     plane.Pose = RigidBodyPose.Default;
                     plane.CustomString = this.FCustom[i];
 

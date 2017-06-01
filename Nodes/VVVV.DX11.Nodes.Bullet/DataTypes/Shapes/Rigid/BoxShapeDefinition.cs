@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using BulletSharp;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
-	public class BoxShapeDefinition : AbstractRigidShapeDefinition
-	{
+	public class BoxShapeDefinition : DynamicShapeDefinitionBase
+    {
 		private float w,h,d;
-
-		public override int ShapeCount
-		{
-			get { return 1; }
-		}
 
 		public BoxShapeDefinition(float width, float height, float depth)
 		{

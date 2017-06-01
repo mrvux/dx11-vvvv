@@ -39,6 +39,7 @@
     <Compile Include="Core\RigidBodyMotionProperties.cs" />
     <Compile Include="Core\RigidBodyPose.cs" />
     <Compile Include="Core\RigidBodyProperties.cs" />
+    <Compile Include="Core\RigidShapeDefinitionBase.cs" />
     <Compile Include="Core\SoftBodyCustomData.cs" />
     <Compile Include="Core\RigidWorldContainer.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
@@ -48,9 +49,6 @@
     <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\ConvexHullSoftShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Soft\TriMeshSoftShapeDefinition.cs" />
-    <Compile Include="DataTypes\Shapes\Rigid\AbstractRigidShapeDefinition.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DataTypes\Shapes\Rigid\BoxShapeDefinition.cs">
       <SubType>Code</SubType>
     </Compile>

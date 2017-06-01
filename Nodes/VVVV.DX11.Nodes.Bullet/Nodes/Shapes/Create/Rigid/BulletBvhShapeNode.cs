@@ -48,11 +48,9 @@ namespace VVVV.Bullet.Nodes.Shapes.Create.Rigid
                         inds[j] = Convert.ToInt16(this.FIndices[i][j]);
                     }
 
-                    BvhShapeDefinition chull = new BvhShapeDefinition(vertices, inds);
-                    chull.Mass = this.FMass[i];
-                    this.SetBaseParams(chull, i);
-
-                    this.FShapes[i] = chull;
+                    BvhShapeDefinition shapeDef = new BvhShapeDefinition(vertices, inds);
+                    this.SetBaseParams(shapeDef, i);
+                    this.FShapes[i] = shapeDef;
                 }
             }
         }

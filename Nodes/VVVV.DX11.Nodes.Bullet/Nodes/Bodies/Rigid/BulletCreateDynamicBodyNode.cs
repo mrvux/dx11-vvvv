@@ -22,7 +22,7 @@ namespace VVVV.Nodes.Bullet
         protected Pin<IRigidBodyContainer> worldInput;
 
         [Input("Shapes")]
-        protected Pin<AbstractRigidShapeDefinition> shapesInput;
+        protected Pin<DynamicShapeDefinitionBase> shapesInput;
 
         [Input("Initial Pose")]
         protected Pin<RigidBodyPose> initialPoseInput;
@@ -70,18 +70,19 @@ namespace VVVV.Nodes.Bullet
                         RigidBodyMotionProperties motionProperties = this.initialMotionProperties.IsConnected ? this.initialMotionProperties[i] : new RigidBodyMotionProperties();
 
                         ShapeCustomData shapeData = new ShapeCustomData();
-                        shapeData.ShapeDef = this.shapesInput[i];
+                        DynamicShapeDefinitionBase shape = this.shapesInput[i];
+                        shapeData.ShapeDef = shape;
 
                         CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
 
                         //Build mass for dynamic object
                         Vector3 localinertia = Vector3.Zero;
-                        if (shapeData.ShapeDef.Mass > 0.0f)
+                        if (shape.Mass > 0.0f)
                         {
-                            collisionShape.CalculateLocalInertia(shapeData.ShapeDef.Mass, out localinertia);
+                            collisionShape.CalculateLocalInertia(shape.Mass, out localinertia);
                         }
 
-                        Tuple<RigidBody, int> createBodyResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shapeData.ShapeDef.Mass);
+                        Tuple<RigidBody, int> createBodyResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shape.Mass);
 
                         createBodyResult.Item1.ApplyMotionProperties(ref motionProperties);
 

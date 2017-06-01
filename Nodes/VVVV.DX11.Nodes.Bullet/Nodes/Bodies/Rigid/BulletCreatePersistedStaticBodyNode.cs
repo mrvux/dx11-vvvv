@@ -22,7 +22,7 @@ namespace VVVV.Nodes.Bullet
         protected Pin<IRigidBodyContainer> worldInput;
 
         [Input("Shapes")]
-        protected Pin<AbstractRigidShapeDefinition> shapesInput;
+        protected Pin<RigidShapeDefinitionBase> shapesInput;
 
         [Input("Initial Pose")]
         protected Pin<RigidBodyPose> initialPoseInput;
