@@ -54,6 +54,7 @@
     <Compile Include="Core\Vehicle\WheelConstructionProperties.cs" />
     <Compile Include="Core\Vehicle\WheelProperties.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
+    <Compile Include="DataTypes\Shapes\Rigid\CapsuleShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\ConvexHullShapeDefinition.cs" />
     <Compile Include="Direct3D11\BulletImmediateWorldDebugRenderer.cs" />
     <Compile Include="Core\RigidBodyExtensionMethods.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletConvexHullShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Rigid\BulletCapsuleShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletPlaneShapeNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyDetailsNode.cs" />
     <Compile Include="Nodes\Contacts\BulletGetContactDetailsNode.cs" />

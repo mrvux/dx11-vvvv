@@ -205,7 +205,15 @@ namespace VVVV.Bullet.DataTypes
 
         public void DrawCapsule(float radius, float halfHeight, int upAxis, ref Matrix transform, Color color)
         {
+            //Capsule is two spheres and a cylinder , can make it more efficient but for early debug it's ok
 
+            /*Matrix m = Matrix.Scaling(radius, halfHeight, radius) * transform;
+            this.solidColorShader.ApplyWorld(*(SlimDX.Matrix*)&m);
+            this.solidColorShader.ApplyColor(new SlimDX.Color4(color.ToArgb()));
+
+            this.solidColorShader.ApplyPass();
+            this.cylinder.Bind(this.boxSphereColorLayout);
+            this.cylinder.Draw();*/
         }
 
         public void DrawCone(float radius, float height, int upAxis, ref Matrix transform, Color color)
