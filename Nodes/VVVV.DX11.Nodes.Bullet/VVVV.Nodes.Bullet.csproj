@@ -27,10 +27,15 @@
   <ItemGroup>
     <Compile Include="Core\ConstraintCustomData.cs" />
     <Compile Include="Core\Delegates.cs" />
+    <Compile Include="Core\Filters\IsOlderRigidBodyFilter.cs" />
+    <Compile Include="Core\Filters\ContainsIdRigidBodyFilter.cs" />
+    <Compile Include="Core\Filters\EqualsIdRigidBodyFilter.cs" />
+    <Compile Include="Core\Filters\SingleShapeFilter.cs" />
     <Compile Include="Core\IBulletWorld.cs" />
     <Compile Include="Core\IConstraintCollection.cs" />
     <Compile Include="Core\IRigidBodyCollection.cs" />
     <Compile Include="Core\IRigidBodyContainer.cs" />
+    <Compile Include="Core\IRigidBodyFilter.cs" />
     <Compile Include="Core\ISoftBodyCollection.cs" />
     <Compile Include="Core\ObjectCustomData.cs" />
     <Compile Include="Core\ObjectLifetimeContainer.cs" />
@@ -97,6 +102,8 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletGetBoundingSphereNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\AbstractBulletRigidDynamicShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
@@ -117,6 +124,7 @@
     <Compile Include="Nodes\World\BulletRigidWorldNode.cs" />
     <Compile Include="Nodes\World\RayCast\BulletRayCastIgnoreNode.cs" />
     <Compile Include="Nodes\World\RayCast\BulletRayCastNode.cs" />
+    <Compile Include="Nodes\World\Retrieve\BulletFindRigidBodiesNode.cs" />
     <Compile Include="Nodes\World\Retrieve\BulletGetRigidBodiesNode.cs" />
     <Compile Include="Nodes\World\BulletSoftWorldNode.cs" />
     <Compile Include="Nodes\Direct3D11\BulletWorldDebugLayerNode.cs" />
