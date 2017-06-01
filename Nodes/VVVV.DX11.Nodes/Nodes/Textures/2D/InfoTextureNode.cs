@@ -77,6 +77,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutAAQuality.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutArraySize.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutPointer.SliceCount = this.FTextureIn.SliceCount;
+                this.FOutCreationTime.SliceCount = this.FTextureIn.SliceCount;
 
                 for (int i = 0; i < this.FTextureIn.SliceCount; i++)
                 {
