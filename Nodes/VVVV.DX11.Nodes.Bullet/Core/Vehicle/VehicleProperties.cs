@@ -1,11 +1,11 @@
-﻿using System;
+﻿using BulletSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BulletSharp;
 
-namespace VVVV.Bullet.DataTypes
+namespace VVVV.Bullet.Core.Vehicle
 {
     public class VehicleSettings
     {

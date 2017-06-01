@@ -49,6 +49,9 @@
     <Compile Include="Core\RigidShapeDefinitionBase.cs" />
     <Compile Include="Core\SoftBodyCustomData.cs" />
     <Compile Include="Core\RigidWorldContainer.cs" />
+    <Compile Include="Core\Vehicle\VehicleProperties.cs" />
+    <Compile Include="Core\Vehicle\WheelConstructionProperties.cs" />
+    <Compile Include="Core\Vehicle\WheelProperties.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\ConvexHullShapeDefinition.cs" />
     <Compile Include="Direct3D11\BulletImmediateWorldDebugRenderer.cs" />
@@ -126,6 +129,9 @@
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletHeightfieldNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletSphereShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
+    <Compile Include="Nodes\Vehicle\BuletGetWheelTransformNode.cs" />
+    <Compile Include="Nodes\Vehicle\BulletWheelConstuctionPropertiesNode.cs" />
+    <Compile Include="Nodes\Vehicle\BulletWheelPropertiesNode.cs" />
     <Compile Include="Nodes\World\BulletRigidWorldNode.cs" />
     <Compile Include="Nodes\World\RayCast\BulletRayCastIgnoreNode.cs" />
     <Compile Include="Nodes\World\RayCast\BulletRayCastNode.cs" />
@@ -140,13 +146,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataTypes\Constraints\" />
-    <Folder Include="DataTypes\Vehicle\" />
     <Folder Include="Nodes\Bodies\Soft\" />
-    <Folder Include="Nodes\Bodies\Vehicle\" />
     <Folder Include="Nodes\Shapes\Create\Compound\" />
     <Folder Include="Nodes\Shapes\Create\Soft\" />
     <Folder Include="Nodes\Shapes\Create\Vehicle\" />
-    <Folder Include="Nodes\Vehicle\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">

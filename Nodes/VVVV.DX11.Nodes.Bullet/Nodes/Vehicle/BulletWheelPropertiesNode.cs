@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VVVV.PluginInterfaces.V2;
-using BulletSharp;
-using VVVV.Utils.VMath;
-using VVVV.Internals.Bullet;
 using System.ComponentModel.Composition;
-using VVVV.Core.Logging;
-using VVVV.Bullet.DataTypes.Vehicle;
+using VVVV.Bullet.Core.Vehicle;
 
 namespace VVVV.Nodes.Bullet
 {
-    [PluginInfo(Name = "WheelInfo", Category = "Bullet", Version ="Create",
-        Help = "Retrieves id for a rigid body", Author = "vux")]
+    [PluginInfo(Name = "WheelProperties", Category = "Bullet", Version ="", Help = "Sets properties for a bullet wheel", Author = "vux", Tags ="vehicle")]
     public unsafe class BulleteCreateWheelInfoNode : IPluginEvaluate
     {
         [Input("Suspension Stiffness", DefaultValue =20.0f)]
@@ -32,7 +27,7 @@ namespace VVVV.Nodes.Bullet
         protected ISpread<float> RollInfluence;
 
         [Output("Output")]
-        protected ISpread<WheelInfoSettings> output;
+        protected ISpread<WheelProperties> output;
 
         public void Evaluate(int SpreadMax)
         {
@@ -40,7 +35,7 @@ namespace VVVV.Nodes.Bullet
 
             for (int i = 0; i < SpreadMax; i++)
             {
-                this.output[i] = new WheelInfoSettings()
+                this.output[i] = new WheelProperties()
                 {
                     FrictionSlip = FrictionSlip[i],
                     RollInfluence = RollInfluence[i],

@@ -8,9 +8,9 @@ using VVVV.Utils.VMath;
 
 namespace VVVV.Bullet.Nodes.Vehicle
 {
-    [PluginInfo(Name = "WheelInfo", Category = "Bullet", Version = "Vehicle", Author = "vux",
-    Help = "Drives Bullet Vehicle", AutoEvaluate = true)]
-    public class BuletGetWheelInfoNode : IPluginEvaluate
+    [PluginInfo(Name = "WheelTransform", Category = "Bullet", Version = "Vehicle", Author = "vux",
+    Help = "Gets vehicle wheel trnasforms", AutoEvaluate = true)]
+    public class BuletGetWheelTransformNode : IPluginEvaluate
     {
         [Input("Vehicle")]
         protected Pin<RaycastVehicle> FInVehicle;
@@ -39,8 +39,6 @@ namespace VVVV.Bullet.Nodes.Vehicle
                         Matrix4x4 mn = new Matrix4x4(m.M11, m.M12, m.M13, m.M14,
                                     m.M21, m.M22, m.M23, m.M24, m.M31, m.M32, m.M33, m.M34,
                                     m.M41, m.M42, m.M43, m.M44);
-                        //wi.r
-
                         this.FOutTransform[i][j] = mn;
                     }
                 }
