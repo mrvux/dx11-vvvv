@@ -10,8 +10,8 @@ using VVVV.DataTypes.Bullet;
 namespace VVVV.Nodes.Bullet
 {
 	[PluginInfo(Name="Sphere",Category="Bullet",Author="vux")]
-	public class BulletSphereShapeNode : AbstractBulletRigidShapeNode
-	{
+	public class BulletSphereShapeNode : AbstractBulletRigidDynamicShapeNode
+    {
 		[Input("Radius", DefaultValue = 0.5)]
         protected IDiffSpread<float> FRadius;
 

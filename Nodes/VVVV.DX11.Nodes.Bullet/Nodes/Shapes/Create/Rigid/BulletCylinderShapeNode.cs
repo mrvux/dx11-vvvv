@@ -11,8 +11,8 @@ using FeralTic;
 namespace VVVV.Nodes.Bullet
 {
 	[PluginInfo(Name="Cylinder",Category="Bullet",Author="vux")]
-	public class BulletCylinderShapeNode : AbstractBulletRigidShapeNode
-	{
+	public class BulletCylinderShapeNode : AbstractBulletRigidDynamicShapeNode
+    {
 		[Input("Radius", DefaultValue = 0.5)]
         protected IDiffSpread<float> FRadius;
 		

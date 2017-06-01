@@ -12,7 +12,7 @@ using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
-	public abstract class AbstractBulletRigidShapeNode : IPluginEvaluate
+	public abstract class AbstractBulletRigidDynamicShapeNode : IPluginEvaluate
 	{
 		#region Pins
 		[Input("Pose", CheckIfChanged =true)]
@@ -21,11 +21,14 @@ namespace VVVV.Nodes.Bullet
 		[Input("Scaling", DefaultValues = new double[] { 1.0, 1.0,1.0 })]
 		protected IDiffSpread<Vector3D> FScaling;
 
+		[Input("Mass", DefaultValue=1.0)]
+		protected IDiffSpread<float> FMass;
+
 		[Input("Custom")]
 		protected IDiffSpread<string> FCustom;
 
 		[Output("Shape")]
-		protected ISpread<RigidShapeDefinitionBase> FShapes;
+		protected ISpread<DynamicShapeDefinitionBase> FShapes;
 		#endregion
 
 		#region Evaluate
@@ -37,6 +40,7 @@ namespace VVVV.Nodes.Bullet
 			get
 			{
 				return this.FCustom.IsChanged
+					|| this.FMass.IsChanged
 					|| this.FPose.IsChanged
 					|| this.FScaling.IsChanged;
 			}
@@ -47,6 +51,7 @@ namespace VVVV.Nodes.Bullet
 			get
 			{
 				return SpreadUtils.SpreadMax(this.FCustom,
+					this.FMass,
 					this.FPose,
 					this.FScaling);
 			}

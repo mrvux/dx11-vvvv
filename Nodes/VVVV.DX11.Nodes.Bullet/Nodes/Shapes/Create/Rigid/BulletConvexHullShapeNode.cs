@@ -12,8 +12,8 @@ using VVVV.DataTypes.Bullet;
 namespace VVVV.Nodes.Bullet
 {
 	[PluginInfo(Name="ConvexHull",Category="Bullet",Author="vux")]
-	public class BulletConvexHullShapeNode : AbstractBulletRigidShapeNode
-	{
+	public class BulletConvexHullShapeNode : AbstractBulletRigidDynamicShapeNode
+    {
 		[Input("Vertices")]
         protected IDiffSpread<ISpread<Vector3D>> FVertices;
 

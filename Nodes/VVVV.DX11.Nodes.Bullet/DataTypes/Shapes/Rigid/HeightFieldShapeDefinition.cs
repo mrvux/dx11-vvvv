@@ -26,12 +26,6 @@ namespace VVVV.DataTypes.Bullet
 			this.ms = null;
 		}
 
-		public override int ShapeCount
-		{
-			get { return 1; }
-		}
-
-
 		protected override CollisionShape CreateShape()
 		{
 			if (this.ms == null)
