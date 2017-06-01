@@ -102,6 +102,7 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletGetBoundingSphereNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\Filters\IsOfShapeRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />

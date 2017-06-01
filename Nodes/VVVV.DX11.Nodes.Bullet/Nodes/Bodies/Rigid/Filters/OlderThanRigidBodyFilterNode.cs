@@ -8,7 +8,7 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
 {
-    [PluginInfo(Name = "OlderThan", Category = "Bullet", Version = "Rigid", Author = "vux", Help = "Filter interfact to check for minimum age", AutoEvaluate = true)]
+    [PluginInfo(Name = "IsOlderThan", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interfact to check for minimum age", AutoEvaluate = true)]
     public class BulletCreateDynamicRigidBodyNode : IPluginEvaluate
     {
         [Input("Age", IsSingle = true, DefaultValue = 0.0)]

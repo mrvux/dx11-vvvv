@@ -9,7 +9,7 @@ namespace VVVV.Bullet.Core.Filters
 {
     public class SingleShapeFilter : IRigidBodyFilter
     {
-        BroadphaseNativeType ShapeType = BroadphaseNativeType.StaticPlane;
+        public BroadphaseNativeType ShapeType = BroadphaseNativeType.StaticPlane;
 
         public bool Filter(RigidBody body)
         {

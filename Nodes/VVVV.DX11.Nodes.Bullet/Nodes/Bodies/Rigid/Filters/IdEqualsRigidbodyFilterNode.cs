@@ -8,7 +8,7 @@ using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
 {
-    [PluginInfo(Name = "IdEquals", Category = "Bullet", Version = "Rigid", Author = "vux", Help = "Filter interface to find a specific body index", AutoEvaluate = true)]
+    [PluginInfo(Name = "IsIdEqualTo", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interface to find a specific body index", AutoEvaluate = true)]
     public class BulletIdEqualdBulletFilterNode : IPluginEvaluate
     {
         [Input("Id", IsSingle = true, DefaultValue = 0.0)]
@@ -28,7 +28,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid.Filters
         }
     }
 
-    [PluginInfo(Name = "IdContains", Category = "Bullet", Version = "Rigid", Author = "vux", Help = "Filter interface to find a specific body index", AutoEvaluate = true)]
+    [PluginInfo(Name = "IsIdContained", Category = "Bullet", Version = "Rigid.Filter", Author = "vux", Help = "Filter interface to find a specific body index", AutoEvaluate = true)]
     public class BulletIdContainsBulletFilterNode : IPluginEvaluate
     {
         [Input("Id", DefaultValue = 0.0)]
