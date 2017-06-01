@@ -15,9 +15,6 @@ namespace VVVV.Nodes.Bullet
         [Input("Local Position", DefaultValue = 0.7f)]
         protected ISpread<SlimDX.Vector3> LocalPosition;
 
-        [Input("Connection height", DefaultValue = 1.2f)]
-        protected ISpread<float> ConnectionHeight;
-
         [Input("Wheel Radius", DefaultValue =0.7f)]
         protected ISpread<float> WheelRadius;
 
@@ -31,7 +28,7 @@ namespace VVVV.Nodes.Bullet
         protected ISpread<bool> isFront;
 
         [Output("Output")]
-        protected ISpread<WheelConstructioProperties> output;
+        protected ISpread<WheelConstructionProperties> output;
 
         public void Evaluate(int SpreadMax)
         {
@@ -39,10 +36,9 @@ namespace VVVV.Nodes.Bullet
 
             for (int i = 0; i < SpreadMax; i++)
             {
-                this.output[i] = new WheelConstructioProperties()
+                this.output[i] = new WheelConstructionProperties()
                 {
                     WheelRadius = WheelRadius[i],
-                    ConnectionHeight = ConnectionHeight[i],
                     localPosition  = LocalPosition[i],
                     SuspensionRestLength = SuspensionRestLength[i],
                     WheelWidth = WheelWidth[i],

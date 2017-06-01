@@ -38,6 +38,7 @@
     <Compile Include="Core\IRigidBodyCollection.cs" />
     <Compile Include="Core\IRigidBodyContainer.cs" />
     <Compile Include="Core\IRigidBodyFilter.cs" />
+    <Compile Include="Core\IRigidBulletWorld.cs" />
     <Compile Include="Core\ISoftBodyCollection.cs" />
     <Compile Include="Core\ObjectCustomData.cs" />
     <Compile Include="Core\ObjectLifetimeContainer.cs" />
@@ -130,6 +131,8 @@
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletSphereShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
     <Compile Include="Nodes\Vehicle\BuletGetWheelTransformNode.cs" />
+    <Compile Include="Nodes\Vehicle\BulletCreateVehicleNode.cs" />
+    <Compile Include="Nodes\Vehicle\BulletDriveVehicleNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletWheelConstuctionPropertiesNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletWheelPropertiesNode.cs" />
     <Compile Include="Nodes\World\BulletRigidWorldNode.cs" />

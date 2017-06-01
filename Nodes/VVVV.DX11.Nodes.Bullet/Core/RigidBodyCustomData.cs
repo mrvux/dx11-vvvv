@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BulletSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace VVVV.Bullet.Core
     /// </summary>
     public class BodyCustomData : ObjectCustomData
     {
+        public RaycastVehicle Vehicle;
+
         /// <summary>
         /// Constructor
         /// </summary>

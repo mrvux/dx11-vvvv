@@ -16,7 +16,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Interactions.Vehicle
         [Input("Steering", Order =10)]
         protected ISpread<float> FSteer;
 
-        [Input("Steering Wheel Index", Order = 11)]
+        [Input("Wheel Index", Order = 11)]
         protected ISpread<int> FSteerWheel;
 
         protected override void ProcessObject(RaycastVehicle obj, int slice)
@@ -32,7 +32,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Interactions.Vehicle
         [Input("Brake Force", Order = 10)]
         protected ISpread<float> FBrakeForce;
 
-        [Input("Brake Force Wheel Index", Order = 11)]
+        [Input("Wheel Index", Order = 11)]
         protected ISpread<int> FBrakeForceWheel;
 
         protected override void ProcessObject(RaycastVehicle obj, int slice)
@@ -48,7 +48,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Interactions.Vehicle
         [Input("Engine Force", Order = 10)]
         protected ISpread<float> FEngineForce;
 
-        [Input("Engine Force Wheel Index", Order = 11)]
+        [Input("Wheel Index", Order = 11)]
         protected ISpread<int> FEngineForceWheel;
 
         protected override void ProcessObject(RaycastVehicle obj, int slice)

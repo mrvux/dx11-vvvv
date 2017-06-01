@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VVVV.Bullet.Core.Vehicle
 {
-    public class WheelConstructioProperties
+    public class WheelConstructionProperties
     {
         public float WheelRadius = 0.7f;
         public float WheelWidth = 0.4f;
