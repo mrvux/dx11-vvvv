@@ -43,6 +43,9 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
         [Output("Vehicle")]
         protected ISpread<RaycastVehicle> vehicleOutput;
 
+        [Output("Chassis")]
+        protected ISpread<RigidBody> chassisOutput;
+
         private RigidBodyListListener persistedList = new RigidBodyListListener();
 
         public void Evaluate(int SpreadMax)
@@ -126,16 +129,19 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
 
                     List<RigidBody> bodies = this.persistedList.Bodies;
                     this.vehicleOutput.SliceCount = bodies.Count;
+                    this.chassisOutput.SliceCount = bodies.Count;
                     for (int i = 0; i < bodies.Count; i++)
                     {
                         BodyCustomData bd = (BodyCustomData)bodies[i].UserObject;
                         this.vehicleOutput[i] = bd.Vehicle;
+                        this.chassisOutput[i] = bodies[i];
                     }
                 }
             }
             else
             {
                 this.vehicleOutput.SliceCount = 0;
+                this.chassisOutput.SliceCount = 0;
             }
         }
     }
