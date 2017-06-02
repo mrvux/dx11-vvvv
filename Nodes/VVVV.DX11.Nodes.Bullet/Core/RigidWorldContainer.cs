@@ -9,7 +9,7 @@ using VVVV.Bullet.Core;
 
 namespace VVVV.Bullet.Core
 {
-	public class BulletRigidWorldContainer : IRigidBulletWorld, IConstraintCollection
+	public class BulletRigidWorldContainer : IRigidBulletWorld, IConstraintContainer
     {
 		private DefaultCollisionConfiguration collisionConfiguration;
 		private CollisionDispatcher dispatcher;

@@ -11,6 +11,7 @@ using FeralTic.DX11.Resources;
 using FeralTic.DX11.StockEffects;
 using FeralTic.DX11.Utils;
 using SlimDX.Direct3D11;
+using BulletSharp.SoftBody;
 
 namespace VVVV.Bullet.DataTypes
 {

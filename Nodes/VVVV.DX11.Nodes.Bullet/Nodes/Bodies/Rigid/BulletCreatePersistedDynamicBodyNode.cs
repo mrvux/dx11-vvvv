@@ -83,6 +83,7 @@ namespace VVVV.Nodes.Bullet
                             createBodyResult.Item1.ApplyMotionProperties(ref motionProperties);
 
                             this.persistedList.Append(createBodyResult.Item1, createBodyResult.Item2);
+                            frameBodyOutput.Add(createBodyResult.Item1);
                         }
                     }
                 }
@@ -102,7 +103,7 @@ namespace VVVV.Nodes.Bullet
                 this.createdBodiesOutput.SliceCount = this.frameBodyOutput.Count;
                 for (int i = 0; i < frameBodyOutput.Count; i++)
                 {
-                    this.bodiesOutput[i] = frameBodyOutput[i];
+                    this.createdBodiesOutput[i] = frameBodyOutput[i];
                 }
 
             }

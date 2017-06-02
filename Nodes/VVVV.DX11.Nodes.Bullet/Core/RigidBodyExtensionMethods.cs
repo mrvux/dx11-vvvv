@@ -71,5 +71,12 @@ namespace VVVV.Bullet.Core
             world.Register(rigidBody);
             return new Tuple<RigidBody, int>(rigidBody, customData.Id);
         }
+
+        public static void AttachConstraint(this IConstraintContainer world, TypedConstraint typedConstraint)
+        {
+            ConstraintCustomData cd = new ConstraintCustomData(world.GetNewConstraintId());
+            typedConstraint.UserObject = cd;
+            world.Register(typedConstraint);
+        }
     }
 }
