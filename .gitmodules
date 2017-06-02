@@ -1,6 +1,6 @@
 [submodule "FeralTic"]
 	path = FeralTic
-	url = git@github.com:mrvux/FeralTic.git
+	url = https://github.com/mrvux/FeralTic.git
 [submodule "girlpower"]
 	path = girlpower
-	url = git@github.com:mrvux/dx11-vvvv-girlpower.git
+	url = https://github.com/mrvux/dx11-vvvv-girlpower.git
