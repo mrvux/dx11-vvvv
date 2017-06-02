@@ -34,8 +34,8 @@ namespace VVVV.DX11.Lib.Effects
         //lets the factory set the file path
         public string ParentPath
         {
-            get;
-            set;
+            get { return this.sysHandler.BaseShaderPath; }
+            set { this.sysHandler.BaseShaderPath = value; }
         }
 
         public void Close(Stream stream)
@@ -48,14 +48,7 @@ namespace VVVV.DX11.Lib.Effects
 
         public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream)
         {
-            if (type == IncludeType.Local)
-            {
-                stream = new FileStream(Path.Combine(ParentPath, fileName), FileMode.Open, FileAccess.Read);
-            }
-            else
-            {
-                this.sysHandler.Open(type, fileName, parentStream, out stream);
-            }
+            this.sysHandler.Open(type, fileName, parentStream, out stream);
         }
     }
 }
