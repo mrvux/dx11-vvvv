@@ -44,6 +44,7 @@
     <Compile Include="Core\ObjectCustomData.cs" />
     <Compile Include="Core\ObjectLifetimeContainer.cs" />
     <Compile Include="Core\RigidBodyCustomData.cs" />
+    <Compile Include="Core\ConstraintListener.cs" />
     <Compile Include="Core\RigidBodyListener.cs" />
     <Compile Include="Core\RigidBodyMotionProperties.cs" />
     <Compile Include="Core\RigidBodyPair.cs" />

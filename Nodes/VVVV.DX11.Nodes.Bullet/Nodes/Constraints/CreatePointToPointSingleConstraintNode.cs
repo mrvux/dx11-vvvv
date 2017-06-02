@@ -33,9 +33,16 @@ namespace VVVV.Nodes.Bullet
         [Input("Do Create", IsBang =true, Order = 15000)]
         protected ISpread<bool> FCreate;
 
+        [Output("Constraints")]
+        protected ISpread<Point2PointConstraint> constraintsOutput;
+
+        private ConstraintListener<Point2PointConstraint> persistedList = new ConstraintListener<Point2PointConstraint>();
+
         public void Evaluate(int SpreadMax)
         {
-            if (this.contraintContainer[0] != null)
+            IConstraintContainer inputWorld = this.contraintContainer[0];
+
+            if (inputWorld != null)
             {
                 for (int i = 0; i < SpreadMax; i++)
                 {
@@ -49,10 +56,21 @@ namespace VVVV.Nodes.Bullet
                             cst.Setting.ImpulseClamp = this.FImpulseClamp[i];
                             cst.Setting.Tau = this.FTau[i];
 
-                            this.contraintContainer[0].AttachConstraint(cst);
+                            inputWorld.AttachConstraint(cst);
+                            this.persistedList.Append(cst);
                         }
                     }
                 }
+
+                List<Point2PointConstraint> constraints = this.persistedList.Constraints;
+                for (int i = 0; i < constraints.Count; i++)
+                {
+                    this.constraintsOutput[i] = constraints[i];
+                }
+            }
+            else
+            {
+                this.constraintsOutput.SliceCount = 0;
             }
         }
 	}
