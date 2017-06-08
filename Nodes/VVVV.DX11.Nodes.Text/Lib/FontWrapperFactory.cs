@@ -72,6 +72,15 @@ namespace VVVV.DX11.Nodes.Text
 
         public void Start()
         {
+            try
+            {
+                SharpDX.Configuration.EnableObjectTracking = false;
+                SharpDX.Configuration.EnableTrackingReleaseOnFinalizer = false;
+            }
+            catch (Exception)
+            {
+
+            }
             
         }
     }

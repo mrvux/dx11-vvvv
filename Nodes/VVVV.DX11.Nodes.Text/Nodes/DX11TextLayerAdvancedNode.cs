@@ -118,23 +118,29 @@ namespace VVVV.DX11.Nodes.Text
 
                     if (applyState)
                     {
-                        renderStates.SetStates(shaprdxContext, 0);
-
-                        context.RenderStateStack.Push(this.FStateIn[i]);
-
                         var textLayout = this.FLayout[i];
 
-                        fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(textLayout.ComPointer), SharpDX.Vector2.Zero,
-                            mat, sdxColor, TextFlags.StatePrepared);
+                        if (textLayout != null)
+                        {
+                            renderStates.SetStates(shaprdxContext, 0);
 
-                        context.RenderStateStack.Pop();
+                            context.RenderStateStack.Push(this.FStateIn[i]);
+
+                            fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(textLayout.ComPointer), SharpDX.Vector2.Zero,
+                                mat, sdxColor, TextFlags.StatePrepared);
+
+                            context.RenderStateStack.Pop();
+                        }
                     }
                     else
                     {
                         var textLayout = this.FLayout[i];
 
-                        fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(textLayout.ComPointer), SharpDX.Vector2.Zero,
-                            mat, sdxColor, TextFlags.None);
+                        if (textLayout != null)
+                        {
+                            fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(textLayout.ComPointer), SharpDX.Vector2.Zero,
+                                mat, sdxColor, TextFlags.None);
+                        }
                     }
                 }
 

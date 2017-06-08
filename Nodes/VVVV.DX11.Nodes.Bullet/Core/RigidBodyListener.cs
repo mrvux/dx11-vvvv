@@ -44,9 +44,8 @@ namespace VVVV.Bullet.Core
 
                 this.currentBodyList.Clear();
                 this.currentIdList.Clear();
+
                 this.currentWorld = inputWorld;
-
-
                 if (currentWorld != null)
                 {
                     currentWorld.WorldHasReset += OnWorldReset;
