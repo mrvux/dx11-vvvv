@@ -12,6 +12,7 @@ using BulletSharp;
 using BulletSharp.SoftBody;
 using VVVV.DataTypes.Bullet;
 using VVVV.Bullet.Core;
+using System.Diagnostics;
 
 namespace VVVV.Nodes.Bullet
 {
@@ -41,7 +42,14 @@ namespace VVVV.Nodes.Bullet
 		[Output("Has Reset", DefaultValue = 0, IsSingle = true, IsBang = true)]
         protected ISpread<bool> FHasReset;
 
-		bool bFirstFrame = true;
+        [Output("Delete Time", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<double> FDeleteTime;
+
+        [Output("Step Time", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<double> FStepTime;
+
+        bool bFirstFrame = true;
+        Stopwatch sw = Stopwatch.StartNew();
 
 		public void Evaluate(int SpreadMax)
 		{
@@ -84,9 +92,14 @@ namespace VVVV.Nodes.Bullet
 
 			if (this.internalworld.Enabled)
 			{
+                sw.Restart();
 				this.internalworld.ProcessDelete(this.FTimeStep[0]);
+                sw.Stop();
+                this.FDeleteTime[0] = sw.Elapsed.TotalMilliseconds;
+                sw.Restart();
 				this.internalworld.Step();
-				//this.internalworld.WorldInfo.SparseSdf.GarbageCollect();
+                sw.Stop();
+                this.FStepTime[0] = sw.Elapsed.TotalMilliseconds;
 			}
 
 			this.FHasReset[0] = hasreset;

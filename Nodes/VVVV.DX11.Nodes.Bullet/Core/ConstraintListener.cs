@@ -36,13 +36,15 @@ namespace VVVV.Bullet.Core
 
                 this.constraintList.Clear();
                 this.currentWorld = inputWorld;
+
+                if (currentWorld != null)
+                {
+                    currentWorld.WorldHasReset += OnWorldReset;
+                    currentWorld.ConstraintDeleted += OnConstraintDeleted;
+                }
             }
 
-            if (currentWorld != null)
-            {
-                currentWorld.WorldHasReset += OnWorldReset;
-                currentWorld.ConstraintDeleted += OnConstraintDeleted;
-            }
+
         }
 
         public void Append(TConstraint constraint)

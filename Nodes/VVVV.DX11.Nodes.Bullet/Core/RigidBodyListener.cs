@@ -45,13 +45,15 @@ namespace VVVV.Bullet.Core
                 this.currentBodyList.Clear();
                 this.currentIdList.Clear();
                 this.currentWorld = inputWorld;
+
+
+                if (currentWorld != null)
+                {
+                    currentWorld.WorldHasReset += OnWorldReset;
+                    currentWorld.RigidBodyDeleted += OnRigidBodyDeleted;
+                }
             }
 
-            if (currentWorld != null)
-            {
-                currentWorld.WorldHasReset += OnWorldReset;
-                currentWorld.RigidBodyDeleted += OnRigidBodyDeleted;
-            }
         }
 
         public void Append(RigidBody rigidBody, int id)
