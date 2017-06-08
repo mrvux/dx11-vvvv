@@ -16,6 +16,7 @@ namespace VVVV.DX11.Nodes.Text
     {
         private readonly IIOFactory iofactory;
         private readonly SlimDX.DirectWrite.Factory dwFactory;
+        private SharpDX.Direct3D11.DeviceContext shaprdxContext;
 
         [Input("Text Renderer", Visibility = PinVisibility.OnlyInspector)]
         public Pin<DX11Resource<TextFontRenderer>> FTextRenderer;
@@ -97,7 +98,11 @@ namespace VVVV.DX11.Nodes.Text
             {
                 float w = (float)settings.RenderWidth;
                 float h = (float)settings.RenderHeight;
-                SharpDX.Direct3D11.DeviceContext shaprdxContext = new SharpDX.Direct3D11.DeviceContext(context.CurrentDeviceContext.ComPointer);
+
+                if (shaprdxContext == null)
+                {
+                    shaprdxContext = new SharpDX.Direct3D11.DeviceContext(context.CurrentDeviceContext.ComPointer);
+                }
 
                 FontWrapper fw = this.FTextRenderer.IsConnected ? this.FTextRenderer[0][context].FontWrapper : FontWrapperFactory.GetWrapper(context, this.dwFactory);
 
@@ -149,21 +154,23 @@ namespace VVVV.DX11.Nodes.Text
                     else if (this.FVerticalAlignInput[i].Index == 1) { flag |= TextFlags.VerticalCenter; }
                     else if (this.FVerticalAlignInput[i].Index == 2) { flag |= TextFlags.Bottom; }
 
+                    string font = this.FFontInput[i].Name;
+
                     if (applyState)
                     {
                         renderStates.SetStates(shaprdxContext, 0);
 
                         context.RenderStateStack.Push(this.FStateIn[i]);
 
-                        fw.DrawString(shaprdxContext, this.FInString[i], this.FFontInput[i], this.FInSize[i],
-                            mat, null, sdxColor, flag | TextFlags.StatePrepared);
+                        fw.DrawString(shaprdxContext, this.FInString[i], font, this.FInSize[i],
+                            mat, sdxColor, flag | TextFlags.StatePrepared);
 
                         context.RenderStateStack.Pop();
                     }
                     else
                     {
-                        fw.DrawString(shaprdxContext, this.FInString[i], this.FFontInput[i], this.FInSize[i],
-                            mat, null, sdxColor, flag);
+                        fw.DrawString(shaprdxContext, this.FInString[i], font, this.FInSize[i],
+                            mat, sdxColor, flag);
                     }
                 }
 

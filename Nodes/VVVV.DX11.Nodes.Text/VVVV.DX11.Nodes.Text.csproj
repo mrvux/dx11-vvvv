@@ -10,7 +10,7 @@
     <RootNamespace>VVVV.DX11.Nodes.Text</RootNamespace>
     <AssemblyName>VVVV.DX11.Nodes.Text</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\plugins\text</OutputPath>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
