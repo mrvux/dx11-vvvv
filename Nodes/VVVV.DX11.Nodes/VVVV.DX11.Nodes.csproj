@@ -48,6 +48,7 @@
     <Compile Include="Nodes\Geometry\VertexIndirectDrawerBufferNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerEnabledNode.cs" />
+    <Compile Include="Nodes\Layers\DX11LayerViewportRouterNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerScissorNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSpreadNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerSelectViewPortNode.cs" />

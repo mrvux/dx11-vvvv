@@ -174,20 +174,13 @@ namespace VVVV.DX11.Nodes
                     {
                         this.BeginQuery(context);
                     }
-                    
-                    foreach (IIOContainer<Pin<DX11Resource<DX11Layer>>> dxpin in this.FLayers)
+
+                    for (int i = 0; i < this.FLayers.Count; i++)
                     {
+                        var dxpin = this.FLayers[i];
                         if (dxpin.IOObject.IsConnected)
                         {
-                            try
-                            {
-                                for (int i = 0; i < dxpin.IOObject.SliceCount; i++)
-                                {
-                                    dxpin.IOObject[i][context].Render(context, settings);
-                                }
-                            }
-                            catch
-                            { }
+                            dxpin.IOObject.RenderAll(context, settings);
                         }
                     }
 
