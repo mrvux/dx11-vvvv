@@ -15,10 +15,13 @@ namespace VVVV.Nodes.Bullet
 		Help = "Retrieves transformation for a rigid body", Author = "vux")]
 	public unsafe class BulletGetRigidBodyTransformNode : IPluginEvaluate
 	{
-		[Input("Bodies")]
+        [Input("Bodies")]
         protected Pin<RigidBody> FBodies;
 
-		[Output("Position")]
+        [Input("Use Motion State", Visibility =PinVisibility.OnlyInspector,IsSingle =true)]
+        protected ISpread<bool> FUseMotionState;
+
+        [Output("Position")]
         protected ISpread<SlimDX.Matrix> FTransform;
 
 		public void Evaluate(int SpreadMax)
@@ -28,14 +31,29 @@ namespace VVVV.Nodes.Bullet
 				this.FTransform.SliceCount = this.FBodies.SliceCount;
                 var outputBuffer = this.FTransform.Stream.Buffer;
 
-				for (int i = 0; i < SpreadMax; i++)
-				{
-					RigidBody body = this.FBodies[i];
+                if (this.FUseMotionState[0])
+                {
+                    for (int i = 0; i < SpreadMax; i++)
+                    {
+                        RigidBody body = this.FBodies[i];
 
-                    BulletSharp.Matrix m = body.MotionState.WorldTransform;
+                        BulletSharp.Matrix m = body.WorldTransform;
 
-                    outputBuffer[i] = *((SlimDX.Matrix*)&m);
-				}
+                        outputBuffer[i] = *((SlimDX.Matrix*)&m);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < SpreadMax; i++)
+                    {
+                        RigidBody body = this.FBodies[i];
+
+                        BulletSharp.Matrix m = body.MotionState.WorldTransform;
+
+                        outputBuffer[i] = *((SlimDX.Matrix*)&m);
+                    }
+                }
+
                 this.FTransform.Flush(true);
 			}
 			else

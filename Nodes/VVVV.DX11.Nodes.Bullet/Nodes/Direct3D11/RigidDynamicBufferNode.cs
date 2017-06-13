@@ -26,6 +26,10 @@ namespace VVVV.DX11.Nodes.Bullet
         [Input("Buffer Count", DefaultValue=1024)]
         protected Pin<int> FBufferCount;
 
+        [Input("Use Motion State", Visibility = PinVisibility.OnlyInspector, IsSingle = true)]
+        protected ISpread<bool> FUseMotionState;
+
+
         [Output("Body Transforms")]
         protected ISpread<DX11Resource<DX11DynamicStructuredBuffer<Matrix>>> FOutBody;
 
@@ -56,6 +60,8 @@ namespace VVVV.DX11.Nodes.Bullet
                     }
                 }
 
+                bool useMotionState = this.FUseMotionState[0];
+
                 if (!this.FOutBody[0].Contains(context))
                 {
                     this.FOutBody[0][context] = new DX11DynamicStructuredBuffer<Matrix>(context, this.FBufferCount[0]);
@@ -66,7 +72,7 @@ namespace VVVV.DX11.Nodes.Bullet
                     Matrix[] mat = new Matrix[elem];
                     for (int i = 0; i < elem; i++)
                     {
-                        Matrix m = this.FBodies[i].WorldTransform;
+                        Matrix m = useMotionState ? this.FBodies[i].MotionState.WorldTransform : this.FBodies[i].WorldTransform;
                         Vector3 v = this.FBodies[i].CollisionShape.LocalScaling;
                         m = Matrix.Scaling(v) * m;
 

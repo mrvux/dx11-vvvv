@@ -121,8 +121,9 @@
     <Compile Include="Nodes\Bodies\Rigid\Filters\IsOfShapeRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
-    <Compile Include="Nodes\Constraints\CreatePointToPointSingleConstraintNode.cs" />
-    <Compile Include="Nodes\Constraints\CreatePointToPointDualConstraintNode.cs" />
+    <Compile Include="Nodes\Constraints\SetPointToPointPivoteNode.cs" />
+    <Compile Include="Nodes\Constraints\Single\CreatePointToPointSingleConstraintNode.cs" />
+    <Compile Include="Nodes\Constraints\Dual\CreatePointToPointDualConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\DestroyConstraintNode.cs" />
     <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\AbstractBulletRigidDynamicShapeNode.cs" />
@@ -165,7 +166,6 @@
     <Folder Include="Core\Constraints\" />
     <Folder Include="DataTypes\Constraints\" />
     <Folder Include="Nodes\Bodies\Soft\" />
-    <Folder Include="Nodes\Constraints\Dual\" />
     <Folder Include="Nodes\Constraints\Single\Create\" />
     <Folder Include="Nodes\Shapes\Create\Compound\" />
     <Folder Include="Nodes\Shapes\Create\Soft\" />
