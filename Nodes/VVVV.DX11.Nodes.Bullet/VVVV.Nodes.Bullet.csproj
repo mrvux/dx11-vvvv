@@ -122,6 +122,8 @@
     <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Constraints\SetPointToPointPivoteNode.cs" />
+    <Compile Include="Nodes\Constraints\Single\CreateSliderSingleConstraintNode.cs" />
+    <Compile Include="Nodes\Constraints\Single\CreateHingeSingleConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\Single\CreatePointToPointSingleConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\Dual\CreatePointToPointDualConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\DestroyConstraintNode.cs" />
