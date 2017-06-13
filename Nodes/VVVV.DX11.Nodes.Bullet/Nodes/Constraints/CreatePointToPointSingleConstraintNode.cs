@@ -6,11 +6,12 @@ using BulletSharp;
 using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VMath;
 using VVVV.Bullet.Core;
+using System.ComponentModel.Composition;
 
 namespace VVVV.Nodes.Bullet
 {
 	[PluginInfo(Name="Point2Point",Author="vux",Category="Bullet",Version="Constraint.Single",AutoEvaluate=true)]
-	public class CreateSingelPoint2PointConstraintNode : IPluginEvaluate
+	public class CreateSingelPoint2PointConstraintNode : IPluginEvaluate, IPartImportsSatisfiedNotification
 	{
         [Input("World", Order = 10)]
         protected ISpread<IConstraintContainer> contraintContainer;
@@ -36,7 +37,13 @@ namespace VVVV.Nodes.Bullet
         [Output("Constraints")]
         protected ISpread<Point2PointConstraint> constraintsOutput;
 
-        private ConstraintListener<Point2PointConstraint> persistedList = new ConstraintListener<Point2PointConstraint>();
+        private ConstraintPersister<Point2PointConstraint> persister;
+
+        public void OnImportsSatisfied()
+        {
+            this.persister = new ConstraintPersister<Point2PointConstraint>(
+                new ConstraintListener<Point2PointConstraint>(), this.constraintsOutput);
+        }
 
         public void Evaluate(int SpreadMax)
         {
@@ -44,6 +51,8 @@ namespace VVVV.Nodes.Bullet
 
             if (inputWorld != null)
             {
+                this.persister.UpdateWorld(inputWorld);
+
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     if (FCreate[i])
@@ -56,22 +65,19 @@ namespace VVVV.Nodes.Bullet
                             cst.Setting.ImpulseClamp = this.FImpulseClamp[i];
                             cst.Setting.Tau = this.FTau[i];
 
-                            inputWorld.AttachConstraint(cst);
-                            this.persistedList.Append(cst);
+                            this.persister.Append(cst);
                         }
                     }
                 }
 
-                List<Point2PointConstraint> constraints = this.persistedList.Constraints;
-                for (int i = 0; i < constraints.Count; i++)
-                {
-                    this.constraintsOutput[i] = constraints[i];
-                }
+                this.persister.Flush();
             }
             else
             {
                 this.constraintsOutput.SliceCount = 0;
             }
         }
-	}
+
+
+    }
 }

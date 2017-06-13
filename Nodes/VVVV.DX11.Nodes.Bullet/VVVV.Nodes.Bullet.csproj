@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ConstraintCustomData.cs" />
+    <Compile Include="Core\ConstraintPersister.cs" />
     <Compile Include="Core\Delegates.cs" />
     <Compile Include="Core\Filters\BoolTypeFilters.cs" />
     <Compile Include="Core\Filters\IsOlderRigidBodyFilter.cs" />

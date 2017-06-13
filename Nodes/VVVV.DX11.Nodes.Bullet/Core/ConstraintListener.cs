@@ -49,6 +49,7 @@ namespace VVVV.Bullet.Core
 
         public void Append(TConstraint constraint)
         {
+            currentWorld.AttachConstraint(constraint);
             this.constraintList.Add(constraint);
         }
 
