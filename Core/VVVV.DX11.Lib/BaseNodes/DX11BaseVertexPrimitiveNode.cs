@@ -50,7 +50,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInvalidate || !this.FOutput[0].Contains(context))
+            if ((this.FInvalidate && this.FOutput.SliceCount > 0) || !this.FOutput[0].Contains(context))
             {
                 for (int i = 0; i < oldSpreadMax; i++)
                 {
