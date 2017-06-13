@@ -49,7 +49,7 @@ namespace VVVV.Nodes.Bullet
         [Output("Hit Count")]
         protected ISpread<int> FHitCount;
 
-        private CollisionWorld.AllHitsRayResultCallback cb;
+        private AllHitsRayResultCallback cb;
 
         List<double> fraction = new List<double>();
         List<Vector3D> position = new List<Vector3D>();
@@ -80,7 +80,7 @@ namespace VVVV.Nodes.Bullet
 
                     if (cb == null)
                     {
-                        cb = new CollisionWorld.AllHitsRayResultCallback(from, to);
+                        cb = new AllHitsRayResultCallback(from, to);
                     }
 
                     cb.HitFractions.Clear();

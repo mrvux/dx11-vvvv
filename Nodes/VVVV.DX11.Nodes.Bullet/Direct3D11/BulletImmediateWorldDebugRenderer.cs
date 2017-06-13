@@ -391,5 +391,10 @@ namespace VVVV.Bullet.DataTypes
                 this.cylinder = null;
             }
         }
+
+        public void FlushLines()
+        {
+            
+        }
     }
 }

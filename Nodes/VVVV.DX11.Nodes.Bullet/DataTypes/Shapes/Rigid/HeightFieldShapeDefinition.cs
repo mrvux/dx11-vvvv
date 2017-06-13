@@ -40,7 +40,7 @@ namespace VVVV.DataTypes.Bullet
 				writer.Flush();
 			}
 			ms.Position = 0;
-			HeightfieldTerrainShape hs = new HeightfieldTerrainShape(w, l, ms, 0.0f, minh, maxh, 1, PhyScalarType.PhyFloat, false);
+			HeightfieldTerrainShape hs = new HeightfieldTerrainShape(w, l, ms, 0.0f, minh, maxh, 1, PhyScalarType.Single, false);
 			hs.SetUseDiamondSubdivision(true);
 			//hs.LocalScaling = new Vector3(this.sx, 1.0f, this.sz);
 			return hs;

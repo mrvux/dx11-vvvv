@@ -90,7 +90,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
                             RigidBody carChassis = createBodyResult.Item1;
 
                             RaycastVehicle.VehicleTuning tuning = new RaycastVehicle.VehicleTuning();
-                            VehicleRaycaster vehicleRayCaster = new DefaultVehicleRaycaster(inputWorld.World);
+                            DefaultVehicleRaycaster vehicleRayCaster = new DefaultVehicleRaycaster(inputWorld.World);
                             vehicle = new RaycastVehicle(tuning, carChassis, vehicleRayCaster);
                             vehicle.SetCoordinateSystem(rightIndex, upIndex, forwardIndex);
 

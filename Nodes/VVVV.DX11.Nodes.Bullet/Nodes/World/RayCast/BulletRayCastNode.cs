@@ -65,8 +65,9 @@ namespace VVVV.Nodes.Bullet
 				{
 					Vector3 from = this.FFrom[i].ToBulletVector();
 					Vector3 to = this.FTo[i].ToBulletVector();
-					CollisionWorld.ClosestRayResultCallback cb =
-						new CollisionWorld.ClosestRayResultCallback(from,to );
+
+					ClosestRayResultCallback cb =
+						new ClosestRayResultCallback(ref from,ref to);
 
 					this.FWorld[0].World.RayTest(from, to, cb);
 
