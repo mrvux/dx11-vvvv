@@ -52,7 +52,8 @@ namespace VVVV.Bullet.Core
 
         private void RemoveRigidBody(RigidBody body, BodyCustomData cdata)
         {
-            this.World.RemoveRigidBody(body);
+            this.dynamicsWorld.DeleteAndDisposeBody(body);
+
             if (this.RigidBodyDeleted != null)
             {
                 this.RigidBodyDeleted(body, cdata.Id);
@@ -79,7 +80,8 @@ namespace VVVV.Bullet.Core
 
 		public void RemoveConctraint(TypedConstraint cst, ConstraintCustomData cdata)
 		{
-            this.World.RemoveConstraint(cst);
+            this.dynamicsWorld.DeleteAndDisposeConstraint(cst);
+
             if (this.ConstraintDeleted != null)
             {
                 this.ConstraintDeleted(cst, cdata.Id);
@@ -189,6 +191,10 @@ namespace VVVV.Bullet.Core
 		#region Destroy
 		public void Destroy()
 		{
+            this.dynamicsWorld.DeleteAndDisposeAllConstraints();
+
+            this.dynamicsWorld.DeleteAndDisposeAllRigidBodies();
+
             dynamicsWorld.Dispose();
 			solver.Dispose();
 			overlappingPairCache.Dispose();
@@ -197,7 +203,10 @@ namespace VVVV.Bullet.Core
 
             this.bodyContainer.Clear();
 			this.constraintContainer.Clear();
-			this.created = false;
+
+
+
+            this.created = false;
 		}
 		#endregion
 
