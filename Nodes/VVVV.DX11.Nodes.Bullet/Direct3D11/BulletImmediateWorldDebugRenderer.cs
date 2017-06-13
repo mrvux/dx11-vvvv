@@ -244,6 +244,12 @@ namespace VVVV.Bullet.DataTypes
             //}
         }
 
+
+        public void DrawLine(Vector3 from, Vector3 to, Color color)
+        {
+            DrawLine(ref from, ref to, color);
+        }
+
         public void DrawLine(ref Vector3 from, ref Vector3 to, Color color)
         {
             var ds = context.CurrentDeviceContext.MapSubresource(this.dynamicLine.VertexBuffer, 0, MapMode.WriteDiscard, MapFlags.None).Data;
@@ -322,7 +328,10 @@ namespace VVVV.Bullet.DataTypes
 
         public void DrawTransform(ref Matrix transform, float orthoLen)
         {
-
+            Vector3 start = transform.Origin;
+            DrawLine(start, start + new Vector3(orthoLen, 0, 0), Color.Red);
+            DrawLine(start, start + new Vector3(0, orthoLen, 0), Color.Green);
+            DrawLine(start, start + new Vector3(0, 0, orthoLen), Color.Blue);
         }
 
         public void DrawTriangle(ref Vector3 v0, ref Vector3 v1, ref Vector3 v2, Color color, float __unnamed004)
