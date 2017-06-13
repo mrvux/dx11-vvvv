@@ -122,6 +122,7 @@
     <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Constraints\CreatePointToPointSingleConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\CreatePointToPointDualConstraintNode.cs" />
+    <Compile Include="Nodes\Constraints\DestroyConstraintNode.cs" />
     <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\AbstractBulletRigidDynamicShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
@@ -140,6 +141,7 @@
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletHeightfieldNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletSphereShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
+    <Compile Include="Nodes\Vehicle\BulletGetWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BuletGetWheelTransformNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletCreateVehicleNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletDriveVehicleNode.cs" />

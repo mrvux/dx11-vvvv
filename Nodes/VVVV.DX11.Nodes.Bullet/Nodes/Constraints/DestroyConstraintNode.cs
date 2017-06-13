@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VVVV.PluginInterfaces.V2;
 using BulletSharp;
-using VVVV.Internals.Bullet;
+using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
