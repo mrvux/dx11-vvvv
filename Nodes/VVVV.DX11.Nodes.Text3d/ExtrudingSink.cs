@@ -9,7 +9,7 @@ using VVVV.DX11.Nodes;
 
 namespace VVVV.DX11.Text3d
 {
-    public class ExtrudingSink : GeometrySink, TessellationSink
+    public unsafe class ExtrudingSink : GeometrySink, TessellationSink
     {
         private List<Pos3Norm3VertexSDX> vertices;
 
@@ -51,8 +51,9 @@ namespace VVVV.DX11.Text3d
         {
             for (int i = 0; i < pointsRef.Length; i++)
             {
+                SharpDX.Mathematics.Interop.RawVector2 rawPoint = pointsRef[i];
                 Vertex2D v = new Vertex2D();
-                v.pt = pointsRef[i];
+                v.pt = *(Vector2*)&rawPoint;
 
                 m_figureVertices.Add(v);
 
@@ -69,7 +70,7 @@ namespace VVVV.DX11.Text3d
 
             Vertex2D v = new Vertex2D()
             {
-                pt = startPoint,
+                pt = *(Vector2*)&startPoint,
                 inter1 = Vector2.Zero,
                 inter2 = Vector2.Zero,
                 norm = Vector2.Zero
@@ -100,7 +101,6 @@ namespace VVVV.DX11.Text3d
                 {
                     Vertex2D v = m_figureVertices[i];
                     v.norm = GetNormal(i);
-                    v.pt = PointSnapper.SnapPoint(v.pt);
                     m_figureVertices[i] = v;
                 }
 
@@ -180,10 +180,6 @@ namespace VVVV.DX11.Text3d
 
                 Vector2 d1 = new Vector2(tri.Point2.X - tri.Point1.Y, tri.Point2.Y - tri.Point1.Y);
                 Vector2 d2 = new Vector2(tri.Point3.X - tri.Point2.Y, tri.Point3.Y - tri.Point2.Y);
-
-                tri.Point1 = PointSnapper.SnapPoint(tri.Point1);
-                tri.Point2 = PointSnapper.SnapPoint(tri.Point2);
-                tri.Point3 = PointSnapper.SnapPoint(tri.Point3);
 
                 vertices.Add(new Pos3Norm3VertexSDX() { Position = new Vector3(tri.Point1.X, tri.Point1.Y, m_height / 2), Normals = new Vector3(0.0f, 0.0f, 1.0f) });
                 vertices.Add(new Pos3Norm3VertexSDX() { Position = new Vector3(tri.Point2.X, tri.Point2.Y, m_height / 2), Normals = new Vector3(0.0f, 0.0f, 1.0f) });

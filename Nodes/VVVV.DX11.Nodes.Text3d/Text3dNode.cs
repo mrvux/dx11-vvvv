@@ -23,14 +23,6 @@ using VVVV.DX11.Text3d;
 
 namespace VVVV.DX11.Nodes
 {
-    public class PointSnapper
-    {
-        public static Vector2 SnapPoint(Vector2 input)
-        {
-            return input;
-        }
-    }
-
     [PluginInfo(Name = "Text", Category = "DX11.Geometry", Version = "", Author = "vux", Help ="Builds 3d text geometry", Warnings ="Please note that there are no UV for the text")]
     public unsafe class TextMeshNode : DX11BaseVertexPrimitiveNode
     {

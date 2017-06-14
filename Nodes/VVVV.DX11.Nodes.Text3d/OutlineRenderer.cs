@@ -11,11 +11,13 @@ using D2DGeometry = SharpDX.Direct2D1.Geometry;
 using SharpDX.DirectWrite;
 using SharpDX;
 
+using RawMat = SharpDX.Mathematics.Interop.RawMatrix3x2;
+
 
 
 namespace VVVV.DX11.Text3d
 {
-    public class OutlineRenderer : SharpDX.DirectWrite.TextRendererBase
+    public unsafe class OutlineRenderer : SharpDX.DirectWrite.TextRendererBase
     {
         private readonly D2DFactory factory;
         private SharpDX.Direct2D1.Geometry geometry = null;
@@ -33,7 +35,8 @@ namespace VVVV.DX11.Text3d
                 if (clientDrawingEffect is SharpDX.Direct2D1.SolidColorBrush)
                 {
                     var sb = (SharpDX.Direct2D1.SolidColorBrush)clientDrawingEffect;
-                    c = sb.Color;
+                    SharpDX.Mathematics.Interop.RawColor4 brushColor = sb.Color;
+                    c = *(Color4*)&brushColor;
                 }
             }
 
@@ -46,7 +49,9 @@ namespace VVVV.DX11.Text3d
                 glyphRun.FontFace.GetGlyphRunOutline(glyphRun.FontSize, glyphRun.Indices, glyphRun.Advances, glyphRun.Offsets, glyphRun.IsSideways, glyphRun.BidiLevel % 2 == 1, sink as SimplifiedGeometrySink);
                 sink.Close();
 
-                TransformedGeometry tg = new TransformedGeometry(this.factory, pg, Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f));
+                Matrix3x2 mat = Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f);
+
+                TransformedGeometry tg = new TransformedGeometry(this.factory, pg, *(RawMat*)&mat);
 
                 pg.Dispose();
 
@@ -79,8 +84,8 @@ namespace VVVV.DX11.Text3d
             sink.EndFigure(FigureEnd.Closed);
             sink.Close();
 
-
-            TransformedGeometry tg = new TransformedGeometry(this.factory, pg, Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f));
+            Matrix3x2 mat = Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f);
+            TransformedGeometry tg = new TransformedGeometry(this.factory, pg, *(RawMat*)&mat);
             pg.Dispose();
 
             this.AddGeometry(tg);
@@ -103,8 +108,8 @@ namespace VVVV.DX11.Text3d
             sink.EndFigure(FigureEnd.Closed);
             sink.Close();
 
-
-            TransformedGeometry tg = new TransformedGeometry(this.factory, pg, Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f));
+            Matrix3x2 mat = Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f);
+            TransformedGeometry tg = new TransformedGeometry(this.factory, pg, *(RawMat*)&mat);
             pg.Dispose();
 
             this.AddGeometry(tg);
@@ -114,7 +119,15 @@ namespace VVVV.DX11.Text3d
 
         public override SharpDX.Mathematics.Interop.RawMatrix3x2 GetCurrentTransform(object clientDrawingContext)
         {
-            return SharpDX.Matrix3x2.Identity;
+            return new SharpDX.Mathematics.Interop.RawMatrix3x2()
+            {
+                M11 = 1.0f,
+                M12 = 0.0f,
+                M21 = 0.0f,
+                M22 = 1.0f,
+                M31 = 0.0f,
+                M32 = 0.0f
+            };
         }
 
         public override bool IsPixelSnappingDisabled(object clientDrawingContext)
