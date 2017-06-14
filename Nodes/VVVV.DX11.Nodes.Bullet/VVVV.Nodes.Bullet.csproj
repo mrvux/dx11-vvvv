@@ -104,6 +104,8 @@
     <Compile Include="Nodes\Bodies\Interactions\AbstractBodyInteractionNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\BulletDestroyBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\AbstractBodyForceNode.cs" />
+    <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetPoseRigidBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetVelocityNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyImpulseNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyTorqueNode.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedStaticBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreateStaticBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetBoundingSphereNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyVelocityNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyPoseNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletRigidBodyPairNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
