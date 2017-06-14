@@ -110,6 +110,7 @@
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyImpulseNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyTorqueNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreateDynamicBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedKinematicBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedDynamicBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedStaticBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreateStaticBodyNode.cs" />

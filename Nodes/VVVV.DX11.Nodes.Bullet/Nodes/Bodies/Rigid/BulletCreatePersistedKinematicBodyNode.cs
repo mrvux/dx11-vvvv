@@ -4,28 +4,28 @@ using System.Linq;
 using System.Text;
 
 using VVVV.PluginInterfaces.V2;
-using VVVV.Utils.VMath;
-using VVVV.Bullet.Utils;
 
 using BulletSharp;
 using VVVV.DataTypes.Bullet;
-using VVVV.Bullet.DataTypes;
 using VVVV.Internals.Bullet;
 using VVVV.Bullet.Core;
 
 namespace VVVV.Nodes.Bullet
 {
-    [PluginInfo(Name = "CreateStaticBody", Category = "Bullet", Version = "Rigid.Persist", Author = "vux", Help = "Creates a rigid static body,persists body in the list", AutoEvaluate = true)]
-    public class BulletCreatePeristedStaticRigidBodyNode : IPluginEvaluate
+    [PluginInfo(Name = "CreateKinematicBody", Category = "Bullet", Version = "Rigid.Persist", Author = "vux", Help = "Creates a rigid kinematic body, and preserves those in the output", AutoEvaluate = true)]
+    public class BulletCreateKinematicRigidBodyPeristedNode : IPluginEvaluate
     {
         [Input("World", IsSingle = true)]
         protected Pin<IRigidBodyContainer> worldInput;
 
         [Input("Shapes")]
-        protected Pin<RigidShapeDefinitionBase> shapesInput;
+        protected Pin<DynamicShapeDefinitionBase> shapesInput;
 
         [Input("Initial Pose")]
         protected Pin<RigidBodyPose> initialPoseInput;
+
+        [Input("Initial Motion Properties")]
+        protected Pin<RigidBodyMotionProperties> initialMotionProperties;
 
         [Input("Initial Properties")]
         protected Pin<RigidBodyProperties> initialProperties;
@@ -42,17 +42,18 @@ namespace VVVV.Nodes.Bullet
         [Output("Created Bodies")]
         protected ISpread<RigidBody> createdBodiesOutput;
 
+
         private RigidBodyListListener persistedList = new RigidBodyListListener();
         private List<RigidBody> frameBodyOutput = new List<RigidBody>();
 
         public void Evaluate(int SpreadMax)
         {
             this.frameBodyOutput.Clear();
-            IRigidBodyContainer world = this.worldInput[0];
 
-            if (world != null)
+            IRigidBodyContainer inputWorld = this.worldInput[0];
+            if (inputWorld != null)
             {
-                this.persistedList.UpdateWorld(world);
+                this.persistedList.UpdateWorld(inputWorld);
 
                 if (this.shapesInput.IsConnected)
                 {
@@ -62,18 +63,28 @@ namespace VVVV.Nodes.Bullet
                         {
                             RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
                             RigidBodyProperties properties = this.initialProperties.IsConnected ? this.initialProperties[i] : RigidBodyProperties.Default;
+                            RigidBodyMotionProperties motionProperties = this.initialMotionProperties.IsConnected ? this.initialMotionProperties[i] : new RigidBodyMotionProperties();
 
                             ShapeCustomData shapeData = new ShapeCustomData();
-                            shapeData.ShapeDef = this.shapesInput[i];
+                            DynamicShapeDefinitionBase shape = this.shapesInput[i];
+                            shapeData.ShapeDef = shape;
 
                             CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
-                            Vector3 localInertia = Vector3.Zero;
 
-                            Tuple<RigidBody, int> bodyCreateResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localInertia, 0.0f);
-                            bodyCreateResult.Item1.CollisionFlags = CollisionFlags.StaticObject;
+                            //Build mass for dynamic object
+                            Vector3 localinertia = Vector3.Zero;
+                            if (shape.Mass > 0.0f)
+                            {
+                                collisionShape.CalculateLocalInertia(shape.Mass, out localinertia);
+                            }
 
-                            this.persistedList.Append(bodyCreateResult.Item1, bodyCreateResult.Item2);
-                            frameBodyOutput.Add(bodyCreateResult.Item1);
+                            Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shape.Mass);
+                            createBodyResult.Item1.CollisionFlags |= CollisionFlags.KinematicObject;
+
+                            createBodyResult.Item1.ApplyMotionProperties(ref motionProperties);
+
+                            this.persistedList.Append(createBodyResult.Item1, createBodyResult.Item2);
+                            frameBodyOutput.Add(createBodyResult.Item1);
                         }
                     }
                 }
@@ -95,6 +106,7 @@ namespace VVVV.Nodes.Bullet
                 {
                     this.createdBodiesOutput[i] = frameBodyOutput[i];
                 }
+
             }
             else
             {
@@ -103,6 +115,7 @@ namespace VVVV.Nodes.Bullet
                 this.createdBodiesOutput.SliceCount = 0;
             }
         }
+
     }
 }
 
