@@ -44,6 +44,7 @@
     <Compile Include="Core\ISoftBodyCollection.cs" />
     <Compile Include="Core\ObjectCustomData.cs" />
     <Compile Include="Core\ObjectLifetimeContainer.cs" />
+    <Compile Include="Core\RigidBodyCCDProperties.cs" />
     <Compile Include="Core\RigidBodyCustomData.cs" />
     <Compile Include="Core\ConstraintListener.cs" />
     <Compile Include="Core\RigidBodyListener.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Core\SoftWorldContainer.cs" />
     <Compile Include="Internals\Shapes\SoftShapeCustomData.cs" />
     <Compile Include="Nodes\Base\RigidBodyMotionPropertiesJoinNode.cs" />
+    <Compile Include="Nodes\Base\RigidBodyCCDPropertiesJoinNode.cs" />
     <Compile Include="Nodes\Base\RigidBodyPropertiesJoinNode.cs" />
     <Compile Include="Nodes\Base\RigidBodyPoseJoinNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\AbstractBodyInteractionNode.cs" />

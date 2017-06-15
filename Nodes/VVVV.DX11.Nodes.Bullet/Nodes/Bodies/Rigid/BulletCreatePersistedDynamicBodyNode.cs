@@ -30,6 +30,9 @@ namespace VVVV.Nodes.Bullet
         [Input("Initial Properties")]
         protected Pin<RigidBodyProperties> initialProperties;
 
+        [Input("Initial CCD Properties")]
+        protected Pin<RigidBodyCCDProperties> initialCCDProperties;
+
         [Input("Do Create", IsBang = true)]
         protected ISpread<bool> doCreate;
 
@@ -64,6 +67,7 @@ namespace VVVV.Nodes.Bullet
                             RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
                             RigidBodyProperties properties = this.initialProperties.IsConnected ? this.initialProperties[i] : RigidBodyProperties.Default;
                             RigidBodyMotionProperties motionProperties = this.initialMotionProperties.IsConnected ? this.initialMotionProperties[i] : new RigidBodyMotionProperties();
+                            RigidBodyCCDProperties ccdPropertie = this.initialCCDProperties.IsConnected ? this.initialCCDProperties[i] : RigidBodyCCDProperties.Default;
 
                             ShapeCustomData shapeData = new ShapeCustomData();
                             DynamicShapeDefinitionBase shape = this.shapesInput[i];
@@ -79,6 +83,8 @@ namespace VVVV.Nodes.Bullet
                             }
 
                             Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shape.Mass);
+                            createBodyResult.Item1.CcdMotionThreshold = ccdPropertie.CcdMotionThreshold;
+                            createBodyResult.Item1.CcdSweptSphereRadius = ccdPropertie.CcdSweptSphereRadius;
 
                             createBodyResult.Item1.ApplyMotionProperties(ref motionProperties);
 
