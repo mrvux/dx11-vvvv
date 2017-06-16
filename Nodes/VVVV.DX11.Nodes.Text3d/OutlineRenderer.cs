@@ -54,6 +54,7 @@ namespace VVVV.DX11.Text3d
                 TransformedGeometry tg = new TransformedGeometry(this.factory, pg, *(RawMat*)&mat);
 
                 pg.Dispose();
+                sink.Dispose();
 
                 //Transform from baseline
 
@@ -87,6 +88,7 @@ namespace VVVV.DX11.Text3d
             Matrix3x2 mat = Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f);
             TransformedGeometry tg = new TransformedGeometry(this.factory, pg, *(RawMat*)&mat);
             pg.Dispose();
+            sink.Dispose();
 
             this.AddGeometry(tg);
             return Result.Ok;
@@ -111,6 +113,7 @@ namespace VVVV.DX11.Text3d
             Matrix3x2 mat = Matrix3x2.Translation(baselineOriginX, baselineOriginY) * Matrix3x2.Scaling(1.0f, -1.0f);
             TransformedGeometry tg = new TransformedGeometry(this.factory, pg, *(RawMat*)&mat);
             pg.Dispose();
+            sink.Dispose();
 
             this.AddGeometry(tg);
             return Result.Ok;
@@ -160,6 +163,7 @@ namespace VVVV.DX11.Text3d
                 this.geometry.Combine(geom, CombineMode.Union, sink);
 
                 sink.Close();
+                sink.Dispose();
 
                 this.geometry = pg;
             }

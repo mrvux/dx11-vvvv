@@ -169,7 +169,7 @@ namespace VVVV.DX11.Text3d
 
         public void Dispose()
         {
-
+            Shadow.Dispose();
         }
 
         public void AddTriangles(Triangle[] triangles)

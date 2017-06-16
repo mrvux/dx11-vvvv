@@ -34,6 +34,7 @@ namespace VVVV.DX11.Text3d
             geometry.Simplify(GeometrySimplificationOption.Lines, tolerance, sink);
 
             sink.Close();
+            sink.Dispose();
 
             return path;
         }
@@ -47,6 +48,7 @@ namespace VVVV.DX11.Text3d
             geometry.Outline(sink);
 
             sink.Close();
+            sink.Dispose();
 
             return path;
         }
@@ -80,10 +82,9 @@ namespace VVVV.DX11.Text3d
 
             outlinedGeometry.Tessellate(sink);
 
-            flattenedGeometry.Dispose();
             outlinedGeometry.Dispose();
-
-
+            flattenedGeometry.Dispose();
+            sink.Dispose();
 
             return vertices;
         }
