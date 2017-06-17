@@ -110,10 +110,10 @@ namespace VVVV.DX11.Nodes.Layers
         [Input("Texture In")]
         protected Pin<DX11Resource<DX11Texture2D>> FIn;
 
-        [Input("Use Default Size", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        [Input("Use Default Size", DefaultValue = 0, Visibility = PinVisibility.Hidden)]
         protected ISpread<bool> FInUseDefaultSize;
 
-        [Input("Default Size",DefaultValues= new double[] {256,256 },Visibility= PinVisibility.OnlyInspector)]
+        [Input("Default Size",DefaultValues= new double[] {256,256 },Visibility= PinVisibility.Hidden)]
         protected ISpread<Vector2> FInSize;
 
         [Input("Mips On Last Pass", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
