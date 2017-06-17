@@ -47,6 +47,8 @@ namespace VVVV.DX11.Nodes
         private static SharpDX.Direct2D1.Factory d2dFactory;
         private static SharpDX.DirectWrite.Factory dwFactory;
 
+        private List<Pos3Norm3VertexSDX> vertexList = new List<Pos3Norm3VertexSDX>(1024);
+
         protected override DX11VertexGeometry GetGeom(DX11RenderContext device, int slice)
         {
             if (d2dFactory == null)
@@ -56,24 +58,29 @@ namespace VVVV.DX11.Nodes
             }
 
             TextFormat fmt = new TextFormat(dwFactory, this.FFontInput[slice].Name, FFontSize[slice]);
-
             TextLayout tl = new TextLayout(dwFactory, FText[slice], fmt, 0.0f, 32.0f);
+
             tl.WordWrapping = WordWrapping.NoWrap;
             tl.TextAlignment = FHAlignment[slice];
             tl.ParagraphAlignment = FVAlignment[slice];
 
             OutlineRenderer renderer = new OutlineRenderer(d2dFactory);
             Extruder ex = new Extruder(d2dFactory);
+           
 
             tl.Draw(renderer, 0.0f, 0.0f);
 
-            var result = ex.GetVertices(renderer.GetGeometry(), this.FExtrude[slice]);
+            var outlinedGeometry = renderer.GetGeometry();
+            ex.GetVertices(outlinedGeometry, vertexList, this.FExtrude[slice]);
+            outlinedGeometry.Dispose();
 
             Vector3 min = new Vector3(float.MaxValue);
             Vector3 max = new Vector3(float.MinValue);
 
-            result.ForEach(pn =>
+            for (int i = 0; i < vertexList.Count; i++)
             {
+                Pos3Norm3VertexSDX pn = vertexList[i];
+
                 min.X = pn.Position.X < min.X ? pn.Position.X : min.X;
                 min.Y = pn.Position.Y < min.Y ? pn.Position.Y : min.Y;
                 min.Z = pn.Position.Z < min.Z ? pn.Position.Z : min.Z;
@@ -81,12 +88,15 @@ namespace VVVV.DX11.Nodes
                 max.X = pn.Position.X > max.X ? pn.Position.X : max.X;
                 max.Y = pn.Position.Y > max.Y ? pn.Position.Y : max.Y;
                 max.Z = pn.Position.Z > max.Z ? pn.Position.Z : max.Z;
-            });
+            }
 
-            SlimDX.DataStream ds = new SlimDX.DataStream(result.Count * Pos3Norm3VertexSDX.VertexSize, true, true);
+            SlimDX.DataStream ds = new SlimDX.DataStream(vertexList.Count * Pos3Norm3VertexSDX.VertexSize, true, true);
             ds.Position = 0;
 
-            ds.WriteRange(result.ToArray());
+            for (int i = 0; i < vertexList.Count;i++)
+            {
+                ds.Write(vertexList[i]);
+            }
 
             ds.Position = 0;
 
@@ -106,9 +116,13 @@ namespace VVVV.DX11.Nodes
             vg.Topology = SlimDX.Direct3D11.PrimitiveTopology.TriangleList;
             vg.VertexBuffer = vbuffer;
             vg.VertexSize = Pos3Norm3VertexSDX.VertexSize;
-            vg.VerticesCount = result.Count;
+            vg.VerticesCount = vertexList.Count;
             vg.HasBoundingBox = true;
             vg.BoundingBox = new SlimDX.BoundingBox(new SlimDX.Vector3(min.X, min.Y, min.Z), new SlimDX.Vector3(max.X, max.Y, max.Z));
+
+            renderer.Dispose();
+            fmt.Dispose();
+            tl.Dispose();
 
             return vg;
         }

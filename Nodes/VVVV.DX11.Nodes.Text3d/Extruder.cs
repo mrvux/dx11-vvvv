@@ -29,12 +29,11 @@ namespace VVVV.DX11.Text3d
         {
             PathGeometry path = new PathGeometry(this.factory);
 
-            GeometrySink sink = path.Open();
-
-            geometry.Simplify(GeometrySimplificationOption.Lines, tolerance, sink);
-
-            sink.Close();
-
+            using (GeometrySink sink = path.Open())
+            {
+                geometry.Simplify(GeometrySimplificationOption.Lines, tolerance, sink);
+                sink.Close();
+            }
             return path;
         }
 
@@ -42,21 +41,19 @@ namespace VVVV.DX11.Text3d
         {
             PathGeometry path = new PathGeometry(this.factory);
 
-            GeometrySink sink = path.Open();
-
-            geometry.Outline(sink);
-
-            sink.Close();
+            using (GeometrySink sink = path.Open())
+            {
+                geometry.Outline(sink);
+                sink.Close();
+            }
 
             return path;
         }
 
 
-        public List<Pos3Norm3VertexSDX> GetVertices(D2DGeometry geometry, float height = 24.0f)
+        public void GetVertices(D2DGeometry geometry, List<Pos3Norm3VertexSDX> vertices, float height = 24.0f)
         {
-
-            List<Pos3Norm3VertexSDX> vertices = new List<Pos3Norm3VertexSDX>();
-
+            vertices.Clear();
             //Empty mesh
             if (geometry == null)
             {
@@ -64,28 +61,20 @@ namespace VVVV.DX11.Text3d
                 vertices.Add(zero);
                 vertices.Add(zero);
                 vertices.Add(zero);
-                return vertices;
             }
 
-            D2DGeometry flattenedGeometry = this.FlattenGeometry(geometry, sc_flatteningTolerance);
+            using (D2DGeometry flattenedGeometry = this.FlattenGeometry(geometry, sc_flatteningTolerance))
+            {
+                using (D2DGeometry outlinedGeometry = this.OutlineGeometry(flattenedGeometry))
+                {
+                    using (ExtrudingSink sink = new ExtrudingSink(vertices, height))
+                    {
+                        outlinedGeometry.Simplify(GeometrySimplificationOption.Lines, sink);
+                        outlinedGeometry.Tessellate(sink);
+                    }
 
-            D2DGeometry outlinedGeometry = this.OutlineGeometry(flattenedGeometry);
-
-            //Add snap here
-
-            ExtrudingSink sink = new ExtrudingSink(vertices, height);
-
-
-            outlinedGeometry.Simplify(GeometrySimplificationOption.Lines, sink);
-
-            outlinedGeometry.Tessellate(sink);
-
-            flattenedGeometry.Dispose();
-            outlinedGeometry.Dispose();
-
-
-
-            return vertices;
+                }
+            }
         }
     }
 
