@@ -67,7 +67,13 @@ namespace VVVV.DX11.Nodes
 
             tl.Draw(renderer, 0.0f, 0.0f);
 
-            var result = ex.GetVertices(renderer.GetGeometry(), this.FExtrude[slice]);
+            var geometry = renderer.GetGeometry();
+            var result = ex.GetVertices(geometry, this.FExtrude[slice]);
+
+            renderer.Dispose();
+            geometry.Dispose();
+            tl.Dispose();
+            fmt.Dispose();
 
             Vector3 min = new Vector3(float.MaxValue);
             Vector3 max = new Vector3(float.MinValue);
