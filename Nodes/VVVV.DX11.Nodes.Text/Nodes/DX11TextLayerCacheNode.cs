@@ -38,6 +38,8 @@ namespace VVVV.DX11.Nodes.Text
 
         private int spreadMax;
         private List<DX11CachedText> cacheList = new List<DX11CachedText>();
+        private DX11ContextElement<DX11ObjectRenderSettings> objectSettings = new DX11ContextElement<DX11ObjectRenderSettings>();
+
 
         [ImportingConstructor()]
         public DX11TextLayerCacheNode(SlimDX.DirectWrite.Factory dwFactory)
@@ -91,6 +93,10 @@ namespace VVVV.DX11.Nodes.Text
                 this.FOutLayer[0][context] = new DX11Layer();
                 this.FOutLayer[0][context].Render = this.Render;
             }
+            if (!this.objectSettings.Contains(context))
+            {
+                this.objectSettings[context] = new DX11ObjectRenderSettings();
+            }
         }
 
         public void Destroy(DX11RenderContext context, bool force)
@@ -126,18 +132,30 @@ namespace VVVV.DX11.Nodes.Text
                 SharpDX.Matrix view = *(SharpDX.Matrix*)&sView;
                 SharpDX.Matrix projection = *(SharpDX.Matrix*)&sProj;
 
+
+                var objectsettings = this.objectSettings[context];
+                objectsettings.IterationCount = 1;
+                objectsettings.Geometry = null;
+
                 for (int i = 0; i < this.textCache.objects.Length; i++)
                 {
+
                     SharpDX.Matrix mat = SharpDX.Matrix.Scaling(1.0f, -1.0f, 1.0f);
                     mat = SharpDX.Matrix.Multiply(mat, view);
                     mat = SharpDX.Matrix.Multiply(mat, projection);
 
-                    SlimDX.Color4 color = this.textCache.objects[i].Color;
-                    SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
+                    objectsettings.DrawCallIndex = i;
+                    objectsettings.WorldTransform = *(SlimDX.Matrix*)&mat;
 
-                    fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(this.textCache.objects[i].TextLayout.ComPointer), SharpDX.Vector2.Zero,
-                        mat, sdxColor, TextFlags.None);
+                    if (settings.ValidateObject(objectsettings))
+                    {
 
+                        SlimDX.Color4 color = this.textCache.objects[i].Color;
+                        SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
+
+                        fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(this.textCache.objects[i].TextLayout.ComPointer), SharpDX.Vector2.Zero,
+                            mat, sdxColor, TextFlags.None);
+                    }
                 }
 
                 //Apply old states back

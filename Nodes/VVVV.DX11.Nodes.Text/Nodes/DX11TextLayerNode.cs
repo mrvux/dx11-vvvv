@@ -54,6 +54,7 @@ namespace VVVV.DX11.Nodes.Text
         public ISpread<DX11Resource<DX11Layer>> FOutLayer;
 
         private int spreadMax;
+        private DX11ContextElement<DX11ObjectRenderSettings> objectSettings = new DX11ContextElement<DX11ObjectRenderSettings>();
 
         [ImportingConstructor()]
         public DX11TextLayerNode(IIOFactory factory, SlimDX.DirectWrite.Factory dwFactory)
@@ -81,6 +82,10 @@ namespace VVVV.DX11.Nodes.Text
             {
                 this.FOutLayer[0][context] = new DX11Layer();
                 this.FOutLayer[0][context].Render = this.Render;
+            }
+            if (!this.objectSettings.Contains(context))
+            {
+                this.objectSettings[context] = new DX11ObjectRenderSettings();
             }
         }
 
@@ -122,8 +127,13 @@ namespace VVVV.DX11.Nodes.Text
                 SharpDX.Matrix view = *(SharpDX.Matrix*)&sView;
                 SharpDX.Matrix projection = *(SharpDX.Matrix*)&sProj;
 
+                var objectsettings = this.objectSettings[context];
+                objectsettings.IterationCount = 1;
+                objectsettings.Geometry = null;
+
                 for (int i = 0; i < this.spreadMax; i++)
                 {
+
                     SharpDX.Matrix preScale = SharpDX.Matrix.Scaling(1.0f, -1.0f, 1.0f);
 
                     switch (this.FNormalizeInput[i].Index)
@@ -132,45 +142,49 @@ namespace VVVV.DX11.Nodes.Text
                         case 2: preScale = SharpDX.Matrix.Scaling(1.0f / h, -1.0f / h, 1.0f); break;
                         case 3: preScale = SharpDX.Matrix.Scaling(1.0f / w, -1.0f / h, 1.0f); break;
                     }
-
-
                     SharpDX.Matrix sm = matrixPointer[i % transformCount];
 
                     SharpDX.Matrix mat = SharpDX.Matrix.Multiply(preScale, sm);
                     mat = SharpDX.Matrix.Multiply(mat, view);
                     mat = SharpDX.Matrix.Multiply(mat, projection);
 
-                    SlimDX.Color4 color = this.FInColor[i];
-                    SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
+                    objectsettings.DrawCallIndex = i;
+                    objectsettings.WorldTransform = *(SlimDX.Matrix*)&mat;
 
 
-                    TextFlags flag = TextFlags.NoWordWrapping;
-
-                    if (this.FHorizontalAlignInput[i].Index == 0) { flag |= TextFlags.Left; }
-                    else if (this.FHorizontalAlignInput[i].Index == 1) { flag |= TextFlags.Center; }
-                    else if (this.FHorizontalAlignInput[i].Index == 2) { flag |= TextFlags.Right; }
-
-                    if (this.FVerticalAlignInput[i].Index == 0) { flag |= TextFlags.Top; }
-                    else if (this.FVerticalAlignInput[i].Index == 1) { flag |= TextFlags.VerticalCenter; }
-                    else if (this.FVerticalAlignInput[i].Index == 2) { flag |= TextFlags.Bottom; }
-
-                    string font = this.FFontInput[i].Name;
-
-                    if (applyState)
+                    if (settings.ValidateObject(objectsettings))
                     {
-                        renderStates.SetStates(shaprdxContext, 0);
+                        SlimDX.Color4 color = this.FInColor[i];
+                        SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
 
-                        context.RenderStateStack.Push(this.FStateIn[i]);
+                        TextFlags flag = TextFlags.NoWordWrapping;
 
-                        fw.DrawString(shaprdxContext, this.FInString[i], font, this.FInSize[i],
-                            mat, sdxColor, flag | TextFlags.StatePrepared);
+                        if (this.FHorizontalAlignInput[i].Index == 0) { flag |= TextFlags.Left; }
+                        else if (this.FHorizontalAlignInput[i].Index == 1) { flag |= TextFlags.Center; }
+                        else if (this.FHorizontalAlignInput[i].Index == 2) { flag |= TextFlags.Right; }
 
-                        context.RenderStateStack.Pop();
-                    }
-                    else
-                    {
-                        fw.DrawString(shaprdxContext, this.FInString[i], font, this.FInSize[i],
-                            mat, sdxColor, flag);
+                        if (this.FVerticalAlignInput[i].Index == 0) { flag |= TextFlags.Top; }
+                        else if (this.FVerticalAlignInput[i].Index == 1) { flag |= TextFlags.VerticalCenter; }
+                        else if (this.FVerticalAlignInput[i].Index == 2) { flag |= TextFlags.Bottom; }
+
+                        string font = this.FFontInput[i].Name;
+
+                        if (applyState)
+                        {
+                            renderStates.SetStates(shaprdxContext, 0);
+
+                            context.RenderStateStack.Push(this.FStateIn[i]);
+
+                            fw.DrawString(shaprdxContext, this.FInString[i], font, this.FInSize[i],
+                                mat, sdxColor, flag | TextFlags.StatePrepared);
+
+                            context.RenderStateStack.Pop();
+                        }
+                        else
+                        {
+                            fw.DrawString(shaprdxContext, this.FInString[i], font, this.FInSize[i],
+                                mat, sdxColor, flag);
+                        }
                     }
                 }
 
