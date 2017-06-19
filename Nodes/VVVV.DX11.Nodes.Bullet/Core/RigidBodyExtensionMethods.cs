@@ -51,6 +51,10 @@ namespace VVVV.Bullet.Core
             {
                 rigidBody.ActivationState = ActivationState.DisableDeactivation;
             }
+            if (motionProperties.IsActive == false)
+            {
+                rigidBody.ActivationState = (ActivationState)0;
+            }
         }
 
         public static Tuple<RigidBody, int> CreateRigidBody(this IRigidBodyContainer world, CollisionShape collisionShape, ref RigidBodyPose initialPose, ref RigidBodyProperties bodyProperties, ref BulletSharp.Vector3 localInertia, float mass)

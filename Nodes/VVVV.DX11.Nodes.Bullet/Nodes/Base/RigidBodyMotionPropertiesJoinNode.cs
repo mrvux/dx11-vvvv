@@ -23,8 +23,11 @@ namespace VVVV.Nodes.Bullet
         [Input("Angular Velocity")]
         protected ISpread<SlimDX.Vector3> angularVelocity;
 
-        [Input("Allow Sleep")]
+        [Input("Allow Sleep", DefaultBoolean = true)]
         protected ISpread<bool> allowSleep;
+
+        [Input("Is Active", DefaultBoolean = true)]
+        protected ISpread<bool> isActive;
 
         [Output("Output")]
         protected ISpread<RigidBodyMotionProperties> output;
@@ -42,6 +45,7 @@ namespace VVVV.Nodes.Bullet
                     posePtr[i].LinearVelocity = *(BulletSharp.Vector3*)&lv;
                     posePtr[i].AngularVelocity = *(BulletSharp.Vector3*)&av;
                     posePtr[i].AllowSleep = allowSleep[i];
+                    posePtr[i].IsActive = isActive[i]; 
                 }
             }
             this.output.Flush(true);
