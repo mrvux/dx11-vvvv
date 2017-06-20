@@ -15,19 +15,33 @@ using VVVV.DX11.Effects;
 
 namespace VVVV.DX11.Lib.Effects
 {
-    public class DX11ShaderVariableManager
+    public interface IDX11ShaderVariableManager
+    {
+        ShaderPinDictionary ShaderPins { get; }
+        WorldRenderVariableDictionary WorldVariables { get; }
+        RenderVariableDictionary RenderVariables { get; }
+        void SetShader(DX11Effect shader);
+        void CreateShaderPins();
+        List<string> GetCustomData();
+        void UpdateShaderPins();
+        void ApplyUpdates();
+        int CalculateSpreadMax();
+        bool SetGlobalSettings(DX11ShaderInstance shaderInstance, DX11RenderSettings settings);
+    }
+
+    public class DX11ShaderVariableManager : IDX11ShaderVariableManager
     {
         protected DX11Effect shader;
-        private IPluginHost host;
-        private IIOFactory iofactory;
+        protected IPluginHost host;
+        protected IIOFactory iofactory;
 
-        private ShaderPinDictionary shaderpins = new ShaderPinDictionary();
-        private RenderVariableDictionary rendervariables = new RenderVariableDictionary();
-        private WorldRenderVariableDictionary worldvariables = new WorldRenderVariableDictionary();
+        protected ShaderPinDictionary shaderpins = new ShaderPinDictionary();
+        protected RenderVariableDictionary rendervariables = new RenderVariableDictionary();
+        protected WorldRenderVariableDictionary worldvariables = new WorldRenderVariableDictionary();
 
-        private List<IDX11CustomRenderVariable> customvariables = new List<IDX11CustomRenderVariable>();
+        protected List<IDX11CustomRenderVariable> customvariables = new List<IDX11CustomRenderVariable>();
 
-        private DX11RenderSettings globalsettings;
+        protected DX11RenderSettings globalsettings;
 
         public DX11ShaderVariableManager(IPluginHost host, IIOFactory iofactory)
         {
@@ -94,7 +108,7 @@ namespace VVVV.DX11.Lib.Effects
         #endregion
 
         #region Create Pin
-        private void CreatePin(EffectVariable var)
+        protected virtual void CreatePin(EffectVariable var)
         {
             
             if (var.AsInterface() != null)
@@ -182,6 +196,5 @@ namespace VVVV.DX11.Lib.Effects
             }
             return csd;
         }
-
     }
 }

@@ -41,7 +41,7 @@ namespace VVVV.DX11.Nodes.Layers
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
     public unsafe class DX11ShaderNode : DX11BaseShaderNode, IPluginBase, IPluginEvaluate, IDisposable, IDX11LayerHost, IPartImportsSatisfiedNotification
     {
-        private DX11ShaderVariableManager varmanager;
+        private IDX11ShaderVariableManager varmanager;
         private DX11Resource<DX11ShaderData> deviceshaderdata = new DX11Resource<DX11ShaderData>();
         private DX11ContextElement<DX11ObjectRenderSettings> objectSettings = new DX11ContextElement<DX11ObjectRenderSettings>();
         private DX11ContextElement<List<DX11ObjectRenderSettings>> orderedObjectSettings = new DX11ContextElement<List<DX11ObjectRenderSettings>>();
@@ -160,11 +160,14 @@ namespace VVVV.DX11.Nodes.Layers
             this.FFactory = factory;
             this.TechniqueEnumId = Guid.NewGuid().ToString();
 
-            this.varmanager = new DX11ShaderVariableManager(host, factory);
+            this.varmanager = GetVarManager(host, factory);
 
             this.FHost.CreateTransformInput("Transform In", TSliceMode.Dynamic, TPinVisibility.True, out this.FInWorld);
         }
         #endregion
+
+        protected virtual IDX11ShaderVariableManager GetVarManager(IPluginHost host, IIOFactory iofactor)
+            => new DX11ShaderVariableManager(host, iofactor);        
 
         #region Evaluate
         public void Evaluate(int SpreadMax)
