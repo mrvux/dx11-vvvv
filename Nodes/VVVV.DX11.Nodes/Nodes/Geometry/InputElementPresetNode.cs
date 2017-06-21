@@ -18,13 +18,19 @@ namespace VVVV.DX11.Nodes.Geometry
         protected IDiffSpread<EnumEntry> FInLayoutType;
 
         [Output("Output")]
-        protected ISpread<InputElement> FOutput;
+        protected ISpread<ISpread<InputElement>> FOutput;
 
         public void Evaluate(int SpreadMax)
         {
             if (this.FInLayoutType.IsChanged)
             {
-                this.FOutput.AssignFrom(VertexLayoutsHelpers.Elements[FInLayoutType[0]]);
+                this.FOutput.SliceCount = this.FInLayoutType.SliceCount;
+                for (int i = 0; i < this.FInLayoutType.SliceCount; i++)
+                {
+                    InputElement[] elements = VertexLayoutsHelpers.Elements[FInLayoutType[i]];
+
+                    this.FOutput[i].AssignFrom(elements);
+                }
             }
         }
     }
