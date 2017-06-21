@@ -67,6 +67,7 @@
     <Compile Include="Nodes\Layers\Space\ViewPortBillboardNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11BufferRendererAdvanced.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
+    <Compile Include="Nodes\Renderers\Buffers\DX11AdvancedStreamOutRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11SpreadRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dArrayRendererNode.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Nodes\Textures\1D\DynamicTexture1DColorNode.cs" />
     <Compile Include="Nodes\Textures\1D\InfoTexture1DNode.cs" />
     <Compile Include="Nodes\Textures\1D\WriterTexture1dNode.cs" />
+    <Compile Include="Nodes\Textures\2D\AsTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\PixelData.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceDepthTextureArray.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
