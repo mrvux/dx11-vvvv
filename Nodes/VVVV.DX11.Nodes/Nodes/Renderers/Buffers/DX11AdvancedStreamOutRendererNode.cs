@@ -14,6 +14,8 @@ using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 using FeralTic.DX11.Utils;
 using FeralTic.DX11.Resources.Misc;
+using VVVV.DX11.Internals.Helpers;
+using VVVV.Utils.VMath;
 
 namespace VVVV.DX11.Nodes
 {
@@ -35,12 +37,23 @@ namespace VVVV.DX11.Nodes
         [Input("Element Count", Order = 8, DefaultValue = 512)]
         protected IDiffSpread<int> FInElemCount;
 
-
         [Input("Output Layout", Order = 10005)]
         protected IDiffSpread<InputElement> FInLayouts;
 
+        [Input("Output Draw Mode", Order = 10005)]
+        protected IDiffSpread<StreamOutputBufferWithRawSupport.OutputDrawMode> FinOutputDrawMode;
+
         [Input("Output Layout Element Count", Order = 10006, DefaultValue = -1)]
         protected IDiffSpread<int> FInLayoutsElementCount;
+
+        [Input("Attach Index Buffer", Order = 10006, DefaultValue = -1, Visibility = PinVisibility.Hidden)]
+        protected IDiffSpread<bool> FAttachIndexBuffer;
+
+        [Input("Vertex Buffer Binding", Order = 10006, DefaultValue = -1, Visibility = PinVisibility.Hidden)]
+        protected IDiffSpread<int> FInVertexBufferBinding;
+
+        [Input("Index Buffer Binding", Order = 10006, DefaultValue = -1, Visibility = PinVisibility.Hidden)]
+        protected IDiffSpread<int> FInIndexBufferBinding;
 
         [Input("Enabled", DefaultValue = 1, Order = 15)]
         protected ISpread<bool> FInEnabled;
@@ -49,7 +62,10 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FInKeepInMemory;
 
         [Output("Geometry Out")]
-        protected ISpread<DX11Resource<IDX11Geometry>> FOutGeom;
+        protected ISpread<DX11Resource<IDX11Geometry>> FOutput;
+
+        [Output("Geometry Slices Out")]
+        protected ISpread<DX11Resource<IDX11Geometry>> FOutSlices;
 
         [Output("Buffer Out")]
         protected ISpread<DX11Resource<DX11RawBuffer>> FOutBuffer;
@@ -57,12 +73,8 @@ namespace VVVV.DX11.Nodes
         [Output("Query", Order = 200, IsSingle = true)]
         protected ISpread<IDX11Queryable> FOutQueryable;
 
-
-
         protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
         protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
-
-        
 
         public event DX11QueryableDelegate BeginQuery;
         public event DX11QueryableDelegate EndQuery;
@@ -88,7 +100,10 @@ namespace VVVV.DX11.Nodes
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            invalidate = this.FInVSize.IsChanged || this.FInElemCount.IsChanged || this.FInLayouts.IsChanged || this.FInLayoutsElementCount.IsChanged;
+            invalidate = this.FInVSize.IsChanged || this.FInElemCount.IsChanged ||
+                this.FInLayouts.IsChanged || this.FInLayoutsElementCount.IsChanged
+                || this.FinOutputDrawMode.IsChanged || this.FInVertexBufferBinding.IsChanged || this.FInIndexBufferBinding.IsChanged
+                || this.FAttachIndexBuffer.IsChanged;
 
             int bufferCount = SpreadMax == 0 ? 0 : this.FInBufferCount[0];
             if (bufferCount > 4)
@@ -111,17 +126,39 @@ namespace VVVV.DX11.Nodes
             }
             this.currentBufferCount = bufferCount;
 
-            this.FOutGeom.SliceCount = this.currentBufferCount;
+            
             this.FOutBuffer.SliceCount = this.currentBufferCount;
+            this.FOutSlices.SliceCount = this.currentBufferCount;
+
+            bool attachIndex = this.FAttachIndexBuffer[0];
+            if (attachIndex)
+            {
+                int mx = SpreadUtils.SpreadMax(this.FInVertexBufferBinding, this.FInIndexBufferBinding);
+                this.FOutput.SliceCount = mx;
+            }
+            else
+            {
+                this.FOutput.SliceCount = this.currentBufferCount;
+            }
 
             for (int i = 0; i < this.currentBufferCount; i++)
             {
                 if (this.FOutBuffer[i] == null)
                 {
                     this.FOutBuffer[i] = new DX11Resource<DX11RawBuffer>();
-                    this.FOutGeom[i] = new DX11Resource<IDX11Geometry>();
+                    this.FOutSlices[i] = new DX11Resource<IDX11Geometry>();
                 }
             }
+
+            for (int i = 0; i < this.FOutput.SliceCount; i++)
+            {
+                if (this.FOutput[i] == null)
+                {
+                    this.FOutput[i] = new DX11Resource<IDX11Geometry>();
+                }
+            }
+
+
         }
 
         public bool IsEnabled
@@ -201,13 +238,22 @@ namespace VVVV.DX11.Nodes
 
                 bool all = this.FInLayoutsElementCount[0] == -1;
                 int currentOffset = 0;
+
+                bool attachIndex = this.FAttachIndexBuffer[0];
+
                 if (all)
                 {
                     for (int index = 0; index < this.currentBufferCount; index++)
                     {
-                        this.outputBuffer[index] = new StreamOutputBufferWithRawSupport(context, this.FInVSize[index], this.FInElemCount[index], this.FInLayouts.ToArray());
-                        this.FOutGeom[index][context] = this.outputBuffer[index].VertexGeometry;
+                        this.outputBuffer[index] = new StreamOutputBufferWithRawSupport(context, DeviceFormatHelper.ComputeVertexSize(this.FInVSize[index], this.FInLayouts.ToArray()), this.FInElemCount[index], 
+                            this.FinOutputDrawMode[index], attachIndex, this.FInLayouts.ToArray());
+                        this.FOutSlices[index][context] = this.outputBuffer[index].VertexGeometry;
                         this.FOutBuffer[index][context] = this.outputBuffer[index].RawBuffer;
+                        if (!attachIndex)
+                        {
+                            this.FOutput[index][context] = this.outputBuffer[index].VertexGeometry;
+                        }
+
                     }
                 }
                 else
@@ -224,12 +270,40 @@ namespace VVVV.DX11.Nodes
                             elems[j] = this.FInLayouts[currentOffset++];
                         }
 
-                        this.outputBuffer[index] = new StreamOutputBufferWithRawSupport(context, this.FInVSize[index], this.FInElemCount[index], elems);
-                        this.FOutGeom[index][context] = this.outputBuffer[index].VertexGeometry;
+                        this.outputBuffer[index] = new StreamOutputBufferWithRawSupport(context, DeviceFormatHelper.ComputeVertexSize(this.FInVSize[index], this.FInLayouts.ToArray()), 
+                            this.FInElemCount[index], this.FinOutputDrawMode[index], attachIndex, elems);
+                        this.FOutSlices[index][context] = this.outputBuffer[index].VertexGeometry;
                         this.FOutBuffer[index][context] = this.outputBuffer[index].RawBuffer;
+                        if (!attachIndex)
+                        {
+                            this.FOutput[index][context] = this.outputBuffer[index].VertexGeometry;
+                        }
                     }
                 }
 
+                if (attachIndex)
+                {
+                    //Construct output binding instead, as a tuple v/i from slice max
+                    int mx = SpreadUtils.SpreadMax(this.FInVertexBufferBinding, this.FInIndexBufferBinding);
+                    for (int i = 0; i < mx; i++)
+                    {
+                        var vbo = this.outputBuffer[VMath.Zmod(this.FInVertexBufferBinding[i], this.currentBufferCount)];
+                        var ibo = this.outputBuffer[VMath.Zmod(this.FInIndexBufferBinding[i], this.currentBufferCount)];
+
+                        DX11IndexedGeometry ig = new DX11IndexedGeometry(context);
+                        ig.HasBoundingBox = false;
+                        ig.IndexBuffer = ibo.IndexBuffer;
+                        ig.InputLayout = vbo.VertexGeometry.InputLayout;
+                        ig.Topology = PrimitiveTopology.TriangleList;
+                        ig.VertexBuffer = vbo.D3DBuffer;
+                        ig.VertexSize = vbo.VertexGeometry.VertexSize;
+                        ig.VerticesCount = vbo.VertexGeometry.VerticesCount;
+
+                        this.FOutput[i][context] = ig;
+                    }
+
+                        
+                }
 
             }
 

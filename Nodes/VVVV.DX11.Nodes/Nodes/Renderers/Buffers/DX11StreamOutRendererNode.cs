@@ -31,6 +31,9 @@ namespace VVVV.DX11.Nodes
         [Input("Element Count", Order = 8, DefaultValue = 512)]
         protected IDiffSpread<int> FInElemCount;
 
+        [Input("Output Draw Mode", DefaultEnumEntry ="Auto", Order = 1000)]
+        protected IDiffSpread<StreamOutputBufferWithRawSupport.OutputDrawMode> FinOutputDrawMode;
+
         [Input("Output Layout", Order = 10005, CheckIfChanged = true)]
         protected Pin<InputElement> FInLayout;
 
@@ -79,7 +82,7 @@ namespace VVVV.DX11.Nodes
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            invalidate = this.FInVSize.IsChanged || this.FInElemCount.IsChanged || this.FInLayout.IsChanged;
+            invalidate = this.FInVSize.IsChanged || this.FInElemCount.IsChanged || this.FInLayout.IsChanged || FinOutputDrawMode.IsChanged;
 
             if (SpreadMax == 0)
             {
@@ -169,7 +172,7 @@ namespace VVVV.DX11.Nodes
             {
                 this.DisposeBuffers(context);
 
-                this.buffer = new StreamOutputBufferWithRawSupport(context, this.FInVSize[0], this.FInElemCount[0], this.FInLayout.ToArray());
+                this.buffer = new StreamOutputBufferWithRawSupport(context, this.FInVSize[0], this.FInElemCount[0],this.FinOutputDrawMode[0],false, this.FInLayout.ToArray());
 
                 this.FOutGeom[0][context] = this.buffer.VertexGeometry;
 
