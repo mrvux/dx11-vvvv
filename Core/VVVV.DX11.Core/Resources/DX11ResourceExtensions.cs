@@ -35,6 +35,15 @@ namespace VVVV.DX11
             }
         }
 
+        public static void SafeDispose<T>(this ISpread<DX11Resource<T>> spread, int index) where T : IDX11Resource
+        {
+            if (spread.SliceCount > 0 && spread[index] != null)
+            {
+                spread[index].Dispose();
+                spread[index] = null;
+            }
+        }
+
         public static void SafeDisposeAll<T>(this ISpread<DX11Resource<T>> spread, DX11RenderContext context) where T : IDX11Resource
         {
             for (int i = 0; i < spread.SliceCount; i++)

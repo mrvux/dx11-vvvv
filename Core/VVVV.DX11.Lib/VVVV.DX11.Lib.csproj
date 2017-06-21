@@ -159,7 +159,6 @@
     <Compile Include="Rendering\ViewPortManager.cs" />
     <Compile Include="Utils\DirectWriteFontUtils.cs" />
     <Compile Include="Utils\InputLayoutFactory.cs" />
-    <Compile Include="Utils\SpreadUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">

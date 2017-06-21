@@ -69,5 +69,17 @@ namespace VVVV.DX11.Internals.Helpers
             return (Format)Enum.Parse(typeof(Format), fmt);
         }
 
-	}
+        public static int GetFormatStrideInBytes(SlimDX.DXGI.Format format, int width)
+        {
+            SharpDX.DXGI.Format sf = (SharpDX.DXGI.Format)format;
+            return SharpDX.DXGI.FormatHelper.SizeOfInBytes(sf) * width;
+        }
+
+        public static int GetPixelSizeInBytes(SlimDX.DXGI.Format format)
+        {
+            SharpDX.DXGI.Format sf = (SharpDX.DXGI.Format)format;
+            return SharpDX.DXGI.FormatHelper.SizeOfInBytes(sf);
+        }
+
+    }
 }
