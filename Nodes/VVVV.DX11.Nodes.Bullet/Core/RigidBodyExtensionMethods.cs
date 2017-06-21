@@ -51,7 +51,7 @@ namespace VVVV.Bullet.Core
             {
                 rigidBody.ActivationState = ActivationState.DisableDeactivation;
             }
-            if (motionProperties.IsActive == false)
+            if (motionProperties.IsAwake == false)
             {
                 rigidBody.ActivationState = (ActivationState)0;
             }

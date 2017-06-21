@@ -16,7 +16,7 @@ namespace VVVV.Bullet.Core
         public BulletSharp.Vector3 LinearVelocity;
         public BulletSharp.Vector3 AngularVelocity;
         public bool AllowSleep;
-        public bool IsActive;
+        public bool IsAwake;
 
         public static RigidBodyMotionProperties Default
         {
@@ -27,7 +27,7 @@ namespace VVVV.Bullet.Core
                     AllowSleep = true,
                     AngularVelocity = BulletSharp.Vector3.Zero,
                     LinearVelocity = BulletSharp.Vector3.Zero,
-                    IsActive = true
+                    IsAwake = true
                 };
             }
         }

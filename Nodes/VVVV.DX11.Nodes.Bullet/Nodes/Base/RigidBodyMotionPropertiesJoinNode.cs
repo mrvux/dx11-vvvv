@@ -26,7 +26,7 @@ namespace VVVV.Nodes.Bullet
         [Input("Allow Sleep", DefaultBoolean = true)]
         protected ISpread<bool> allowSleep;
 
-        [Input("Is Active", DefaultBoolean = true)]
+        [Input("Is Awake", DefaultBoolean = true)]
         protected ISpread<bool> isActive;
 
         [Output("Output")]
@@ -45,7 +45,7 @@ namespace VVVV.Nodes.Bullet
                     posePtr[i].LinearVelocity = *(BulletSharp.Vector3*)&lv;
                     posePtr[i].AngularVelocity = *(BulletSharp.Vector3*)&av;
                     posePtr[i].AllowSleep = allowSleep[i];
-                    posePtr[i].IsActive = isActive[i]; 
+                    posePtr[i].IsAwake = isActive[i]; 
                 }
             }
             this.output.Flush(true);
