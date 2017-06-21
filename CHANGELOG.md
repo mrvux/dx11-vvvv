@@ -2,7 +2,39 @@ ChangeLog
 =========
 
 # Upcoming
-* [Help] Vlc (Dx11.Texture2D) help patch
+* [Help] More than 100-150 new help patches, Every single node except Kinect2 (and experimental) now has a help patch.
+* [Bullet] Large redesign of the whole system, many more nodes, clearer API. Soft bodies are not back yet, but constraints + vehicle + filters are there.
+* [Build] Now all components are in various subfolders, to make it easier to search and pick and mix. 
+* [Build] Lite pack version, without vlc/kinect (which are taking most of the space). So if you don't need those you can use lite pack and save on your precious ssd space (and download times)
+
+* [Build] Now we use warning as errors, build will fail otherwise.
+* [Build] Help patch for every node is also enforced by build system which reports errors ifhelp patch is missing.
+* [Kinect2] All dependencies are properly copied
+* [Nodes] Renderer has option to disable default shortcuts when focused
+* [Core] Add READONLYDEPTHTEXTURE semantic, so can rebind a depth buffer as read
+* [Nodes] Volume renderer was throwing an error on delete/exit if it was never used
+* [Nodes] BufferData, fix stream position reset (which was causing readback to fail in some cases)
+* [Nodes] VertexIndirect : fix cast issue which was causing it to fail with some geometries
+* [Nodes] Anisotropic sampler node clamps value from 0->16 (enforces it and adds it on ui)
+* [Nodes] Multi slice validator was broken, now it's working again.
+* [Nodes] unzip text style had wrong data type
+* [DirectWrite] Text layout nodes set a ui minimum value for maxwidth/mxheight, and enforce a >= 0 to avoid invalid argument error
+* [Nodes] Line Strip now has adjacency option (to build line adj instead)
+* [Nodes] Add GetSpread (DX11.Layer Order), allows to get spread a layer, this is much faster than using a validator counterpart.
+* [Nodes] Bezier patch helpers on non uniform control points were displaying incorrectly.
+* [Nodes] PixelBillBoard and ViewportBillBoard (DX11.Layer) are now spreadable
+* [Core]  Gsfx technique change was set back to false too early, which caused shader to be invalid in some cases while authoring.
+* [Nodes] SetSlice (TextureArray) now outputs individual slices as well as single TextureArray
+* [Core] Fixe some issues that were occuring while generating nodelist (user:azeno)
+* [Text] Text library is replaced by a pure c# counterpart, which avoids to require any of the visual c++ toolchains to build the pack (and the correct visual studio version that goes with it)
+* [Nodes] FromSharedTexture disposes old handle properly, and handles Nil input properly if it occurs
+* [Nodes] Info (DX11.Texture2D) has a pin with creation time (debug timestamp provided by the driver)
+* [Nodes] ViewportRouter (DX11.Layer) Some group that sends layer on a per viewport basis
+* [Core] Image shader size defaults are hidden and not collapsed now, since they are frequently used for sources
+* [Nodes] Text nodes support validators (except frustum test)
+* [Nodes] Renderer (DX11.StreamOut) was not releasing buffer properly.
+* [Nodes] Renderer (DX11.StreamOut Advanced) new node.
+* [Nodes] AsTexture (DX11.Texture 2d Raw) Create texture from a stream (use data as it is, and user needs to provide format/size/stride). Also allows to read from specific location in the stream.
 
 # 1.0.1
 * [Nodes] Fixed last minute issue in DynamicBuffer 
