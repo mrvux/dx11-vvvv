@@ -81,5 +81,19 @@ namespace VVVV.DX11.Internals.Helpers
             return SharpDX.DXGI.FormatHelper.SizeOfInBytes(sf);
         }
 
+        public static int ComputeVertexSize(int manualSize, InputElement[] elements)
+        {
+            if (manualSize > 0)
+                return manualSize;
+
+            int size = 0;
+            for (int i = 0; i < elements.Length; i++)
+            {
+                size += GetPixelSizeInBytes(elements[i].Format);
+            }
+            return size;
+
+        }
+
     }
 }
