@@ -13,11 +13,12 @@ using FeralTic.DX11.Queries;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
 using FeralTic.DX11.Utils;
+using FeralTic.DX11.Resources.Misc;
 
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "Renderer", Category = "DX11", Version = "StreamOut", Author = "vux", AutoEvaluate = false)]
-    public class DX11SORendererNode : IPluginEvaluate, IDX11RendererHost, IDisposable
+    public class DX11SORendererNode : IPluginEvaluate, IDX11RendererHost, IDisposable, IDX11Queryable
     {
         protected IPluginHost FHost;
 
@@ -33,9 +34,6 @@ namespace VVVV.DX11.Nodes
         [Input("Output Layout", Order = 10005, CheckIfChanged = true)]
         protected Pin<InputElement> FInLayout;
 
-        [Input("Reset Counter Value")]
-        protected IDiffSpread<int> FInResetCounterValue;
-
         [Input("Enabled", DefaultValue = 1, Order = 15)]
         protected ISpread<bool> FInEnabled;
 
@@ -48,27 +46,24 @@ namespace VVVV.DX11.Nodes
         [Input("Keep In Memory", Order = 18, Visibility = PinVisibility.OnlyInspector, IsSingle=true)]
         protected ISpread<bool> FInKeepInMemory;
 
-        [Output("Geometry Out", IsSingle = true)]
+        [Output("Geometry Out")]
         protected ISpread<DX11Resource<IDX11Geometry>> FOutGeom;
 
-        [Output("Buffer Out", IsSingle = true)]
+        [Output("Buffer Out")]
         protected ISpread<DX11Resource<DX11RawBuffer>> FOutBuffer;
 
-        protected int vsize;
-        protected int cnt;
+        [Output("Query", Order = 200, IsSingle = true)]
+        protected ISpread<IDX11Queryable> FOutQueryable;
 
         protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
         protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
 
-        private bool reset = false;
-
-
         public event DX11QueryableDelegate BeginQuery;
-
         public event DX11QueryableDelegate EndQuery;
 
         private DX11RenderSettings settings = new DX11RenderSettings();
-        private SlimDX.Direct3D11.Buffer buffer;
+        private StreamOutputBufferWithRawSupport buffer;
+        private bool invalidate = false;
 
         [ImportingConstructor()]
         public DX11SORendererNode(IPluginHost FHost)
@@ -78,21 +73,28 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
+            if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
+
+
             this.rendereddevices.Clear();
             this.updateddevices.Clear();
 
-            reset = this.FInVSize.IsChanged || this.FInElemCount.IsChanged;
+            invalidate = this.FInVSize.IsChanged || this.FInElemCount.IsChanged || this.FInLayout.IsChanged;
 
-            if (this.FOutGeom[0] == null)
+            if (SpreadMax == 0)
+            {
+                if (this.buffer != null)
+                {
+                    this.buffer.Dispose();
+                    this.buffer = null;
+                }
+                return;
+            }
+
+            if (this.FOutBuffer[0] == null)
             {
                 this.FOutGeom[0] = new DX11Resource<IDX11Geometry>();
                 this.FOutBuffer[0] = new DX11Resource<DX11RawBuffer>();
-            }
-
-            if (reset)
-            {
-                this.cnt = this.FInElemCount[0];
-                this.vsize = this.FInVSize[0];
             }
         }
 
@@ -103,6 +105,9 @@ namespace VVVV.DX11.Nodes
 
         public void Render(DX11RenderContext context)
         {
+            if (this.FOutBuffer.SliceCount == 0)
+                return;
+
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
@@ -112,9 +117,7 @@ namespace VVVV.DX11.Nodes
                 this.Update(context);
             }
 
-
-
-            if (!this.FInLayer.PluginIO.IsConnected) { return; }
+            if (!this.FInLayer.IsConnected) { return; }
 
             if (this.rendereddevices.Contains(context)) { return; }
 
@@ -127,7 +130,7 @@ namespace VVVV.DX11.Nodes
 
                 context.CurrentDeviceContext.OutputMerger.SetTargets(new RenderTargetView[0]);
 
-                ctx.StreamOutput.SetTargets(new StreamOutputBufferBinding(this.buffer, 0));
+                ctx.StreamOutput.SetTargets(new StreamOutputBufferBinding(this.buffer.D3DBuffer, 0));
 
                 int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
 
@@ -138,9 +141,9 @@ namespace VVVV.DX11.Nodes
                     settings.View = this.FInView[i];
                     settings.Projection = this.FInProjection[i];
                     settings.ViewProjection = settings.View * settings.Projection;
-                    settings.RenderWidth = this.cnt;
-                    settings.RenderHeight = this.cnt;
-                    settings.RenderDepth = this.cnt;
+                    settings.RenderWidth = 1;
+                    settings.RenderHeight = 1;
+                    settings.RenderDepth = 1;
                     settings.BackBuffer = null;
 
                     this.FInLayer.RenderAll(context, settings);
@@ -158,31 +161,21 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
+            if (this.FOutBuffer.SliceCount == 0)
+                return;
+
             if (this.updateddevices.Contains(context)) { return; }
-            if (reset || !this.FOutGeom[0].Contains(context))
+            if (this.invalidate || this.buffer == null)
             {
                 this.DisposeBuffers(context);
 
-                // int vsize = customlayout ? size : ig.VertexSize;
-                SlimDX.Direct3D11.Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, this.cnt);
+                this.buffer = new StreamOutputBufferWithRawSupport(context, this.FInVSize[0], this.FInElemCount[0], this.FInLayout.ToArray());
 
-                //Copy a new Vertex buffer with stream out
-                DX11VertexGeometry vg = new DX11VertexGeometry(context);
-                vg.AssignDrawer(new DX11VertexAutoDrawer());
-                vg.HasBoundingBox = false;
-                vg.InputLayout = this.FInLayout.ToArray();
-                vg.Topology = PrimitiveTopology.TriangleList;
-                vg.VertexBuffer = vbo;
-                vg.VertexSize = vsize;
-                vg.VerticesCount = this.cnt;
-
-                this.buffer = vbo;
-
-                this.FOutGeom[0][context] = vg;
+                this.FOutGeom[0][context] = this.buffer.VertexGeometry;
 
                 if (context.ComputeShaderSupport)
                 {
-                    this.FOutBuffer[0][context] = new DX11RawBuffer(context, vbo);
+                    this.FOutBuffer[0][context] = this.buffer.RawBuffer;
                 }
                 else
                 {
@@ -204,16 +197,21 @@ namespace VVVV.DX11.Nodes
         #region Dispose Buffers
         private void DisposeBuffers(DX11RenderContext context)
         {
-            for (int i = 0; i < this.FOutGeom.SliceCount; i++)
+            if (this.buffer != null)
             {
-                this.FOutGeom[i].Dispose(context);
+                this.buffer.Dispose();
+                this.buffer = null;
             }
         }
         #endregion
 
         public void Dispose()
         {
-            this.FOutGeom.SafeDisposeAll();
+            if (this.buffer != null)
+            {
+                this.buffer.Dispose();
+                this.buffer = null;
+            }
         }
     }
 
