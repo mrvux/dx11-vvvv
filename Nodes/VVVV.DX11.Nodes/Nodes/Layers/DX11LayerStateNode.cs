@@ -63,10 +63,7 @@ namespace VVVV.DX11.Nodes
                         popstate = true;
                     }
 
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(context, settings);
-                    }
+                    this.FLayerIn.RenderAll(context, settings);
 
                     if (popstate) { context.RenderStateStack.Pop(); }
 
@@ -76,10 +73,7 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FLayerIn.IsConnected)
                 {
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(context, settings);
-                    }
+                    this.FLayerIn.RenderAll(context, settings);
                 }
             }
         }

@@ -45,9 +45,6 @@ namespace VVVV.DX11.Nodes
         [Output("RenderTarget Stack Count")]
         protected ISpread<int> FOutRTStack;
 
-        [Output("Viewport Stack Count")]
-        protected ISpread<int> FOutVPStack;
-
         [Output("RenderState Stack Count")]
         protected ISpread<int> FOutRSStack;
 
@@ -114,7 +111,6 @@ namespace VVVV.DX11.Nodes
                 this.FOutBufferCount.SliceCount = ctxlist.Count;
                 this.FOutRTCount.SliceCount = ctxlist.Count;
                 this.FOutRTStack.SliceCount = ctxlist.Count;
-                this.FOutVPStack.SliceCount = ctxlist.Count;
                 this.FOutLastFrame.SliceCount = ctxlist.Count;
                 this.FOutThisFrame.SliceCount = ctxlist.Count;
                 this.FOutProcessedCount.SliceCount = ctxlist.Count;
@@ -142,7 +138,6 @@ namespace VVVV.DX11.Nodes
                     this.FOutRTCount[i] = ctx.ResourcePool.RenderTargetCount;
                     this.FOutRTStack[i] = ctx.RenderTargetStack.StackCount;
                     this.FOutRSStack[i] = ctx.RenderStateStack.Count;
-                    this.FOutVPStack[i] = ctx.RenderTargetStack.ViewPortStackCount;
                     this.FOutLastFrame[i] = renderer.LastPinsCount;
                     this.FOutThisFrame[i] = renderer.ThisFramePins;
                     this.FOutNodeCount[i] = renderer.Graph.Nodes.Count;

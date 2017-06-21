@@ -231,7 +231,7 @@ namespace VVVV.DX11
 
                             if (viewportpop)
                             {
-                                context.RenderTargetStack.PopViewport();
+                                context.RenderTargetStack.Pop();
                             }
                         }
                     }

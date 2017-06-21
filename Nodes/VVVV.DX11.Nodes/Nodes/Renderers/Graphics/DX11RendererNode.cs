@@ -498,7 +498,7 @@ namespace VVVV.DX11.Nodes
 
             if (viewportpop)
             {
-                context.RenderTargetStack.PopViewport();
+                context.RenderTargetStack.Pop();
             }
         }
 
