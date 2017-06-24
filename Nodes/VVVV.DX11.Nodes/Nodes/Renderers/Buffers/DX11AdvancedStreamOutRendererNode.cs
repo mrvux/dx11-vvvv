@@ -46,13 +46,13 @@ namespace VVVV.DX11.Nodes
         [Input("Output Layout Element Count", Order = 10006, DefaultValue = -1)]
         protected IDiffSpread<int> FInLayoutsElementCount;
 
-        [Input("Attach Index Buffer", Order = 10006, DefaultValue = -1, Visibility = PinVisibility.Hidden)]
+        [Input("Attach Index Buffer", Order = 10006, DefaultValue = 0, Visibility = PinVisibility.Hidden)]
         protected IDiffSpread<bool> FAttachIndexBuffer;
 
-        [Input("Vertex Buffer Binding", Order = 10006, DefaultValue = -1, Visibility = PinVisibility.Hidden)]
+        [Input("Vertex Buffer Binding", Order = 10006, DefaultValue = 0, Visibility = PinVisibility.Hidden)]
         protected IDiffSpread<int> FInVertexBufferBinding;
 
-        [Input("Index Buffer Binding", Order = 10006, DefaultValue = -1, Visibility = PinVisibility.Hidden)]
+        [Input("Index Buffer Binding", Order = 10006, DefaultValue = 0, Visibility = PinVisibility.Hidden)]
         protected IDiffSpread<int> FInIndexBufferBinding;
 
         [Input("Enabled", DefaultValue = 1, Order = 15)]
@@ -270,7 +270,7 @@ namespace VVVV.DX11.Nodes
                             elems[j] = this.FInLayouts[currentOffset++];
                         }
 
-                        this.outputBuffer[index] = new StreamOutputBufferWithRawSupport(context, DeviceFormatHelper.ComputeVertexSize(this.FInVSize[index], this.FInLayouts.ToArray()), 
+                        this.outputBuffer[index] = new StreamOutputBufferWithRawSupport(context, DeviceFormatHelper.ComputeVertexSize(this.FInVSize[index], elems),
                             this.FInElemCount[index], this.FinOutputDrawMode[index], attachIndex, elems);
                         this.FOutSlices[index][context] = this.outputBuffer[index].VertexGeometry;
                         this.FOutBuffer[index][context] = this.outputBuffer[index].RawBuffer;
