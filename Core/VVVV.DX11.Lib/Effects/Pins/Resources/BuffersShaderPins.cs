@@ -14,25 +14,64 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Lib.Effects.Pins.Resources
 {
-    public class ReadableStructuredBufferShaderPin : ResourceShaderPin<IDX11ReadableStructureBuffer, SlimDX.Direct3D11.Buffer>
+    public class ReadableStructuredBufferShaderPin : AbstractShaderV2Pin<DX11Resource<IDX11ReadableStructureBuffer>>
     {
-        protected override ShaderResourceView GetSRV(DX11RenderContext context, int slice)
+        protected override void ProcessAttribute(InputAttribute attr, EffectVariable var)
         {
-            if (this.pin[slice] == null)
+            //Do nothing
+        }
+
+        protected override bool RecreatePin(EffectVariable variable)
+        {
+            return false;
+        }
+
+        private IDX11ReadableStructureBuffer GetResource(DX11RenderContext context, int slice)
+        {
+            if (this.pin[slice] != null && this.pin[slice].Contains(context))
             {
-                return null;
+                IDX11ReadableStructureBuffer sb = this.pin[slice][context];
+                return sb;
             }
             else
             {
-                if (!this.pin[slice].Contains(context))
+                return null;
+            }
+        }
+
+        public override Action<int> CreateAction(DX11ShaderInstance instance)
+        {
+            var sv = instance.Effect.GetVariableByName(this.Name).AsResource();
+
+            List<EffectScalarVariable> sizeOfVar = new List<EffectScalarVariable>();
+
+            for (int i = 0; i < instance.Effect.Description.GlobalVariableCount; i++)
+            {
+                var v = instance.Effect.GetVariableByIndex(i);
+                if (v.GetVariableType().Description.TypeName == "uint" && v.Description.Semantic == "SIZEOF" && v.Reference(this.Name))
                 {
-                    return null;
+                    sizeOfVar.Add(v.AsScalar());
                 }
-                else
+            }
+            if (sizeOfVar.Count == 0)
+            {
+                return (i) => 
                 {
-                    IDX11ReadableStructureBuffer sb = this.pin[slice][context];
-                    return sb != null ? sb.SRV : null;
-                }
+                    var resource = this.GetResource(instance.RenderContext, i);
+                    sv.SetResource(resource != null ? resource.SRV : null);
+                };
+            }
+            else
+            {
+                return (i) =>
+                {
+                    var resource = this.GetResource(instance.RenderContext, i);
+                    sv.SetResource(resource != null ? resource.SRV : null);
+                    for (int j = 0; j < sizeOfVar.Count; j++)
+                    {
+                        sizeOfVar[j].Set(resource != null ? resource.ElementCount : 0);
+                    }
+                };
             }
         }
     }
