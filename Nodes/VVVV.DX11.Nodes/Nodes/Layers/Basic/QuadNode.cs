@@ -122,6 +122,10 @@ namespace VVVV.DX11.Nodes
                 if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
                 if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             }
+            else
+            {
+                this.FOutLayer.SliceCount = 0;
+            }
         }
 
         #region IDX11ResourceProvider Members
@@ -153,7 +157,7 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(DX11RenderContext context, bool force)
         {
-            this.FOutLayer[0].Dispose(context);
+            this.FOutLayer.SafeDisposeAll(context);
         }
 
         private void RenderBasic(DX11RenderContext context, DX11RenderSettings settings)
