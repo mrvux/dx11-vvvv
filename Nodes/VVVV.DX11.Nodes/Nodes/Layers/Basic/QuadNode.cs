@@ -119,6 +119,11 @@ namespace VVVV.DX11.Nodes
             this.spmax = SpreadMax;
             if (SpreadMax > 0)
             {
+                if (this.FOutLayer.SliceCount == 0)
+                {
+                    this.FOutLayer.SliceCount = 1;
+                }
+
                 if (this.FOutLayer[0] == null) { this.FOutLayer[0] = new DX11Resource<DX11Layer>(); }
                 if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             }
