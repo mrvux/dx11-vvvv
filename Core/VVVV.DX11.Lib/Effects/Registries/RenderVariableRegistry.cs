@@ -41,6 +41,7 @@ namespace VVVV.DX11.Lib.Effects.Registries
             this.RegisterType("RWTexture1D", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("RWTexture1DArray", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("RWTexture2D", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
+            this.RegisterType("RWTexture2DArray", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("RWTexture3D", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
             this.RegisterType("RWStructuredBuffer", "BACKBUFFER", false, (var, host, factory) => new RWBackBufferRenderVariable(var));
 

@@ -42,6 +42,9 @@ namespace VVVV.DX11.Nodes
         [Input("Mips", DefaultValue = 0, Order = 5)]
         protected IDiffSpread<bool> FInMips;
 
+        [Input("Allow Unordered View", DefaultValue = 0, Order = 5, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInAllowUAV;
+
         [Input("Clear Depth", DefaultValue = 1, Order = 6)]
         protected ISpread<bool> FInClearDepth;
 
@@ -122,7 +125,8 @@ namespace VVVV.DX11.Nodes
             if (this.FInFormat.IsChanged
                 || this.FInSize.IsChanged
                 || this.FInElementCount.IsChanged
-                || this.FInMips.IsChanged)
+                || this.FInMips.IsChanged
+                || this.FInAllowUAV.IsChanged)
             {
                 this.FOutTexture[0].Dispose();
                 this.FOutDepthTexture[0].Dispose();
@@ -147,7 +151,7 @@ namespace VVVV.DX11.Nodes
 
             if (!this.FOutTexture[0].Contains(context))
             {
-                var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]),true, this.FInMips[0] ? 0 : 1);
+                var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]), true, this.FInMips[0] ? 0 : 1, this.FInAllowUAV[0]);
                 this.FOutTexture[0][context] = result;
                 this.FOutDepthTexture[0][context] = new DX11DepthTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], Format.R32_Float, true);
                 for (int i = 0; i < this.FInElementCount[0]; i++)
@@ -217,7 +221,7 @@ namespace VVVV.DX11.Nodes
                         settings.RenderWidth = target.Width;
                         settings.RenderHeight = target.Height;
                         settings.RenderDepth = target.ElemCnt;
-                        settings.BackBuffer = null;
+                        settings.BackBuffer = target ;
                         settings.CustomSemantics.Clear();
                         settings.ResourceSemantics.Clear();
 
