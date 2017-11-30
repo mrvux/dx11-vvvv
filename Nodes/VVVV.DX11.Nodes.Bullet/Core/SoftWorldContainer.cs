@@ -11,7 +11,7 @@ namespace VVVV.Bullet.Core
 {
 	//Just to make it easier to manage than having million of stuff in
 	//World node. Can also easily switch broadphases
-	public class BulletSoftWorldContainer : IRigidBulletWorld, ISoftBodyCollection, IConstraintCollection
+	public class BulletSoftWorldContainer : IRigidBulletWorld, ISoftBodyCollection, IConstraintContainer
     {
 		private DefaultCollisionConfiguration collisionConfiguration;
 		private CollisionDispatcher dispatcher;
