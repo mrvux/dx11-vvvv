@@ -17,6 +17,7 @@ namespace FeralTic.DX11
         {
             get
             {
+                CreateNullDeviceFormat();
                 return FNullDeviceFormats;
             }
         }
