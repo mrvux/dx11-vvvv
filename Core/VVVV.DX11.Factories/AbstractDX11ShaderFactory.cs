@@ -60,8 +60,6 @@ namespace VVVV.DX11.Factories
 
         private CompositionContainer FParentContainer;
 
-        private readonly Dictionary<IPluginBase, PluginContainer> FPluginContainers;
-
         protected abstract string NodeCategory { get; }
         protected abstract string NodeVersion { get; }
 
@@ -77,7 +75,6 @@ namespace VVVV.DX11.Factories
             FProjectNodeInfo = new Dictionary<FXProject, INodeInfo>();
             FIncludeHandler = new DX11ShaderInclude();
             FParentContainer = parentContainer;
-            FPluginContainers = new Dictionary<IPluginBase, PluginContainer>();
         }
 
         //create a node info from a filename
@@ -257,8 +254,6 @@ namespace VVVV.DX11.Factories
                 var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, FNodeInfoFactory, FDotNetFactory, typeof(T), nodeInfo);
                 pluginHost.Plugin = pluginContainer;
 
-                FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
-
                 IDX11ShaderNodeWrapper shaderNode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
                 shaderNode.Source = nodeInfo;
                 shaderNode.WantRecompile += new EventHandler(shadernode_WantRecompile);
@@ -313,12 +308,12 @@ namespace VVVV.DX11.Factories
         {
             var plugin = host.Plugin;
 
-            var disposablePlugin = plugin as IDisposable;
-            if (FPluginContainers.ContainsKey(plugin))
+            if (plugin is IDisposable)
             {
-                FPluginContainers[plugin].Dispose();
-                FPluginContainers.Remove(plugin);
+                var disposablePlugin = plugin as IDisposable;
+                disposablePlugin.Dispose();
             }
+
 
             if (this.PluginDeleted != null)
             {
