@@ -214,6 +214,16 @@ namespace VVVV.DX11
         #region Dispose
         protected override void OnDispose()
         {
+            foreach (var tg in targets)
+            {
+                tg.Key.ResourcePool.Unlock(tg.Value);
+            }
+            foreach (var tg in targetresolve)
+            {
+                tg.Key.ResourcePool.Unlock(tg.Value);
+            }
+            targets.Clear();
+            targetresolve.Clear();
         }
         #endregion
     }
