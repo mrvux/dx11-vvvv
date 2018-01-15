@@ -43,8 +43,6 @@ namespace VVVV.DX11.Factories
 
         private CompositionContainer FParentContainer;
 
-        private readonly Dictionary<IPluginBase, PluginContainer> FPluginContainers;
-
         protected string ext;
 
         #region Constructor
@@ -53,7 +51,6 @@ namespace VVVV.DX11.Factories
             this.ext = exts;
             this.FHdeHost = hdeHost;
             this.FParentContainer = parentContainer;
-            FPluginContainers = new Dictionary<IPluginBase, PluginContainer>();
         }
 
 
@@ -101,8 +98,6 @@ namespace VVVV.DX11.Factories
                 var pluginContainer = new PluginContainer(pluginHost, FIORegistry, FParentContainer, FNodeInfoFactory, FDotNetFactory, typeof(T), nodeInfo);
                 pluginHost.Plugin = pluginContainer;
 
-                FPluginContainers[pluginContainer.PluginBase] = pluginContainer;
-
                 IDX11ShaderNodeWrapper shaderNode = pluginContainer.PluginBase as IDX11ShaderNodeWrapper;
                 shaderNode.SetShader(shader, true, nodeInfo.Filename);
 
@@ -126,11 +121,10 @@ namespace VVVV.DX11.Factories
         {
             var plugin = pluginHost.Plugin;
 
-            var disposablePlugin = plugin as IDisposable;
-            if (FPluginContainers.ContainsKey(plugin))
+            if (plugin is IDisposable)
             {
-                FPluginContainers[plugin].Dispose();
-                FPluginContainers.Remove(plugin);
+                var disposablePlugin = plugin as IDisposable;
+                disposablePlugin.Dispose();
             }
 
             if (this.PluginDeleted != null)
