@@ -76,6 +76,10 @@
       <Project>{347bf0f2-19e1-4b2b-b125-8ac265cb034a}</Project>
       <Name>VVVV.DX11.Nodes.QrCode</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.TexProc\VVVV.DX11.Nodes.TexProc.csproj">
+      <Project>{6c60a4a9-2621-47a1-a45a-0735c2418529}</Project>
+      <Name>VVVV.DX11.Nodes.TexProc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Nodes\VVVV.DX11.Nodes.Text3d\VVVV.DX11.Nodes.Text3d.csproj">
       <Project>{57dc2927-df1a-4204-9b1f-a9fa90d6f36e}</Project>
       <Name>VVVV.DX11.Nodes.Text3d</Name>
