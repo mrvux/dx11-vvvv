@@ -11,8 +11,6 @@
     <RootNamespace>VVVV.DX11.Nodes.Kinect2</RootNamespace>
     <AssemblyName>VVVV.DX11.Nodes.Kinect2</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\plugins\kinect2\</OutputPath>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
