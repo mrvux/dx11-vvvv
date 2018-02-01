@@ -56,7 +56,7 @@ namespace VVVV.DX11.Internals.Helpers
         /// <returns>VVVV Enum name</returns>
 		public string GetEnumName(FormatSupport usage)
 		{
-            return usage.ToString() + "_Formats_DX11_"  +device.ComPointer.ToInt32().ToString();
+            return usage.ToString() + "_Formats_DX11";
 		}
 
 		public List<string> GetAllowedFormats(FormatSupport usage)
