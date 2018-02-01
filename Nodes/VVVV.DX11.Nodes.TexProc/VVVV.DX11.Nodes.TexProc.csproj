@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consts.cs" />
+    <Compile Include="Nodes\RGBASplitNode.cs" />
     <Compile Include="Nodes\ExtractChannelNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -44,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="effects\ExtractChannelExpand.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="effects\RGBASplitExpand.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

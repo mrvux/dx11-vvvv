@@ -19,29 +19,11 @@ using VVVV.DX11.Nodes.TexProc;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "ExtractChannel", Category = "DX11.Texture", Author = "vux")]
-    public class ExtractChannelNode : IPluginEvaluate, IDX11ResourceHost, IDX11Queryable, IDisposable
+    [PluginInfo(Name = "RGBASplit", Category = "DX11.Texture", Author = "vux")]
+    public class RGBASplit : IPluginEvaluate, IDX11ResourceHost, IDX11Queryable, IDisposable
     {
-        public enum Channel
-        {
-            Red,
-            Green,
-            Blue,
-            Alpha       
-        }
-
-        private enum TexturePixelFormat
-        {
-            FloatOrUnorm,
-            Int,
-            Uint
-        }
-
         [Input("Texture In")]
         protected Pin<DX11Resource<DX11Texture2D>> textureInput;
-
-        [Input("Channel")]
-        protected ISpread<Channel> channel;
 
         [Input("Single Channel Output")]
         protected ISpread<bool> singleChannelOut;
@@ -49,8 +31,17 @@ namespace VVVV.DX11.Nodes
         [Input("White If Invalid")]
         protected ISpread<bool> whiteIfInvalid;
 
-        [Output("Texture Out")]
-        protected ISpread<DX11Resource<DX11Texture2D>> textureOutput;
+        [Output("Texture Red")]
+        protected ISpread<DX11Resource<DX11Texture2D>> textureRedOutput;
+
+        [Output("Texture Green")]
+        protected ISpread<DX11Resource<DX11Texture2D>> textureGreenOutput;
+
+        [Output("Texture Blue")]
+        protected ISpread<DX11Resource<DX11Texture2D>> textureBlueOutput;
+
+        [Output("Texture Alpha")]
+        protected ISpread<DX11Resource<DX11Texture2D>> textureAlphaOutput;
 
         [Output("Message", Order = 5)]
         protected ISpread<string> message;
@@ -65,14 +56,21 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.textureOutput.SliceCount = SpreadMax;
-            this.message.SliceCount = this.textureOutput.SliceCount;
+            this.textureRedOutput.SliceCount = SpreadMax;
+            this.textureGreenOutput.SliceCount = SpreadMax;
+            this.textureBlueOutput.SliceCount = SpreadMax;
+            this.textureAlphaOutput.SliceCount = SpreadMax;
 
-            for (int i = 0; i < this.textureOutput.SliceCount; i++)
+            this.message.SliceCount = this.textureRedOutput.SliceCount;
+
+            for (int i = 0; i < this.textureRedOutput.SliceCount; i++)
             {
-                if (this.textureOutput[i] == null)
+                if (this.textureRedOutput[i] == null)
                 {
-                    this.textureOutput[i] = new DX11Resource<DX11Texture2D>();
+                    this.textureRedOutput[i] = new DX11Resource<DX11Texture2D>();
+                    this.textureGreenOutput[i] = new DX11Resource<DX11Texture2D>();
+                    this.textureBlueOutput[i] = new DX11Resource<DX11Texture2D>();
+                    this.textureAlphaOutput[i] = new DX11Resource<DX11Texture2D>();
                 }
             }
 
@@ -88,7 +86,7 @@ namespace VVVV.DX11.Nodes
             }
             framePool.Clear();
 
-            if (this.textureOutput.SliceCount == 0)
+            if (this.textureRedOutput.SliceCount == 0)
             {
                 return;
             }
@@ -98,20 +96,20 @@ namespace VVVV.DX11.Nodes
             //Compile shader if necessary
             if (shader == null)
             {
-                using (DX11Effect effect = DX11Effect.FromResource(Assembly.GetExecutingAssembly(), Consts.EffectPath + ".ExtractChannel.fx"))
+                using (DX11Effect effect = DX11Effect.FromResource(Assembly.GetExecutingAssembly(), Consts.EffectPath + ".RGBASplit.fx"))
                 {
                     shader = new DX11ShaderInstance(context, effect);
                 }
             }
             if (shaderExpand == null)
             {
-                using (DX11Effect effect = DX11Effect.FromResource(Assembly.GetExecutingAssembly(), Consts.EffectPath + ".ExtractChannelExpand.fx"))
+                using (DX11Effect effect = DX11Effect.FromResource(Assembly.GetExecutingAssembly(), Consts.EffectPath + ".RGBASplitExpand.fx"))
                 {
                     shaderExpand = new DX11ShaderInstance(context, effect);
                 }
             }
 
-            for (int i = 0; i < this.textureOutput.SliceCount; i++)
+            for (int i = 0; i < this.textureRedOutput.SliceCount; i++)
             {
                 if (this.textureInput[i] == null)
                 {
@@ -123,22 +121,21 @@ namespace VVVV.DX11.Nodes
 
                     var input = this.textureInput[i][context];
 
-                    string prefix = "Float";
+                    string suffix = "Float";
 
                     var inputFormat = input.SRV.Description.Format;
                     inputFormat = inputFormat.DefaultOutputForCompressed();
 
                     if (inputFormat.IsSignedInt())
                     {
-                        prefix = "UInt";
+                        suffix = "UInt";
                     }
                     if (inputFormat.IsUnsignedInt())
                     {
-                        prefix = "Int";
+                        suffix = "Int";
                     }
 
-                    prefix += this.channel[i].ToString();
-                    instance.SelectTechnique(prefix);
+                    instance.SelectTechnique("Apply" + suffix);
                     instance.SetByName("InputTexture", input.SRV);
 
                     var outputFormat = inputFormat;
@@ -158,8 +155,14 @@ namespace VVVV.DX11.Nodes
                     }
 
 
-                    var output = context.ResourcePool.LockRenderTarget(input.Width, input.Height, outputFormat, false, 1, false);
-                    context.RenderTargetStack.Push(output.Element);
+                    var outputRed = context.ResourcePool.LockRenderTarget(input.Width, input.Height, outputFormat, false, 1, false);
+                    var outputGreen = context.ResourcePool.LockRenderTarget(input.Width, input.Height, outputFormat, false, 1, false);
+                    var outputBlue = context.ResourcePool.LockRenderTarget(input.Width, input.Height, outputFormat, false, 1, false);
+                    var outputAlpha = context.ResourcePool.LockRenderTarget(input.Width, input.Height, outputFormat, false, 1, false);
+
+
+
+                    context.RenderTargetStack.Push(outputRed.Element, outputGreen.Element, outputBlue.Element, outputAlpha.Element);
 
                     context.Primitives.ApplyFullTriVSPosition();
                     instance.ApplyPass(0);
@@ -167,11 +170,18 @@ namespace VVVV.DX11.Nodes
 
                     context.RenderTargetStack.Pop();
 
-                    this.framePool.Add(output);
+                    this.framePool.Add(outputRed);
+                    this.framePool.Add(outputGreen);
+                    this.framePool.Add(outputBlue);
+                    this.framePool.Add(outputAlpha);
 
-                            
 
-                    this.textureOutput[i][context] = output.Element;
+
+                    this.textureRedOutput[i][context] = outputRed.Element;
+                    this.textureGreenOutput[i][context] = outputGreen.Element;
+                    this.textureBlueOutput[i][context] = outputBlue.Element;
+                    this.textureAlphaOutput[i][context] = outputAlpha.Element;
+
                     this.message[i] = "ok";
                 }
                 else
@@ -195,7 +205,10 @@ namespace VVVV.DX11.Nodes
         private void SetDefault(DX11RenderContext context, int i)
         {
             var defaultTex = this.whiteIfInvalid[i] ? context.DefaultTextures.WhiteTexture : context.DefaultTextures.BlackTexture;
-            this.textureOutput[i][context] = defaultTex;
+            this.textureRedOutput[i][context] = defaultTex;
+            this.textureGreenOutput[i][context] = defaultTex;
+            this.textureBlueOutput[i][context] = defaultTex;
+            this.textureAlphaOutput[i][context] = defaultTex;
         }
 
         public void Destroy(DX11RenderContext context, bool force)

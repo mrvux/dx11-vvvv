@@ -1,42 +1,47 @@
 Texture2D InputTexture : TEXTURE;
 
+void VS(float4 posObject : POSITION, out float4 posScreen : SV_Position)
+{
+	posScreen = posObject;
+}
+
 void PS_Float(float4 pixelPos : SV_POSITION, 
-out float red : SV_Target0,
-out float green : SV_Target1, 
-out float blue : SV_Target2,
-out float alpha : SV_Target3)
+out float4 red : SV_Target0,
+out float4 green : SV_Target1,
+out float4 blue : SV_Target2,
+out float4 alpha : SV_Target3)
 {
 	float4 c = InputTexture.Load(int3(pixelPos.xy, 0));
-	red = c.r;
-	green = c.g;
-	blue = c.b;
-	alpha = c.a;
+	red = c.rrrr;
+	green = c.gggg;
+	blue = c.bbbb;
+	alpha = c.aaaa;
 }
 
 void PS_Int(float4 pixelPos : SV_POSITION, 
-out int red : SV_Target0,
-out int green : SV_Target1, 
-out int blue : SV_Target2,
-out int alpha : SV_Target3)
+out int4 red : SV_Target0,
+out int4 green : SV_Target1,
+out int4 blue : SV_Target2,
+out int4 alpha : SV_Target3)
 {
 	int4 c = InputTexture.Load(int3(pixelPos.xy, 0));
-	red = c.r;
-	green = c.g;
-	blue = c.b;
-	alpha = c.a;
+    red = c.rrrr;
+    green = c.gggg;
+    blue = c.bbbb;
+    alpha = c.aaaa;
 }
 
 void PS_UInt(float4 pixelPos : SV_POSITION, 
-out uint red : SV_Target0,
-out uint green : SV_Target1, 
-out uint blue : SV_Target2,
-out uint alpha : SV_Target3)
+out uint4 red : SV_Target0,
+out uint4 green : SV_Target1,
+out uint4 blue : SV_Target2,
+out uint4 alpha : SV_Target3)
 {
 	uint4 c = InputTexture.Load(int3(pixelPos.xy, 0));
-	red = c.r;
-	green = c.g;
-	blue = c.b;
-	alpha = c.a;
+    red = c.rrrr;
+    green = c.gggg;
+    blue = c.bbbb;
+    alpha = c.aaaa;
 }
 
 //Float, used for floating point texture as well as unorm

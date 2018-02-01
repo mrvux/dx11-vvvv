@@ -28,6 +28,16 @@ namespace VVVV.DX11.Nodes.TexProc
             return s.EndsWith("UInt");
         }
 
+        public static SlimDX.DXGI.Format DefaultOutputForCompressed(this SlimDX.DXGI.Format fmt)
+        {
+            string s = fmt.ToString();
+            if (s.StartsWith("BC"))
+            {
+                return SlimDX.DXGI.Format.R8G8B8A8_UNorm;
+            }
+            return fmt;
+        }
+
         public static SlimDX.DXGI.Format GetSingleChannelEquivalent(this SlimDX.DXGI.Format fmt)
         {
             string s = fmt.ToString();
