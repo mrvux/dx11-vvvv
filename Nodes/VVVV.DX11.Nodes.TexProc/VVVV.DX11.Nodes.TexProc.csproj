@@ -2,6 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(SolutionDir)\vvvv.DX11.Build.targets" />
+  <Import Project="$(SolutionDir)\SharpDX.References.targets" />
   <PropertyGroup>
     <ProjectGuid>{6C60A4A9-2621-47A1-A45A-0735C2418529}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -21,6 +22,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consts.cs" />
     <Compile Include="Nodes\ExtractChannelNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -39,6 +41,9 @@
   <ItemGroup>
     <EmbeddedResource Include="effects\ExtractChannel.fx" />
     <EmbeddedResource Include="effects\RGBASplit.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="effects\ExtractChannelExpand.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
