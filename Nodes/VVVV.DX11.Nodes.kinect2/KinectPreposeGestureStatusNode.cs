@@ -22,7 +22,7 @@ namespace VVVV.MSKinect.Nodes
                 Version = "Microsoft",
                 Author = "flateric",
                 Tags = "DX11",
-                Help = "Returns high definition face data for user")]
+                Help = "Gets kinect prepose gesture status")]
     public unsafe class KinectPreposeGestureStatusNode : IPluginEvaluate
     {
 
@@ -54,7 +54,7 @@ namespace VVVV.MSKinect.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInStatus.IsConnected && this.FInStatus[0] != null)
+            if (SpreadMax > 0 && this.FInStatus.IsConnected && this.FInStatus[0] != null)
             {
                 int cnt = this.FInStatus.SliceCount;
 

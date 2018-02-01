@@ -358,5 +358,39 @@ namespace VVVV.DX11.Integration.Tests
             string msg = sb.ToString();
             Assert.AreEqual(missingCount, 0, "Missing help files: \r\n" + sb.ToString());
         }
+
+        [TestMethod]
+        public void VVVVDX11TexProcNodesHelpPatchesTest()
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(VVVV.DX11.Nodes.ExtractChannelNode));
+
+            int missingCount = 0;
+            StringBuilder sb = new StringBuilder();
+
+            string path = System.IO.Path.GetDirectoryName(assembly.Location);
+            path = Path.Combine(path, helpFilesRelativePath, "texproc");
+
+            foreach (Type t in assembly.GetExportedTypes())
+            {
+                if (typeof(IPluginEvaluate).IsAssignableFrom(t) && !t.IsAbstract)
+                {
+                    var attr = t.GetCustomAttributes<PluginInfoAttribute>().FirstOrDefault();
+                    if (attr != null)
+                    {
+                        string nodeName = attr.Systemname;
+                        string helpFile = nodeName + " help.v4p";
+
+                        if (!File.Exists(Path.Combine(path, helpFile)))
+                        {
+                            sb.AppendLine(nodeName);
+                            missingCount++;
+                        }
+                    }
+                }
+            }
+
+            string msg = sb.ToString();
+            Assert.AreEqual(missingCount, 0, "Missing help files: \r\n" + sb.ToString());
+        }
     }
 }

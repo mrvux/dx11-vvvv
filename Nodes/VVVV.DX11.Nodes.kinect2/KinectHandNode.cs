@@ -17,7 +17,7 @@ namespace VVVV.MSKinect.Nodes
 	            Version = "Microsoft", 
 	            Author = "flateric", 
 	            Tags = "DX11", 
-	            Help = "Returns skeleton data for each tracked user")]
+	            Help = "Returns hand data from a tracked user, including if hand is opened or closed")]
     public class KinectHandNode : IPluginEvaluate, IPluginConnections
     {
         [Input("Kinect Runtime")]

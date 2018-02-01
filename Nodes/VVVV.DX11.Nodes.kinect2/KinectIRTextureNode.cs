@@ -23,7 +23,7 @@ namespace VVVV.DX11.Nodes.MSKinect
 	            Version = "Microsoft", 
 	            Author = "flateric", 
 	            Tags = "DX11, texture",
-	            Help = "Returns a 16bit depthmap from the Kinects depth camera.")]
+	            Help = "Returns 16 bit raw infrared view from kinect camera")]
     public class KinectIRTextureNode : KinectBaseTextureNode
     {
         private IntPtr depthread;
