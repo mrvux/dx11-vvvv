@@ -29,12 +29,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Nodes\Buffers\FromSharedBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ImmutableRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRawBufferStreamNode.cs" />
+    <Compile Include="Nodes\Buffers\ToSharedBufferNode.cs" />
     <Compile Include="Nodes\Geometry\Indirect\DispatchIndirectBufferNode.cs" />
     <Compile Include="Nodes\Geometry\Indirect\DispatchIndirect1DNode.cs" />
     <Compile Include="Nodes\Geometry\Indirect\IndexIndirectDrawerBufferNode.cs" />

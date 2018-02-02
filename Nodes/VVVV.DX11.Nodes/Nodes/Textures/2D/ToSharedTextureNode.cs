@@ -13,7 +13,7 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11.Nodes.Textures
 {
-    [PluginInfo(Name = "AsSharedTexture", Category = "DX11.Texture", Version = "2d", Author = "vux,tonfilm")]
+    [PluginInfo(Name = "AsSharedTexture", Category = "DX11.Texture", Version = "2d", Author = "vux,tonfilm", AutoEvaluate =true)]
     public class ToSharedTextureNode : IPluginEvaluate, IDX11ResourceDataRetriever, IDisposable
     {
         [Import()]
