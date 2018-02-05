@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="Consts.cs" />
     <Compile Include="Nodes\BlendSpectralNode.cs" />
+    <Compile Include="Nodes\HSLSplitNode.cs" />
     <Compile Include="Nodes\RGBASplitNode.cs" />
     <Compile Include="Nodes\ExtractChannelNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="effects\VSFullTriDualTexTransform.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="effects\HSLSplit.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
