@@ -156,6 +156,7 @@
     <Compile Include="Rendering\Validators\DX11SliceRangeValidator.cs" />
     <Compile Include="Rendering\Validators\DX11SliceValidator.cs" />
     <Compile Include="Rendering\Validators\DX11SliceValidatorSpreaded.cs" />
+    <Compile Include="Rendering\Validators\DX11WithinSphereValidator.cs" />
     <Compile Include="Rendering\ViewPortManager.cs" />
     <Compile Include="Utils\DirectWriteFontUtils.cs" />
     <Compile Include="Utils\InputLayoutFactory.cs" />
