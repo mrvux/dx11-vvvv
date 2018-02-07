@@ -30,6 +30,9 @@ namespace VVVV.Nodes.Bullet
         [Input("Initial Properties")]
         protected Pin<RigidBodyProperties> initialProperties;
 
+        [Input("Custom String")]
+        protected ISpread<string> customString;
+
         [Input("Do Create", IsBang = true)]
         protected ISpread<bool> doCreate;
 
@@ -71,7 +74,7 @@ namespace VVVV.Nodes.Bullet
                         CollisionShape collisionShape = shapeData.ShapeDef.GetShape(shapeData);
                         Vector3 localInertia = Vector3.Zero;
 
-                        Tuple<RigidBody, int> bodyCreateResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localInertia, 0.0f);
+                        Tuple<RigidBody, int> bodyCreateResult = world.CreateRigidBody(collisionShape, ref pose, ref properties, ref localInertia, 0.0f, this.customString[i]);
                         bodyCreateResult.Item1.CollisionFlags = CollisionFlags.StaticObject;
 
                         this.frameBodyOutput.Add(bodyCreateResult.Item1);

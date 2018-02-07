@@ -37,6 +37,9 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
         [Input("Wheel Properties")]
         protected ISpread<WheelProperties> wheelInfoSettings;
 
+        [Input("Custom String")]
+        protected ISpread<string> customString;
+
         [Input("Do Create", IsBang = true)]
         protected ISpread<bool> doCreate;
 
@@ -86,7 +89,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Rigid
                                 compoundShape.CalculateLocalInertia(chassisShapeDefinition.Mass, out localInertia);
                             }
 
-                            Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(chassisShape, ref initialPose, ref properties, ref localInertia, chassisShapeDefinition.Mass);
+                            Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(chassisShape, ref initialPose, ref properties, ref localInertia, chassisShapeDefinition.Mass, this.customString[i]);
                             RigidBody carChassis = createBodyResult.Item1;
 
                             RaycastVehicle.VehicleTuning tuning = new RaycastVehicle.VehicleTuning();

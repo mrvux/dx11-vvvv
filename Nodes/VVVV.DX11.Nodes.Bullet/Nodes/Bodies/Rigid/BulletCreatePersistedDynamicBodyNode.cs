@@ -33,6 +33,9 @@ namespace VVVV.Nodes.Bullet
         [Input("Initial CCD Properties")]
         protected Pin<RigidBodyCCDProperties> initialCCDProperties;
 
+        [Input("Custom String")]
+        protected ISpread<string> customString;
+
         [Input("Do Create", IsBang = true)]
         protected ISpread<bool> doCreate;
 
@@ -82,7 +85,7 @@ namespace VVVV.Nodes.Bullet
                                 collisionShape.CalculateLocalInertia(shape.Mass, out localinertia);
                             }
 
-                            Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shape.Mass);
+                            Tuple<RigidBody, int> createBodyResult = inputWorld.CreateRigidBody(collisionShape, ref pose, ref properties, ref localinertia, shape.Mass, this.customString[i]);
                             createBodyResult.Item1.CcdMotionThreshold = ccdPropertie.CcdMotionThreshold;
                             createBodyResult.Item1.CcdSweptSphereRadius = ccdPropertie.CcdSweptSphereRadius;
 
