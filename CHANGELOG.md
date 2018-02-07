@@ -1,6 +1,30 @@
 ChangeLog
 =========
 
+# Upcoming
+* [Help] Kinect 2 nodes now all have help patches as well, so now every node in the pack has a help file.
+* [Nodes] Fix Quad layer which would not recover if fed a Nil input.
+* [Nodes] Renderer (DX11.TextureArray) now has a UAV pin (disabled by default), so texture can be written by compute shaders.
+* [Bullet] Softworld node did not allow to create contstraints.
+* [Node] Temp target renderer was not releasing resource when deleting the node, which was creating memory leak when authoring.
+* [Core] Fix shader releasing their resources when deleting them from patch.
+* [Nodes] Add ExtractChannel (DX11.Texture), which allows to pick individual channel of a texture (also auto handling input/output formats when required).
+* [Nodes] Add RGBASplit (DX11.Texture), extract all texture channels in a separate texture.
+* [Nodes] Add HSLASplit (DX11.Texture), extract all texture channels in a separate texture (converts into either HSL or HSV)
+* [Nodes] Add Composite (DX11.Texture), combines a spread of texture into a single one, each texture can have individual blend mode,opacity and texture transform
+* [Nodes] AsSharedTexture (DX11.Texture) , now forces evaluation by default
+* [Nodes] Add AsSharedResource (DX11.Buffer) , to allow to share a dx11 buffer between various processes.
+* [Nodes] Add FromSharedResource (DX11.Buffer Structured) , receiver side for shared buffer.
+* [Nodes] Add FrameDelay (DX11.Texture 3d) , orthogonal to all framedalys, for 3d textures.
+* [Nodes] Add WriteMask (DX11.RenderState) : Allows to control which channels are written to
+* [Nodes] Add WithinSphere (DX11.Validator) : Only draw objects which have a bounding box contained within a sphere.
+* [Core] Added ConstantFactor preset in Blend (DX11.RenderState), to allow to use BlendFactor (DX11.RenderState) more easily.
+* [Bullet] All Create Body nodes now have custom string input (which was missing from previous version)
+* [Nodes] Add AlphaOperation (DX11.RenderState) : Allows to control how the alpha channel is written in the texture (independently of color blending).
+* [Nodes] Add S+H (DX11.Texture 2d) , Same as standard S+H nodes, copies a resource if the set pin is on, blocks evaluation and render otherwise (also optimize resource flags/usage behind the scenes).
+* [Nodes] Add S+H (DX11.Texture 3d) , for 3d textures
+* [Nodes] Add S+H (DX11.Buffer Structured) , for structured buffers
+
 # 1.1
 * [Help] More than 100-150 new help patches, Every single node except Kinect2 (and experimental) now has a help patch.
 * [Bullet] Large redesign of the whole system, many more nodes, clearer API. Soft bodies are not back yet, but constraints + vehicle + filters are there.
