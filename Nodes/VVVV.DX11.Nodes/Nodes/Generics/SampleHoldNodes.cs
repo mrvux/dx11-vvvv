@@ -33,9 +33,11 @@ namespace VVVV.DX11.Nodes
             {
                 this.currentDescription = inputResource.Description;
 
-                //Only thing we need is to make default pool, as otherwise immutable texture copy would fail
+                /*make default pool, disallow cpu access and only allow shader view flag (as we will not write to it) */
                 Texture2DDescription desc = this.currentDescription;
                 desc.Usage = ResourceUsage.Default;
+                desc.BindFlags = BindFlags.ShaderResource;
+                desc.CpuAccessFlags = CpuAccessFlags.None;
 
                 outputResource = DX11Texture2D.FromDescription(context, desc);
             }
@@ -62,9 +64,10 @@ namespace VVVV.DX11.Nodes
             if (outputResource == null)
             {
                 this.currentDescription = inputResource.Buffer.Description;
-                //Only thing we need is to make default pool, as otherwise immutable texture copy would fail
                 BufferDescription desc = this.currentDescription;
                 desc.Usage = ResourceUsage.Default;
+                desc.BindFlags = BindFlags.ShaderResource;
+                desc.CpuAccessFlags = CpuAccessFlags.None;
 
                 outputResource = new DX11CopyDestStructuredBuffer(context.Device, desc);
             }
@@ -93,9 +96,10 @@ namespace VVVV.DX11.Nodes
             {
                 this.currentDescription = inputResource.Resource.Description;
 
-                //Only thing we need is to make default pool, as otherwise immutable texture copy would fail
                 Texture3DDescription desc = this.currentDescription;
                 desc.Usage = ResourceUsage.Default;
+                desc.BindFlags = BindFlags.ShaderResource;
+                desc.CpuAccessFlags = CpuAccessFlags.None;
 
                 outputResource = DX11Texture3D.FromDescription(context, desc);
             }
