@@ -37,6 +37,7 @@
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRawBufferStreamNode.cs" />
     <Compile Include="Nodes\Buffers\ToSharedBufferNode.cs" />
+    <Compile Include="Nodes\Generics\SampleHoldNodes.cs" />
     <Compile Include="Nodes\Geometry\Indirect\DispatchIndirectBufferNode.cs" />
     <Compile Include="Nodes\Geometry\Indirect\DispatchIndirect1DNode.cs" />
     <Compile Include="Nodes\Geometry\Indirect\IndexIndirectDrawerBufferNode.cs" />

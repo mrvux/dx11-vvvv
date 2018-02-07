@@ -47,6 +47,7 @@
     <Compile Include="BaseNodes\AbstractDX11Renderer2DNode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BaseNodes\SampleHoldResourceNode.cs" />
     <Compile Include="BaseNodes\ConsNonNilNode.cs">
       <SubType>Code</SubType>
     </Compile>
