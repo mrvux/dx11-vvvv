@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-# Upcoming
+# 1.1
 * [Help] More than 100-150 new help patches, Every single node except Kinect2 (and experimental) now has a help patch.
 * [Bullet] Large redesign of the whole system, many more nodes, clearer API. Soft bodies are not back yet, but constraints + vehicle + filters are there.
 * [Build] Now all components are in various subfolders, to make it easier to search and pick and mix. 
