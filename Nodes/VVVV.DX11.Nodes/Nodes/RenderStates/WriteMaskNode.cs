@@ -35,7 +35,8 @@ namespace VVVV.DX11.Nodes
             if (this.red.IsChanged
                 || this.green.IsChanged
                 || this.blue.IsChanged
-                || this.alpha.IsChanged)
+                || this.alpha.IsChanged
+                || this.FInState.IsChanged)
             {
                 this.FOutState.SliceCount = SpreadMax;
 

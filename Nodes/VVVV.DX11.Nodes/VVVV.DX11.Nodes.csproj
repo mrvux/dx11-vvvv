@@ -79,6 +79,7 @@
     <Compile Include="Nodes\RenderStates\Advanced\DX11StencilReferenceStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11BlendFactorStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
+    <Compile Include="Nodes\RenderStates\AlphaOperationNode.cs" />
     <Compile Include="Nodes\RenderStates\WriteMaskNode.cs" />
     <Compile Include="Nodes\RenderStates\RenderStatePresetNode.cs" />
     <Compile Include="Nodes\RenderStates\SamplerStateAnisotropicNode.cs" />
