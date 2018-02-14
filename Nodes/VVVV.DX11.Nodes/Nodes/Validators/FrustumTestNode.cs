@@ -13,14 +13,14 @@ using VVVV.DX11.Validators;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "FrustrumTest", Category = "DX11.Validator", Version = "", Author = "vux",Tags="layer")]
-    public class FrustrumTestNode : IPluginEvaluate
+    [PluginInfo(Name = "FrustumTest", Category = "DX11.Validator", Version = "", Author = "vux",Tags="layer")]
+    public class FrustumTestNode : IPluginEvaluate
     {
         [Input("Enabled", IsSingle=true)]
         protected ISpread<bool> FInEnabled;
 
         [Output("Output",IsSingle=true)]
-        protected ISpread<DX11FrustrumValidator> FOut;
+        protected ISpread<DX11FrustumValidator> FOut;
 
         [Output("Passed",IsSingle=true)]
         protected ISpread<int> FOutPass;
@@ -30,7 +30,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FOut[0] == null) { this.FOut[0] = new DX11FrustrumValidator();}
+            if (this.FOut[0] == null) { this.FOut[0] = new DX11FrustumValidator();}
 
             this.FOut[0].Enabled = this.FInEnabled[0];
 

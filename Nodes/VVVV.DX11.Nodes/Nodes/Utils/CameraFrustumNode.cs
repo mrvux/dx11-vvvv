@@ -8,8 +8,8 @@ using FeralTic.Core.Maths;
 
 namespace VVVV.DX11.Nodes
 {
-    [PluginInfo(Name = "Frustrum", Category = "Transform", Version = "", Author = "vux")]
-    public class CameraFrustrumNode : IPluginEvaluate
+    [PluginInfo(Name = "Frustum", Category = "Transform", Version = "", Author = "vux")]
+    public class CameraFrustumNode : IPluginEvaluate
     {
         [Input("View")]
         protected ISpread<Matrix> FInView;
@@ -17,8 +17,8 @@ namespace VVVV.DX11.Nodes
         [Input("Projection")]
         protected ISpread<Matrix> FInProjection;
 
-        [Output("Frustrum")]
-        protected ISpread<Frustrum> FOutFrustrum;
+        [Output("Frustum")]
+        protected ISpread<Frustum> FOutFrustrum;
 
         [Output("Plane Equations")]
         protected ISpread<Vector4> FOutPlanes;
@@ -30,7 +30,7 @@ namespace VVVV.DX11.Nodes
             int cnt = 0;
             for (int i = 0; i < SpreadMax; i++)
             {
-                Frustrum f = new Frustrum(this.FInView[i], this.FInProjection[i]);
+                Frustum f = new Frustum(this.FInView[i], this.FInProjection[i]);
                 this.FOutFrustrum[i] = f;
 
                 for (int j = 0; j < 6; j++)

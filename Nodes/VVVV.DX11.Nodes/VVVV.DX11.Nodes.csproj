@@ -206,8 +206,8 @@
     <Compile Include="Nodes\Textures\3D\WriterTexture3dNode.cs" />
     <Compile Include="Nodes\Textures\FileTextureBaseNode.cs" />
     <Compile Include="Nodes\Textures\FileTextureNodes.cs" />
-    <Compile Include="Nodes\Utils\CameraFrustrumNode.cs" />
-    <Compile Include="Nodes\Validators\FrustrumTestNode.cs" />
+    <Compile Include="Nodes\Utils\CameraFrustumNode.cs" />
+    <Compile Include="Nodes\Validators\FrustumTestNode.cs" />
     <Compile Include="Nodes\Validators\SelectValidatorNode.cs" />
     <Compile Include="Nodes\Validators\ViewportValidatorNode.cs" />
     <Compile Include="Nodes\Validators\SliceValidatorNode.cs" />
@@ -229,6 +229,7 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes\plugins" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)VersionData" "$(OutputPath)\..\..\..\" /S /R /Y /I</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

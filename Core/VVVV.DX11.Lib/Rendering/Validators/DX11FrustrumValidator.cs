@@ -7,10 +7,10 @@ using FeralTic.Core.Maths;
 
 namespace VVVV.DX11.Validators
 {
-    public class DX11FrustrumValidator : IDX11ObjectValidator
+    public class DX11FrustumValidator : IDX11ObjectValidator
     {
         private DX11RenderSettings settings;
-        private Frustrum frustrum = new Frustrum();
+        private Frustum frustrum = new Frustum();
 
         public int Passed { get; set; }
         public int Failed { get; set; }
