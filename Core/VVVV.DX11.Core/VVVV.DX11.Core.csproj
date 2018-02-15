@@ -36,7 +36,7 @@
     <Compile Include="Rendering\Layer\DX11RenderSettings.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSettings_Transforms.cs" />
     <Compile Include="Rendering\Effects\IDX11CustomRenderVariable.cs" />
-    <Compile Include="NodeInterfaces\IDX11LayerProvider.cs" />
+    <Compile Include="NodeInterfaces\IDX11LayerHost.cs" />
     <Compile Include="NodeInterfaces\IDX11RendererProvider.cs" />
     <Compile Include="NodeInterfaces\IDX11ResourceProvider.cs" />
     <Compile Include="Rendering\Layer\DX11RenderSpace.cs" />
