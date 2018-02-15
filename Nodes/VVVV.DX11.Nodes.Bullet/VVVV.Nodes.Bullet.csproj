@@ -29,6 +29,7 @@
     <Compile Include="Core\ConstraintPersister.cs" />
     <Compile Include="Core\Delegates.cs" />
     <Compile Include="Core\Filters\BoolTypeFilters.cs" />
+    <Compile Include="Core\Filters\IsYoungerRigidBodyFilter.cs" />
     <Compile Include="Core\Filters\IsOlderRigidBodyFilter.cs" />
     <Compile Include="Core\Filters\ContainsIdRigidBodyFilter.cs" />
     <Compile Include="Core\Filters\EqualsIdRigidBodyFilter.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\AggregateRigidBodyFilterNodes.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\Filters\YoungerThanThanRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\StaticRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\IsOfShapeRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />

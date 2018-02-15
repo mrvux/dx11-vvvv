@@ -23,6 +23,7 @@ ChangeLog
 * [Nodes] Add WithinSphere (DX11.Validator) : Only draw objects which have a bounding box contained within a sphere.
 * [Core] Added ConstantFactor preset in Blend (DX11.RenderState), to allow to use BlendFactor (DX11.RenderState) more easily.
 * [Bullet] All Create Body nodes now have custom string input (which was missing from previous version)
+* [Bullet] IsYoungerThan (Bullet Rigid.Filter) new node
 * [Nodes] Add AlphaOperation (DX11.RenderState) : Allows to control how the alpha channel is written in the texture (independently of color blending).
 * [Nodes] Add S+H (DX11.Texture 2d) , Same as standard S+H nodes, copies a resource if the set pin is on, blocks evaluation and render otherwise (also optimize resource flags/usage behind the scenes).
 * [Nodes] Add S+H (DX11.Texture 3d) , for 3d textures
