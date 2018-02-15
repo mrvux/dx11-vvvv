@@ -2,7 +2,10 @@ ChangeLog
 =========
 
 # Upcoming
+* [General] Pack version info is now integrated, which allows to use pack versioning feature (as well as diffing).
 * [Help] Kinect 2 nodes now all have help patches as well, so now every node in the pack has a help file.
+* [Nodes] Fix spelling on Frustum (Transform)
+* [Nodes] Fix spelling on FrustumTest (DX11.Validator)
 * [Nodes] Fix Quad layer which would not recover if fed a Nil input.
 * [Nodes] Renderer (DX11.TextureArray) now has a UAV pin (disabled by default), so texture can be written by compute shaders.
 * [Bullet] Softworld node did not allow to create contstraints.
@@ -24,6 +27,7 @@ ChangeLog
 * [Nodes] Add S+H (DX11.Texture 2d) , Same as standard S+H nodes, copies a resource if the set pin is on, blocks evaluation and render otherwise (also optimize resource flags/usage behind the scenes).
 * [Nodes] Add S+H (DX11.Texture 3d) , for 3d textures
 * [Nodes] Add S+H (DX11.Buffer Structured) , for structured buffers
+
 
 # 1.1
 * [Help] More than 100-150 new help patches, Every single node except Kinect2 (and experimental) now has a help patch.
