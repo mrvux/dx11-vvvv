@@ -174,13 +174,16 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup  Condition="'$(Platform)' == 'x64'" >
     <Content Include="..\..\Dependencies\x64\Assimp64.dll">
       <Link>Assimp64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup  Condition="'$(Platform)' == 'x86'" >
     <Content Include="..\..\Dependencies\x86\Assimp32.dll">
       <Link>Assimp32.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

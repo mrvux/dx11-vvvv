@@ -1,7 +1,7 @@
 ChangeLog
 =========
 
-# Upcoming
+# 1.2
 * [General] Pack version info is now integrated, which allows to use pack versioning feature (as well as diffing).
 * [Help] Kinect 2 nodes now all have help patches as well, so now every node in the pack has a help file.
 * [Nodes] Fix spelling on Frustum (Transform)
