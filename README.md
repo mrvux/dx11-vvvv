@@ -9,6 +9,22 @@ DirectX11 Rendering within vvvv
 
 vvvv dx11 nodes are released under a 3 clause [BSD license](https://raw.githubusercontent.com/mrvux/dx11-vvvv/master/License.md)
 
+This library is free, but you are welcomed to support its development.
+
+## Monthly donations via Patreon
+
+[![Patreon](https://cloud.githubusercontent.com/assets/8225057/5990484/70413560-a9ab-11e4-8942-1a63607c0b00.png)](http://www.patreon.com/mrvux)
+
+## Yearly invoice
+
+If you are a company and Patreon is not ideal for you (exchange rates and inability to get proper invoices), I am also able to provide you a custom invoice (I am a registered company in France).
+
+You will get the same rewards as per Patreon yearly equivalent.
+
+## Custom develompent
+
+If you have specific requirements, you can also sponsor custom development (either tailored to your requirements and private, or contributed back in the public repository).
+
 # How to build
 
 First of all, get the code of master branch
