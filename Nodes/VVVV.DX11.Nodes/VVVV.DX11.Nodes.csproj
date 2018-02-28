@@ -29,6 +29,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutDX11Node.cs" />
     <Compile Include="Nodes\Buffers\FromSharedBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ImmutableRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicRawBufferNode.cs" />
