@@ -36,12 +36,14 @@ namespace VVVV.DX11.Nodes
             "mhusinsky",
             "tmp",
             "mholub",
-            "gregsn"
+            "gregsn",
+            "velcrome"
         };
 
         private readonly string[] supporterList = new string[]
         {
-            "Irwin Quemener - CloneProduction"
+            "Irwin Quemener - CloneProduction",
+            "Intolight"
         };
 
         [Output("Version")]
