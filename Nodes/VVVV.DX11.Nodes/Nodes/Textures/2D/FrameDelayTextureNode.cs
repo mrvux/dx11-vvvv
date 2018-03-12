@@ -16,13 +16,16 @@ namespace VVVV.DX11.Nodes
         AutoEvaluate=true,      
         Author = "vux",
         Warnings="non spreadable")]
-    public class FrameDelayTextureNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
+    public class FrameDelayTextureNode : IPluginEvaluate, IDX11ResourceHost, IDisposable, IDX11RenderStartPoint
     {
         [Input("Texture In", IsSingle = true)]
         protected Pin<DX11Resource<DX11Texture2D>> FTextureInput;
 
         [Input("Flush", IsSingle = true)]
         protected ISpread<bool> FInFlush;
+
+        [Input("Enabled", IsSingle = true, DefaultValue =1)]
+        protected ISpread<bool> FInEnabled;
 
         [Output("Texture Out", IsSingle = true, AllowFeedback=true)]
         protected Pin<DX11Resource<DX11Texture2D>> FTextureOutput;
@@ -31,61 +34,21 @@ namespace VVVV.DX11.Nodes
         private DX11Texture2D lasttexture = null;
         private ILogger logger;
 
+        public DX11RenderContext RenderContext
+        {
+            get { return DX11GlobalDevice.DeviceManager.RenderContexts[0]; }
+        }
+        
+        public bool Enabled
+        {
+            get { return this.FInEnabled.SliceCount > 0 ? this.FInEnabled[0] : false; }
+        }
+
         [ImportingConstructor()]
         public FrameDelayTextureNode(IHDEHost hde, ILogger logger)
         {
             this.hde = hde;
-            this.hde.MainLoop.OnResetCache += this.MainLoop_OnPresent;
             this.logger = logger;
-        }
-
-        private void MainLoop_OnPresent(object sender, EventArgs e)
-        {
-            //Rendering is finished, so should be ok to grab texture now
-            if (this.FTextureInput.PluginIO.IsConnected && this.FTextureInput.SliceCount > 0)
-            {
-
-                //Little temp hack, grab context from global, since for now we have one context anyway
-                DX11RenderContext context = DX11GlobalDevice.DeviceManager.RenderContexts[0];
-
-                if (this.FTextureInput[0].Contains(context))
-                {
-                    DX11Texture2D texture = this.FTextureInput[0][context];
-
-                    if (texture is DX11DepthStencil)
-                    {
-                        this.logger.Log(LogType.Warning, "FrameDelay for depth texture is not supported");
-                        return;
-                    }
-
-                    if (this.lasttexture != null)
-                    {
-                        if (this.lasttexture.Description != texture.Description) { this.DisposeTexture(); }
-                    }
-
-                    if (this.lasttexture == null)
-                    {
-                        this.lasttexture = DX11Texture2D.FromDescription(context, texture.Description);
-                    }
-
-                    context.CurrentDeviceContext.CopyResource(texture.Resource, this.lasttexture.Resource);
-
-                    if (this.FInFlush[0]) { context.CurrentDeviceContext.Flush(); }
-                }
-                else
-                {
-                    this.DisposeTexture();
-                }
-            }
-            else
-            {
-                this.DisposeTexture();
-            }
-        }
-
-        private void DisposeTexture()
-        {
-            if (this.lasttexture != null) { this.lasttexture.Dispose(); this.lasttexture = null; }
         }
 
         public void Evaluate(int SpreadMax)
@@ -108,6 +71,42 @@ namespace VVVV.DX11.Nodes
             }
         }
 
+        public void Present()
+        {
+            DX11RenderContext context = this.RenderContext;
+
+
+            //Rendering is finished, so should be ok to grab texture now
+            if (this.FTextureInput.IsConnected && this.FTextureInput.SliceCount > 0 && this.FTextureInput[0].Contains(context))
+            {
+                DX11Texture2D texture = this.FTextureInput[0][context];
+
+                if (texture is DX11DepthStencil)
+                {
+                    this.logger.Log(LogType.Warning, "FrameDelay for depth texture is not supported");
+                    return;
+                }
+
+                if (this.lasttexture != null)
+                {
+                    if (this.lasttexture.Description != texture.Description) { this.DisposeTexture(); }
+                }
+
+                if (this.lasttexture == null)
+                {
+                    this.lasttexture = DX11Texture2D.FromDescription(context, texture.Description);
+                }
+
+                context.CurrentDeviceContext.CopyResource(texture.Resource, this.lasttexture.Resource);
+
+                if (this.FInFlush[0]) { context.CurrentDeviceContext.Flush(); }
+            }
+            else
+            {
+                this.DisposeTexture();
+            }
+        }
+
         public void Destroy(DX11RenderContext context, bool force)
         {
 
@@ -115,8 +114,13 @@ namespace VVVV.DX11.Nodes
 
         public void Dispose()
         {
-            this.hde.MainLoop.OnResetCache -= this.MainLoop_OnPresent;
             this.DisposeTexture();
         }
+
+        private void DisposeTexture()
+        {
+            if (this.lasttexture != null) { this.lasttexture.Dispose(); this.lasttexture = null; }
+        }
+
     }
 }
