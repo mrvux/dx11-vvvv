@@ -15,7 +15,7 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "FrameDelay", Category = "DX11.Texture", Version = "2d",
         AutoEvaluate=true,      
         Author = "vux",
-        Warnings="Doesn't suppport multicontext, experimental,non spreadable")]
+        Warnings="non spreadable")]
     public class FrameDelayTextureNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("Texture In", IsSingle = true)]
@@ -116,6 +116,7 @@ namespace VVVV.DX11.Nodes
         public void Dispose()
         {
             this.hde.MainLoop.OnResetCache -= this.MainLoop_OnPresent;
+            this.DisposeTexture();
         }
     }
 }

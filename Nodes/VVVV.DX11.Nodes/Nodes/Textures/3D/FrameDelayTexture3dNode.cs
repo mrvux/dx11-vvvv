@@ -110,6 +110,7 @@ namespace VVVV.DX11.Nodes
         public void Dispose()
         {
             this.hde.MainLoop.OnResetCache -= this.MainLoop_OnPresent;
+            this.DisposeTexture();
         }
     }
 }
