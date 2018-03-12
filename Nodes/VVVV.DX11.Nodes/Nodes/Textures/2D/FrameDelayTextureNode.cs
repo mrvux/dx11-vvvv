@@ -18,7 +18,7 @@ namespace VVVV.DX11.Nodes
         Warnings="non spreadable")]
     public class FrameDelayTextureNode : IPluginEvaluate, IDX11ResourceHost, IDisposable, IDX11RenderStartPoint
     {
-        [Input("Texture In", IsSingle = true)]
+        [Input("Texture In", IsSingle = true,AutoValidate =false)]
         protected Pin<DX11Resource<DX11Texture2D>> FTextureInput;
 
         [Input("Flush", IsSingle = true)]
@@ -53,6 +53,11 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
+            if (SpreadMax > 0 && this.FInEnabled[0])
+            {
+                this.FTextureInput.Sync();
+            }
+
             if (this.FTextureOutput[0] == null)
             {
                 this.FTextureOutput[0] = new DX11Resource<DX11Texture2D>();
