@@ -15,33 +15,21 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "Sampler", Category = "DX11", Version = "", Author = "vux")]
     public class DX11SamplerStatePresetNode : IPluginEvaluate
     {
-        protected IDiffSpread<EnumEntry> FInPreset; 
+        [Input("Mode")]
+        protected IDiffSpread<SamplerStatePreset> FMode;
 
         [Output("Sampler")]
         protected ISpread<SamplerDescription> FOutSampler;
 
-        [ImportingConstructor()]
-        public DX11SamplerStatePresetNode(IPluginHost host, IIOFactory iofactory)
-        {
-            string[] enums = DX11SamplerStates.Instance.StateKeys;
-
-            host.UpdateEnum(DX11SamplerStates.Instance.EnumName, enums[0], enums);
-
-            InputAttribute attr = new InputAttribute("Mode");
-            attr.EnumName = DX11SamplerStates.Instance.EnumName;
-            attr.DefaultEnumEntry = enums[0];
-            this.FInPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
-        }
-
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInPreset.IsChanged)
+            if (this.FMode.IsChanged)
             {
                 this.FOutSampler.SliceCount = SpreadMax;
 
                 for (int i = 0; i < SpreadMax; i++)
                 {
-                    this.FOutSampler[i] = DX11SamplerStates.Instance.GetState(this.FInPreset[i].Name);
+                    this.FOutSampler[i] = DX11SamplerStates.GetState(this.FMode[i]);
                 }
             }
         }

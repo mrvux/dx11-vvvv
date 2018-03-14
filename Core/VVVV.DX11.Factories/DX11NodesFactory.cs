@@ -164,7 +164,6 @@ namespace VVVV.DX11.Factories
             DX11GlobalDevice.RenderManager = this.rendermanager;
 
             this.BuildAAEnum();
-            this.RegisterStateEnums();
             this.BuildVertexLayoutsEnum();
 		}
 
@@ -184,21 +183,6 @@ namespace VVVV.DX11.Factories
         private void BuildVertexLayoutsEnum()
         {
             this.hdehost.UpdateEnum(VertexLayoutsHelpers.VertexLayoutsEnumName, "Pos3Norm3Tex2", VertexLayoutsHelpers.Entries.ToArray());
-        }
-
-        private void RegisterStateEnums()
-        {
-            string[] enums = DX11SamplerStates.Instance.StateKeys;
-            hdehost.UpdateEnum(DX11SamplerStates.Instance.EnumName, enums[0], enums);
-
-            enums = DX11BlendStates.Instance.StateKeys;
-            hdehost.UpdateEnum(DX11BlendStates.Instance.EnumName, enums[0], enums);
-
-            enums = DX11DepthStencilStates.Instance.StateKeys;
-            hdehost.UpdateEnum(DX11DepthStencilStates.Instance.EnumName, enums[0], enums);
-
-            enums = DX11RasterizerStates.Instance.StateKeys;
-            hdehost.UpdateEnum(DX11RasterizerStates.Instance.EnumName, enums[0], enums);
         }
 
         void graphbuilder_OnRenderRequest(IDX11ResourceDataRetriever sender, IPluginHost host)

@@ -483,7 +483,7 @@ namespace VVVV.DX11.Nodes.Layers
                             {
                                 try
                                 {
-                                    ds = DX11DepthStencilStates.Instance.GetState(pi.DepthPreset);
+                                    ds = DX11DepthStencilStates.GetState(pi.DepthPreset);
                                     validdepth = true;
                                 }
                                 catch
@@ -496,7 +496,7 @@ namespace VVVV.DX11.Nodes.Layers
                             {
                                 try
                                 {
-                                    bs = DX11BlendStates.Instance.GetState(pi.BlendPreset);
+                                    bs = DX11BlendStates.GetState(pi.BlendPreset);
                                     validblend = true;
                                 }
                                 catch

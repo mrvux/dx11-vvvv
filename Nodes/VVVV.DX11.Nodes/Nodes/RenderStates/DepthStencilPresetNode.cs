@@ -11,23 +11,39 @@ using FeralTic.DX11;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "DepthStencil", Category = "DX11.RenderState", Author = "vux")]
-    public class DepthStencilPresetNode : BaseDX11RenderStateSimple
+    public class DepthStencilPresetNode : IPluginEvaluate
     {
-        [ImportingConstructor()]
-        public DepthStencilPresetNode(IPluginHost host, IIOFactory iofactory) : base(host, iofactory) { }
+        [Input("Render State", CheckIfChanged = true)]
+        protected Pin<DX11RenderState> FInState;
 
-        protected override DX11RenderState AssignPreset(string key, DX11RenderState statein)
-        {
-            statein.DepthStencil = DX11DepthStencilStates.Instance.GetState(key);
-            return statein;
-        }
+        [Input("Mode")]
+        protected IDiffSpread<DepthStencilStatePreset> FMode;
 
-        protected override InputAttribute GetEnumPin()
+        [Output("Render State")]
+        protected ISpread<DX11RenderState> FOutState;
+
+        public void Evaluate(int SpreadMax)
         {
-            InputAttribute attr = new InputAttribute("Mode");
-            attr.EnumName = DX11DepthStencilStates.Instance.EnumName;
-            return attr;
-            
+            if (this.FMode.IsChanged || this.FInState.IsChanged)
+            {
+                this.FOutState.SliceCount = SpreadMax;
+
+                for (int i = 0; i < SpreadMax; i++)
+                {
+                    DX11RenderState rs;
+                    if (this.FInState.IsConnected)
+                    {
+                        rs = this.FInState[i].Clone();
+                    }
+                    else
+                    {
+                        rs = new DX11RenderState();
+                    }
+
+                    rs.DepthStencil = DX11DepthStencilStates.GetState(this.FMode[i]);
+                    this.FOutState[i] = rs;
+                }
+            }
         }
     }
 }

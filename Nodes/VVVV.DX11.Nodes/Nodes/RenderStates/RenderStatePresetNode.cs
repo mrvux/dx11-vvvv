@@ -15,9 +15,14 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "RenderState", Category = "DX11", Version = "", Author = "vux")]
     public class DX11RenderStatePresetNode : IPluginEvaluate
     {
-        protected IDiffSpread<EnumEntry> FInBlendPreset;
-        protected IDiffSpread<EnumEntry> FInDepthPreset;
-        protected IDiffSpread<EnumEntry> FInRasterPreset;
+        [Input("Blend Mode")]
+        protected IDiffSpread<BlendStatePreset> FBlendMode;
+
+        [Input("Rasterizer Mode")]
+        protected IDiffSpread<RasterizerStatePreset> FRasterMode;
+
+        [Input("Depth Stencil Mode")]
+        protected IDiffSpread<DepthStencilStatePreset> FDepthMode;
 
         [Input("Stencil Reference Value")]
         protected IDiffSpread<int> FInStencilReference;
@@ -28,28 +33,12 @@ namespace VVVV.DX11.Nodes
         [Output("Render State")]
         protected ISpread<DX11RenderState> FOutState;
 
-        [ImportingConstructor()]
-        public DX11RenderStatePresetNode(IPluginHost host, IIOFactory iofactory)
-        {
-            InputAttribute attr = new InputAttribute("Blend Mode");
-            attr.EnumName = DX11BlendStates.Instance.EnumName;
-            this.FInBlendPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
-
-            attr = new InputAttribute("Rasterizer Mode");
-            attr.EnumName = DX11RasterizerStates.Instance.EnumName;
-            this.FInRasterPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
-
-
-            attr = new InputAttribute("Depth Stencil Mode");
-            attr.EnumName = DX11DepthStencilStates.Instance.EnumName;
-            this.FInDepthPreset = iofactory.CreateDiffSpread<EnumEntry>(attr);
-        }
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInBlendPreset.IsChanged
-                || this.FInDepthPreset.IsChanged
-                || this.FInRasterPreset.IsChanged
+            if (this.FBlendMode.IsChanged
+                || this.FDepthMode.IsChanged
+                || this.FRasterMode.IsChanged
                 || this.FInStencilReference.IsChanged)
             {
                 this.FOutState.SliceCount = SpreadMax;
@@ -58,9 +47,9 @@ namespace VVVV.DX11.Nodes
                 {
                     this.FOutState[i] = new DX11RenderState()
                     {
-                        Blend = DX11BlendStates.Instance.GetState(this.FInBlendPreset[i].Name),
-                        DepthStencil = DX11DepthStencilStates.Instance.GetState(this.FInDepthPreset[i].Name),
-                        Rasterizer = DX11RasterizerStates.Instance.GetState(this.FInRasterPreset[i].Name),
+                        Blend = DX11BlendStates.GetState(this.FBlendMode[i]),
+                        DepthStencil = DX11DepthStencilStates.GetState(this.FDepthMode[i]),
+                        Rasterizer = DX11RasterizerStates.GetState(this.FRasterMode[i]),
                         DepthStencilReference = FInStencilReference[i],
                         BlendFactor = FInBlendFactor[i]
                     };

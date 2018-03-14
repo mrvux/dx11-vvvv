@@ -117,7 +117,7 @@ namespace VVVV.DX11.Nodes.Renderers
                      
                      if (FAlpha[0])
                      {
-                     	rs.Blend = DX11BlendStates.Instance.GetState("Blend");
+                        rs.Blend = DX11BlendStates.GetState(BlendStatePreset.Blend);
                      	context.CurrentDeviceContext.ClearRenderTargetView(this.swapchain[context].RTV, FInBgColor[0].Color);
                      }
                      context.RenderStateStack.Push(rs);
