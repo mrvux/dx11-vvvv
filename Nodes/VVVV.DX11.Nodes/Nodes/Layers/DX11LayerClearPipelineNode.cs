@@ -54,13 +54,7 @@ namespace VVVV.DX11.Nodes
             {
                 context.CleanShaderStages();
             }
-            if (this.FLayerIn.IsConnected)
-            {
-                for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                {
-                    this.FLayerIn[i][context].Render(context, settings);
-                }
-            }
+            this.FLayerIn.RenderAll(context, settings);
         }
 
         #endregion

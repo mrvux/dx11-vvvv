@@ -62,20 +62,14 @@ namespace VVVV.DX11.Nodes
                         settings.Geometry = this.FInGeometry[0][context];
                     }
 
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(context, settings);
-                    }
+                    this.FLayerIn.RenderAll(context, settings);
                 }
             }
             else
             {
                 if (this.FLayerIn.IsConnected)
                 {
-                    for (int i = 0; i < this.FLayerIn.SliceCount; i++)
-                    {
-                        this.FLayerIn[i][context].Render(context, settings);
-                    }
+                    this.FLayerIn.RenderAll(context, settings);
                 }
             }
             settings.Geometry = g;
