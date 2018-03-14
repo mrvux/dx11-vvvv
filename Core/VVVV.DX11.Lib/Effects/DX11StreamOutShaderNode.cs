@@ -31,8 +31,7 @@ namespace VVVV.DX11.Nodes.Layers
         public enum GeometryBuildMode
         {
             Single,
-            Combine,
-            Slicewise
+            Combine
         }
 
         private int tid = 0;
@@ -82,9 +81,6 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Input("Apply Mode", Order = 10006, IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
         protected IDiffSpread<GeometryBuildMode> FBuildMode;
-
-        [Input("Write Offset", Order = 20000, Visibility = PinVisibility.OnlyInspector)]
-        protected ISpread<int> FInWriteOffset;
 
         [Input("Custom Semantics", Order = 50000, Visibility = PinVisibility.OnlyInspector)]
         protected Pin<IDX11RenderSemantic> FInSemantics;
@@ -340,22 +336,25 @@ namespace VVVV.DX11.Nodes.Layers
 
                     for (int i = 0; i < writeCount; i++)
                     {
-                        this.settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], Matrix.Identity, Matrix.Identity);
+                        if (shaderdata.IsLayoutValid(i))
+                        {
+                            this.settings.ApplyTransforms(this.FInView[i], this.FInProjection[i], Matrix.Identity, Matrix.Identity);
 
-                        variableCache.ApplyGlobals(settings);
+                            variableCache.ApplyGlobals(settings);
 
-                        ctx.StreamOutput.SetTargets(new StreamOutputBufferBinding(this.buffer, i == 0 ? 0 : -1));
-                        shaderdata.SetInputAssembler(ctx, this.FIn[i][context], 0);
+                            ctx.StreamOutput.SetTargets(new StreamOutputBufferBinding(this.buffer, i == 0 ? 0 : -1));
+                            shaderdata.SetInputAssembler(ctx, this.FIn[i][context], 0);
 
-                        this.objectsettings.DrawCallIndex = 0;
-                        this.objectsettings.Geometry = this.FIn[i][context];
-                        this.objectsettings.WorldTransform = this.FInWorld[i];
+                            this.objectsettings.DrawCallIndex = 0;
+                            this.objectsettings.Geometry = this.FIn[i][context];
+                            this.objectsettings.WorldTransform = this.FInWorld[i];
 
-                        variableCache.ApplySlice(this.objectsettings, i);
+                            variableCache.ApplySlice(this.objectsettings, i);
 
-                        shaderdata.ApplyPass(ctx);
+                            shaderdata.ApplyPass(ctx);
 
-                        this.FIn[i][context].Draw();
+                            this.FIn[i][context].Draw();
+                        }
                     }
 
                     ctx.StreamOutput.SetTargets(null);
@@ -456,45 +455,39 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 if (!this.FInAsAuto[0])
                 {
+                    DX11IndexedGeometry inputIndexedGeometry = (DX11IndexedGeometry)this.FIn[0][context].ShallowCopy();
 
-                    DX11IndexedGeometry ig = (DX11IndexedGeometry)this.FIn[0][context].ShallowCopy();
+                    int vertexSize = customlayout ? this.layoutsize : inputIndexedGeometry.VertexSize;
 
-                    int vsize = customlayout ? this.layoutsize : ig.VertexSize;
-                    Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, ig.VerticesCount);
-                    ig.VertexBuffer = vbo;
-                    if (customlayout) { ig.VertexSize = vsize; }
-                    this.clone = ig;
+                    Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vertexSize, inputIndexedGeometry.VerticesCount);
+                    inputIndexedGeometry.VertexBuffer = vbo;
+
+                    if (customlayout)
+                    {
+                        inputIndexedGeometry.VertexSize = vertexSize;
+                    }
+                    this.clone = inputIndexedGeometry;
                     this.buffer = vbo;
                 }
                 else
                 {
                     //Need to rebind indexed geom as vertex
-                    DX11IndexedGeometry ig = (DX11IndexedGeometry)this.FIn[0][context];
+                    DX11IndexedGeometry inputIndexedGeometry = (DX11IndexedGeometry)this.FIn[0][context];
 
-                    int maxv = ig.VerticesCount;
+                    int maxVertexCount = inputIndexedGeometry.VerticesCount;
                     if (this.FInMaxElements[0] > 0)
                     {
-                        maxv = this.FInMaxElements[0];
+                        maxVertexCount = this.FInMaxElements[0];
                     }
 
-                    int vsize = customlayout ? this.layoutsize : ig.VertexSize;
-                    Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, vsize, maxv);
-
-                    //Copy a new Vertex buffer with stream out
-                    DX11VertexGeometry vg = new DX11VertexGeometry(context);
-                    vg.AssignDrawer(new DX11VertexAutoDrawer());
-                    vg.BoundingBox = ig.BoundingBox;
-                    vg.HasBoundingBox = ig.HasBoundingBox;
-                    vg.InputLayout = ig.InputLayout;
-                    vg.Topology = ig.Topology;
-                    vg.VertexBuffer = vbo;
-                    vg.VertexSize = ig.VertexSize;
-                    vg.VerticesCount = ig.VerticesCount;
-
-                    if (customlayout) { vg.VertexSize = vsize; }
-
-                    this.clone = vg;
-                    this.buffer = vbo;
+                    int vertexSize = customlayout ? this.layoutsize : inputIndexedGeometry.VertexSize;
+                    DX11VertexGeometry outputVertexGeometry = DX11VertexGeometry.StreamOut(context, maxVertexCount, vertexSize, true);
+                    outputVertexGeometry.BoundingBox = inputIndexedGeometry.BoundingBox;
+                    outputVertexGeometry.HasBoundingBox = inputIndexedGeometry.HasBoundingBox;
+                    outputVertexGeometry.InputLayout = inputIndexedGeometry.InputLayout;
+                    outputVertexGeometry.Topology = inputIndexedGeometry.Topology;
+                    this.clone = outputVertexGeometry;
+                    this.buffer = outputVertexGeometry.VertexBuffer;
                 }
             }
             #endregion
@@ -502,23 +495,15 @@ namespace VVVV.DX11.Nodes.Layers
             #region Null geom
             if (this.FIn[0][context] is DX11NullGeometry)
             {
-                DX11NullGeometry ng = (DX11NullGeometry)this.FIn[0][context];
+                DX11NullGeometry inputNullGeometry = (DX11NullGeometry)this.FIn[0][context];
 
-                Buffer vbo = BufferHelper.CreateStreamOutBuffer(context, this.layoutsize, this.FInMaxElements[0]);
-
-                //Copy a new Vertex buffer with stream out
-                DX11VertexGeometry vg = new DX11VertexGeometry(context);
-                vg.AssignDrawer(new DX11VertexAutoDrawer());
-                vg.BoundingBox = ng.BoundingBox;
-                vg.HasBoundingBox = ng.HasBoundingBox;
-                vg.InputLayout = ng.InputLayout;
-                vg.Topology = ng.Topology;
-                vg.VertexBuffer = vbo;
-                vg.VertexSize = this.layoutsize;
-                vg.VerticesCount = this.FInMaxElements[0];
-
-                this.clone = vg;
-                this.buffer = vbo;
+                DX11VertexGeometry outputVertexGeometry = DX11VertexGeometry.StreamOut(context, this.FInMaxElements[0], this.layoutsize, true);
+                outputVertexGeometry.BoundingBox = inputNullGeometry.BoundingBox;
+                outputVertexGeometry.HasBoundingBox = inputNullGeometry.HasBoundingBox;
+                outputVertexGeometry.InputLayout = inputNullGeometry.InputLayout;
+                outputVertexGeometry.Topology = inputNullGeometry.Topology;
+                this.clone = outputVertexGeometry;
+                this.buffer = outputVertexGeometry.VertexBuffer;
 
             }
             #endregion
@@ -580,6 +565,12 @@ namespace VVVV.DX11.Nodes.Layers
         {
             this.deviceshaderdata.Dispose();
             this.shaderVariableCache.Dispose();
+            if (this.buffer != null)
+            {
+                this.buffer.Dispose();
+                this.buffer = null;
+
+            }
         }
         #endregion
 
@@ -590,13 +581,13 @@ namespace VVVV.DX11.Nodes.Layers
             for (int i = 0; i < this.FInLayout.SliceCount; i++)
             {
 
-                if (this.FInLayout.PluginIO.IsConnected && this.FInLayout[i] != null)
+                if (this.FInLayout.IsConnected && this.FInLayout[i] != null)
                 {
                     inputlayout[i] = this.FInLayout[i];
                 }
                 else
                 {
-                    //Set deault, can do better here
+                    //Set default, can do better here
                     inputlayout[i] = new InputElement("POSITION", 0, Format.R32G32B32A32_Float, 0);
                 }
                 vertexsize += FormatHelper.Instance.GetSize(inputlayout[i].Format);
