@@ -50,6 +50,7 @@
     <Compile Include="Nodes\Geometry\Primitives\DX11SegmentZNode.cs" />
     <Compile Include="Nodes\Geometry\RawBufferAsGeometryNode.cs" />
     <Compile Include="Nodes\Geometry\Indirect\VertexIndirectDrawerBufferNode.cs" />
+    <Compile Include="Nodes\Layers\Basic\DrawFullScreenNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerClearPipelineNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerEnabledNode.cs" />
     <Compile Include="Nodes\Layers\DX11LayerViewportRouterNode.cs" />
@@ -186,7 +187,6 @@
     <Compile Include="Nodes\RenderStates\Advanced\DX11DepthStencilStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11RasterizerStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11SamplerStateNode.cs" />
-    <Compile Include="Nodes\RenderStates\BaseDX11RenderStateSimple.cs" />
     <Compile Include="Nodes\RenderStates\BlendPresetNode.cs" />
     <Compile Include="Nodes\RenderStates\DepthStencilPresetNode.cs" />
     <Compile Include="Nodes\RenderStates\RasterizerPresetNode.cs" />
@@ -228,6 +228,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="effects\GenerateDispatch1D.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="effects\DrawFullScreen.fx" />
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)girlpower\nodes\plugins" "$(OutputPath)\..\" /S /R /Y /I</PostBuildEvent>
