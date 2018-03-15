@@ -195,7 +195,7 @@ namespace VVVV.DX11.Nodes.Kinect2
             ulong found = 0;
             for (int i = 0; i < this.lastframe.Length; i++)
             {
-                if (this.lastframe[i].IsTracked)
+                if (this.lastframe[i] != null &&  this.lastframe[i].IsTracked)
                 {
                     found = this.lastframe[i].TrackingId;
                 }
