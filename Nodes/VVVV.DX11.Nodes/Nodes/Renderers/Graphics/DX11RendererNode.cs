@@ -89,8 +89,11 @@ namespace VVVV.DX11.Nodes
             }
             base.WndProc(ref m);  // Call parent WndProc for default message processing.
 
-            if (handled) // Acknowledge event if handled.
-                m.Result = new System.IntPtr(1);
+            if (this.FInTouchUnhandle[0] == false)
+            {
+                if (handled) // Acknowledge event if handled.
+                    m.Result = new System.IntPtr(1);
+            }
         }
 
         private bool DecodeTouch(ref Message m)
@@ -229,6 +232,9 @@ namespace VVVV.DX11.Nodes
 
         [Input("ViewPort", Order = 20)]
         protected Pin<Viewport> FInViewPort;
+
+        [Config("Unhandle Touch Messages", Order = 100, Visibility = PinVisibility.OnlyInspector)]
+        protected IDiffSpread<bool> FInTouchUnhandle;
 
         #endregion
 
