@@ -30,6 +30,12 @@ namespace VVVV.DX11.Nodes.Kinect2
         [Input("Gesture File", IsSingle = true, StringType = StringType.Filename)]
         protected IDiffSpread<string> gesturefile;
 
+        [Input("Use Manual Index", IsSingle = true)]
+        protected IDiffSpread<bool> manualID;
+
+        [Input("Manual Index", IsSingle = true)]
+        protected IDiffSpread<string> manualIndex;
+
         [Output("Gesture Names")]
         protected ISpread<string> gesturenames;
 
@@ -192,20 +198,46 @@ namespace VVVV.DX11.Nodes.Kinect2
                 }
             }
 
-            ulong found = 0;
-            for (int i = 0; i < this.lastframe.Length; i++)
+            if (this.manualID[0])
             {
-                if (this.lastframe[i] != null &&  this.lastframe[i].IsTracked)
+                ulong search;
+                bool found = false;
+                if (ulong.TryParse(this.manualIndex[0], out search))
                 {
-                    found = this.lastframe[i].TrackingId;
+                    for (int i = 0; i < this.lastframe.Length; i++)
+                    {
+                        if (this.lastframe[i] != null && this.lastframe[i].IsTracked && this.lastframe[i].TrackingId == search)
+                        {
+                            found = true;
+                        }
+                    }
                 }
+
+                if (found)
+                {
+                    this.vgbFrameSource.TrackingId = search;
+                }
+                this.vgbFrameReader.IsPaused = found;
+            }
+            else
+            {
+                ulong found = 0;
+                for (int i = 0; i < this.lastframe.Length; i++)
+                {
+                    if (this.lastframe[i] != null && this.lastframe[i].IsTracked)
+                    {
+                        found = this.lastframe[i].TrackingId;
+                    }
+                }
+
+                if (found > 0)
+                {
+                    this.vgbFrameSource.TrackingId = found;
+                }
+                this.vgbFrameReader.IsPaused = found == 0;
             }
 
-            if (found > 0)
-            {
-                this.vgbFrameSource.TrackingId = found;
-            }
-            this.vgbFrameReader.IsPaused = found == 0;
+
         }
 
         private void Reset()
