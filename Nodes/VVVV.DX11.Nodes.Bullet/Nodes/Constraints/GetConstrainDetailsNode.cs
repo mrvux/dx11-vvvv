@@ -16,7 +16,16 @@ namespace VVVV.Nodes.Bullet
 		[Input("Contraint")]
         protected Pin<TypedConstraint> FInput;
 
-		[Output("Type")]
+        [Output("Body 1")]
+        protected ISpread<RigidBody> Body1;
+
+        [Output("Body 2")]
+        protected ISpread<RigidBody> Body2;
+
+        [Output("Body 2 Valid")]
+        protected ISpread<bool> Body2Valid;
+
+        [Output("Type")]
         protected ISpread<TypedConstraintType> FType;
 
 		[Output("Id")]
@@ -36,16 +45,21 @@ namespace VVVV.Nodes.Bullet
                 this.FLifeTime.SliceCount = SpreadMax;
                 this.FId.SliceCount = SpreadMax;
                 this.FCustom.SliceCount = SpreadMax;
+                this.Body2.SliceCount = SpreadMax;
+                this.Body1.SliceCount = SpreadMax;
+                this.Body2Valid.SliceCount = SpreadMax;
 
                 for (int i = 0; i < SpreadMax; i++)
                 {
                     TypedConstraint cst = FInput[i];
                     ConstraintCustomData sc = (ConstraintCustomData)cst.UserObject;
-
                     FType[i] = cst.ConstraintType;
                     FId[i] = sc.Id;
                     FLifeTime[i] = sc.LifeTime;
                     FCustom[i] = sc.Custom;
+                    Body1[i] = cst.RigidBodyA;
+                    Body2[i] = cst.RigidBodyB;
+                    Body2Valid[i] = cst.RigidBodyB != null;
                 }
             }
             else
@@ -54,6 +68,9 @@ namespace VVVV.Nodes.Bullet
                 this.FLifeTime.SliceCount = 0;
                 this.FId.SliceCount = 0;
                 this.FCustom.SliceCount = 0;
+                this.Body2.SliceCount = 0;
+                this.Body1.SliceCount = 0;
+                this.Body2Valid.SliceCount = 0;
             }
 
 		}
