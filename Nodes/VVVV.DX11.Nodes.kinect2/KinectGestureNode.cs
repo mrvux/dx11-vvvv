@@ -200,18 +200,23 @@ namespace VVVV.DX11.Nodes.Kinect2
 
             if (this.manualID[0])
             {
-                ulong search;
+
+                ulong search = 0;
                 bool found = false;
-                if (ulong.TryParse(this.manualIndex[0], out search))
+                if (this.manualIndex.SliceCount > 0)
                 {
-                    for (int i = 0; i < this.lastframe.Length; i++)
+                    if (ulong.TryParse(this.manualIndex[0], out search))
                     {
-                        if (this.lastframe[i] != null && this.lastframe[i].IsTracked && this.lastframe[i].TrackingId == search)
+                        for (int i = 0; i < this.lastframe.Length; i++)
                         {
-                            found = true;
+                            if (this.lastframe[i] != null && this.lastframe[i].IsTracked && this.lastframe[i].TrackingId == search)
+                            {
+                                found = true;
+                            }
                         }
                     }
                 }
+
 
                 if (found)
                 {
