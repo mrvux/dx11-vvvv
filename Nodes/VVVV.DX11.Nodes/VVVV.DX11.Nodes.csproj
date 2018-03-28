@@ -77,6 +77,9 @@
     <Compile Include="Nodes\Renderers\Buffers\DX11RawBufferRenderer.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11AdvancedStreamOutRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Buffers\DX11StreamOutRendererNode.cs" />
+    <Compile Include="Nodes\Renderers\Graphics\DX11RendererNode_reactive.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Nodes\Renderers\Graphics\DX11SpreadRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dArrayRendererNode.cs" />
     <Compile Include="Nodes\Renderers\Graphics\DX11Texture1dRendererNode.cs" />
