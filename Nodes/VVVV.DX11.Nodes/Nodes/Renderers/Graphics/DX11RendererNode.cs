@@ -41,9 +41,9 @@ namespace VVVV.DX11.Nodes
         private object m_touchlock = new object();
         private Dictionary<int, TouchData> touches = new Dictionary<int, TouchData>();
 
-        private event EventHandler<WMTouchEventArgs> Touchdown;
-        private event EventHandler<WMTouchEventArgs> Touchup;
-        private event EventHandler<WMTouchEventArgs> TouchMove;
+        public event EventHandler<WMTouchEventArgs> TouchDown;
+        public event EventHandler<WMTouchEventArgs> TouchUp;
+        public event EventHandler<WMTouchEventArgs> TouchMove;
 
         private void OnTouchDownHandler(object sender, WMTouchEventArgs e)
         {
@@ -93,13 +93,14 @@ namespace VVVV.DX11.Nodes
                 m.Result = new System.IntPtr(1);
         }
 
+        readonly int touchInputByteSize = Marshal.SizeOf(typeof(TOUCHINPUT));
         private bool DecodeTouch(ref Message m)
         {
             // More than one touchinput may be associated with a touch message,
             int inputCount = (m.WParam.ToInt32() & 0xffff); // Number of touch inputs, actual per-contact messages
             TOUCHINPUT[] inputs = new TOUCHINPUT[inputCount];
 
-            if (!TouchConstants.GetTouchInputInfo(m.LParam, inputCount, inputs, Marshal.SizeOf(new TOUCHINPUT())))
+            if (!TouchConstants.GetTouchInputInfo(m.LParam, inputCount, inputs, touchInputByteSize))
             {
                 return false;
             }
@@ -112,11 +113,11 @@ namespace VVVV.DX11.Nodes
                 EventHandler<WMTouchEventArgs> handler = null;
                 if ((ti.dwFlags & TouchConstants.TOUCHEVENTF_DOWN) != 0)
                 {
-                    handler = Touchdown;
+                    handler = TouchDown;
                 }
                 else if ((ti.dwFlags & TouchConstants.TOUCHEVENTF_UP) != 0)
                 {
-                    handler = Touchup;
+                    handler = TouchUp;
                 }
                 else if ((ti.dwFlags & TouchConstants.TOUCHEVENTF_MOVE) != 0)
                 {
@@ -133,14 +134,15 @@ namespace VVVV.DX11.Nodes
                     te.ContactY = ti.cyContact / 100;
                     te.ContactX = ti.cxContact / 100;
                     te.Id = ti.dwID;
-                    {
-                        Point pt = PointToClient(new Point(ti.x / 100, ti.y / 100));
-                        te.LocationX = pt.X;
-                        te.LocationY = pt.Y;
-                    }
+
+                    Point pt = PointToClient(new Point(ti.x / 100, ti.y / 100));
+                    te.LocationX = pt.X;
+                    te.LocationY = pt.Y;
+
                     te.Time = ti.dwTime;
                     te.Mask = ti.dwMask;
                     te.Flags = ti.dwFlags;
+                    te.TouchDeviceID = ti.hSource.ToInt64();
 
                     handler(this, te);
 

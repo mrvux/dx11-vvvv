@@ -80,6 +80,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics.Touch
         private int time;               // touch event time
         private int contactX;           // x size of the contact area in pixels
         private int contactY;           // y size of the contact area in pixels
+        private long touchDeviceId;
 
         // Access to data members
         public int LocationX
@@ -122,6 +123,12 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics.Touch
             get { return contactY; }
             set { contactY = value; }
         }
+        public long TouchDeviceID
+        {
+            get { return touchDeviceId; }
+            set { touchDeviceId = value; }
+        }
+
         public bool IsPrimaryContact
         {
             get { return (flags & TouchConstants.TOUCHEVENTF_PRIMARY) != 0; }
