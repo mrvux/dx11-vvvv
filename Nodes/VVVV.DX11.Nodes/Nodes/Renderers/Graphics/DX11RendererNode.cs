@@ -849,6 +849,7 @@ namespace VVVV.DX11.Nodes
         enum TouchNotificationAge { Older, Intermediate, Newer};
         static TouchNotificationAge TouchAge;
 
+        //cash found constructors as this gets called for each event
         static ConstructorInfo STouchDownNotificationConstructor;
         static ConstructorInfo STouchMoveNotificationConstructor;
         static ConstructorInfo STouchUpNotificationConstructor;
@@ -856,158 +857,75 @@ namespace VVVV.DX11.Nodes
         public static TouchDownNotification ToTouchDownNotification(this WMTouchEventArgs eventArgs, Control relativeTo)
         {
             if (STouchDownNotificationConstructor == null) //find correct constructor
-            {
-                var touchNotificationType = typeof(TouchDownNotification);
+                STouchDownNotificationConstructor = FindTouchNotificationConstructor<TouchDownNotification>();
 
-                var newerParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size), typeof(long) };
-                var newerConstructor = touchNotificationType.GetConstructor(newerParams);
-
-                if (newerConstructor != null)
-                {
-                    STouchDownNotificationConstructor = newerConstructor;
-                    TouchAge = TouchNotificationAge.Newer;
-                }
-                else
-                {
-                    var intermediateParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size) };
-                    var intermediateConstructor = touchNotificationType.GetConstructor(intermediateParams);
-
-                    if (intermediateConstructor != null)
-                    {
-                        STouchDownNotificationConstructor = intermediateConstructor;
-                        TouchAge = TouchNotificationAge.Intermediate;
-                    }
-                    else
-                    {
-                        var olderParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(Size) };
-                        var olderConstructor = touchNotificationType.GetConstructor(olderParams);
-
-                        if (olderConstructor != null)
-                        {
-                            STouchDownNotificationConstructor = olderConstructor;
-                            TouchAge = TouchNotificationAge.Older;
-                        }   
-                    }
-                }
-            }
-
-            switch (TouchAge)
-            {
-                case TouchNotificationAge.Newer:
-                    return (TouchDownNotification)STouchDownNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea(), eventArgs.TouchDeviceID });
-
-                case TouchNotificationAge.Intermediate:
-                    return (TouchDownNotification)STouchDownNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea() });
-
-                case TouchNotificationAge.Older:
-                    return (TouchDownNotification)STouchDownNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.ContactArea() });
-            }
-
-            return null;
+            return ConstructTouchNotification<TouchDownNotification>(STouchDownNotificationConstructor, eventArgs, relativeTo);
         }
 
 
         public static TouchMoveNotification ToTouchMoveNotification(this WMTouchEventArgs eventArgs, Control relativeTo)
         {
             if (STouchMoveNotificationConstructor == null) //find correct constructor
-            {
-                var touchNotificationType = typeof(TouchMoveNotification);
+                STouchMoveNotificationConstructor = FindTouchNotificationConstructor<TouchMoveNotification>();
 
-                var newerParams = new Type[] {typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size), typeof(long) };
-                var newerConstructor = touchNotificationType.GetConstructor(newerParams);
+            return ConstructTouchNotification<TouchMoveNotification>(STouchMoveNotificationConstructor, eventArgs, relativeTo);
 
-                if (newerConstructor != null)
-                {
-                    STouchMoveNotificationConstructor = newerConstructor;
-                    TouchAge = TouchNotificationAge.Newer;
-                }
-                else
-                {
-                    var intermediateParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size) };
-                    var intermediateConstructor = touchNotificationType.GetConstructor(intermediateParams);
-
-                    if (intermediateConstructor != null)
-                    {
-                        STouchMoveNotificationConstructor = intermediateConstructor;
-                        TouchAge = TouchNotificationAge.Intermediate;
-                    }
-                    else
-                    {
-                        var olderParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(Size) };
-                        var olderConstructor = touchNotificationType.GetConstructor(olderParams);
-
-                        if (olderConstructor != null)
-                        {
-                            STouchMoveNotificationConstructor = olderConstructor;
-                            TouchAge = TouchNotificationAge.Older;
-                        }
-                    }
-                }
-            }
-
-            switch (TouchAge)
-            {
-                case TouchNotificationAge.Newer:
-                    return (TouchMoveNotification)STouchMoveNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea(), eventArgs.TouchDeviceID });
-
-                case TouchNotificationAge.Intermediate:
-                    return (TouchMoveNotification)STouchMoveNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea() });
-
-                case TouchNotificationAge.Older:
-                    return (TouchMoveNotification)STouchMoveNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.ContactArea() });
-            }
-
-            return null;
         }
 
         public static TouchUpNotification ToTouchUpNotification(this WMTouchEventArgs eventArgs, Control relativeTo)
         {
             if (STouchUpNotificationConstructor == null) //find correct constructor
-            {
-                var touchNotificationType = typeof(TouchUpNotification);
+                STouchUpNotificationConstructor = FindTouchNotificationConstructor<TouchUpNotification>();
 
-                var newerParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size), typeof(long) };
-                var newerConstructor = touchNotificationType.GetConstructor(newerParams);
+            return ConstructTouchNotification<TouchUpNotification>(STouchUpNotificationConstructor, eventArgs, relativeTo);
+        }
 
-                if (newerConstructor != null)
-                {
-                    STouchUpNotificationConstructor = newerConstructor;
-                    TouchAge = TouchNotificationAge.Newer;
-                }
-                else
-                {
-                    var intermediateParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size) };
-                    var intermediateConstructor = touchNotificationType.GetConstructor(intermediateParams);
-
-                    if (intermediateConstructor != null)
-                    {
-                        STouchUpNotificationConstructor = intermediateConstructor;
-                        TouchAge = TouchNotificationAge.Intermediate;
-                    }
-                    else
-                    {
-                        var olderParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(Size) };
-                        var olderConstructor = touchNotificationType.GetConstructor(olderParams);
-
-                        if (olderConstructor != null)
-                        {
-                            STouchUpNotificationConstructor = olderConstructor;
-                            TouchAge = TouchNotificationAge.Older;
-                        }
-                    }
-                }
-            }
-
+        static T ConstructTouchNotification<T>(ConstructorInfo constructor, WMTouchEventArgs eventArgs, Control relativeTo) where T : TouchNotification
+        {
             switch (TouchAge)
             {
                 case TouchNotificationAge.Newer:
-                    return (TouchUpNotification)STouchUpNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea(), eventArgs.TouchDeviceID });
+                    return (T)constructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea(), eventArgs.TouchDeviceID });
 
                 case TouchNotificationAge.Intermediate:
-                    return (TouchUpNotification)STouchUpNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea() });
+                    return (T)constructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.IsPrimaryContact, eventArgs.ContactArea() });
 
                 case TouchNotificationAge.Older:
-                    return (TouchUpNotification)STouchUpNotificationConstructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.ContactArea() });
+                    return (T)constructor.Invoke(new object[] { eventArgs.Location(), relativeTo.ClientSize, eventArgs.Id, eventArgs.ContactArea() });
+            }
+
+            return null;
+        }
+
+        static ConstructorInfo FindTouchNotificationConstructor<T>() where T : TouchNotification
+        {
+            var touchNotificationType = typeof(T);
+
+            var newerParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size), typeof(long) };
+            var newerConstructor = touchNotificationType.GetConstructor(newerParams);
+
+            if (newerConstructor != null)
+            {
+                TouchAge = TouchNotificationAge.Newer;
+                return newerConstructor;
+            }
+
+            var intermediateParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(bool), typeof(Size) };
+            var intermediateConstructor = touchNotificationType.GetConstructor(intermediateParams);
+
+            if (intermediateConstructor != null)
+            {
+                TouchAge = TouchNotificationAge.Intermediate;
+                return STouchUpNotificationConstructor = intermediateConstructor;
+            }
+
+            var olderParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(Size) };
+            var olderConstructor = touchNotificationType.GetConstructor(olderParams);
+
+            if (olderConstructor != null)
+            {
+                TouchAge = TouchNotificationAge.Older;
+                return olderConstructor;
             }
 
             return null;
