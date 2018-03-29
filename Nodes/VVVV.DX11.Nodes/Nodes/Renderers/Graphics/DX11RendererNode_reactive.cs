@@ -181,8 +181,7 @@ namespace VVVV.DX11.Nodes
         }
 
         //touch
-
-        enum TouchNotificationAge { Older, Intermediate, Newer};
+        enum TouchNotificationAge { Older, Intermediate, Newer };
         static TouchNotificationAge TouchAge;
 
         //cash found constructors as this gets called for each event
@@ -252,7 +251,7 @@ namespace VVVV.DX11.Nodes
             if (intermediateConstructor != null)
             {
                 TouchAge = TouchNotificationAge.Intermediate;
-                return STouchUpNotificationConstructor = intermediateConstructor;
+                return intermediateConstructor;
             }
 
             var olderParams = new Type[] { typeof(Point), typeof(Size), typeof(int), typeof(Size) };
