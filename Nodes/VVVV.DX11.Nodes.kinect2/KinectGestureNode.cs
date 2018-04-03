@@ -42,6 +42,12 @@ namespace VVVV.DX11.Nodes.Kinect2
         [Output("Gesture Type")]
         protected ISpread<GestureType> gesturetype;
 
+        [Output("Tracking Id Valid")]
+        protected ISpread<bool> trackingidvalid;
+
+        [Output("Tracking Active")]
+        protected ISpread<bool> trackingActive;
+
         [Output("Gesture Detected")]
         protected ISpread<bool> gesturedetected;
 
@@ -128,6 +134,18 @@ namespace VVVV.DX11.Nodes.Kinect2
                     this.logger.Log(ex);
                 }
             }
+
+            if (this.vgbFrameSource != null)
+            {
+                this.trackingidvalid[0] = this.vgbFrameSource.IsTrackingIdValid;
+                this.trackingActive[0] = this.vgbFrameSource.IsActive;
+            }
+            else
+            {
+                this.trackingidvalid[0] = false;
+                this.trackingActive[0] = false;
+            }
+
         }
 
         void vgbFrameReader_FrameArrived(object sender, VisualGestureBuilderFrameArrivedEventArgs e)
@@ -222,7 +240,7 @@ namespace VVVV.DX11.Nodes.Kinect2
                 {
                     this.vgbFrameSource.TrackingId = search;
                 }
-                this.vgbFrameReader.IsPaused = found;
+                this.vgbFrameReader.IsPaused = found == false;
             }
             else
             {
