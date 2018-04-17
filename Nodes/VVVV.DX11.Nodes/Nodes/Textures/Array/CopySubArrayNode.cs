@@ -46,6 +46,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
+
         public void Update(DX11RenderContext context)
         {
             if (!this.generators.Contains(context))
@@ -59,15 +60,16 @@ namespace VVVV.DX11.Nodes
 
                 generator.Apply(this.FTexIn[0], this.FIndex);
                 this.WriteResult(generator, context);
-
             }
         }
+
 
         private void WriteResult(CopySubArray generator, DX11RenderContext context)
         {
             DX11RenderTextureArray result = generator.Result;
             this.FTextureOutput[0][context] = generator.Result;
         }
+
 
         public void Destroy(DX11RenderContext context, bool force)
         {
@@ -77,6 +79,7 @@ namespace VVVV.DX11.Nodes
             }
         }
 
+
         public void Dispose()
         {
             if (this.generators != null)
@@ -84,7 +87,7 @@ namespace VVVV.DX11.Nodes
                 this.generators.Dispose();
                 this.generators = null;
             }
-
         }
+
     }
 }

@@ -29,12 +29,14 @@ namespace VVVV.DX11.Nodes
             this.context = context;
         }
 
+
         public void Reset(DX11Texture2D texture, int w, int h, int d, SlimDX.DXGI.Format format)
         {
             format = format == SlimDX.DXGI.Format.Unknown ? texture.Format : format;
             this.rtarr.Dispose();
             this.rtarr = new DX11RenderTextureArray(this.context, w, h, d, format, true, 1);
         }
+
 
         public void Apply(DX11Resource<DX11RenderTextureArray> textureArray, ISpread<int> slices)
         {
@@ -71,11 +73,9 @@ namespace VVVV.DX11.Nodes
 
                 int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
 
-                int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
-
+                int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, i, descIn.MipLevels);
 
                 context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, this.rtarr.Resource, destinationSubres, 0, 0, 0);
-
             }
             
         }
