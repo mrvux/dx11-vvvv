@@ -43,7 +43,22 @@ namespace VVVV.DX11.Nodes
         private readonly string[] supporterList = new string[]
         {
             "Irwin Quemener - CloneProduction",
-            "Intolight"
+            "Intolight",
+            "Meso",
+            "Wirmachenbunt",
+            "Microdee",
+            "Ivan Kabalin",
+            "Daniel Huber",
+            "m4d",
+            "Chris Plant",
+            "Kyle McLean",
+            "Andres",
+            "Lev Panov",
+            "Natan Sinigaglia",
+            "Antokhio",
+            "Andres",
+            "Paul",
+            "Jonas Häutle"
         };
 
         [Output("Version")]
@@ -65,7 +80,7 @@ namespace VVVV.DX11.Nodes
 
         public void OnImportsSatisfied()
         {
-            this.version[0] = "1.2";
+            this.version[0] = "1.3";
             this.author[0] = "vux";
 
             this.contributors.AssignFrom(this.contributorList);
