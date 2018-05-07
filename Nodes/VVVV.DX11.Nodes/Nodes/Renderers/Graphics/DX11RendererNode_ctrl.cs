@@ -33,8 +33,8 @@ namespace VVVV.DX11.Nodes
             this.GotFocus += DX11RendererNode_GotFocus;
             this.LostFocus += DX11RendererNode_LostFocus;
 
-            Touchdown += OnTouchDownHandler;
-            Touchup += OnTouchUpHandler;
+            TouchDown += OnTouchDownHandler;
+            TouchUp += OnTouchUpHandler;
             TouchMove += OnTouchMoveHandler;
 
             this.depthmanager = new DepthBufferManager(host,iofactory);
