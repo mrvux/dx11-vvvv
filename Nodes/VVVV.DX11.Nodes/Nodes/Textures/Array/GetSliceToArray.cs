@@ -102,7 +102,8 @@ namespace VVVV.DX11.Nodes
                             if (/*FIndex.IsChanged ||*/ 
                                 descIn.Format != descOut.Format || 
                                 descIn.Width != descOut.Width || 
-                                descIn.Height != descOut.Height)
+                                descIn.Height != descOut.Height ||
+                                descIn.MipLevels != descOut.MipLevels)
                             {
                                 // ToDo: check for mismatching descriptions and react accordingly...
                                 this.FTextureOutput[i][context] = new DX11RenderTextureArray(context, descIn.Width, descIn.Height, currentArraySize, descIn.Format, true, descIn.MipLevels);

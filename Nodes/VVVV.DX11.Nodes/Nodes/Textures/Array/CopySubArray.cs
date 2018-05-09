@@ -44,6 +44,7 @@ namespace VVVV.DX11.Nodes
                 if (this.rtarr.ElemCnt != d || 
                     this.rtarr.Width   != w || 
                     this.rtarr.Height  != h || 
+                    this.rtarr.Description.MipLevels != descIn.MipLevels ||
                     this.rtarr.Format  != f)
                 {
                     this.rtarr.Dispose(); this.rtarr = null;
@@ -52,7 +53,7 @@ namespace VVVV.DX11.Nodes
 
             if (this.rtarr == null)
             {
-                this.rtarr = new DX11RenderTextureArray(this.context, w, h, d, f, true, 1);
+                this.rtarr = new DX11RenderTextureArray(this.context, w, h, d, f, true, descIn.MipLevels);
             }
 
             // copy the ressources over

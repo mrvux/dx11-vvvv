@@ -24,7 +24,7 @@ using VVVV.Utils.VMath;
 namespace VVVV.DX11.Nodes
 {
     [PluginInfo(Name = "GetArray", Category = "DX11.TextureArray", Version = "", Author = "sebl")]
-    public class CopySubArrayNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
+    public class GetArrayNode : IPluginEvaluate, IDX11ResourceHost, IDisposable
     {
         [Input("TextureArray In", IsSingle = true)]
         protected Pin<DX11Resource<DX11RenderTextureArray>> FTexIn;
@@ -32,10 +32,10 @@ namespace VVVV.DX11.Nodes
         [Input("Index")]
         protected IDiffSpread<int> FIndex;
 
-        [Output("Textures Out")]
+        [Output("TextureArray Out")]
         protected ISpread<DX11Resource<DX11RenderTextureArray>> FTextureOutput;
 
-        private DX11Resource<CopySubArray> generators = new DX11Resource<CopySubArray>();
+        private DX11Resource<CopySubArray> generator = new DX11Resource<CopySubArray>();
 
 
         public void Evaluate(int SpreadMax)
@@ -49,14 +49,14 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (!this.generators.Contains(context))
+            if (!this.generator.Contains(context))
             {
-                this.generators[context] = new CopySubArray(context);
+                this.generator[context] = new CopySubArray(context);
             }
 
             if (this.FTexIn.IsConnected)
             {
-                var generator = this.generators[context];
+                var generator = this.generator[context];
 
                 generator.Apply(this.FTexIn[0], this.FIndex);
                 this.WriteResult(generator, context);
@@ -73,19 +73,19 @@ namespace VVVV.DX11.Nodes
 
         public void Destroy(DX11RenderContext context, bool force)
         {
-            if (this.generators != null && this.generators.Contains(context))
+            if (this.generator != null && this.generator.Contains(context))
             {
-                this.generators.Dispose(context);
+                this.generator.Dispose(context);
             }
         }
 
 
         public void Dispose()
         {
-            if (this.generators != null)
+            if (this.generator != null)
             {
-                this.generators.Dispose();
-                this.generators = null;
+                this.generator.Dispose();
+                this.generator = null;
             }
         }
 
