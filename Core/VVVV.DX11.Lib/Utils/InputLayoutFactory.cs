@@ -13,7 +13,7 @@ namespace VVVV.DX11.Internals
     public enum eInputLayoutType
     {
         Binormal, BlendIndices, BlendWeight, Color, Normal, Position,
-        PointSize, Tangent, TextureCoord,Texture
+        PointSize, Tangent, TextureCoord,Texture, Velocity
     }
 
     /// <summary>
@@ -42,6 +42,7 @@ namespace VVVV.DX11.Internals
                     layoutsemantics.Add(eInputLayoutType.Tangent, "TANGENT");
                     layoutsemantics.Add(eInputLayoutType.TextureCoord, "TEXCOORD");
                     layoutsemantics.Add(eInputLayoutType.Texture, "TEXTURE");
+                    layoutsemantics.Add(eInputLayoutType.Velocity, "VELOCITY");
                 }
                 return layoutsemantics;
             }
