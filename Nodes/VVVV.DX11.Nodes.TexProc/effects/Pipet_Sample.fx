@@ -1,5 +1,5 @@
 StructuredBuffer<float2> uvBuffer;
-StructuredBuffer<float3> uvLevelBuffer;
+StructuredBuffer<float> uvLevelBuffer;
 
 RWStructuredBuffer<float4> OutputBuffer;
 
@@ -15,6 +15,8 @@ SamplerState inputSampler
 cbuffer cbData : register(b0)
 {
     uint TotalCount = 1;
+	uint UvCount;
+	uint LevelCount;
 };
 
 
@@ -40,8 +42,9 @@ void CS_DynamicLevel(uint3 DTid : SV_DispatchThreadID)
     if (DTid.x >= TotalCount)
         return;
 
-    float3 uv = uvLevelBuffer[DTid.x];
-    OutputBuffer[DTid.x] = inputTexture.SampleLevel(inputSampler, uv.xy, uv.z);
+    float2 uv = uvBuffer[DTid.x%UvCount];
+	float level = uvLevelBuffer[DTid.x%LevelCount];
+    OutputBuffer[DTid.x] = inputTexture.SampleLevel(inputSampler, uv, level);
 }
 
 
