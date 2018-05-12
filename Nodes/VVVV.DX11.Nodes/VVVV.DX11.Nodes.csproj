@@ -100,8 +100,13 @@
     <Compile Include="Nodes\Textures\2D\AsTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\PixelData.cs" />
     <Compile Include="Nodes\Textures\3D\FrameDelayTexture3dNode.cs" />
+    <Compile Include="Nodes\Textures\Array\GetArraysNode.cs" />
+    <Compile Include="Nodes\Textures\Array\GetArrayNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceDepthTextureArray.cs" />
+    <Compile Include="Nodes\Textures\Array\GetArrayToArray.cs" />
+    <Compile Include="Nodes\Textures\Array\GetSliceToArray.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
+    <Compile Include="Nodes\Textures\Array\CopySubArray.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSlice.cs" />
     <Compile Include="Nodes\Textures\Array\TextureArraySetSliceNode.cs" />
     <Compile Include="Nodes\Validators\RemoveSliceValidatorNode.cs" />
