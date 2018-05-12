@@ -1,6 +1,27 @@
 ChangeLog
 =========
 
+# Upcoming
+* [General] Submodules are now http, which should help for clining entire repository (ssh would fail on forks)
+* [Nodes] Added About (DX11), which contains version number, contributors and supporters information
+* [Nodes] Framedelay (2d and 3d) were not disposing resource when deleted from patch.
+* [Nodes] Framedelay (2d and 3d) now also start render graph (as part of update stage), and do not evaluate upstream anymore when disabled.
+* [Core] : New blend state presets (available in Blend and Renderstate nodes) : MultiplyAlpha (only multiplies alpha channel, leave color as it it), ReplaceAlpha (leave color and set new alpha), BlendDestination (uses alpha in the render target instead of pixel shader ouput as factor, for opacity masks).
+* [Nodes] Add EnableScissor (DX11.RenderState) : Allows to modify state to enable scissor, without touching the rest.
+* [Core] : All state nodes now use static enum instead of dynamic string based version, which increases performance for those nodes (no more lookup needed).
+* [Nodes] : Add DrawFullScreen (DX11.Layer) : as in title , a fast version instead of using module
+* [Core][Nodes] Geometry fx nodes now have a "Combine" option, which means they can receive a spread of geometry (and parameters/transforms) and combine them into one output.
+* [Nodes] Gesture (Kinect2.Microsoft) : Fix issue when rceiveing frame and no skeleton is reported (which could happen sporadically)
+* [Nodes] Add GetRigidBodyCustom(Bullet) : Allows to get custom pin of a rigid body.
+* [Nodes] Add BoxContainment(Bullet Rigid.Filter) : Allows to filter rigid body list if they are inside or outside a bounding box.
+* [Nodes] Add SphereContainment(Bullet Rigid.Filter) : Allows to filter rigid body list if they are inside or outside a bounding sphere.
+* [Nodes]  GetConstrainDetailsN(Bullet) : Now outputs related body.
+* [Nodes] Gesture (Kinect2.Microsoft) : Now allows to specify user index manually, instead of using first found skeleton as before.
+* [Nodes]  Renderer (DX11) : Now has output for events as well as state for user input (mouse, keyboard and touch), contributed by @tebjan)
+* [Nodes]  New node GetArray (DX11.TextureArray), allows "GetSpread" in texture arrays, contributed by @sebl
+* [Nodes]  New node GetArray (DX11.TextureArray BinSize): same as above, but with bin size (allows combining), contributed by @sebl.
+
+
 # 1.2
 * [General] Pack version info is now integrated, which allows to use pack versioning feature (as well as diffing).
 * [Help] Kinect 2 nodes now all have help patches as well, so now every node in the pack has a help file.
