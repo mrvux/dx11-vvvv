@@ -103,7 +103,6 @@
     <Compile Include="Nodes\Textures\Array\GetArraysNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetArrayNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceDepthTextureArray.cs" />
-    <Compile Include="Nodes\Textures\Array\GetArrayToArray.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceToArray.cs" />
     <Compile Include="Nodes\Textures\Array\GetSliceTextureArray.cs" />
     <Compile Include="Nodes\Textures\Array\CopySubArray.cs" />
