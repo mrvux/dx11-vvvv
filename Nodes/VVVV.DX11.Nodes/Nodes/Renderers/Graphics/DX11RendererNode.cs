@@ -285,8 +285,6 @@ namespace VVVV.DX11.Nodes
         private int wheel = 0;
 
         private Dictionary<DX11RenderContext, DX11GraphicsRenderer> renderers = new Dictionary<DX11RenderContext, DX11GraphicsRenderer>();
-        private List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
-        private List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
         private DepthBufferManager depthmanager;
 
         private DX11RenderSettings settings = new DX11RenderSettings();
@@ -312,8 +310,6 @@ namespace VVVV.DX11.Nodes
                 this.FOuFS[0] = new DX11Resource<DX11SwapChain>();
             }
 
-            this.updateddevices.Clear();
-            this.rendereddevices.Clear();
             this.FInvalidateSwapChain = false;
 
             if (!this.depthmanager.FormatChanged) // do not clear reset if format changed
@@ -402,10 +398,6 @@ namespace VVVV.DX11.Nodes
         {
             Device device = context.Device;
 
-            if (!this.updateddevices.Contains(context)) { this.Update(context); }
-
-            if (this.rendereddevices.Contains(context)) { return; }
-
             Exception exception = null;
 
             if (this.FInEnabled[0])
@@ -472,8 +464,6 @@ namespace VVVV.DX11.Nodes
                 }
             }
 
-            this.rendereddevices.Add(context);
-
             //Rethrow
             if (exception != null)
             {
@@ -515,8 +505,6 @@ namespace VVVV.DX11.Nodes
         public void Update(DX11RenderContext context)
         {
             Device device = context.Device;
-
-            if (this.updateddevices.Contains(context)) { return; }
 
             int samplecount = Convert.ToInt32(FInAASamplesPerPixel[0].Name);
 
@@ -577,8 +565,6 @@ namespace VVVV.DX11.Nodes
             if (!this.renderers.ContainsKey(context)) { this.renderers.Add(context, new DX11GraphicsRenderer(context)); }
 
             this.depthmanager.Update(context, sc.Width, sc.Height, sd);
-
-            this.updateddevices.Add(context);
         }
         #endregion
 
