@@ -176,6 +176,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 }
             }
 
+            //Recurse upper nodes and virtual connctions
             for (int i = 0; i < node.InputPins.Count; i++)
             {
                 DX11InputPin ip = node.InputPins[i];
@@ -189,55 +190,51 @@ namespace VVVV.DX11.Lib.RenderGraph
                 this.ProcessNode(node.VirtualConnections[i].sourceNode);
             }
 
+            //Node should be ready, now update
+            this.UpdateNode(node);
 
-            //Call Update
-            for (int i = 0; i < node.InputPins.Count; i++)
+            this.RenderNode(node);
+
+            //Node fully processed
+            this.processed.Add(node);
+        }
+        #endregion
+
+        private void UpdateNode(DX11Node node)
+        {
+            try
             {
-                DX11InputPin ip = node.InputPins[i];
-                if (ip.IsConnected)
+                if (node.Interfaces.IsResourceHost)
                 {
-                    DX11OutputPin parent = ip.ParentPin;
-
-                    if (!this.thisframepins.Contains(parent))
+                    node.Interfaces.ResourceHost.Update(this.context);
+                    if (this.DoNotDestroy == false)
                     {
-                        DX11Node source = parent.ParentNode;
-
-                        try
+                        //Mark all output pins as processed
+                        foreach (DX11OutputPin outpin in node.OutputPins)
                         {
-                            if (source.Interfaces.IsResourceHost)
+                            this.thisframepins.Add(outpin);
+
+                            //Remove from old cache if applicable
+                            if (this.lastframepins.Contains(outpin))
                             {
-                                source.Interfaces.ResourceHost.Update(this.context);
-                                if (this.DoNotDestroy == false)
-                                {
-                                    //Mark all output pins as processed
-                                    foreach (DX11OutputPin outpin in source.OutputPins)
-                                    {
-                                        this.thisframepins.Add(outpin);
-
-                                        //Remove from old cache if applicable
-                                        if (this.lastframepins.Contains(outpin))
-                                        {
-                                            this.lastframepins.Remove(outpin);
-                                        }
-                                    }
-
-                                }
+                                this.lastframepins.Remove(outpin);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            this.logger.Log(LogType.Error, "Exception caused by node during update :" + node.HdeNode.GetNodePath(false));
-                            this.logger.Log(ex);
-                            this.logger.Log(LogType.Message,"Stack Trace");
-                            this.logger.Log(LogType.Message, ex.StackTrace);
-                        }
-
 
                     }
                 }
-
             }
+            catch (Exception ex)
+            {
+                this.logger.Log(LogType.Error, "Exception caused by node during update :" + node.HdeNode.GetNodePath(false));
+                this.logger.Log(ex);
+                this.logger.Log(LogType.Message, "Stack Trace");
+                this.logger.Log(LogType.Message, ex.StackTrace);
+            }
+        }
 
+        private void RenderNode(DX11Node node)
+        {
             //Render if renderer
             if (node.Interfaces.IsRendererHost)
             {
@@ -256,11 +253,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                     this.logger.Log(LogType.Message, ex.StackTrace);
                 }
             }
-
-            //Node fully processed
-            this.processed.Add(node);
         }
-        #endregion
 
         #region Dispose
         public void Dispose()
