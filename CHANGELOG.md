@@ -22,7 +22,7 @@ ChangeLog
 * [Nodes]  New node GetArray (DX11.TextureArray BinSize): same as above, but with bin size (allows combining), contributed by @sebl.
 * [Nodes] New node : AlphaToCoverage (DX11.RenderState) : allows to enable alpha to coverage for multisampling in an existing render state (without modifying other options)
 * [Nodes] New node : AlphaClip (DX11.Effect) : simple effect with texture that discards pixel if alpha is below a certain value
-
+* [Nodes] New node : DepthClip (DX11.RenderState) : allows to enable or disable depth clipping (near/far plane) in an existing render state (without modifying other options)
 
 
 # 1.2
