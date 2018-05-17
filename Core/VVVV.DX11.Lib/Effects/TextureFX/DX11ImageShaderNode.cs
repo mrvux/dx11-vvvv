@@ -14,24 +14,9 @@ using Device = SlimDX.Direct3D11.Device;
 
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
-using VVVV.Hosting.Pins.Input;
-using VVVV.Hosting.Pins.Output;
-using VVVV.Hosting.Pins;
-
-using VVVV.DX11.Internals.Effects;
-using VVVV.DX11.Internals.Effects.Pins;
-using VVVV.DX11.Internals;
 using VVVV.DX11.Lib.Effects;
-using VVVV.DX11.Lib.Devices;
-using VVVV.DX11;
-using VVVV.Core.Model;
-using VVVV.Core.Model.FX;
-
-using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
-using System.CodeDom.Compiler;
-using VVVV.DX11.Lib.Effects.TextureFX;
 
 namespace VVVV.DX11.Nodes.Layers
 {
@@ -325,7 +310,7 @@ namespace VVVV.DX11.Nodes.Layers
 
                     for (int j = 0; j < techniqueInfo.PassCount; j++)
                     {
-                        ImageShaderPass passInfo = techniqueInfo.GetPassInfo(j);
+                        ImageShaderPassInfo passInfo = techniqueInfo.GetPassInfo(j);
                         bool isLastPass = j == techniqueInfo.PassCount - 1;
 
                         for (int kiter = 0; kiter < passInfo.IterationCount; kiter++)
@@ -354,8 +339,8 @@ namespace VVVV.DX11.Nodes.Layers
                             }
                             else
                             {
-                                h = passInfo.Reference == ImageShaderPass.eImageScaleReference.Initial ? he : lastrt.Height;
-                                w = passInfo.Reference == ImageShaderPass.eImageScaleReference.Initial ? wi : lastrt.Width;
+                                h = passInfo.Reference == ImageShaderPassInfo.eImageScaleReference.Initial ? he : lastrt.Height;
+                                w = passInfo.Reference == ImageShaderPassInfo.eImageScaleReference.Initial ? wi : lastrt.Width;
                             }
 
                             if (passInfo.DoScale)

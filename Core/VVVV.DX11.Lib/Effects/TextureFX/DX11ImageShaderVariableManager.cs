@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VVVV.DX11.Lib.Effects;
-using VVVV.DX11.Lib.Effects.TextureFX;
 using VVVV.PluginInterfaces.V1;
 using VVVV.PluginInterfaces.V2;
 

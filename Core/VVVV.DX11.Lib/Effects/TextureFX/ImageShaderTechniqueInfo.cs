@@ -5,25 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VVVV.DX11.Lib.Effects.TextureFX
+namespace VVVV.DX11.Lib.Effects
 {
     public class ImageShaderTechniqueInfo
     {
-        private ImageShaderPass[] passInfo;
+        private ImageShaderPassInfo[] passInfo;
 
         public ImageShaderTechniqueInfo(EffectTechnique technique)
         {
-            this.passInfo = new ImageShaderPass[technique.Description.PassCount];
+            this.passInfo = new ImageShaderPassInfo[technique.Description.PassCount];
 
             for (int i = 0; i < this.passInfo.Length; i++)
             {
-                this.passInfo[i] = new ImageShaderPass(technique.GetPassByIndex(i));
+                this.passInfo[i] = new ImageShaderPassInfo(technique.GetPassByIndex(i));
             }
         }
 
         public int PassCount => this.passInfo.Length;
 
-        public ImageShaderPass GetPassInfo(int index)
+        public ImageShaderPassInfo GetPassInfo(int index)
         {
             return this.passInfo[index];
         }

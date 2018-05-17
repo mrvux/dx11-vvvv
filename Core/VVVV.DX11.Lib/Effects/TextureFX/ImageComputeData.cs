@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace VVVV.DX11.Lib.Effects
 {
-    public class ImageComputeData
+    public class ImagePassComputeInfo
     {
-        public ImageComputeData(EffectPass pass)
+        public ImagePassComputeInfo(EffectPass pass)
         {
             this.Enabled = pass.ComputeShaderDescription.Variable.IsValid;
             this.tX = pass.GetIntAnnotation("tx", 1);

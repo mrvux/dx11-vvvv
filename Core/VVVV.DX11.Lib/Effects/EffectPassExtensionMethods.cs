@@ -85,6 +85,12 @@ namespace VVVV.DX11.Lib.Effects
             }
         }
 
+        public static bool GetBoolTechniqueAnnotationByName(this EffectTechnique tech, string annotationName, bool defaultValue)
+        {
+            EffectVariable v = tech.GetAnnotationByName(annotationName);
+            return v.GetBoolFromFloatVVVV(defaultValue);
+        }
+
         public static bool GetBoolPassAnnotationByName(this EffectPass pass, string annotationName, bool defaultValue)
         {
             EffectVariable v = pass.GetAnnotationByName(annotationName);

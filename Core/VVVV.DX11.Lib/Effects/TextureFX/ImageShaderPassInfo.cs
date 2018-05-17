@@ -10,7 +10,7 @@ using SlimDX;
 
 namespace VVVV.DX11.Lib.Effects
 {
-    public class ImageShaderPass
+    public class ImageShaderPassInfo
     {
         private EffectPass effectPass;
 
@@ -34,14 +34,14 @@ namespace VVVV.DX11.Lib.Effects
         public string BlendPreset { get; private set; }
         public string DepthPreset { get; private set; }
 
-        public ImageComputeData ComputeData { get; private set; }
+        public ImagePassComputeInfo ComputeData { get; private set; }
 
         public void Apply(DeviceContext context)
         {
             this.effectPass.Apply(context);
         }
 
-        public ImageShaderPass(EffectPass pd)
+        public ImageShaderPassInfo(EffectPass pd)
         {
             this.effectPass = pd;
             this.Mips = false;
@@ -57,7 +57,7 @@ namespace VVVV.DX11.Lib.Effects
             this.Absolute = false;
             this.IterationCount = 1;
 
-            this.ComputeData = new ImageComputeData(pd);
+            this.ComputeData = new ImagePassComputeInfo(pd);
 
             EffectVariable var = pd.GetAnnotationByName("format");
             if (var.IsValid)

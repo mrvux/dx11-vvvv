@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VVVV.DX11.Lib.Effects.TextureFX
+namespace VVVV.DX11.Lib.Effects
 {
     public class ImageShaderInfo
     {
