@@ -15,17 +15,25 @@ namespace VVVV.DX11.Lib.Effects
         private List<EffectResourceVariable> depthTextureVariables = new List<EffectResourceVariable>();
         private List<EffectResourceVariable> initialTextureVariables = new List<EffectResourceVariable>();
         private List<EffectResourceVariable> previousTextureVariables = new List<EffectResourceVariable>();
-        
+
+        private List<EffectResourceVariable>[] passResultVariableArray;
 
         public ImageShaderInfo(DX11ShaderInstance shader)
         {
             var effect = shader.Effect;
             this.techniqueInfo = new ImageShaderTechniqueInfo[effect.Description.TechniqueCount];
 
+            int maxPassCount = 0;
+
             for (int i = 0; i < this.techniqueInfo.Length; i++)
             {
                 this.techniqueInfo[i] = new ImageShaderTechniqueInfo(effect.GetTechniqueByIndex(i));
+                maxPassCount = this.techniqueInfo[i].PassCount > maxPassCount ? this.techniqueInfo[i].PassCount : maxPassCount;
             }
+
+            //Set list of max pass count
+            this.passResultVariableArray = new List<EffectResourceVariable>[maxPassCount];
+            
 
             for (int i = 0; i < effect.Description.GlobalVariableCount; i++)
             {
@@ -47,8 +55,28 @@ namespace VVVV.DX11.Lib.Effects
                     {
                         this.depthTextureVariables.Add(rv);
                     }
+
+                    //If semantic starts with passresult
+                    if (rv.Description.Semantic.StartsWith("PASSRESULT"))
+                    {
+                        string sidx = rv.Description.Semantic.Substring(10);
+                        int pridx;
+                        if (int.TryParse(sidx, out pridx))
+                        {
+                            if (pridx < maxPassCount)
+                            {
+                                if (this.passResultVariableArray[pridx] == null)
+                                {
+                                    this.passResultVariableArray[pridx] = new List<EffectResourceVariable>();
+                                }
+                                this.passResultVariableArray[pridx].Add(rv);
+                            }
+                        }
+                    }
                 }
             }
+
+
         }
 
         public int TerchniqueCount => this.techniqueInfo.Length;
@@ -56,6 +84,19 @@ namespace VVVV.DX11.Lib.Effects
         public ImageShaderTechniqueInfo GetTechniqueInfo(int index)
         {
             return this.techniqueInfo[index];
+        }
+
+        public void ApplyPassResult(ShaderResourceView view, int passIndex)
+        {
+            var prData = this.passResultVariableArray[passIndex];
+            if (prData != null)
+            {
+                for (int i = 0; i < prData.Count; i++)
+                {
+                    prData[i].SetResource(view);
+                }
+            }
+
         }
 
         public void ApplyInitial(ShaderResourceView view)

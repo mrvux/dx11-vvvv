@@ -14,23 +14,15 @@ namespace VVVV.DX11.Nodes.Layers
     {
         public DX11ImageShaderVariableManager(IPluginHost host, IIOFactory iofactory) : base(host, iofactory) { }
 
-        public List<EffectResourceVariable> texturecache = new List<EffectResourceVariable>();
         public List<EffectScalarVariable> passindex = new List<EffectScalarVariable>();
         public List<EffectScalarVariable> passiterindex = new List<EffectScalarVariable>();
 
         public void RebuildTextureCache()
         {
-            texturecache.Clear();
             passindex.Clear();
             for (int i = 0; i < this.shader.DefaultEffect.Description.GlobalVariableCount; i++)
             {
                 EffectVariable var = this.shader.DefaultEffect.GetVariableByIndex(i);
-
-                if (var.GetVariableType().Description.TypeName == "Texture2D")
-                {
-                    EffectResourceVariable rv = var.AsResource();
-                    texturecache.Add(rv);
-                }
 
                 if (var.GetVariableType().Description.TypeName == "float"
                     || var.GetVariableType().Description.TypeName == "int")

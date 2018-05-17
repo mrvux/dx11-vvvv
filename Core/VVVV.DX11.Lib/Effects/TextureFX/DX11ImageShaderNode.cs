@@ -354,22 +354,13 @@ namespace VVVV.DX11.Nodes.Layers
                     DX11Texture2D lastrt = initial;
                     shaderInfo.ApplyInitial(initial.SRV);
 
-                    for (int j = 0; j < techniqueInfo.PassCount; j++)
+                    for (int passIndex = 0; passIndex < techniqueInfo.PassCount; passIndex++)
                     {
-                        ImageShaderPassInfo passInfo = techniqueInfo.GetPassInfo(j);
-                        bool isLastPass = j == techniqueInfo.PassCount - 1;
+                        ImageShaderPassInfo passInfo = techniqueInfo.GetPassInfo(passIndex);
+                        bool isLastPass = passIndex == techniqueInfo.PassCount - 1;
 
                         for (int kiter = 0; kiter < passInfo.IterationCount; kiter++)
                         {
-                            if (passcounter > 0)
-                            {
-                                for (int pid = 0; pid < passcounter; pid++)
-                                {
-                                    string pname = "PASSRESULT" + pid;
-                                    this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, pname, rtlist[pid]);
-                                }
-                            }
-
                             Format fmt = initial.Format;
                             if (passInfo.CustomFormat)
                             {
@@ -378,7 +369,7 @@ namespace VVVV.DX11.Nodes.Layers
                             bool mips = passInfo.Mips || (isLastPass && FInMipLastPass[textureIndex]);
 
                             int w, h;
-                            if (j == 0)
+                            if (passIndex == 0)
                             {
                                 h = he;
                                 w = wi;
@@ -495,7 +486,7 @@ namespace VVVV.DX11.Nodes.Layers
 
                             shaderInfo.ApplyPrevious(lastrt.SRV);
 
-                            this.BindPassIndexSemantic(shaderdata.ShaderInstance.Effect, j);
+                            this.BindPassIndexSemantic(shaderdata.ShaderInstance.Effect, passIndex);
                             this.BindPassIterIndexSemantic(shaderdata.ShaderInstance.Effect, kiter);
 
                             if (this.FDepthIn.IsConnected)
@@ -540,6 +531,9 @@ namespace VVVV.DX11.Nodes.Layers
 
                             context.RenderTargetStack.Pop();
 
+                            //Apply pass result semantic if applicable (after pop)
+                            shaderInfo.ApplyPassResult(lasttmp.Element.SRV, passIndex);
+
                             if (validblend || validdepth)
                             {
                                 context.RenderStateStack.Pop();
@@ -549,6 +543,9 @@ namespace VVVV.DX11.Nodes.Layers
                             {
                                 context.RenderStateStack.Apply();
                             }
+
+                            
+
                         }
                     }
 
@@ -589,17 +586,6 @@ namespace VVVV.DX11.Nodes.Layers
         #endregion
 
         #region Bind Semantics
-        private void BindTextureSemantic(Effect effect,string semantic, DX11Texture2D resource)
-        {
-            foreach (EffectResourceVariable erv in this.varmanager.texturecache)
-            {
-                if (erv.Description.Semantic == semantic)
-                {
-                    effect.GetVariableByName(erv.Description.Name).AsResource().SetResource(resource.SRV);
-                }
-            }
-        }
-
         private void BindPassIndexSemantic(Effect effect,int passindex)
         {
             foreach (EffectScalarVariable erv in this.varmanager.passindex)
