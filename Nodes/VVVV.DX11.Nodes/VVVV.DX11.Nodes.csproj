@@ -18,7 +18,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive">
       <HintPath>..\..\Dependencies\mixed\System.Reactive.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
