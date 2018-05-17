@@ -85,16 +85,23 @@ namespace VVVV.DX11.Nodes
                     {
                         if (this.FTextureIn[i].Contains(this.AssignedContext))
                         {
-                            Texture2DDescription tdesc = this.FTextureIn[i][this.AssignedContext].Resource.Description;
-                            this.FOutHeight[i] = tdesc.Height;
-                            this.FOutWidth[i] = tdesc.Width;
-                            this.FOutFormat[i] = tdesc.Format;
-                            this.FOutMipLevels[i] = tdesc.MipLevels;
-                            this.FOutSampleCount[i] = tdesc.SampleDescription.Count;
-                            this.FOutAAQuality[i] = tdesc.SampleDescription.Quality;
-                            this.FOutArraySize[i] = tdesc.ArraySize;
-                            this.FOutPointer[i] = this.FTextureIn[i][this.AssignedContext].Resource.ComPointer.ToInt32();
-                            this.FOutCreationTime[i] = this.FTextureIn[i][this.AssignedContext].Resource.CreationTime;
+                            if (this.FTextureIn[i][this.AssignedContext] != null)
+                            {
+                                Texture2DDescription tdesc = this.FTextureIn[i][this.AssignedContext].Resource.Description;
+                                this.FOutHeight[i] = tdesc.Height;
+                                this.FOutWidth[i] = tdesc.Width;
+                                this.FOutFormat[i] = tdesc.Format;
+                                this.FOutMipLevels[i] = tdesc.MipLevels;
+                                this.FOutSampleCount[i] = tdesc.SampleDescription.Count;
+                                this.FOutAAQuality[i] = tdesc.SampleDescription.Quality;
+                                this.FOutArraySize[i] = tdesc.ArraySize;
+                                this.FOutPointer[i] = this.FTextureIn[i][this.AssignedContext].Resource.ComPointer.ToInt32();
+                                this.FOutCreationTime[i] = this.FTextureIn[i][this.AssignedContext].Resource.CreationTime;
+                            }
+                            else
+                            {
+                                this.SetDefault(i);
+                            }
                         }
                         else
                         {
