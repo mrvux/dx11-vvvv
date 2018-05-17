@@ -20,6 +20,9 @@ ChangeLog
 * [Nodes]  Renderer (DX11) : Now has output for events as well as state for user input (mouse, keyboard and touch), contributed by @tebjan)
 * [Nodes]  New node GetArray (DX11.TextureArray), allows "GetSpread" in texture arrays, contributed by @sebl
 * [Nodes]  New node GetArray (DX11.TextureArray BinSize): same as above, but with bin size (allows combining), contributed by @sebl.
+* [Nodes] New node : AlphaToCoverage (DX11.RenderState) : allows to enable alpha to coverage for multisampling in an existing render state (without modifying other options)
+* [Nodes] New node : AlphaClip (DX11.Effect) : simple effect with texture that discards pixel if alpha is below a certain value
+
 
 
 # 1.2
