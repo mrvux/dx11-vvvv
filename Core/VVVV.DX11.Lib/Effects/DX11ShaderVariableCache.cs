@@ -19,6 +19,7 @@ namespace VVVV.DX11.Lib.Effects
         //private List<Action> 
 
         private DX11RenderSettings globalsettings;
+
         public DX11ShaderVariableCache(DX11RenderContext context,DX11ShaderInstance shader, DX11ShaderVariableManager shaderManager)
         {
             shaderPins = shaderManager.ShaderPins.VariablesList;

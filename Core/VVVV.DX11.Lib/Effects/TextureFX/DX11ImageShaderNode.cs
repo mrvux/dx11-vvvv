@@ -31,78 +31,23 @@ using VVVV.DX11.Lib.Rendering;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
 using System.CodeDom.Compiler;
-
+using VVVV.DX11.Lib.Effects.TextureFX;
 
 namespace VVVV.DX11.Nodes.Layers
 {
-    public class DX11ImageShaderVariableManager : DX11ShaderVariableManager
-    {
-        public DX11ImageShaderVariableManager(IPluginHost host, IIOFactory iofactory) : base(host, iofactory) { }
-
-        public List<EffectResourceVariable> texturecache = new List<EffectResourceVariable>();
-        public List<ImageShaderPass> passes = new List<ImageShaderPass>();
-        public List<EffectScalarVariable> passindex = new List<EffectScalarVariable>();
-        public List<EffectScalarVariable> passiterindex = new List<EffectScalarVariable>();
-
-       // System.Collections.Generic.SortedDictionary<int,Vector2>
-
-        public void RebuildTextureCache()
-        {
-            texturecache.Clear();
-            passindex.Clear();
-            for (int i = 0; i < this.shader.DefaultEffect.Description.GlobalVariableCount; i++)
-            {
-                EffectVariable var = this.shader.DefaultEffect.GetVariableByIndex(i);
-
-                if (var.GetVariableType().Description.TypeName == "Texture2D")
-                {
-                    EffectResourceVariable rv = var.AsResource();
-                    texturecache.Add(rv);
-                }
-
-                if (var.GetVariableType().Description.TypeName == "float"
-                    || var.GetVariableType().Description.TypeName == "int")
-                {
-                    if (var.Description.Semantic == "PASSINDEX")
-                    {
-                        passindex.Add(var.AsScalar());
-                    }
-                    if (var.Description.Semantic == "PASSITERATIONINDEX")
-                    {
-                        passiterindex.Add(var.AsScalar());
-                    }
-                }
-            }
-        }
-
-        public void RebuildPassCache(int techidx)
-        {
-            passes.Clear();
-
-            for (int i = 0; i < this.shader.DefaultEffect.GetTechniqueByIndex(techidx).Description.PassCount; i++)
-            {
-                ImageShaderPass pi = new ImageShaderPass(this.shader.DefaultEffect.GetTechniqueByIndex(techidx).GetPassByIndex(i));
-                this.passes.Add(pi);
-            }
-        }
-    }
-
     [PluginInfo(Name = "ShaderNode", Category = "DX11", Version = "", Author = "vux")]
     public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
-        private int tid = 0;
-
+        private int spmax = 0;
+        private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
         private RenderTargetView[] nullrtvs = new RenderTargetView[8];
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
-        private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
-
         private DX11ImageShaderVariableManager varmanager;
+        private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
         private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
-        private int spmax = 0;
+        private DX11ContextElement<ImageShaderInfo> imageShaderInfo = new DX11ContextElement<ImageShaderInfo>();
 
-        private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
- 
         #region Default Input Pins
         [Input("Depth In",Visibility=PinVisibility.OnlyInspector)]
         protected Pin<DX11Resource<DX11DepthStencil>> FDepthIn;
@@ -146,8 +91,9 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FShader = shader;
                 this.varmanager.SetShader(shader);
                 this.varmanager.RebuildTextureCache();
+
                 this.shaderVariableCache.Clear();
-                this.varmanager.RebuildPassCache(tid);
+                this.imageShaderInfo.Clear();
                 this.deviceshaderdata.Dispose();
             }
 
@@ -201,15 +147,8 @@ namespace VVVV.DX11.Nodes.Layers
 
         #region Evaluate
         public void Evaluate(int SpreadMax)
-        {
-            
+        {          
             this.spmax = this.CalculateSpreadMax();
-
-            if (this.FInTechnique.IsChanged)
-            {
-                this.techniquechanged = true;
-            }
-
             this.FOut.SliceCount = this.spmax;
             for (int i = 0; i < SpreadMax; i++)
             {
@@ -239,12 +178,6 @@ namespace VVVV.DX11.Nodes.Layers
                 this.FInvalidate = false;
             }
 
-            if (this.FInTechnique.IsChanged)
-            {
-                tid = this.FInTechnique[0].Index;
-                this.varmanager.RebuildPassCache(tid);
-            }
-
             this.varmanager.ApplyUpdates();
 
             this.FOut.Stream.IsChanged = true;
@@ -256,13 +189,15 @@ namespace VVVV.DX11.Nodes.Layers
         {
             int max = this.varmanager.CalculateSpreadMax();
 
-            if (max == 0 || this.FIn.SliceCount == 0)
+            int spFixed = SpreadUtils.SpreadMax(this.FIn, this.FInTechnique);
+            if (max == 0 || spFixed == 0)
             {
                 return 0;
             }
             else
             {
-                max = Math.Max(this.FIn.SliceCount, max);
+                
+                max = Math.Max(spFixed, max);
                 return max;
             }
         }
@@ -282,8 +217,13 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 this.shaderVariableCache[context] = new DX11ShaderVariableCache(context, this.deviceshaderdata[context].ShaderInstance, this.varmanager);
             }
+            if (!this.imageShaderInfo.Contains(context))
+            {
+                this.imageShaderInfo[context] = new ImageShaderInfo(this.deviceshaderdata[context].ShaderInstance);
+            }
 
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
+            ImageShaderInfo shaderInfo = this.imageShaderInfo[context];
             context.RenderStateStack.Push(new DX11RenderState());
 
             this.OnBeginQuery(context);
@@ -311,11 +251,10 @@ namespace VVVV.DX11.Nodes.Layers
                 if (this.FInEnabled[i])
                 {
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
-                    
 
                     #region Manage size
                     DX11Texture2D initial;
-                    if (this.FIn.PluginIO.IsConnected)
+                    if (this.FIn.IsConnected)
                     {
                         if (this.FInUseDefaultSize[0])
                         {
@@ -375,22 +314,22 @@ namespace VVVV.DX11.Nodes.Layers
 
                     List<DX11Texture2D> rtlist = new List<DX11Texture2D>();
 
+
                     //Bind Initial (once only is ok)
-                    this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "INITIAL", initial);
+                    shaderInfo.ApplyInitial(initial.SRV);
 
                     //Go trough all passes
-                    EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
+                    //EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
+                    int tid = this.FInTechnique[i].Index;
+                    ImageShaderTechniqueInfo techniqueInfo = shaderInfo.GetTechniqueInfo(tid);
 
-                    for (int j = 0; j < tech.Description.PassCount; j++)
+                    for (int j = 0; j < techniqueInfo.PassCount; j++)
                     {
-                        ImageShaderPass pi = this.varmanager.passes[j];
-                        EffectPass pass = tech.GetPassByIndex(j);
-                        bool isLastPass = j == tech.Description.PassCount - 1;
+                        ImageShaderPass passInfo = techniqueInfo.GetPassInfo(j);
+                        bool isLastPass = j == techniqueInfo.PassCount - 1;
 
-                        for (int kiter = 0; kiter < pi.IterationCount; kiter++)
+                        for (int kiter = 0; kiter < passInfo.IterationCount; kiter++)
                         {
-
-
                             if (passcounter > 0)
                             {
                                 for (int pid = 0; pid < passcounter; pid++)
@@ -401,11 +340,11 @@ namespace VVVV.DX11.Nodes.Layers
                             }
 
                             Format fmt = initial.Format;
-                            if (pi.CustomFormat)
+                            if (passInfo.CustomFormat)
                             {
-                                fmt = pi.Format;
+                                fmt = passInfo.Format;
                             }
-                            bool mips = pi.Mips || (isLastPass && FInMipLastPass[i]);
+                            bool mips = passInfo.Mips || (isLastPass && FInMipLastPass[i]);
 
                             int w, h;
                             if (j == 0)
@@ -415,21 +354,21 @@ namespace VVVV.DX11.Nodes.Layers
                             }
                             else
                             {
-                                h = pi.Reference == ImageShaderPass.eImageScaleReference.Initial ? he : lastrt.Height;
-                                w = pi.Reference == ImageShaderPass.eImageScaleReference.Initial ? wi : lastrt.Width;
+                                h = passInfo.Reference == ImageShaderPass.eImageScaleReference.Initial ? he : lastrt.Height;
+                                w = passInfo.Reference == ImageShaderPass.eImageScaleReference.Initial ? wi : lastrt.Width;
                             }
 
-                            if (pi.DoScale)
+                            if (passInfo.DoScale)
                             {
-                                if (pi.Absolute)
+                                if (passInfo.Absolute)
                                 {
-                                    w = Convert.ToInt32(pi.ScaleVector.X);
-                                    h = Convert.ToInt32(pi.ScaleVector.Y);
+                                    w = Convert.ToInt32(passInfo.ScaleVector.X);
+                                    h = Convert.ToInt32(passInfo.ScaleVector.Y);
                                 }
                                 else
                                 {
-                                    w = Convert.ToInt32((float)w * pi.ScaleVector.X);
-                                    h = Convert.ToInt32((float)h * pi.ScaleVector.Y);
+                                    w = Convert.ToInt32((float)w * passInfo.ScaleVector.X);
+                                    h = Convert.ToInt32((float)h * passInfo.ScaleVector.Y);
                                 }
 
                                 w = Math.Max(w, 1);
@@ -458,7 +397,7 @@ namespace VVVV.DX11.Nodes.Layers
                             DX11RenderTarget2D rt = elem.Element;
 
 
-                            if (this.FDepthIn.IsConnected && pi.UseDepth)
+                            if (this.FDepthIn.IsConnected && passInfo.UseDepth)
                             {
                                 context.RenderTargetStack.Push(this.FDepthIn[0][context], true, elem.Element);
                             }
@@ -467,7 +406,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 context.RenderTargetStack.Push(elem.Element);
                             }
 
-                            if (pi.Clear)
+                            if (passInfo.Clear)
                             {
                                 elem.Element.Clear(new Color4(0, 0, 0, 0));
                             }
@@ -479,11 +418,11 @@ namespace VVVV.DX11.Nodes.Layers
                             DepthStencilStateDescription ds = new DepthStencilStateDescription();
                             BlendStateDescription bs = new BlendStateDescription();
 
-                            if (pi.DepthPreset != "")
+                            if (passInfo.DepthPreset != "")
                             {
                                 try
                                 {
-                                    ds = DX11DepthStencilStates.GetState(pi.DepthPreset);
+                                    ds = DX11DepthStencilStates.GetState(passInfo.DepthPreset);
                                     validdepth = true;
                                 }
                                 catch
@@ -492,11 +431,11 @@ namespace VVVV.DX11.Nodes.Layers
                                 }
                             }
 
-                            if (pi.BlendPreset != "")
+                            if (passInfo.BlendPreset != "")
                             {
                                 try
                                 {
-                                    bs = DX11BlendStates.GetState(pi.BlendPreset);
+                                    bs = DX11BlendStates.GetState(passInfo.BlendPreset);
                                     validblend = true;
                                 }
                                 catch
@@ -522,7 +461,8 @@ namespace VVVV.DX11.Nodes.Layers
                             variableCache.ApplyGlobals(r);
                             variableCache.ApplySlice(or, i);
                             //Bind last render target
-                            this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "PREVIOUS", lastrt);
+
+                            shaderInfo.ApplyPrevious(lastrt.SRV);
 
                             this.BindPassIndexSemantic(shaderdata.ShaderInstance.Effect, j);
                             this.BindPassIterIndexSemantic(shaderdata.ShaderInstance.Effect, kiter);
@@ -531,16 +471,16 @@ namespace VVVV.DX11.Nodes.Layers
                             {
                                 if (this.FDepthIn[0].Contains(context))
                                 {
-                                    this.BindTextureSemantic(shaderdata.ShaderInstance.Effect, "DEPTHTEXTURE", this.FDepthIn[0][context]);
+                                    shaderInfo.ApplyDepth(this.FDepthIn[0][context].SRV);
                                 }
                             }
 
                             //Apply pass and draw quad
-                            pass.Apply(ctx);
+                            passInfo.Apply(ctx);
 
-                            if (pi.ComputeData.Enabled)
+                            if (passInfo.ComputeData.Enabled)
                             {
-                                pi.ComputeData.Dispatch(context, w, h);
+                                passInfo.ComputeData.Dispatch(context, w, h);
                                 context.CleanUpCS();
                             }
                             else
@@ -553,7 +493,7 @@ namespace VVVV.DX11.Nodes.Layers
                             //Generate mips if applicable
                             if (mips) { ctx.GenerateMips(rt.SRV); }
 
-                            if (!pi.KeepTarget)
+                            if (!passInfo.KeepTarget)
                             {
                                 rtlist.Add(rt);
                                 lastrt = rt;
@@ -574,7 +514,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 context.RenderStateStack.Pop();
                             }
 
-                            if (pi.HasState)
+                            if (passInfo.HasState)
                             {
                                 context.RenderStateStack.Apply();
                             }
@@ -618,7 +558,6 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 if (erv.Description.Semantic == semantic)
                 {
-                    /*erv.SetResource(resource.SRV);*/
                     effect.GetVariableByName(erv.Description.Name).AsResource().SetResource(resource.SRV);
                 }
             }
@@ -640,17 +579,6 @@ namespace VVVV.DX11.Nodes.Layers
             }
         }
 
-        private void BindSemanticSRV(Effect effect, string semantic, ShaderResourceView srv)
-        {
-            foreach (EffectResourceVariable erv in this.varmanager.texturecache)
-            {
-                if (erv.Description.Semantic == semantic)
-                {
-                    /*erv.SetResource(srv);*/
-                    effect.GetVariableByName(erv.Description.Name).AsResource().SetResource(srv);
-                }
-            }
-        }
         #endregion
 
         #region Destroy

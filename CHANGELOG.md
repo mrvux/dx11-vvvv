@@ -23,6 +23,8 @@ ChangeLog
 * [Nodes] New node : AlphaToCoverage (DX11.RenderState) : allows to enable alpha to coverage for multisampling in an existing render state (without modifying other options)
 * [Nodes] New node : AlphaClip (DX11.Effect) : simple effect with texture that discards pixel if alpha is below a certain value
 * [Nodes] New node : DepthClip (DX11.RenderState) : allows to enable or disable depth clipping (near/far plane) in an existing render state (without modifying other options)
+* [Core] : Texture FX Technique pin is now spreadable (means you can now use different effects for different slices, see girlpower\misc\texturefx_technique_spread folder for an example)
+* [Core] : Texture FX cache is now more efficient, no more penalty when switching techniques
 
 
 # 1.2
