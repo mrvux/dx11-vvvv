@@ -227,6 +227,7 @@ namespace VVVV.DX11.Lib.RenderGraph
             catch (Exception ex)
             {
                 this.logger.Log(LogType.Error, "Exception caused by node during update :" + node.HdeNode.GetNodePath(false));
+                this.logger.Log(LogType.Error, "Exception node name :" + node.HdeNode2.Name);
                 this.logger.Log(ex);
                 this.logger.Log(LogType.Message, "Stack Trace");
                 this.logger.Log(LogType.Message, ex.StackTrace);
@@ -248,6 +249,7 @@ namespace VVVV.DX11.Lib.RenderGraph
                 catch (Exception ex)
                 {
                     this.logger.Log(LogType.Error, "Exception caused by node during render :" + node.HdeNode.GetNodePath(false));
+                    this.logger.Log(LogType.Error, "Node name :" + node.HdeNode2.Name);
                     this.logger.Log(ex);
                     this.logger.Log(LogType.Message, "Stack Trace");
                     this.logger.Log(LogType.Message, ex.StackTrace);

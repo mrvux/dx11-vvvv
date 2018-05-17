@@ -493,7 +493,7 @@ namespace VVVV.DX11.Nodes
 
 
             //Call render on all layers
-            this.FInLayer.RenderAll(context, settings);
+            this.FInLayer.RenderAllWithLog(context, settings, logger);
 
             if (viewportpop)
             {
