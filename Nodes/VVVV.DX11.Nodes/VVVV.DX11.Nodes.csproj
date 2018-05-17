@@ -18,6 +18,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Reactive">
       <HintPath>..\..\Dependencies\mixed\System.Reactive.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -90,6 +91,7 @@
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
     <Compile Include="Nodes\RenderStates\AlphaOperationNode.cs" />
     <Compile Include="Nodes\RenderStates\EnableScissorNode.cs" />
+    <Compile Include="Nodes\RenderStates\AlphaToCoverageNode.cs" />
     <Compile Include="Nodes\RenderStates\WriteMaskNode.cs" />
     <Compile Include="Nodes\RenderStates\RenderStatePresetNode.cs" />
     <Compile Include="Nodes\RenderStates\SamplerStateAnisotropicNode.cs" />
