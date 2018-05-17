@@ -47,6 +47,8 @@ namespace VVVV.DX11.Internals.Effects.Pins
         {
             var sv = instance.Effect.GetVariableByName(this.Name).AsResource();
 
+            List<EffectScalarVariable> mipsLevelOfVar = new List<EffectScalarVariable>();
+            List<EffectScalarVariable> invMipLevelOfVar = new List<EffectScalarVariable>();
             List<EffectVectorVariable> sizeOfVar = new List<EffectVectorVariable>();
             List<EffectVectorVariable> invSizeOfVar = new List<EffectVectorVariable>();
             List<EffectMatrixVariable> aspectVar = new List<EffectMatrixVariable>();
@@ -55,6 +57,18 @@ namespace VVVV.DX11.Internals.Effects.Pins
             for (int i = 0; i < instance.Effect.Description.GlobalVariableCount; i++)
             {
                 var v = instance.Effect.GetVariableByIndex(i);
+                if (v.GetVariableType().Description.TypeName == "float" && v.Description.Semantic == "INVMIPLEVELSOF" && v.Reference(this.Name))
+                {
+                    invMipLevelOfVar.Add(v.AsScalar());
+                }
+                if (v.GetVariableType().Description.TypeName == "int" && v.Description.Semantic == "MIPLEVELSOF" && v.Reference(this.Name))
+                {
+                    mipsLevelOfVar.Add(v.AsScalar());
+                }
+                if (v.GetVariableType().Description.TypeName == "float" && v.Description.Semantic == "MIPLEVELSOF" && v.Reference(this.Name))
+                {
+                    mipsLevelOfVar.Add(v.AsScalar());
+                }
                 if (v.GetVariableType().Description.TypeName == "float2" && v.Description.Semantic == "SIZEOF" && v.Reference(this.Name))
                 {
                     sizeOfVar.Add(v.AsVector());
@@ -69,7 +83,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
                     aspectMode.Add(v.AspectMode());                   
                 }
             }
-            if (sizeOfVar.Count == 0 && invSizeOfVar.Count == 0 && aspectMode.Count == 0)
+            if (sizeOfVar.Count == 0 && invSizeOfVar.Count == 0 && aspectMode.Count == 0 && mipsLevelOfVar.Count == 0 && invMipLevelOfVar.Count == 0)
             {
                 return (i) => { sv.SetResource(this.GetResource(instance.RenderContext, i).SRV); };
             }
@@ -79,6 +93,14 @@ namespace VVVV.DX11.Internals.Effects.Pins
                 {
                     var resource = this.GetResource(instance.RenderContext, i);
                     sv.SetResource(resource.SRV);
+                    for (int j = 0; j < invMipLevelOfVar.Count; j++)
+                    {
+                        invMipLevelOfVar[j].Set(1.0f / (float)resource.Resource.Description.MipLevels);
+                    }
+                    for (int j = 0; j < mipsLevelOfVar.Count; j++)
+                    {
+                        mipsLevelOfVar[j].Set(resource.Resource.Description.MipLevels);
+                    }
                     for (int j = 0; j < sizeOfVar.Count; j++)
                     {
                         sizeOfVar[j].Set(new Vector2(resource.Width, resource.Height));

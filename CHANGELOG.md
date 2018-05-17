@@ -28,6 +28,7 @@ ChangeLog
 * [Core] : Texture FX technique can now use a "wantmips" bool annotation, to build mips before the first pass (only if needed)
 * [Core] : Texture FX has a new option "Preserve On Disable" (spreadable), if Enabled pin is off, keeps previous frame texture instead of passing texture In.
 * [Nodes] : Info (DX11.Texture2d) no exception if a texture is null, returns same defaults
+* [Core] : New reference semantics (MIPLEVELSOF and INVMIPLEVELSOF) to allow to access input texture mip levels in effects (see girlpower\misc\referencing_miplevels for example)
 
 # 1.2
 * [General] Pack version info is now integrated, which allows to use pack versioning feature (as well as diffing).
