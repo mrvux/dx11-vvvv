@@ -17,6 +17,7 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.DX11.Lib.Effects;
 using FeralTic.DX11;
 using FeralTic.DX11.Resources;
+using FeralTic.DX11.StockEffects;
 
 namespace VVVV.DX11.Nodes.Layers
 {
@@ -294,19 +295,53 @@ namespace VVVV.DX11.Nodes.Layers
                     var variableCache = this.shaderVariableCache[context];
                     variableCache.ApplyGlobals(r);
 
-                    DX11Texture2D lastrt = initial;
+                    
                     DX11ResourcePoolEntry<DX11RenderTarget2D> lasttmp = null;
 
                     List<DX11Texture2D> rtlist = new List<DX11Texture2D>();
 
-
-                    //Bind Initial (once only is ok)
-                    shaderInfo.ApplyInitial(initial.SRV);
-
                     //Go trough all passes
-                    //EffectTechnique tech = shaderdata.ShaderInstance.Effect.GetTechniqueByIndex(tid);
                     int tid = this.FInTechnique[i].Index;
                     ImageShaderTechniqueInfo techniqueInfo = shaderInfo.GetTechniqueInfo(tid);
+
+                    //Now we need to add optional extra pass in case we want mip chain (only in case it's not needed, if texture has mips we just ignore)
+                    if (techniqueInfo.WantMips)
+                    {
+                        //Single level and bigger than 1 should get a mip generation pass
+                        if (initial.Width > 1 && initial.Height > 1 && initial.Resource.Description.MipLevels == 1)
+                        {
+                            //Texture might now be an allowed render target format, so we at least need to check that, and default to rgba8 unorm
+                            var mipTargetFmt = initial.Format;
+                            if (!context.IsSupported(FormatSupport.RenderTarget, mipTargetFmt))
+                            {
+                                mipTargetFmt = Format.R8G8B8A8_UNorm;
+
+                                //BGR does not allow uav, and we often create with it
+                                if (mipTargetFmt == Format.B8G8R8A8_UNorm) { mipTargetFmt = Format.R8G8B8A8_UNorm; }
+                            }
+
+                            DX11ResourcePoolEntry<DX11RenderTarget2D> mipTarget = context.ResourcePool.LockRenderTarget(initial.Width, initial.Height, mipTargetFmt, new SampleDescription(1, 0), true, 0);
+                            locktargets.Add(mipTarget);
+
+                            context.RenderTargetStack.Push(mipTarget.Element);
+
+                            context.BasicEffects.PointSamplerPixelPass.Apply(initial.SRV);
+
+                            context.CurrentDeviceContext.Draw(3, 0);
+
+                            context.RenderTargetStack.Pop();
+
+                            context.CurrentDeviceContext.GenerateMips(mipTarget.Element.SRV);
+
+                            //Replace initial by our new texture
+                            initial = mipTarget.Element;
+                        }   
+
+                    }
+
+                    //Bind Initial (once only is ok) and mark for previous usage too
+                    DX11Texture2D lastrt = initial;
+                    shaderInfo.ApplyInitial(initial.SRV);
 
                     for (int j = 0; j < techniqueInfo.PassCount; j++)
                     {
@@ -366,7 +401,7 @@ namespace VVVV.DX11.Nodes.Layers
                                 fmt = Format.R8G8B8A8_UNorm;
                             }
 
-                            //Since device is not capable of telling us BGR not supported
+                            //To avoid uav issue
                             if (fmt == Format.B8G8R8A8_UNorm) { fmt = Format.R8G8B8A8_UNorm; }
 
                             DX11ResourcePoolEntry<DX11RenderTarget2D> elem;
