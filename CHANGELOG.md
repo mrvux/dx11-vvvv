@@ -15,7 +15,7 @@ ChangeLog
 * [Nodes] Add GetRigidBodyCustom(Bullet) : Allows to get custom pin of a rigid body.
 * [Nodes] Add BoxContainment(Bullet Rigid.Filter) : Allows to filter rigid body list if they are inside or outside a bounding box.
 * [Nodes] Add SphereContainment(Bullet Rigid.Filter) : Allows to filter rigid body list if they are inside or outside a bounding sphere.
-* [Nodes]  GetConstrainDetailsN(Bullet) : Now outputs related body.
+* [Nodes] GetConstraintDetails(Bullet) : Now outputs related body.
 * [Nodes] Gesture (Kinect2.Microsoft) : Now allows to specify user index manually, instead of using first found skeleton as before.
 * [Nodes]  Renderer (DX11) : Now has output for events as well as state for user input (mouse, keyboard and touch), contributed by @tebjan)
 * [Nodes]  New node GetArray (DX11.TextureArray), allows "GetSpread" in texture arrays, contributed by @sebl
@@ -24,8 +24,10 @@ ChangeLog
 * [Nodes] New node : AlphaClip (DX11.Effect) : simple effect with texture that discards pixel if alpha is below a certain value
 * [Nodes] New node : DepthClip (DX11.RenderState) : allows to enable or disable depth clipping (near/far plane) in an existing render state (without modifying other options)
 * [Core] : Texture FX Technique pin is now spreadable (means you can now use different effects for different slices, see girlpower\misc\texturefx_technique_spread folder for an example)
-* [Core] : Texture FX cache is now more efficient, no more penalty when switching techniques
-
+* [Core] : Texture FX cache is now more efficient, no more penalty when switching techniques.
+* [Core] : Texture FX technique can now use a "wantmips" bool annotation, to build mips before the first pass (only if needed)
+* [Core] : Texture FX has a new option "Preserve On Disable" (spreadable), if Enabled pin is off, keeps previous frame texture instead of passing texture In.
+* [Nodes] : Info (DX11.Texture2d) no exception if a texture is null, returns same defaults
 
 # 1.2
 * [General] Pack version info is now integrated, which allows to use pack versioning feature (as well as diffing).

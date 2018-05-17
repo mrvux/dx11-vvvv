@@ -25,7 +25,7 @@ namespace VVVV.DX11.Nodes.Layers
     public unsafe class DX11ImageShaderNode : DX11BaseShaderNode,IPluginBase, IPluginEvaluate, IDisposable, IDX11ResourceHost
     {
         private int spmax = 0;
-        private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
+        //private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
         private RenderTargetView[] nullrtvs = new RenderTargetView[8];
 
         private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
@@ -33,6 +33,8 @@ namespace VVVV.DX11.Nodes.Layers
         private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
         private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
         private DX11ContextElement<ImageShaderInfo> imageShaderInfo = new DX11ContextElement<ImageShaderInfo>();
+
+        private Spread<DX11ResourcePoolEntry<DX11RenderTarget2D>> previousFrameResults = new Spread<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
 
         #region Default Input Pins
         [Input("Depth In",Visibility=PinVisibility.OnlyInspector)]
@@ -46,6 +48,9 @@ namespace VVVV.DX11.Nodes.Layers
 
         [Input("Default Size",DefaultValues= new double[] {256,256 },Visibility= PinVisibility.Hidden)]
         protected ISpread<Vector2> FInSize;
+
+        [Input("Preserve On Disable", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInPreserveOnDisable;
 
         [Input("Mips On Last Pass", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<bool> FInMipLastPass;
@@ -144,6 +149,9 @@ namespace VVVV.DX11.Nodes.Layers
                 }
             }
 
+            this.previousFrameResults.Resize(this.spmax, () => null, rt => rt?.UnLock());
+
+
             if (this.FInvalidate)
             {
                 if (this.FShader.IsCompiled)
@@ -218,23 +226,26 @@ namespace VVVV.DX11.Nodes.Layers
             //Clear shader stages
             shaderdata.ResetShaderStages(ctx);
             context.Primitives.ApplyFullTriVS();
-            
-            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> rt in this.lastframetargets)
+
+            for (int i = 0; i < this.previousFrameResults.SliceCount; i++)
             {
-                rt.UnLock();
+                if (this.FInEnabled[i] || this.FInPreserveOnDisable[i] == false)
+                {
+                    this.previousFrameResults[i]?.UnLock();
+                    this.previousFrameResults[i] = null;
+                }
             }
-            this.lastframetargets.Clear();
-            
+
             DX11ObjectRenderSettings or = new DX11ObjectRenderSettings();
 
             int wi, he;
             DX11ResourcePoolEntry<DX11RenderTarget2D> preservedtarget = null;
             
-            for (int i = 0; i < this.spmax; i++)
+            for (int textureIndex = 0; textureIndex < this.spmax; textureIndex++)
             {
                 int passcounter = 0;
 
-                if (this.FInEnabled[i])
+                if (this.FInEnabled[textureIndex])
                 {
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
 
@@ -244,9 +255,9 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         if (this.FInUseDefaultSize[0])
                         {
-                            if (this.FIn[i][context] != null)
+                            if (this.FIn[textureIndex][context] != null)
                             {
-                                initial = this.FIn[i][context];
+                                initial = this.FIn[textureIndex][context];
                             }
                             else
                             {
@@ -257,7 +268,7 @@ namespace VVVV.DX11.Nodes.Layers
                         }
                         else
                         {
-                            initial = this.FIn[i][context];
+                            initial = this.FIn[textureIndex][context];
                             if (initial != null)
                             {
                                 wi = initial.Width;
@@ -266,16 +277,16 @@ namespace VVVV.DX11.Nodes.Layers
                             else
                             {
                                 initial = context.DefaultTextures.WhiteTexture;
-                                wi = (int)this.FInSize[i].X;
-                                he = (int)this.FInSize[i].Y;
+                                wi = (int)this.FInSize[textureIndex].X;
+                                he = (int)this.FInSize[textureIndex].Y;
                             }
                         }
                     }
                     else
                     {
                         initial = context.DefaultTextures.WhiteTexture;
-                        wi = (int)this.FInSize[i].X;
-                        he = (int)this.FInSize[i].Y;
+                        wi = (int)this.FInSize[textureIndex].X;
+                        he = (int)this.FInSize[textureIndex].Y;
                     }
                     #endregion
 
@@ -301,7 +312,7 @@ namespace VVVV.DX11.Nodes.Layers
                     List<DX11Texture2D> rtlist = new List<DX11Texture2D>();
 
                     //Go trough all passes
-                    int tid = this.FInTechnique[i].Index;
+                    int tid = this.FInTechnique[textureIndex].Index;
                     ImageShaderTechniqueInfo techniqueInfo = shaderInfo.GetTechniqueInfo(tid);
 
                     //Now we need to add optional extra pass in case we want mip chain (only in case it's not needed, if texture has mips we just ignore)
@@ -364,7 +375,7 @@ namespace VVVV.DX11.Nodes.Layers
                             {
                                 fmt = passInfo.Format;
                             }
-                            bool mips = passInfo.Mips || (isLastPass && FInMipLastPass[i]);
+                            bool mips = passInfo.Mips || (isLastPass && FInMipLastPass[textureIndex]);
 
                             int w, h;
                             if (j == 0)
@@ -479,7 +490,7 @@ namespace VVVV.DX11.Nodes.Layers
 
                             //Apply settings (we do both here, as texture size semantic might ahve 
                             variableCache.ApplyGlobals(r);
-                            variableCache.ApplySlice(or, i);
+                            variableCache.ApplySlice(or, textureIndex);
                             //Bind last render target
 
                             shaderInfo.ApplyPrevious(lastrt.SRV);
@@ -542,7 +553,7 @@ namespace VVVV.DX11.Nodes.Layers
                     }
 
                     //Set last render target
-                    this.FOut[i][context] = lastrt;
+                    this.FOut[textureIndex][context] = lastrt;
 
                     //Unlock all resources
                     foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> lt in locktargets)
@@ -553,20 +564,26 @@ namespace VVVV.DX11.Nodes.Layers
                     //Keep lock on last rt, since don't want it overidden
                     lasttmp.Lock();
 
-                    this.lastframetargets.Add(lasttmp);
+                    this.previousFrameResults[textureIndex] = lasttmp;
                 }
                 else
                 {
-                    this.FOut[i][context] = this.FIn[i][context];
+                    if (this.FInPreserveOnDisable[textureIndex])
+                    {
+                        //We kept it locked on top
+                        this.FOut[textureIndex][context] = this.previousFrameResults[textureIndex] != null ? this.previousFrameResults[textureIndex].Element : null;
+                    }
+                    else
+                    {
+                        this.FOut[textureIndex][context] = this.FIn[textureIndex][context];
+                    }
+                    
                 }
             }
 
             context.RenderStateStack.Pop();
 
             this.OnEndQuery(context);
-
-            //UnLock previous frame in applicable
-            //if (previoustarget != null) { context.ResourcePool.Unlock(previoustarget); }
         }
         
         #endregion
@@ -609,11 +626,11 @@ namespace VVVV.DX11.Nodes.Layers
                 this.deviceshaderdata.Dispose(context);
                 this.shaderVariableCache.Dispose(context);
             }
-            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
+            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.previousFrameResults)
             {
                 entry.UnLock();
             }
-            this.lastframetargets.Clear();
+            this.previousFrameResults.SliceCount = 0;
         }
         #endregion
 
@@ -623,10 +640,11 @@ namespace VVVV.DX11.Nodes.Layers
             this.deviceshaderdata.Dispose();
             this.shaderVariableCache.Dispose();
 
-            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.lastframetargets)
+            foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.previousFrameResults)
             {
                 entry.UnLock();
             }
+            this.previousFrameResults.SliceCount = 0;
         }
         #endregion
 
