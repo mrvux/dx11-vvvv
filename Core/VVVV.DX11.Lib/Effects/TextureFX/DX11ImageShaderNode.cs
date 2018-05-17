@@ -255,7 +255,7 @@ namespace VVVV.DX11.Nodes.Layers
                     {
                         if (this.FInUseDefaultSize[0])
                         {
-                            if (this.FIn[textureIndex][context] != null)
+                            if (this.FIn[textureIndex].Contains(context) && this.FIn[textureIndex][context] != null)
                             {
                                 initial = this.FIn[textureIndex][context];
                             }
@@ -268,7 +268,7 @@ namespace VVVV.DX11.Nodes.Layers
                         }
                         else
                         {
-                            initial = this.FIn[textureIndex][context];
+                            initial = this.FIn[textureIndex].Contains(context) ? this.FIn[textureIndex][context] : null;
                             if (initial != null)
                             {
                                 wi = initial.Width;
