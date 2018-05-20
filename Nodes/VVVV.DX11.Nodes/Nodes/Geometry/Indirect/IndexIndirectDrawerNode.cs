@@ -101,12 +101,12 @@ namespace VVVV.DX11.Nodes
 
                 DX11IndexedIndirectDrawer drawer = (DX11IndexedIndirectDrawer)geom.Drawer;
 
-                if (this.FInIdx.PluginIO.IsConnected)
+                if (this.FInIdx.IsConnected)
                 {
                     drawer.IndirectArgs.CopyIndicesCount(ctx, this.FInIdx[i][context].UAV);
                 }
 
-                if (this.FInInst.PluginIO.IsConnected)
+                if (this.FInInst.IsConnected)
                 {
                     drawer.IndirectArgs.CopyInstanceCount(ctx, this.FInInst[i][context].UAV);
                 }

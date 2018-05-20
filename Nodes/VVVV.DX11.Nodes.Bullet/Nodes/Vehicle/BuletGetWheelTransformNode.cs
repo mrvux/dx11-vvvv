@@ -20,7 +20,7 @@ namespace VVVV.Bullet.Nodes.Vehicle
 
         public void Evaluate(int SpreadMax)
         {
-            if (FInVehicle.PluginIO.IsConnected)
+            if (FInVehicle.IsConnected)
             {
                 FOutTransform.SliceCount = this.FInVehicle.SliceCount;
 

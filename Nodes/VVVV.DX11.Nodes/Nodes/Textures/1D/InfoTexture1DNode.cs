@@ -50,7 +50,7 @@ namespace VVVV.DX11.Nodes
         #region IPluginEvaluate Members
         public void Evaluate(int SpreadMax)
         {
-            if (this.FTextureIn.PluginIO.IsConnected)
+            if (this.FTextureIn.IsConnected)
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 

@@ -278,7 +278,7 @@ namespace VVVV.DX11.Nodes.Layers
             DX11ShaderData shaderdata = this.deviceshaderdata[context];
             shaderdata.Update(this.FInTechnique[0].Index, 0, this.FIn);
 
-            bool customlayout = this.FInLayout.PluginIO.IsConnected || this.FInAutoLayout[0];
+            bool customlayout = this.FInLayout.IsConnected || this.FInAutoLayout[0];
             if (this.techniquechanged || this.FInLayout.IsChanged || this.FInAutoLayout.IsChanged)
             {
                 elems = null;
@@ -298,7 +298,7 @@ namespace VVVV.DX11.Nodes.Layers
                 this.layoutsize = size;
             }
 
-            if (this.FInEnabled[0] && this.FIn.PluginIO.IsConnected)
+            if (this.FInEnabled[0] && this.FIn.IsConnected)
             {
                 //Clear shader stages (important here)
                 shaderdata.ResetShaderStages(ctx);
@@ -324,11 +324,11 @@ namespace VVVV.DX11.Nodes.Layers
                     this.settings.RenderDepth = 1;
                     this.settings.BackBuffer = null;
 
-                    if (this.FInSemantics.PluginIO.IsConnected)
+                    if (this.FInSemantics.IsConnected)
                     {
                         this.settings.CustomSemantics.AddRange(this.FInSemantics.ToArray());
                     }
-                    if (this.FInResSemantics.PluginIO.IsConnected)
+                    if (this.FInResSemantics.IsConnected)
                     {
                         this.settings.ResourceSemantics.AddRange(this.FInResSemantics.ToArray());
                     }
@@ -554,7 +554,7 @@ namespace VVVV.DX11.Nodes.Layers
             for (int i = 0; i < this.FInLayout.SliceCount; i++)
             {
 
-                if (this.FInLayout.PluginIO.IsConnected && this.FInLayout[i] != null)
+                if (this.FInLayout.IsConnected && this.FInLayout[i] != null)
                 {
                     inputlayout[i] = this.FInLayout[i];
                 }

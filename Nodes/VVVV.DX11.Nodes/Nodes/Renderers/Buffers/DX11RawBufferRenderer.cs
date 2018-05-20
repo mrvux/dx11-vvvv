@@ -115,7 +115,7 @@ namespace VVVV.DX11.Nodes
 
 
 
-            if (!this.FInLayer.PluginIO.IsConnected) { return; }
+            if (!this.FInLayer.IsConnected) { return; }
 
             if (this.rendereddevices.Contains(context)) { return; }
 

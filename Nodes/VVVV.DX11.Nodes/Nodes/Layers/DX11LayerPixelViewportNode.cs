@@ -56,7 +56,7 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.FLayerIn.IsConnected)
                 {
-                    bool enabled = this.FInViewports.PluginIO.IsConnected;
+                    bool enabled = this.FInViewports.IsConnected;
                     if (enabled)
                     {
                         context.CurrentDeviceContext.Rasterizer.SetViewports(this.FInViewports.ToArray());

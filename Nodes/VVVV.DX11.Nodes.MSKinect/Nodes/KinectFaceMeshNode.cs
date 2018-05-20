@@ -47,7 +47,7 @@ namespace VVVV.DX11.Nodes.MSKinect
         public void Evaluate(int SpreadMax)
         {
             this.FInvalidate = false;
-            if (this.FInFrame.PluginIO.IsConnected)
+            if (this.FInFrame.IsConnected)
             {
                 if (this.FInFrame.IsChanged)
                 {

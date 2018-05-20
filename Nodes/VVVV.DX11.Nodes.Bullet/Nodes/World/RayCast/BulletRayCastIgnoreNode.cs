@@ -59,7 +59,7 @@ namespace VVVV.Nodes.Bullet
 
         public void Evaluate(int dummy)
 		{
-			if (this.FWorld.PluginIO.IsConnected)
+			if (this.FWorld.IsConnected)
 			{
                 fraction.Clear();
                 position.Clear();

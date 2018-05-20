@@ -149,15 +149,8 @@ namespace VVVV.MSKinect.Nodes
                 if (this.FInEnableSkeleton.IsChanged || reset)
                 {
                     TransformSmoothParameters sp;
-                    /*if (this.FSmoothParams.PluginIO.IsConnected)
-                    {
-                        sp = this.FSmoothParams[0];
-                    }
-                    else
-                    {*/
-                        sp = this.runtime.DefaultSmooth();
-                    //}
 
+                        sp = this.runtime.DefaultSmooth();
                     this.runtime.EnableSkeleton(this.FInEnableSkeleton[0], this.FInEnableSmooth[0], sp);
                 }
 

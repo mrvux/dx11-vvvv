@@ -218,7 +218,7 @@ namespace VVVV.DX11.Nodes
                 {
                     DX11RenderTarget2D target = this.FOutTexture[i][context];
 
-                    bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
+                    bool viewportpop = this.FInViewPort.IsConnected;
 
                     if (this.FInClear[i])
                     {

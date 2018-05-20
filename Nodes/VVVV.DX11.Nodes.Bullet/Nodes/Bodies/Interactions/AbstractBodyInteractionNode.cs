@@ -19,7 +19,7 @@ namespace VVVV.Nodes.Bullet
 
 		public void Evaluate(int SpreadMax)
 		{
-			if (FInput.PluginIO.IsConnected)
+			if (FInput.IsConnected)
 			{
 				for (int i = 0; i < SpreadMax; i++)
 				{

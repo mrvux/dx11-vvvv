@@ -38,7 +38,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (!FLayout.PluginIO.IsConnected)
+            if (!FLayout.IsConnected)
             {
                 this.FHit.SliceCount = 0;
                 this.FIndex.SliceCount = 0;

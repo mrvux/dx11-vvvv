@@ -26,7 +26,7 @@ namespace VVVV.Nodes.Bullet
 
 		public void Evaluate(int SpreadMax)
 		{
-			if (this.FBodies.PluginIO.IsConnected)
+			if (this.FBodies.IsConnected)
 			{
 				this.FTransform.SliceCount = this.FBodies.SliceCount;
                 var outputBuffer = this.FTransform.Stream.Buffer;

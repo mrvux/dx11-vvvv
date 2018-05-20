@@ -40,7 +40,7 @@ namespace VVVV.DX11.Nodes.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInUI.PluginIO.IsConnected)
+            if (this.FInUI.IsConnected)
             {
                 this.FOutHandPos.SliceCount = this.FInUI.SliceCount*2;
                 this.FOutHandType.SliceCount = this.FInUI.SliceCount * 2;

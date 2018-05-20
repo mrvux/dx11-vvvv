@@ -121,7 +121,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
                 this.Update(context);
             }
 
-            if (!this.FInLayer.PluginIO.IsConnected) { return; }
+            if (!this.FInLayer.IsConnected) { return; }
 
             if (this.rendereddevices.Contains(context)) { return; }
 

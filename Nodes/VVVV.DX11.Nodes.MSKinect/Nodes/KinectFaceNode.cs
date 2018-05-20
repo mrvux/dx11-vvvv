@@ -71,7 +71,7 @@ namespace VVVV.MSKinect.Nodes
                     this.runtime.AllFrameReady -= KinectFaceNode_AllFrameReady;
                 }
 
-                if (this.FInRuntime.PluginIO.IsConnected)
+                if (this.FInRuntime.IsConnected)
                 {
                     //Cache runtime node
                     this.runtime = this.FInRuntime[0];

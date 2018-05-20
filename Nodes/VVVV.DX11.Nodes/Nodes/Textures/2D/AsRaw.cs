@@ -65,7 +65,7 @@ namespace VVVV.DX11.Nodes
         {
             this.FOutValid.SliceCount = SpreadMax;
 
-            if (this.FTextureIn.PluginIO.IsConnected)
+            if (this.FTextureIn.IsConnected)
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 

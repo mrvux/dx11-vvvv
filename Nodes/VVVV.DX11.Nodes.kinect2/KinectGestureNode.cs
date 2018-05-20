@@ -87,7 +87,7 @@ namespace VVVV.DX11.Nodes.Kinect2
                     }
                 }
 
-                if (this.FInRuntime.PluginIO.IsConnected)
+                if (this.FInRuntime.IsConnected)
                 {
                     //Cache runtime node
                     this.runtime = this.FInRuntime[0];

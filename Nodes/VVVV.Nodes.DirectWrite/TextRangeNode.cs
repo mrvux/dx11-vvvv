@@ -46,7 +46,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (!FInLayout.PluginIO.IsConnected)
+            if (!FInLayout.IsConnected)
             {
                 this.FLeft.SliceCount = 0;
                 this.FTop.SliceCount = 0;

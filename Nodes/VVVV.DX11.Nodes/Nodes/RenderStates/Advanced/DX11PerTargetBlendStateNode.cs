@@ -60,7 +60,7 @@ namespace VVVV.DX11.Nodes
                 this.FOutState.SliceCount = SpreadMax;
 
                 DX11RenderState rs;
-                if (this.FInState.PluginIO.IsConnected)
+                if (this.FInState.IsConnected)
                 {
                     rs = this.FInState[0].Clone();
                 }

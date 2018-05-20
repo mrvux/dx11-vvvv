@@ -61,7 +61,7 @@ namespace VVVV.Nodes.DX11
 
             for (int i = 0; i < count; i++)
             {
-                if (this.FView.PluginIO.IsConnected)
+                if (this.FView.IsConnected)
                 {
                     buffer[i].Position = Vector3.TransformCoordinate(this.FPosition[i], this.FView[0]);
                 }
@@ -73,7 +73,7 @@ namespace VVVV.Nodes.DX11
                 buffer[i].AttenuationStart = this.FAttenStart[i];
 
 
-                if (this.FView.PluginIO.IsConnected)
+                if (this.FView.IsConnected)
                 {
                     buffer[i].Direction = Vector3.Normalize(Vector3.TransformNormal(this.FDirection[i], this.FView[0]));
                 }

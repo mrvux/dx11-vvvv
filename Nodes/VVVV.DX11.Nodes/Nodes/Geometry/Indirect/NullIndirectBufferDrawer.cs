@@ -87,14 +87,14 @@ namespace VVVV.DX11.Nodes.Geometry
 
                     var argBuffer = drawer.IndirectArgs.Buffer;
 
-                    if (this.FInI.PluginIO.IsConnected)
+                    if (this.FInI.IsConnected)
                     {
                         int instOffset = this.FInInstOffset[i];
                         ResourceRegion region = new ResourceRegion(instOffset, 0, 0, instOffset + 4, 1, 1);
                         context.CurrentDeviceContext.CopySubresourceRegion(this.FInI[i][context].Buffer, 0, region, argBuffer, 0, 4, 0, 0);
                     }
 
-                    if (this.FInV.PluginIO.IsConnected)
+                    if (this.FInV.IsConnected)
                     {
                         int vOffset = this.FInVtxOffset[i];
                         ResourceRegion region = new ResourceRegion(vOffset, 0, 0, vOffset + 4, 1, 1);

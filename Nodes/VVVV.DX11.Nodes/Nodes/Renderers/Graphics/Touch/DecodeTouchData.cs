@@ -24,7 +24,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics.Touch
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInData.PluginIO.IsConnected)
+            if (this.FInData.IsConnected)
             {
                 this.FTouchId.SliceCount = this.FInData.SliceCount;
                 this.FOutPos.SliceCount = this.FInData.SliceCount;

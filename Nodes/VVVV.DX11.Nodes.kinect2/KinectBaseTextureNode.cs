@@ -64,7 +64,7 @@ namespace VVVV.DX11.Nodes.MSKinect
                     this.OnRuntimeDisconnected();
                 }
 
-                if (this.FInRuntime.PluginIO.IsConnected)
+                if (this.FInRuntime.IsConnected)
                 {
                     //Cache runtime node
                     this.runtime = this.FInRuntime[0];

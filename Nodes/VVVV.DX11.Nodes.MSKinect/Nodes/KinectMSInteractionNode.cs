@@ -77,7 +77,7 @@ namespace VVVV.DX11.Nodes.Nodes
         {
             if (this.FInvalidateConnect)
             {
-                if (this.FInRuntime.PluginIO.IsConnected)
+                if (this.FInRuntime.IsConnected)
                 {
                     stream = new InteractionStream(this.FInRuntime[0].Runtime, new InteractionClientTest());
                     stream.InteractionFrameReady += stream_InteractionFrameReady;

@@ -39,7 +39,7 @@ namespace VVVV.DX11.Nodes
         {
             invalidate = false;
 
-            if (this.FInGeom.PluginIO.IsConnected)
+            if (this.FInGeom.IsConnected)
             {
                 this.FOutGeom.SliceCount = SpreadMax;
 

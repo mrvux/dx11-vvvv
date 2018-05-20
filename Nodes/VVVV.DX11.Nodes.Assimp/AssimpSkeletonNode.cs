@@ -41,7 +41,7 @@ namespace VVVV.DX11.Nodes.AssetImport
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInScene.PluginIO.IsConnected)
+            if (this.FInScene.IsConnected)
             {
                 this.FSkeletonOutput.SliceCount = 1;
 

@@ -196,7 +196,7 @@ namespace VVVV.DX11.Nodes
                     context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
                 }
 
-                if (this.FInLayer.PluginIO.IsConnected)
+                if (this.FInLayer.IsConnected)
                 {
 
                     int size = this.FInSize[0];

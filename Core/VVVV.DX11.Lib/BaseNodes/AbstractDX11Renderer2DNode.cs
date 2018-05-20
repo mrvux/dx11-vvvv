@@ -197,7 +197,7 @@ namespace VVVV.DX11
                         DX11RenderSettings settings = new DX11RenderSettings();
                         settings.ViewportCount = rtmax;
 
-                        bool viewportpop = this.FInViewPort.PluginIO.IsConnected;
+                        bool viewportpop = this.FInViewPort.IsConnected;
 
                         float cw = (float)this.width;
                         float ch = (float)this.height;

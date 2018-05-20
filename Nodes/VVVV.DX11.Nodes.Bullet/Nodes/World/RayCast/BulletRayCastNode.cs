@@ -51,7 +51,7 @@ namespace VVVV.Nodes.Bullet
 
         public void Evaluate(int SpreadMax)
 		{
-			if (this.FWorld.PluginIO.IsConnected && this.FWorld[0] != null)
+			if (this.FWorld.IsConnected && this.FWorld[0] != null)
 			{
 				this.FHit.SliceCount = SpreadMax;
 

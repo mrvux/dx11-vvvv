@@ -30,7 +30,7 @@ namespace VVVV.Nodes.Bullet
 
 		public void Evaluate(int SpreadMax)
 		{
-			if (this.FBodies.PluginIO.IsConnected)
+			if (this.FBodies.IsConnected)
 			{
 				this.FId.SliceCount = this.FBodies.SliceCount;
 				this.FPosition.SliceCount = this.FBodies.SliceCount;

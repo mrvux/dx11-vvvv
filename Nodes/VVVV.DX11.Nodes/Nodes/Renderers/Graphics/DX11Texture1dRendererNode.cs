@@ -124,7 +124,7 @@ namespace VVVV.DX11.Nodes
 
                 DX11WriteableTexture1d target = this.FOutTexture[0][context];
 
-                if (this.FInLayer.PluginIO.IsConnected)
+                if (this.FInLayer.IsConnected)
                 {
 
                     int size = this.FInSize[0];

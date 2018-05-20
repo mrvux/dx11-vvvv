@@ -34,7 +34,7 @@ namespace VVVV.DX11.Nodes.Geometry
 
         public void Evaluate(int SpreadMax)
         {
-            if (FInArgBuffer.PluginIO.IsConnected)
+            if (FInArgBuffer.IsConnected)
             {
                 if (this.FOutGeom.SliceCount == 0)
                 {

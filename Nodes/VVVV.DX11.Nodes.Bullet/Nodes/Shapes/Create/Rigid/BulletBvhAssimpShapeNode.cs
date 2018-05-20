@@ -19,7 +19,7 @@ namespace VVVV.Bullet.Nodes.Shapes.Create.Rigid
 
         public override void Evaluate(int SpreadMax)
         {
-            if ((this.FInMesh.IsChanged || this.BasePinsChanged) && this.FInMesh.PluginIO.IsConnected)
+            if ((this.FInMesh.IsChanged || this.BasePinsChanged) && this.FInMesh.IsConnected)
             {
                 int spmax = ArrayMax.Max(FInMesh.SliceCount, this.BasePinsSpreadMax);
 

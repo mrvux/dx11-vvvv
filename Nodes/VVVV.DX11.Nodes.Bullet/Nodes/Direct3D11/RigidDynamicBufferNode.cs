@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes.Bullet
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FBodies.PluginIO.IsConnected)
+            if (this.FBodies.IsConnected)
             {
                 this.FOutBody.SliceCount = 1;
                 if (this.FOutBody[0] == null) { this.FOutBody[0] = new DX11Resource<DX11DynamicStructuredBuffer<Matrix>>(); }

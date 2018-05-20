@@ -29,7 +29,7 @@ namespace VVVV.Nodes.Bullet
 
 		public void Evaluate(int SpreadMax)
 		{
-			if (this.FContactPoints.PluginIO.IsConnected)
+			if (this.FContactPoints.IsConnected)
 			{
 				this.FPointWorld1.SliceCount = SpreadMax;
 				this.FPointWorld2.SliceCount = SpreadMax;

@@ -55,7 +55,7 @@ namespace MSKinect.Nodes
                 this.first = false;
             }
 
-            if (this.FInFrame.PluginIO.IsConnected)
+            if (this.FInFrame.IsConnected)
             {
                 if (this.FInFrame.IsChanged)
                 {

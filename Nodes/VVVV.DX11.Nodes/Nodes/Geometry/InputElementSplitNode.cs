@@ -36,7 +36,7 @@ namespace VVVV.DX11.Nodes.Geometry
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 this.FOutSemanticName.SliceCount = SpreadMax;
                 this.FOutSemanticIndex.SliceCount = SpreadMax;

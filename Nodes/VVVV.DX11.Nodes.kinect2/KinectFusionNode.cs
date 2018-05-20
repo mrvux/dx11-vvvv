@@ -119,7 +119,7 @@ namespace VVVV.DX11.Nodes.Nodes
             {
                 this.FInvalidateConnect = false;
 
-                if (this.FInRuntime.PluginIO.IsConnected)
+                if (this.FInRuntime.IsConnected)
                 {
                     this.runtime = this.FInRuntime[0];
                     this.runtime.DepthFrameReady += this.runtime_DepthFrameReady;

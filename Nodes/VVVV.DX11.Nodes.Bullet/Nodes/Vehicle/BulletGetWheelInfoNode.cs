@@ -26,7 +26,7 @@ namespace VVVV.Bullet.Nodes.Vehicle
 
         public void Evaluate(int SpreadMax)
         {
-            if (FInVehicle.PluginIO.IsConnected)
+            if (FInVehicle.IsConnected)
             {
                 FOutSkidInfo.SliceCount = this.FInVehicle.SliceCount;
                 FOutSuspensionRelativeVelocity.SliceCount = this.FInVehicle.SliceCount;

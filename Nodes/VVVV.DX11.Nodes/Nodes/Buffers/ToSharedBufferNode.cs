@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes.Textures
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FBufferIn.PluginIO.IsConnected)
+            if (this.FBufferIn.IsConnected)
             {
 
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }

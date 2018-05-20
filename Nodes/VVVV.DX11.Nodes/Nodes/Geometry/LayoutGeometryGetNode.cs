@@ -40,7 +40,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInGeom1.PluginIO.IsConnected)
+            if (this.FInGeom1.IsConnected)
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 

@@ -43,7 +43,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
 
         public void Evaluate(int SpreadMax)
         {
-            if (!this.FFormat.PluginIO.IsConnected)
+            if (!this.FFormat.IsConnected)
             {
                 this.FOutput.SliceCount = 0;
                 return;

@@ -37,7 +37,7 @@ namespace VVVV.Nodes.Bullet
 		public void Evaluate(int SpreadMax)
 		{
 
-			if (this.FWorld.PluginIO.IsConnected)
+			if (this.FWorld.IsConnected)
 			{
 				int contcnt = this.FWorld[0].Dispatcher.NumManifolds;
 				this.FBody1.SliceCount = contcnt;

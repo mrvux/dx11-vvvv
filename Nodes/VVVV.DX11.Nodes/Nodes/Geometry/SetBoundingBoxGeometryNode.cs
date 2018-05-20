@@ -48,7 +48,7 @@ namespace VVVV.DX11.Nodes.Geometry
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInGeom.PluginIO.IsConnected)
+            if (this.FInGeom.IsConnected)
             {
                 for (int i = 0; i < spmax; i++)
                 {

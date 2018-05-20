@@ -45,7 +45,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -99,7 +99,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -153,7 +153,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -207,7 +207,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -261,7 +261,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -315,7 +315,7 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInput.PluginIO.IsConnected)
+            if (this.FInput.IsConnected)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {

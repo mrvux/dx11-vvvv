@@ -107,7 +107,7 @@ namespace VVVV.MSKinect.Nodes
         {
             if (this.FInvalidateConnect)
             {
-                if (this.FInRuntime.PluginIO.IsConnected)
+                if (this.FInRuntime.IsConnected)
                 {
                     //Cache runtime node
                     this.runtime = this.FInRuntime[0];

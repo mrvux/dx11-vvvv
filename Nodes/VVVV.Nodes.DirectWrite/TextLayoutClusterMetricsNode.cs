@@ -54,7 +54,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInText.PluginIO.IsConnected == false)
+            if (this.FInText.IsConnected == false)
             {
                 this.metricsCount.SliceCount = 0;
                 this.FCanWrapLineAfter.SliceCount = 0;

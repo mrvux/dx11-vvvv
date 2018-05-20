@@ -45,7 +45,7 @@ namespace VVVV.DX11.Nodes
         {
             invalidate = false;
 
-            if (this.FInGeom.PluginIO.IsConnected)
+            if (this.FInGeom.IsConnected)
             {
                 this.FOutGeom.SliceCount = SpreadMax;
 
@@ -93,7 +93,7 @@ namespace VVVV.DX11.Nodes
                 DX11IndexedIndirectDrawer drawer = (DX11IndexedIndirectDrawer)geom.Drawer;
 
                 var argBuffer = drawer.IndirectArgs.Buffer;
-                if (this.FInIdx.PluginIO.IsConnected)
+                if (this.FInIdx.IsConnected)
                 {
                     int idxOffset = this.FInIdxOffset[i];
 
@@ -101,7 +101,7 @@ namespace VVVV.DX11.Nodes
                     context.CurrentDeviceContext.CopySubresourceRegion(this.FInIdx[i][context].Buffer, 0, region, argBuffer, 0, 0, 0, 0);
                 }
 
-                if (this.FInInst.PluginIO.IsConnected)
+                if (this.FInInst.IsConnected)
                 {
                     int instOffset = this.FInInstOffset[i];
                     ResourceRegion region = new ResourceRegion(instOffset, 0, 0,instOffset + 4, 1, 1);

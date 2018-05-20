@@ -58,7 +58,7 @@ namespace VVVV.DX11.Nodes
                 if (this.FLayerIn.IsConnected)
                 {
                     List<IDX11RenderSemantic> semantics = new List<IDX11RenderSemantic>();
-                    if (this.FInSemantics.PluginIO.IsConnected)
+                    if (this.FInSemantics.IsConnected)
                     {
                         semantics.AddRange(this.FInSemantics);
                         settings.CustomSemantics.AddRange(semantics);

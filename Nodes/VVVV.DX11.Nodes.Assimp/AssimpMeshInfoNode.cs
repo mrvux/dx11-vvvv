@@ -35,7 +35,7 @@ namespace VVVV.DX11.Nodes.AssetImport
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FInMeshes.PluginIO.IsConnected)
+            if (this.FInMeshes.IsConnected)
             {
                 if (this.FInMeshes.IsChanged)
                 {
