@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(SolutionDir)\vvvv.DX11.Build.targets" />
+  <Import Project="$(SolutionDir)\SharpDX.References.targets" />
+  <PropertyGroup>
+    <ProjectGuid>{8E287757-61C7-42E6-8908-67739FC2879B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VVVV.DX11.Nodes.Tests</RootNamespace>
+    <AssemblyName>VVVV.DX11.Nodes.Tests</AssemblyName>
+    <OutputPath>$(OutputPath)\nodes\plugins\tests</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EmptyTexture2dTestNode.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NullTexture2dTestNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Core\VVVV.DX11.Core.csproj">
+      <Project>{71c0786d-2640-4e39-aa7b-83602f36f3a3}</Project>
+      <Name>VVVV.DX11.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\VVVV.DX11.Lib\VVVV.DX11.Lib.csproj">
+      <Project>{c6ee17bb-1f48-44ea-8131-d299bc57748c}</Project>
+      <Name>VVVV.DX11.Lib</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FeralTic\Core\FeralTic.csproj">
+      <Project>{9ead0f44-e6aa-4363-be4d-d944c1d35044}</Project>
+      <Name>FeralTic</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
