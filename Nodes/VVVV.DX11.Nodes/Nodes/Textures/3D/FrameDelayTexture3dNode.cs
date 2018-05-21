@@ -58,19 +58,24 @@ namespace VVVV.DX11.Nodes
             {
                 DX11Texture3D texture = this.FTextureInput[0][context];
 
-                if (this.lasttexture != null)
+                if (texture != null)
                 {
-                    if (this.lasttexture.Resource.Description != texture.Resource.Description) { this.DisposeTexture(); }
+
+                    if (this.lasttexture != null)
+                    {
+                        if (this.lasttexture.Resource.Description != texture.Resource.Description) { this.DisposeTexture(); }
+                    }
+
+                    if (this.lasttexture == null)
+                    {
+                        this.lasttexture = DX11Texture3D.FromDescription(context, texture.Resource.Description);
+                    }
+
+                    context.CurrentDeviceContext.CopyResource(texture.Resource, this.lasttexture.Resource);
+
+                    if (this.FInFlush[0]) { context.CurrentDeviceContext.Flush(); }
                 }
 
-                if (this.lasttexture == null)
-                {
-                    this.lasttexture = DX11Texture3D.FromDescription(context, texture.Resource.Description);
-                }
-
-                context.CurrentDeviceContext.CopyResource(texture.Resource, this.lasttexture.Resource);
-
-                if (this.FInFlush[0]) { context.CurrentDeviceContext.Flush(); }
             }
             else
             {

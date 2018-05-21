@@ -86,25 +86,28 @@ namespace VVVV.DX11.Nodes
             {
                 DX11Texture2D texture = this.FTextureInput[0][context];
 
-                if (texture is DX11DepthStencil)
+                if (texture != null)
                 {
-                    this.logger.Log(LogType.Warning, "FrameDelay for depth texture is not supported");
-                    return;
+                    if (texture is DX11DepthStencil)
+                    {
+                        this.logger.Log(LogType.Warning, "FrameDelay for depth texture is not supported");
+                        return;
+                    }
+
+                    if (this.lasttexture != null)
+                    {
+                        if (this.lasttexture.Description != texture.Description) { this.DisposeTexture(); }
+                    }
+
+                    if (this.lasttexture == null)
+                    {
+                        this.lasttexture = DX11Texture2D.FromDescription(context, texture.Description);
+                    }
+
+                    context.CurrentDeviceContext.CopyResource(texture.Resource, this.lasttexture.Resource);
+
+                    if (this.FInFlush[0]) { context.CurrentDeviceContext.Flush(); }
                 }
-
-                if (this.lasttexture != null)
-                {
-                    if (this.lasttexture.Description != texture.Description) { this.DisposeTexture(); }
-                }
-
-                if (this.lasttexture == null)
-                {
-                    this.lasttexture = DX11Texture2D.FromDescription(context, texture.Description);
-                }
-
-                context.CurrentDeviceContext.CopyResource(texture.Resource, this.lasttexture.Resource);
-
-                if (this.FInFlush[0]) { context.CurrentDeviceContext.Flush(); }
             }
             else
             {
