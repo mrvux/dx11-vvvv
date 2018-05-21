@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FeralTic", "FeralTic", "{5F0D7AF2-A20D-44E4-9E22-953026C1DCE4}"
 EndProject
@@ -56,6 +56,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.DX11.Nodes.Text", "Nodes\VVVV.DX11.Nodes.Text\VVVV.DX11.Nodes.Text.csproj", "{597DA607-77EA-4009-9EA0-DB96F71F8077}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.DX11.Nodes.TexProc", "Nodes\VVVV.DX11.Nodes.TexProc\VVVV.DX11.Nodes.TexProc.csproj", "{6C60A4A9-2621-47A1-A45A-0735C2418529}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VVVV.DX11.Nodes.Tests", "Nodes\VVVV.DX11.Nodes.Tests\VVVV.DX11.Nodes.Tests.csproj", "{8E287757-61C7-42E6-8908-67739FC2879B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -244,6 +246,16 @@ Global
 		{6C60A4A9-2621-47A1-A45A-0735C2418529}.Release|x64.Build.0 = Release|x64
 		{6C60A4A9-2621-47A1-A45A-0735C2418529}.Release|x86.ActiveCfg = Release|x86
 		{6C60A4A9-2621-47A1-A45A-0735C2418529}.Release|x86.Build.0 = Release|x86
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Debug|x64.ActiveCfg = Debug|x64
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Debug|x64.Build.0 = Debug|x64
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Debug|x86.ActiveCfg = Debug|x86
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Debug|x86.Build.0 = Debug|x86
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Release|Any CPU.ActiveCfg = Release|x86
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Release|x64.ActiveCfg = Release|x64
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Release|x64.Build.0 = Release|x64
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Release|x86.ActiveCfg = Release|x86
+		{8E287757-61C7-42E6-8908-67739FC2879B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -267,6 +279,7 @@ Global
 		{352D259C-FC16-4E03-BBBC-A1C720F7684A} = {FEA7F9FF-A8BC-4B3B-AC45-883E64EAA6AF}
 		{597DA607-77EA-4009-9EA0-DB96F71F8077} = {34741DBE-D233-4D94-BDD9-1469F48C2F16}
 		{6C60A4A9-2621-47A1-A45A-0735C2418529} = {34741DBE-D233-4D94-BDD9-1469F48C2F16}
+		{8E287757-61C7-42E6-8908-67739FC2879B} = {34741DBE-D233-4D94-BDD9-1469F48C2F16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {822F1698-9F99-4AE3-9231-8AE8C5B17068}

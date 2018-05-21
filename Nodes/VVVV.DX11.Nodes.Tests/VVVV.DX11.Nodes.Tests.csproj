@@ -22,6 +22,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Texture2dUpdateFlagNode.cs" />
     <Compile Include="EmptyTexture2dTestNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NullTexture2dTestNode.cs" />
