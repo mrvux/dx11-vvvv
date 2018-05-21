@@ -90,6 +90,8 @@
     <Compile Include="Nodes\RenderStates\Advanced\DX11BlendFactorStateNode.cs" />
     <Compile Include="Nodes\RenderStates\Advanced\DX11PerTargetBlendStateNode.cs" />
     <Compile Include="Nodes\RenderStates\AlphaOperationNode.cs" />
+    <Compile Include="Nodes\RenderStates\CullModeNode.cs" />
+    <Compile Include="Nodes\RenderStates\WireframeNode.cs" />
     <Compile Include="Nodes\RenderStates\DepthClipNode.cs" />
     <Compile Include="Nodes\RenderStates\EnableScissorNode.cs" />
     <Compile Include="Nodes\RenderStates\AlphaToCoverageNode.cs" />
