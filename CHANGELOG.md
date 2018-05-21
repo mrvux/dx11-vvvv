@@ -10,7 +10,6 @@ ChangeLog
 * [Nodes] Add EnableScissor (DX11.RenderState) : Allows to modify state to enable scissor, without touching the rest.
 * [Core] : All state nodes now use static enum instead of dynamic string based version, which increases performance for those nodes (no more lookup needed).
 * [Nodes] : Add DrawFullScreen (DX11.Layer) : as in title , a fast version instead of using module
-* [Core][Nodes] Geometry fx nodes now have a "Combine" option, which means they can receive a spread of geometry (and parameters/transforms) and combine them into one output.
 * [Nodes] Gesture (Kinect2.Microsoft) : Fix issue when rceiveing frame and no skeleton is reported (which could happen sporadically)
 * [Nodes] Add GetRigidBodyCustom(Bullet) : Allows to get custom pin of a rigid body.
 * [Nodes] Add BoxContainment(Bullet Rigid.Filter) : Allows to filter rigid body list if they are inside or outside a bounding box.
