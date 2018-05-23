@@ -614,7 +614,10 @@ namespace VVVV.DX11.Nodes.Layers
             }
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.previousFrameResults)
             {
-                entry.UnLock();
+                if (entry != null)
+                {
+                    entry.UnLock();
+                }
             }
             this.previousFrameResults.SliceCount = 0;
         }
@@ -628,7 +631,10 @@ namespace VVVV.DX11.Nodes.Layers
 
             foreach (DX11ResourcePoolEntry<DX11RenderTarget2D> entry in this.previousFrameResults)
             {
-                entry.UnLock();
+                if (entry != null)
+                {
+                    entry.UnLock();
+                }
             }
             this.previousFrameResults.SliceCount = 0;
         }
