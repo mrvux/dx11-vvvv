@@ -365,7 +365,11 @@ namespace VVVV.DX11.Nodes.Layers
             variableCache.ApplySlice(oset, 0);
             sdata.ApplyPass(ctx);
 
-            this.FInLayer.RenderAll(context, settings);
+            if (this.FInLayer.IsConnected)
+            {
+                this.FInLayer.RenderAll(context, settings);
+            }
+            
 
         }
 
