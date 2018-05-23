@@ -16,7 +16,7 @@ namespace VVVV.DX11
             var buffer = layer.Stream.Buffer;
             for (int i = 0; i < layer.SliceCount; i++)
             {
-                buffer[i][context].Render(context, settings);
+                buffer[i][context]?.Render(context, settings);
             }
         }
 
