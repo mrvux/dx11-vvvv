@@ -16,6 +16,7 @@ using VVVV.Core.Logging;
 using SlimDX.DXGI;
 
 using Device = SlimDX.Direct3D11.Device;
+using VVVV.DX11.Windows;
 
 namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 {
@@ -25,6 +26,8 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
     {
         #region Input Pins
         IPluginHost FHost;
+
+        private WindowDisplayCursor displayCursor;
 
         protected IHDEHost hde;
         [Import()]
@@ -108,12 +111,8 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             //this.form.ResizeEnd += form_ResizeEnd;
             this.form.Show();
             this.form.ShowIcon = false;
+            this.displayCursor = new WindowDisplayCursor(this.form);
 
-           
-            /*this.form.Resize += DX11RendererNode_Resize;
-            this.form.Load += new EventHandler(DX11RendererNode_Load);*/
-
-        
         }
 
         void form_ResizeEnd(object sender, EventArgs e)
@@ -124,6 +123,11 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         #region Evaluate
         public void Evaluate(int SpreadMax)
         {
+            if (this.FInShowCursor.IsChanged)
+            {
+                this.displayCursor.HideCursor = !this.FInShowCursor[0];
+            }
+
             this.FInvalidateSwapChain = false;
 
             if (this.FInTopMost.IsChanged)
