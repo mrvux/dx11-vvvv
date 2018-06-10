@@ -104,6 +104,9 @@ namespace VVVV.DX11.Nodes
         [Input("Top Left", IsSingle = true, Order = 51)]
         protected ISpread<bool> FTopLeft;
 
+        [Input("Invert Y", IsSingle = true, Order = 53)]
+        protected ISpread<bool> FInvertY;
+
         protected override int LayerCount
         {
             get { return SpreadUtils.SpreadMax(FTransformIn, FDoubleScale, FTopLeft); }
@@ -112,9 +115,10 @@ namespace VVVV.DX11.Nodes
         protected override void UpdateSettings(DX11RenderSettings settings, int slice)
         {
             float f = this.FDoubleScale[slice] ? 2.0f : 1.0f;
+            float y = this.FInvertY[slice] ? -1.0f : 1.0f;
 
             settings.View = Matrix.Identity;
-            settings.Projection = Matrix.Scaling(f / settings.RenderWidth,f / settings.RenderHeight, 1.0f) * FTransformIn[slice];
+            settings.Projection = Matrix.Scaling(f / settings.RenderWidth, f / settings.RenderHeight, 1.0f) * FTransformIn[slice];
 
             if (FTopLeft[slice])
             {
@@ -123,7 +127,7 @@ namespace VVVV.DX11.Nodes
                 settings.Projection = Matrix.Translation(-tx, ty, 0.0f) * settings.Projection;
             }
 
-            settings.ViewProjection = settings.Projection;
+            settings.ViewProjection = Matrix.Scaling(1,y,1) * settings.Projection;
         }
     }
 
