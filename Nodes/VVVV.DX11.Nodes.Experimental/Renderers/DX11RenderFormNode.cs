@@ -36,19 +36,21 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Import()]
         protected ILogger logger;
 
-        [Input("Position", AsInt=true)]
-        protected IDiffSpread<Vector2> FInPosition;
 
-        [Input("Size", AsInt = true, DefaultValues = new double[] {400,300 })]
-        protected IDiffSpread<Vector2> FInSize;
 
-        [Input("TopMost")]
-        protected IDiffSpread<bool> FInTopMost;
-
-        [Input("Layers", Order = 1, IsSingle = true)]
+        [Input("Layers", Order = -10, IsSingle = true)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
 
-        [Input("Clear", DefaultValue = 1, Order = 2)]
+        [Input("Position", AsInt = true)]
+        protected IDiffSpread<Vector2> FInPosition;
+
+        [Input("Size", AsInt = true, DefaultValues = new double[] { 400, 300 })]
+        protected IDiffSpread<Vector2> FInSize;
+
+        [Input("AA Samples per Pixel", DefaultEnumEntry = "1", EnumName = "DX11_AASamples")]
+        protected IDiffSpread<EnumEntry> FInAASamplesPerPixel;
+
+        [Input("Clear", DefaultValue = 1)]
         protected ISpread<bool> FInClear;
 
         [Input("Full Screen Resolution", DefaultValues = new double[] { 1920,1200 }, AsInt=true)]
@@ -56,6 +58,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
         [Input("Border",DefaultValue=1)]
         protected IDiffSpread<bool> FInBorder;
+
+        [Input("TopMost")]
+        protected IDiffSpread<bool> FInTopMost;
 
         [Input("Resize", IsBang=true)]
         protected ISpread<bool> FInResize;
@@ -69,7 +74,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Input("Background Color", DefaultColor = new double[] { 0, 0, 0, 1 }, Order = 3)]
         protected ISpread<RGBAColor> FInBgColor;
 
-        [Input("VSync", Visibility = PinVisibility.OnlyInspector)]
+        [Input("VSync")]
         protected ISpread<int> FInVsync;
 
         [Input("Show Cursor", DefaultValue = 0, Visibility = PinVisibility.OnlyInspector)]
@@ -80,6 +85,10 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
+
+
+        [Output("Is Fullscreen", Order = 5)]
+        protected ISpread<bool> FOutIsFullScreen;
         #endregion
 
         #region Fields
@@ -93,6 +102,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         private DX11SwapChain swapchain;
         private Form form;
         private DX11GraphicsRenderer renderer;
+        private DepthBufferManager depthmanager;
 
         private int prevx = 400;
         private int prevy = 300;
@@ -112,6 +122,8 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.form.Show();
             this.form.ShowIcon = false;
             this.displayCursor = new WindowDisplayCursor(this.form);
+
+            this.depthmanager = new DepthBufferManager(host, iofactory);
 
         }
 
@@ -140,9 +152,20 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.SetBorder();
             }
 
-            if (this.FInResize[0] || this.FInRate.IsChanged || this.FInFlipSequential.IsChanged)
+
+            if (!this.depthmanager.FormatChanged) // do not clear reset if format changed
+            {
+                this.depthmanager.NeedReset = false;
+            }
+            else
+            {
+                this.depthmanager.FormatChanged = false; //Clear flag ok
+            }
+
+            if (this.FInResize[0] || this.FInRate.IsChanged || this.FInFlipSequential.IsChanged || FInAASamplesPerPixel.IsChanged)
             {
                 this.FInvalidateSwapChain = true;
+                this.depthmanager.NeedReset = true;
             }
 
             if (this.FInPosition.IsChanged || this.FInSize.IsChanged)
@@ -154,6 +177,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.form.Height = (int)this.FInSize[0].Y;
 
                 this.FInvalidateSwapChain = true;
+                this.depthmanager.NeedReset = true;
             }
 
             this.updateddevices.Clear();
@@ -175,19 +199,32 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
             if (this.updateddevices.Contains(context)) { return; }
 
-            SampleDescription sd = new SampleDescription(1, 0);
+            int samplecount = Convert.ToInt32(FInAASamplesPerPixel[0].Name);
+
+            SampleDescription sd = new SampleDescription(samplecount, 0);
 
             if (this.FResized || this.FInvalidateSwapChain || this.swapchain == null)
             {
+                List<SampleDescription> sds = context.GetMultisampleFormatInfo(Format.R8G8B8A8_UNorm);
+                int maxlevels = sds[sds.Count - 1].Count;
+
+                if (sd.Count > maxlevels)
+                {
+                    logger.Log(LogType.Warning, "Multisample count too high for this format, reverted to: " + maxlevels);
+                    sd.Count = maxlevels;
+                }
+
+
                 if (this.swapchain != null) { this.swapchain.Dispose(); }
-                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0],1, this.FInFlipSequential[0]);
+                this.swapchain = new DX11SwapChain(context, this.form.Handle, Format.R8G8B8A8_UNorm, sd,this.FInRate[0], 2, this.FInFlipSequential[0]);
                 this.FInvalidateSwapChain = false;
             }
 
             if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(context); }
-            this.updateddevices.Add(context);
 
-            if (this.FInFullScreen[0] != this.swapchain.IsFullScreen)
+            bool fs = this.swapchain.IsFullScreen;
+
+            if (this.FInFullScreen[0] != fs)
             {
                 if (this.FInFullScreen[0])
                 {
@@ -198,6 +235,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     this.form.FormBorderStyle = FormBorderStyle.None;
                     this.form.Width = Convert.ToInt32(this.FInRes[0].X);
                     this.form.Height = Convert.ToInt32(this.FInRes[0].Y);
+                    this.depthmanager.NeedReset = true;
 
                     this.swapchain.Resize();
 
@@ -213,6 +251,11 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
                 }
             }
+
+            this.depthmanager.Update(context, this.swapchain.Width, this.swapchain.Height, sd);
+
+            this.updateddevices.Add(context);
+            this.FOutIsFullScreen[0] = fs;
         }
         #endregion
 
@@ -237,6 +280,8 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 }
 
             }
+            this.depthmanager.Dispose();
+            this.form.Dispose();
         }
         #endregion
 
@@ -303,9 +348,10 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
             if (this.FInEnabled[0])
             {
-                renderer.EnableDepth = false;
-                renderer.DepthStencil = null;
-                renderer.DepthMode = eDepthBufferMode.None;
+
+                renderer.DepthStencil = this.depthmanager.GetDepthStencil(context);
+                renderer.EnableDepth = renderer.DepthStencil != null;
+                renderer.DepthMode = this.depthmanager.Mode;
                 renderer.SetRenderTargets(this.swapchain);
                 renderer.SetTargets();
 
@@ -313,6 +359,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 {
                     //Remove Shader view if bound as is
                     context.CurrentDeviceContext.ClearRenderTargetView(this.swapchain.RTV, this.FInBgColor[0].Color);
+                    this.depthmanager.Clear(context);
                 }
 
                 //Only call render if layer connected
@@ -327,16 +374,14 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     settings.Projection = Matrix.Identity;
                     settings.ViewProjection = Matrix.Identity;
                     settings.BackBuffer = this.swapchain;
-                    settings.RenderWidth = 1920;
-                    settings.RenderHeight = 1200;
+                    settings.RenderWidth = this.swapchain.Width;
+                    settings.RenderHeight = this.swapchain.Height;
                     settings.ResourceSemantics.Clear();
                     settings.CustomSemantics.Clear();
 
-                    //Call render on all layers
-                    for (int j = 0; j < this.FInLayer.SliceCount; j++)
-                    {
-                        this.FInLayer[j][context].Render(context, settings);
-                    }
+
+                    this.FInLayer.RenderAll(context, settings);
+
                 }
                 renderer.CleanTargets();
             }
