@@ -6,12 +6,6 @@ using FeralTic.DX11;
 
 namespace VVVV.DX11
 {
-    public interface IAttachableWindow
-    {
-        void AttachContext(DX11RenderContext renderContext);
-        IntPtr WindowHandle { get; }
-    }
-
     /// <summary>
     /// Render start point is used to nodes that will begin rendering (like windows or anything that needs presenting)
     /// </summary>

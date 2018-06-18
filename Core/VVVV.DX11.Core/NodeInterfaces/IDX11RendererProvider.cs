@@ -8,8 +8,7 @@ using FeralTic.DX11;
 namespace VVVV.DX11
 {
     /// <summary>
-    /// Renderer provider also needs to render as soon as update
-    /// is fully satisfied.
+    /// Renderer host allows to provide an additional render stage
     /// </summary>
     public interface IDX11RendererHost : IDX11ResourceHost
     {

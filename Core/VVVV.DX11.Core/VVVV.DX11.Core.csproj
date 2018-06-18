@@ -23,11 +23,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NodeInterfaces\DX11RenderGraphPinAttribute.cs" />
+    <Compile Include="NodeInterfaces\IAttachableWindow.cs" />
     <Compile Include="NodeInterfaces\IDX11RenderDependencyFactory.cs" />
+    <Compile Include="NodeInterfaces\IDX11RenderStartPointPriority.cs" />
     <Compile Include="NodeInterfaces\IDX11RenderWindow.cs" />
     <Compile Include="NodeInterfaces\IDX11ResourceDataRetriever.cs" />
     <Compile Include="NodeInterfaces\IDX11UpdateBlocker.cs" />
     <Compile Include="NodeInterfaces\IDirectWriteTextStyler.cs" />
+    <Compile Include="NodeInterfaces\RenderStartPointPriority.cs" />
     <Compile Include="NodeInterfaces\SingleOutputAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\Layer\DX11Layer.cs" />
