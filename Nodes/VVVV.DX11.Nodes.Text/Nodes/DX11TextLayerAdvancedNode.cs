@@ -17,6 +17,7 @@ namespace VVVV.DX11.Nodes.Text
     {
         private readonly IIOFactory iofactory;
         private readonly SlimDX.DirectWrite.Factory dwFactory;
+        private DX11ContextElement<List<DX11ObjectRenderSettings>> orderedObjectSettings = new DX11ContextElement<List<DX11ObjectRenderSettings>>();
 
         [Input("Text Renderer", Visibility = PinVisibility.OnlyInspector)]
         public Pin<DX11Resource<TextFontRenderer>> FTextRenderer;
@@ -72,6 +73,10 @@ namespace VVVV.DX11.Nodes.Text
             {
                 this.objectSettings[context] = new DX11ObjectRenderSettings();
             }
+            if (!this.orderedObjectSettings.Contains(context))
+            {
+                this.orderedObjectSettings[context] = new List<DX11ObjectRenderSettings>();
+            }
         }
 
         public void Destroy(DX11RenderContext context, bool force)
@@ -99,6 +104,7 @@ namespace VVVV.DX11.Nodes.Text
                 this.transformIn.GetMatrixPointer(out transformCount, out rawMatPtr);
 
                 SharpDX.Matrix* matrixPointer = (SharpDX.Matrix*)rawMatPtr;
+                SlimDX.Matrix* slimDxmatrixPointer = (SlimDX.Matrix*)rawMatPtr;
 
                 bool applyState = this.FStateIn.IsConnected;
 
@@ -109,36 +115,61 @@ namespace VVVV.DX11.Nodes.Text
                 SharpDX.Matrix projection = *(SharpDX.Matrix*)&sProj;
 
                 var objectsettings = this.objectSettings[context];
+                var orderedobjectsettings = this.orderedObjectSettings[context];
                 objectsettings.IterationCount = 1;
                 objectsettings.Geometry = null;
 
-                for (int i = 0; i < this.spreadMax; i++)
+                bool doOrder = false;
+                List<int> orderedSlices = null;
+                if (settings.LayerOrder != null && settings.LayerOrder.Enabled)
                 {
+                    orderedobjectsettings.Clear();
+                    for (int i = 0; i < this.spreadMax; i++)
+                    {
+                        DX11ObjectRenderSettings objSettings = new DX11ObjectRenderSettings();
+                        objSettings.DrawCallIndex = i;
+                        objSettings.Geometry = null;
+                        objSettings.IterationCount = 1;
+                        objSettings.IterationIndex = 0;
+                        objSettings.WorldTransform = slimDxmatrixPointer[i % transformCount];
+                        objSettings.RenderStateTag = null;
+                        orderedobjectsettings.Add(objSettings);
+                    }
+
+                    orderedSlices = settings.LayerOrder.Reorder(settings, orderedobjectsettings);
+                    doOrder = true;
+                }
+
+                int drawCount = doOrder ? orderedSlices.Count : this.spreadMax;
+
+                for (int drawIdx = 0; drawIdx < drawCount; drawIdx++)
+                {
+                    int idx = doOrder ? orderedSlices[drawIdx] : drawIdx;
                     SharpDX.Matrix preScale = SharpDX.Matrix.Scaling(1.0f, -1.0f, 1.0f);
 
-                    SharpDX.Matrix sm = matrixPointer[i % transformCount];
+                    SharpDX.Matrix sm = matrixPointer[idx % transformCount];
 
                     SharpDX.Matrix mat = SharpDX.Matrix.Multiply(preScale, sm);
                     mat = SharpDX.Matrix.Multiply(mat, view);
                     mat = SharpDX.Matrix.Multiply(mat, projection);
 
-                    SlimDX.Color4 color = this.FInColor[i];
+                    SlimDX.Color4 color = this.FInColor[idx];
                     SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
 
-                    objectsettings.DrawCallIndex = i;
+                    objectsettings.DrawCallIndex = idx;
                     objectsettings.WorldTransform = *(SlimDX.Matrix*)&mat;
 
                     if (settings.ValidateObject(objectsettings))
                     {
                         if (applyState)
                         {
-                            var textLayout = this.FLayout[i];
+                            var textLayout = this.FLayout[idx];
 
                             if (textLayout != null)
                             {
                                 renderStates.SetStates(shaprdxContext, 0);
 
-                                context.RenderStateStack.Push(this.FStateIn[i]);
+                                context.RenderStateStack.Push(this.FStateIn[idx]);
 
                                 fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(textLayout.ComPointer), SharpDX.Vector2.Zero,
                                     mat, sdxColor, TextFlags.StatePrepared);
@@ -148,7 +179,7 @@ namespace VVVV.DX11.Nodes.Text
                         }
                         else
                         {
-                            var textLayout = this.FLayout[i];
+                            var textLayout = this.FLayout[idx];
 
                             if (textLayout != null)
                             {
