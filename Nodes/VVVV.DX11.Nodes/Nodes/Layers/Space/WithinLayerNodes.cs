@@ -95,21 +95,21 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "PixelBillBoard", Category = "DX11.Layer", Version = "")]
     public class PixelBillBoardNode : AbstractDX11LayerSpaceNode
     {
-	    [Input("Transform In", IsSingle = true, Visibility = PinVisibility.OnlyInspector)]
+	    [Input("Transform In")]
         protected ISpread<Matrix> FTransformIn;
 
-        [Input("Double Scale", IsSingle = true, Order = 50)]
+        [Input("Double Scale", Order = 50)]
         protected ISpread<bool> FDoubleScale;
 
-        [Input("Top Left", IsSingle = true, Order = 51)]
+        [Input("Top Left", Order = 51)]
         protected ISpread<bool> FTopLeft;
 
-        [Input("Invert Y", IsSingle = true, Order = 53)]
+        [Input("Invert Y", Order = 53)]
         protected ISpread<bool> FInvertY;
 
         protected override int LayerCount
         {
-            get { return SpreadUtils.SpreadMax(FTransformIn, FDoubleScale, FTopLeft); }
+            get { return SpreadUtils.SpreadMax(FTransformIn, FDoubleScale, FTopLeft, FInvertY); }
         }
 
         protected override void UpdateSettings(DX11RenderSettings settings, int slice)
