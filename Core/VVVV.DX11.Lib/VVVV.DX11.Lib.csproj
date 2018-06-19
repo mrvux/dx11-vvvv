@@ -150,6 +150,8 @@
     <Compile Include="RenderGraph\Pins\DX11ResourceRegistry.cs" />
     <Compile Include="Rendering\DepthBufferManager.cs" />
     <Compile Include="Rendering\DX11GraphicsRenderer.cs" />
+    <Compile Include="Rendering\Order\DX11LayerGetSliceOrder.cs" />
+    <Compile Include="Rendering\Order\DX11SingleSliceOrder.cs" />
     <Compile Include="Rendering\RenderTargetManager.cs" />
     <Compile Include="Rendering\Settings\DX11CustomRenderSemantics.cs" />
     <Compile Include="Rendering\Settings\DX11RenderSemantic.cs" />
