@@ -10,13 +10,16 @@ using VVVV.PluginInterfaces.V2;
 using VVVV.PluginInterfaces.V1;
 
 using FeralTic.DX11;
-
-
-
+using VVVV.DX11.Lib;
 namespace VVVV.DX11.Nodes
 {
     public abstract class AbstractDX11LayerSpaceNode : IPluginEvaluate, IDX11LayerHost
     {
+
+
+        [Config("Apply Per Slice")]
+        protected ISpread<bool> perSlice;
+
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
@@ -25,6 +28,8 @@ namespace VVVV.DX11.Nodes
 
         [Output("Layer Out")]
         protected ISpread<DX11Resource<DX11Layer>> FOutLayer;
+
+        private DX11SingleSliceOrder getSliceOrder = new DX11SingleSliceOrder();
 
         public void Evaluate(int SpreadMax)
         {
@@ -52,11 +57,14 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FLayerIn.SliceCount == 0) { return; }
 
+            int layerCount = this.LayerCount;
+            if (layerCount == 0)
+                return;
+
             if (this.FEnabled[0])
             {
                 if (this.FLayerIn.IsConnected)
                 {
-
                     Matrix view = settings.View;
                     Matrix projection = settings.Projection;
                     Matrix vp = settings.ViewProjection;
@@ -65,20 +73,53 @@ namespace VVVV.DX11.Nodes
                     Matrix rawProj = settings.RawProjection;
                     bool depthonly = settings.DepthOnly;
 
-                    for (int i = 0; i< this.LayerCount;i++)
+                    if (this.perSlice[0])
                     {
-                        this.UpdateSettings(settings,i);
+                        IDX11LayerOrder currentOrder = settings.LayerOrder;
+                        settings.LayerOrder = getSliceOrder;
+                    
 
-                        this.FLayerIn.RenderAll(context, settings);
+                        //Add layer pin to spreadmax contrib
+                        layerCount = Math.Max(layerCount, this.FLayerIn.SliceCount);
+
+                        for (int i = 0; i < layerCount; i++)
+                        {
+                            getSliceOrder.FInIndex = i;
+
+                            this.UpdateSettings(settings, i);
+
+                            this.FLayerIn.RenderSlice(context, settings, i);
+
+                            //Restore slice
+                            settings.View = view;
+                            settings.Projection = projection;
+                            settings.ViewProjection = vp;
+                            settings.DepthOnly = depthonly;
+                            settings.Crop = crop;
+                            settings.Aspect = aspect;
+                            settings.RawProjection = rawProj;
+                        }
+
+                        settings.LayerOrder = currentOrder;
+
                     }
+                    else
+                    {
+                        for (int i = 0; i < layerCount; i++)
+                        {
+                            this.UpdateSettings(settings, i);
 
-                    settings.View = view;
-                    settings.Projection = projection;
-                    settings.ViewProjection = vp;
-                    settings.DepthOnly = depthonly;
-                    settings.Crop = crop;
-                    settings.Aspect = aspect;
-                    settings.RawProjection = rawProj;
+                            this.FLayerIn.RenderAll(context, settings);
+                        }
+
+                        settings.View = view;
+                        settings.Projection = projection;
+                        settings.ViewProjection = vp;
+                        settings.DepthOnly = depthonly;
+                        settings.Crop = crop;
+                        settings.Aspect = aspect;
+                        settings.RawProjection = rawProj;
+                    }
                 }
             }
             else
