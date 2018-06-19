@@ -134,18 +134,18 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name = "AspectRatio", Category = "DX11.Layer", Version = "")]
     public class AspectRatioNode : AbstractDX11LayerSpaceNode
     {
-        [Input("Transform In", IsSingle = true)]
+        [Input("Transform In")]
         protected ISpread<Matrix> FTransformIn;
 
-        [Input("Uniform Scale", DefaultValue=1, IsSingle = true)]
+        [Input("Uniform Scale", DefaultValue=1)]
         protected ISpread<float> FScale;
 
-        [Input("Alignment", DefaultEnumEntry = "FitIn", EnumName = "AspectRatioAlignment", IsSingle = true)]
+        [Input("Alignment", DefaultEnumEntry = "FitIn", EnumName = "AspectRatioAlignment")]
         protected ISpread<EnumEntry> FAlign;
 
         protected override int LayerCount
         {
-            get { return 1; }
+            get { return SpreadUtils.SpreadMax(FTransformIn, FScale, FAlign); }
         }
 
         protected override void UpdateSettings(DX11RenderSettings settings, int slice)
