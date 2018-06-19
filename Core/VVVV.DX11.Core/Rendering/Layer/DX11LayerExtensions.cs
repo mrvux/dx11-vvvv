@@ -20,6 +20,11 @@ namespace VVVV.DX11
             }
         }
 
+        public static void RenderSlice(this ISpread<DX11Resource<DX11Layer>> layer, DX11RenderContext context, DX11RenderSettings settings, int slice)
+        {
+            layer[slice][context]?.Render(context, settings);
+        }
+
         public static void RenderAllWithLog(this ISpread<DX11Resource<DX11Layer>> layer, DX11RenderContext context, DX11RenderSettings settings, ILogger logger)
         {
             var buffer = layer.Stream.Buffer;
