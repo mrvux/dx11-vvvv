@@ -30,13 +30,10 @@ namespace VVVV.DX11.Nodes
         [Input("Texture In")]
         protected Pin<DX11Resource<DX11Texture2D>> FTexIn;
 
-        [Input("Copy MipLevels", DefaultBoolean = true, Visibility = PinVisibility.Hidden)]
-        protected ISpread<Boolean> FCopyMips;
-
         [Input("Max MipLevels", DefaultValue = -1, Visibility = PinVisibility.Hidden)]
         protected ISpread<int> FMaxMipLevels;
 
-        [Input("Index")]
+        [Input("Index", DefaultValue = -1)]
         protected ISpread<ISpread<int>> FIndex;
 
         [Output("Textures Out")]
@@ -49,7 +46,7 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FTexIn.IsConnected)
+            if (this.FTexIn.IsConnected && this.FIndex[0].SliceCount != 0)
             {
                 if (this.FIndex[0][0] == -1)
                     this.numSlicesOut = 1;
@@ -91,7 +88,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FTextureOutput.SliceCount == 0 || !FTexIn.IsConnected || !FTexIn[0].Contains(context)) { return; }
 
-            if (FTexIn.IsConnected)
+            if (FTexIn.IsConnected && this.FIndex[0].SliceCount != 0)
             {
                 int mips = 1;
 
@@ -101,11 +98,7 @@ namespace VVVV.DX11.Nodes
 
                 for (int i = 0; i < numSlicesOut; i++) // for each bin
                 {
-                    if (!FCopyMips[i])
-                    {
-                        mips = 1;
-                    }
-                    else if (FMaxMipLevels[i] == -1)
+                    if (FMaxMipLevels[i] <= 0)
                     {
                         mips = descIn.MipLevels;
                     }
@@ -129,14 +122,11 @@ namespace VVVV.DX11.Nodes
 
                             descOut = this.FTextureOutput[i][context].Resource.Description;
 
-
                             if (/*FIndex.IsChanged ||*/ 
                                 descIn.Format != descOut.Format || 
                                 descIn.Width != descOut.Width || 
                                 descIn.Height != descOut.Height ||
-
-                                descOut.MipLevels != mips
-                                /*descIn.MipLevels != descOut.MipLevels*/)
+                                descOut.MipLevels != mips )
                             {
                                 this.FTextureOutput[i][context] = new DX11RenderTextureArray(context, descIn.Width, descIn.Height, currentArraySize, descIn.Format, true, mips);
                             }
@@ -155,29 +145,16 @@ namespace VVVV.DX11.Nodes
                         SlimDX.Direct3D11.Resource destination = this.FTextureOutput[i][context].Resource;
 
                         descOut = this.FTextureOutput[i][context].Resource.Description;
-
-                        if (FCopyMips[i])
+                      
+                        for (int m = 0; m < mips; m++)
                         {
-                            
+                            int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(m, 0, descIn.MipLevels);
+                            int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(m, j, mips);
 
-
-                            for (int m = 0; m < mips; m++)
-                            {
-                                int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(m, 0, descIn.MipLevels);
-                                int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(m, j, mips);
-
-                                context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
-                            }
-                        }
-                        else
-                        {
-                            int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 0);
-                            int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, j, 0);
                             context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
                         }
-
                     }
-                    }
+                }
             }
         }
 
