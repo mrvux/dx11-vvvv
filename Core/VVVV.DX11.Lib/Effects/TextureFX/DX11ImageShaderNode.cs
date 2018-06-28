@@ -322,14 +322,16 @@ namespace VVVV.DX11.Nodes.Layers
                         if (initial.Width > 1 && initial.Height > 1 && initial.Resource.Description.MipLevels == 1)
                         {
                             //Texture might now be an allowed render target format, so we at least need to check that, and default to rgba8 unorm
+                            //also check for auto mip map gen
                             var mipTargetFmt = initial.Format;
-                            if (!context.IsSupported(FormatSupport.RenderTarget, mipTargetFmt))
+                            if (!context.IsSupported(FormatSupport.RenderTarget, mipTargetFmt) ||
+                                !context.IsSupported(FormatSupport.MipMapAutoGeneration, mipTargetFmt) ||
+                                !context.IsSupported(FormatSupport.UnorderedAccessView, mipTargetFmt))
                             {
                                 mipTargetFmt = Format.R8G8B8A8_UNorm;
-
-                                //BGR does not allow uav, and we often create with it
-                                if (mipTargetFmt == Format.B8G8R8A8_UNorm) { mipTargetFmt = Format.R8G8B8A8_UNorm; }
                             }
+
+
 
                             DX11ResourcePoolEntry<DX11RenderTarget2D> mipTarget = context.ResourcePool.LockRenderTarget(initial.Width, initial.Height, mipTargetFmt, new SampleDescription(1, 0), true, 0);
                             locktargets.Add(mipTarget);
