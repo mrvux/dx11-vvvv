@@ -155,6 +155,7 @@ namespace VVVV.DX11.Nodes.Text
                     if (settings.ValidateObject(objectsettings))
                     {
                         SlimDX.Color4 color = this.FInColor[i];
+                        color.Alpha *= SharpDX.MathUtil.Clamp(settings.LayerOpacity, 0.0f, 1.0f);
                         SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
 
                         TextFlags flag = TextFlags.NoWordWrapping;

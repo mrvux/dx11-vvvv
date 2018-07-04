@@ -154,6 +154,7 @@ namespace VVVV.DX11.Nodes.Text
                     mat = SharpDX.Matrix.Multiply(mat, projection);
 
                     SlimDX.Color4 color = this.FInColor[idx];
+                    color.Alpha *= SharpDX.MathUtil.Clamp(settings.LayerOpacity, 0.0f, 1.0f);
                     SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
 
                     objectsettings.DrawCallIndex = idx;

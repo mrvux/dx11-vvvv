@@ -114,6 +114,17 @@ namespace VVVV.DX11.Lib.Effects.Pins.RenderSemantics
         }
     }
 
+    public class FloatLayerOpacityRenderVariable : AbstractRenderVariable
+    {
+        public FloatLayerOpacityRenderVariable(EffectVariable var) : base(var) { }
+
+        public override Action<DX11RenderSettings> CreateAction(DX11ShaderInstance shader)
+        {
+            var sv = shader.Effect.GetVariableByName(this.Name).AsScalar();
+            return (s) => sv.Set(s.LayerOpacity);
+        }
+    }
+
     public class Float2TargetSizeRenderVariable : AbstractRenderVariable
     {
         public Float2TargetSizeRenderVariable(EffectVariable var) : base(var) { }

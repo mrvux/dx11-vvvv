@@ -78,6 +78,11 @@ namespace VVVV.DX11
         public int ViewportCount { get; set; }
 
         /// <summary>
+        /// Layer opacity
+        /// </summary>
+        public float LayerOpacity = 1.0f;
+
+        /// <summary>
         /// If true, asks the shader to keep current pipeline and not set other shader to null,
         /// this can be useful if your shader provides pixel/geometry shader and you want the node to provide a vs only
         /// </summary>

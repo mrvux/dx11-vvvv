@@ -78,6 +78,7 @@ namespace VVVV.DX11.Nodes.Text
                     TextLayout tl = new TextLayout(this.dwFactory, to.Text, tFormat);
 
                     SlimDX.Color4 c = to.Color;
+
                     DX11CachedText ct = new DX11CachedText(tl, to.Matrix, c);
                     cacheList.Add(ct);
                 }
@@ -151,6 +152,7 @@ namespace VVVV.DX11.Nodes.Text
                     {
 
                         SlimDX.Color4 color = this.textCache.objects[i].Color;
+                        color.Alpha *= SharpDX.MathUtil.Clamp(settings.LayerOpacity, 0.0f, 1.0f);
                         SharpDX.Color4 sdxColor = *(SharpDX.Color4*)&color;
 
                         fw.DrawTextLayout(shaprdxContext, new SharpDX.DirectWrite.TextLayout(this.textCache.objects[i].TextLayout.ComPointer), SharpDX.Vector2.Zero,
