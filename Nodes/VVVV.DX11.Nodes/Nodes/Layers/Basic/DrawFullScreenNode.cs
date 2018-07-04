@@ -174,7 +174,10 @@ namespace VVVV.DX11.Nodes
                         deviceData.samplerVariable.UndoSetSamplerState(0);
                     }
 
-                    deviceData.colorVariable.Set(this.FInColor[i]);
+                    var color = this.FInColor[i];
+                    color.Alpha *= settings.LayerOpacity;
+
+                    deviceData.colorVariable.Set(color);
                     deviceData.texTransformVariable.SetMatrix(this.FInTexTransform[i]);
                     
                     if (this.FInTexture.IsConnected)
