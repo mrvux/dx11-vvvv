@@ -15,6 +15,11 @@ cbuffer cbPerBatch : register(b1)
 	int TextureMatrixCount : TEXTUREMATRIXCOUNT;
 };
 
+cbuffer cbPerLayer : register(b2)
+{
+    float layerOpacity : LAYEROPACITY;
+};
+
 StructuredBuffer<float4x4> WorldBuffer : WORLDBUFFER;
 StructuredBuffer<float4> ColorBuffer : COLORBUFFER;
 StructuredBuffer<float4x4> TextureMatrixBuffer : TEXTUREMATRIXBUFFER;
@@ -149,12 +154,16 @@ float4 PS_Textured(psInTextured input): SV_Target
 
 float4 PS_Color(psInColor input): SV_Target
 {
-	return input.color;
+	float4 c = input.color;
+    c.a *= layerOpacity;
+    return c;
 }
 
 float4 PS_Color_Textured(psInColorTextured input): SV_Target
 {
-    return InputTexture.Sample(linearSampler,input.uv) * input.color;
+    float4 c = InputTexture.Sample(linearSampler,input.uv) * input.color;
+    c.a *= layerOpacity;
+    return c;
 }
 
 technique10 Render
