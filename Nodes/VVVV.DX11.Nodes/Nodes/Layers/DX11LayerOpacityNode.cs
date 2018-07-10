@@ -15,11 +15,21 @@ namespace VVVV.DX11.Nodes
     [PluginInfo(Name="Opacity",Category="DX11.Layer",Version="", Author="vux")]
     public class DX11LayerOpacityNode : IPluginEvaluate, IDX11LayerHost
     {
+        public enum OpacityOperation
+        {
+            Replace = 0,
+            Multiply = 1,
+            Add = 2,
+        }
+
         [Input("Layer In")]
         protected Pin<DX11Resource<DX11Layer>> FLayerIn;
 
         [Input("Opacity", DefaultValue =1.0f, IsSingle = true)]
         protected ISpread<float> opacity;
+
+        [Input("Operation", IsSingle = true)]
+        protected ISpread<OpacityOperation> operation;
 
         [Input("Enabled",DefaultValue=1, Order = 100000)]
         protected IDiffSpread<bool> FEnabled;
@@ -57,7 +67,20 @@ namespace VVVV.DX11.Nodes
                 {
                     var current = settings.LayerOpacity;
 
-                    settings.LayerOpacity = this.opacity[0];
+                    switch(this.operation[0])
+                    {
+                        case OpacityOperation.Replace:
+                            settings.LayerOpacity = this.opacity[0];
+                            break;
+                        case OpacityOperation.Multiply:
+                            settings.LayerOpacity *= this.opacity[0];
+                            break;
+                        case OpacityOperation.Add:
+                            settings.LayerOpacity += this.opacity[0];
+                            break;
+                    }
+
+                   
 
                     this.FLayerIn.RenderAll(context, settings);
 
