@@ -31,6 +31,9 @@ namespace VVVV.DX11.Nodes
         [Input("Operation", IsSingle = true)]
         protected ISpread<OpacityOperation> operation;
 
+        [Input("Disable Render On Zero Opacity", IsSingle = true, DefaultValue =0)]
+        protected ISpread<bool> disableIfZero;
+
         [Input("Enabled",DefaultValue=1, Order = 100000)]
         protected IDiffSpread<bool> FEnabled;
 
@@ -63,8 +66,14 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FEnabled[0])
             {
-                if (this.FLayerIn.IsConnected && this.opacity.SliceCount > 0)
+                if (this.FLayerIn.IsConnected && this.opacity.SliceCount > 0 && this.disableIfZero.SliceCount > 0)
                 {
+                    if (this.disableIfZero[0])
+                    {
+                        if (this.opacity[0] <= 0.0f)
+                            return;
+                    }
+
                     var current = settings.LayerOpacity;
 
                     switch(this.operation[0])
