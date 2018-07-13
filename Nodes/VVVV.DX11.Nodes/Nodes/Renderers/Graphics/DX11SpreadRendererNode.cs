@@ -269,6 +269,11 @@ namespace VVVV.DX11.Nodes
                                 Console.WriteLine(ex.Message);
                             }
                         }
+
+                        if (viewportpop)
+                        {
+                            context.RenderTargetStack.Pop();
+                        }
                     }
 
                     context.RenderTargetStack.Pop();
