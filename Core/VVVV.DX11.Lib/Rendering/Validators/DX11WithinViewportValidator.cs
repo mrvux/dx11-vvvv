@@ -1,4 +1,6 @@
-﻿namespace VVVV.DX11.Validators
+﻿using System.Collections.Generic;
+
+namespace VVVV.DX11.Validators
 {
     public class DX11WithinViewportValidator : IDX11ObjectValidator
     {
@@ -6,7 +8,7 @@
 
         public bool Enabled { get; set; }
 
-        public int ViewPortIndex { get; set; }
+        public List<int> ViewPortIndices { get; set; }
 
         public void SetGlobalSettings(DX11RenderSettings settings)
         {
@@ -16,7 +18,7 @@
 
         public bool Validate(DX11ObjectRenderSettings obj)
         {
-            return ViewPortIndex == settings.ViewportIndex;
+            return ViewPortIndices[obj.DrawCallIndex % ViewPortIndices.Count] == settings.ViewportIndex;
         }
 
         public void Reset()
