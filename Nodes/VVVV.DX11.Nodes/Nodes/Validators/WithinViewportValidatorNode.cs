@@ -11,7 +11,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<bool> FInEnabled;
 
         [Input("Viewport Index", DefaultValue = 0)]
-        protected ISpread<int> FViewportIndexList;
+        protected IDiffSpread<int> FViewportIndexList;
 
         [Output("Output", IsSingle = true)]
         protected ISpread<DX11WithinViewportValidator> FOut;
@@ -20,7 +20,7 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FOut[0] == null) { this.FOut[0] = new DX11WithinViewportValidator(); }
 
-            if (!FInEnabled.IsChanged || !FViewportIndexList.IsChanged) return;
+            if (!FInEnabled.IsChanged && !FViewportIndexList.IsChanged) return;
 
             this.FOut[0].Enabled = this.FInEnabled[0];
             this.FOut[0].ViewPortIndices = new List<int>(FViewportIndexList);
