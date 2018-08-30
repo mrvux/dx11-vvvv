@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using VVVV.PluginInterfaces.V2;
 
 namespace VVVV.DX11.Validators
 {
@@ -8,7 +10,7 @@ namespace VVVV.DX11.Validators
 
         public bool Enabled { get; set; }
 
-        public List<int> ViewPortIndices { get; set; }
+        public List<int> ViewPortIndices { get; set; } = new List<int>();
 
         public void SetGlobalSettings(DX11RenderSettings settings)
         {
@@ -18,7 +20,9 @@ namespace VVVV.DX11.Validators
 
         public bool Validate(DX11ObjectRenderSettings obj)
         {
-            return ViewPortIndices[obj.DrawCallIndex % ViewPortIndices.Count] == settings.ViewportIndex;
+            if (ViewPortIndices.Count > 0)
+                return ViewPortIndices[obj.DrawCallIndex % ViewPortIndices.Count] == settings.ViewportIndex;
+            else return true;
         }
 
         public void Reset()
