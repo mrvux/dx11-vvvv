@@ -116,6 +116,7 @@
     <Compile Include="Nodes\Textures\Array\TextureArraySetSliceNode.cs" />
     <Compile Include="Nodes\Validators\RemoveSliceValidatorNode.cs" />
     <Compile Include="Nodes\Validators\WithinSphereValidatorNode.cs" />
+    <Compile Include="Nodes\Validators\WithinViewportValidatorNode.cs" />
     <Compile Include="ShaderUtils.cs" />
     <EmbeddedResource Include="effects\quad.fx" />
     <Compile Include="IOleStuff.cs" />
