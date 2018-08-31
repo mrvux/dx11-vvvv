@@ -23,8 +23,6 @@ namespace VVVV.DX11.Nodes
                 this.FOut[0] = new DX11WithinViewportValidator();
             }
 
-            if (!FInEnabled.IsChanged && !FViewportIndexList.IsChanged) return;
-
             this.FOut[0].Enabled = this.FInEnabled[0];
 
             var vpList = this.FOut[0].ViewPortIndices;
