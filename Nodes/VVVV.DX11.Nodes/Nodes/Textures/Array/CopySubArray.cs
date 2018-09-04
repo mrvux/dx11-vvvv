@@ -63,11 +63,15 @@ namespace VVVV.DX11.Nodes
 
                 SlimDX.Direct3D11.Resource source = textureArray[context].Resource;
 
-                int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
+                for (int mip = 0; mip < descIn.MipLevels; mip++)
+                {
+                    //int mip = 0;
+                    int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(mip, slice, descIn.MipLevels);
+                    int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(mip, i, descIn.MipLevels);
 
-                int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, i, descIn.MipLevels);
+                    context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, this.rtarr.Resource, destinationSubres, 0, 0, 0);
+                }
 
-                context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, this.rtarr.Resource, destinationSubres, 0, 0, 0);
             }
             
         }

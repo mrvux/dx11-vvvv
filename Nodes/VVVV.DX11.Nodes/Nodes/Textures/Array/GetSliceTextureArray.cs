@@ -101,7 +101,7 @@ namespace VVVV.DX11.Nodes
                         descIn = FTexIn[0][context].Resource.Description;
                         descOut = this.FTextureOutput[i][context].Resource.Description;
 
-                        if (/*FIndex.IsChanged ||*/ descIn.Format != descOut.Format || descIn.Width != descOut.Width || descIn.Height != descOut.Height)
+                        if (/*FIndex.IsChanged ||*/ descIn.Format != descOut.Format || descIn.Width != descOut.Width || descIn.Height != descOut.Height || descIn.MipLevels != descOut.MipLevels)
                         {
                             //this.logger.Log(LogType.Message, "init slice " + i);
                             InitTexture(context, i, descIn);                           
@@ -124,11 +124,13 @@ namespace VVVV.DX11.Nodes
                     SlimDX.Direct3D11.Resource source = this.FTexIn[0][context].Resource;
                     SlimDX.Direct3D11.Resource destination = this.FTextureOutput[i][context].Resource;
 
-                    int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, slice, descIn.MipLevels);
-                    int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(0, 0, 1);
+                    for (int mip = 0; mip < descIn.MipLevels; mip++)
+                    {
+                        int sourceSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(mip, slice, descIn.MipLevels);
+                        int destinationSubres = SlimDX.Direct3D11.Texture2D.CalculateSubresourceIndex(mip, 0, descIn.MipLevels);
 
-                    //this.logger.Log(LogType.Message, "get slice " + slice + " into " + i);
-                    context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
+                        context.CurrentDeviceContext.CopySubresourceRegion(source, sourceSubres, destination, destinationSubres, 0, 0, 0);
+                    }
                 }
             }
         }
