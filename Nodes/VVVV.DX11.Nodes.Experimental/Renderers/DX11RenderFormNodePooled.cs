@@ -123,6 +123,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 this.form.Hide();
+                e.Cancel = true;
             }
         }
 
