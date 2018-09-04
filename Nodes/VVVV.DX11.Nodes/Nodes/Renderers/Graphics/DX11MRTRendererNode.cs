@@ -78,13 +78,7 @@ namespace VVVV.DX11
                 || this.FInDoMipMaps.IsChanged
                 || this.FInMipLevel.IsChanged)
             {
-                //Kill old buffers
-                for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
-                {
-                    if (this.FOutBuffers[i] != null) { this.FOutBuffers[i].Dispose(); }
-                    
-                }
-                
+                this.FOutBuffers.SafeDisposeAll();
                 this.FOutBuffers.SliceCount = this.FInTargetCount[0];
                 for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
                 {
