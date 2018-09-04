@@ -57,9 +57,6 @@ namespace VVVV.DX11.Nodes
         protected int cnt;
         protected int stride;
 
-        protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
-        protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
-
         private bool reset = false;
 
 
@@ -78,15 +75,18 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            this.rendereddevices.Clear();
-            this.updateddevices.Clear();
-
             reset = this.FInElementCount.IsChanged || this.FInStride.IsChanged || this.FInAppendable.IsChanged;
+
+            if (reset)
+            {
+                this.FOutBuffers.SafeDisposeAll();
+            }
 
             if (this.FOutBuffers[0] == null)
             {
                 this.FOutBuffers[0] = new DX11Resource<IDX11RWStructureBuffer>();
             }
+
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
 
             DX11Resource<IDX11RWStructureBuffer> res = this.FOutBuffers[0];
@@ -109,17 +109,7 @@ namespace VVVV.DX11.Nodes
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
-            //Just in case
-            if (!this.updateddevices.Contains(context))
-            {
-                this.Update(context);
-            }
-
-
-
             if (!this.FInLayer.IsConnected) { return; }
-
-            if (this.rendereddevices.Contains(context)) { return; }
 
             if (this.FInEnabled[0])
             {
@@ -169,19 +159,24 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.updateddevices.Contains(context)) { return; }
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);
 
                 eDX11BufferMode mode = this.FInAppendable[0] ? eDX11BufferMode.Append : eDX11BufferMode.Default;
 
-                DX11RWStructuredBuffer rt = new DX11RWStructuredBuffer(context.Device, this.cnt, this.stride, mode);
+                if (this.cnt > 0 && this.stride > 0)
+                {
+                    DX11RWStructuredBuffer rt = new DX11RWStructuredBuffer(context.Device, this.cnt, this.stride, mode);
+                    this.FOutBuffers[0][context] = rt;
+                }
+                else
+                {
+                    this.FHost.Log(TLogType.Error, "Could not create zero size buffer");
+                }
 
-                this.FOutBuffers[0][context] = rt;
+                
             }
-
-            this.updateddevices.Add(context);
         }
 
         public void Destroy(DX11RenderContext OnDevice, bool force)
@@ -192,10 +187,7 @@ namespace VVVV.DX11.Nodes
         #region Dispose Buffers
         private void DisposeBuffers(DX11RenderContext context)
         {
-            for (int i = 0; i < this.FOutBuffers.SliceCount; i++)
-            {
-                this.FOutBuffers[i].Dispose(context);
-            }
+            this.FOutBuffers.SafeDisposeAll(context);
         }
         #endregion
 

@@ -75,12 +75,10 @@ namespace VVVV.DX11.Nodes
         {
             if (this.FInPath.IsChanged || this.FInReload[0] || this.FInNoMips.IsChanged)
             {
+
                 this.SliceCountchanged(SpreadMax);
-                //Kill old resources
-                for (int i = 0; i < this.FTextureOutput.SliceCount; i++)
-                {
-                    if (this.FTextureOutput[i] != null) { this.FTextureOutput[i].Dispose(); }
-                }
+
+                this.FTextureOutput.SafeDisposeAll();
 
                 foreach (FileTextureLoadTask<T> task in this.tasks)
                 {
@@ -120,7 +118,10 @@ namespace VVVV.DX11.Nodes
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FInvalidate || this.FDestroyed)
+            if (this.FTextureOutput.SliceCount == 0)
+                return;
+
+            if (this.FInvalidate || this.FTextureOutput[0].Contains(context) == false || this.FDestroyed)
             {
                 for (int i = 0; i < this.FInPath.SliceCount; i++)
                 {
