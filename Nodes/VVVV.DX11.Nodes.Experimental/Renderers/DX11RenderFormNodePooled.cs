@@ -83,9 +83,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         #endregion
 
         #region Fields
-        private List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
-        private List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
-
         private DX11RenderSettings settings = new DX11RenderSettings();
 
         private bool FInvalidateSwapChain;
@@ -96,10 +93,11 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
         private int prevx = 400;
         private int prevy = 300;
+        private float cw, ch;
 
         #endregion
 
-		[ImportingConstructor()]
+        [ImportingConstructor()]
         public DX11RenderFormNodePooled(IPluginHost host, IIOFactory iofactory, IHDEHost hdehost)
         {
 			this.FHost = host;
@@ -152,11 +150,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.form.Height = (int)this.FInSize[0].Y;
 
                 this.FInvalidateSwapChain = true;
-            }
-
-            this.updateddevices.Clear();
-            this.rendereddevices.Clear();
-            
+            }            
         }
         #endregion
 
@@ -171,8 +165,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         {
             Device device = context.Device;
 
-            if (this.updateddevices.Contains(context)) { return; }
-
             SampleDescription sd = new SampleDescription(1, 0);
 
             if (this.FResized || this.FInvalidateSwapChain || this.swapchain == null)
@@ -183,7 +175,6 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             }
 
             if (this.renderer == null) { this.renderer = new DX11GraphicsRenderer(context); }
-            this.updateddevices.Add(context);
 
             if (this.FInFullScreen[0] != this.swapchain.IsFullScreen)
             {
@@ -260,33 +251,19 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         {
             try
             {
-                //if (this.FInVsync[0])
-                //{
-                    this.swapchain.Present(this.FInVsync[0], PresentFlags.None);
-                //}
-                /*else
-                {
-                   this.swapchain.Present(0, PresentFlags.None);
-                }*/
+                this.swapchain.Present(this.FInVsync[0], PresentFlags.None);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
         }
         #endregion
-
-        private float cw, ch;
 
         #region Render
         public void Render(DX11RenderContext context)
         {
             Device device = context.Device;
-
-            if (!this.updateddevices.Contains(context)) { this.Update(context); }
-
-            if (this.rendereddevices.Contains(context)) { return; }
 
             if (this.FInEnabled[0])
             {
@@ -316,15 +293,10 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     settings.ResourceSemantics.Clear();
                     settings.CustomSemantics.Clear();
 
-                    //Call render on all layers
-                    for (int j = 0; j < this.FInLayer.SliceCount; j++)
-                    {
-                        this.FInLayer[j][context].Render(context, settings);
-                    }
+                    this.FInLayer.RenderAll(context, settings);
                 }
                 renderer.CleanTargets();
             }
-            this.rendereddevices.Add(context);
         }
         #endregion
 
