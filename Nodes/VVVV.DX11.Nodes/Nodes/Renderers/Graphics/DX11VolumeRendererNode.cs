@@ -59,10 +59,6 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
         protected int height;
         protected int depth;
 
-        protected List<DX11RenderContext> updateddevices = new List<DX11RenderContext>();
-        protected List<DX11RenderContext> rendereddevices = new List<DX11RenderContext>();
-
-
         public event DX11QueryableDelegate BeginQuery;
 
         public event DX11QueryableDelegate EndQuery;
@@ -85,10 +81,13 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
         public void Evaluate(int SpreadMax)
         {
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
-            this.rendereddevices.Clear();
-            this.updateddevices.Clear();
 
             reset = this.FInTextureSize.IsChanged || this.FInFormat.IsChanged;
+
+            if (reset)
+            {
+                this.FOutBuffers.SafeDisposeAll();
+            }
 
             if (this.FOutBuffers[0] == null)
             {
@@ -115,15 +114,7 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
-            //Just in case
-            if (!this.updateddevices.Contains(context))
-            {
-                this.Update(context);
-            }
-
             if (!this.FInLayer.IsConnected) { return; }
-
-            if (this.rendereddevices.Contains(context)) { return; }
 
             if (this.FInEnabled[0])
             {
@@ -182,8 +173,6 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
 
         public void Update(DX11RenderContext context)
         {
-            if (this.updateddevices.Contains(context)) { return; }
-
             if (reset || !this.FOutBuffers[0].Contains(context))
             {
                 this.DisposeBuffers(context);
@@ -192,8 +181,6 @@ namespace VVVV.DX11.Nodes.Renderers.Graphics
 
                 this.FOutBuffers[0][context] = rt;
             }
-
-            this.updateddevices.Add(context);
         }
 
         public void Destroy(DX11RenderContext context, bool force)
