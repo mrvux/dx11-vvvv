@@ -115,6 +115,7 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.form.Show();
             this.form.ShowIcon = false;
             this.form.FormClosing += this.Form_FormClosing;
+            this.form.ShowInTaskbar = false;
             this.handle = this.form.Handle;
         }
 
