@@ -43,7 +43,7 @@ namespace VVVV.DX11.Lib.Rendering
         private eRenderFormatMode currentmode;
 
         //Manual Size
-        [Input("Texture Size", Order = 8, DefaultValues = new double[] { 400, 300 },CheckIfChanged=true)]
+        [Input("Texture Size", Order = 8, AsInt =true, DefaultValues = new double[] { 400, 300 },CheckIfChanged=true)]
         IIOContainer<IDiffSpread<Vector2D>> FInTextureSize;
 
         [Input("Scale", Order = 9, DefaultValues = new double[] { 1,1 }, CheckIfChanged = true)]
