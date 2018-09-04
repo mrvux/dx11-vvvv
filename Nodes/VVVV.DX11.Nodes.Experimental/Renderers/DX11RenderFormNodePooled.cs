@@ -80,6 +80,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
 
         [Input("Enabled", DefaultValue = 1, Order = 9)]
         protected ISpread<bool> FInEnabled;
+
+        [Output("Form")]
+        protected ISpread<Form> FOutForm;
         #endregion
 
         #region Fields
@@ -150,7 +153,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.form.Height = (int)this.FInSize[0].Y;
 
                 this.FInvalidateSwapChain = true;
-            }            
+            }
+
+            this.FOutForm[0] = this.form;
         }
         #endregion
 
