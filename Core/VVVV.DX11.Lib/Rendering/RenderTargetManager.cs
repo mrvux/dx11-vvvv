@@ -153,6 +153,7 @@ namespace VVVV.DX11.Lib.Rendering
                 a.Order = 8;
                 a.DefaultValues = new double[] { 400, 300 };
                 a.CheckIfChanged = true;
+                a.AsInt = true;
 
                 this.FInTextureSize = this.iofactory.CreateIOContainer<IDiffSpread<Vector2D>>(a);
 
