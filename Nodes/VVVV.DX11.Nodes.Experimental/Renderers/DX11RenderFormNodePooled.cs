@@ -60,6 +60,9 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
         [Input("Resize", IsBang=true)]
         protected ISpread<bool> FInResize;
 
+        [Input("Show", IsBang = true)]
+        protected ISpread<bool> FInShow;
+
         [Input("Rate", Visibility = PinVisibility.OnlyInspector,DefaultValue=30)]
         protected IDiffSpread<int> FInRate;
 
@@ -111,7 +114,16 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
             this.form.Height = 300;
             this.form.Show();
             this.form.ShowIcon = false;
+            this.form.FormClosing += this.Form_FormClosing;
             this.handle = this.form.Handle;
+        }
+
+        private void Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                this.form.Hide();
+            }
         }
 
         private IntPtr handle;
@@ -153,6 +165,11 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                 this.form.Height = (int)this.FInSize[0].Y;
 
                 this.FInvalidateSwapChain = true;
+            }
+
+            if (this.FInShow[0])
+            {
+                this.form.Show();
             }
 
             this.FOutForm[0] = this.form;
@@ -230,6 +247,13 @@ namespace VVVV.DX11.Nodes.Nodes.Renderers.Graphics
                     Console.WriteLine(ex.Message);
                 }
 
+            }
+
+            if (this.form != null)
+            {
+                this.form.FormClosing -= this.Form_FormClosing;
+                this.form.Dispose();
+                this.form = null;
             }
         }
         #endregion
