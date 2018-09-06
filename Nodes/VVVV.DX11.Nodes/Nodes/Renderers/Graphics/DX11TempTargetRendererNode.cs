@@ -37,10 +37,10 @@ namespace VVVV.DX11
         protected ISpread<Vector2D> FOutBufferSize;
 
         [Output("Buffers", IsSingle = true)]
-        protected ISpread<DX11Resource<DX11Texture2D>> FOutBuffers;
+        protected ISpread<DX11Resource<DX11RenderTarget2D>> FOutBuffers;
 
         [Output("AA Texture Out", IsSingle = true, Visibility=PinVisibility.OnlyInspector)]
-        protected ISpread<DX11Resource<DX11Texture2D>> FOutAABuffers;
+        protected ISpread<DX11Resource<DX11RenderTarget2D>> FOutAABuffers;
 
         #endregion
 
@@ -66,13 +66,16 @@ namespace VVVV.DX11
         #region On Evaluate
         protected override void OnEvaluate(int SpreadMax)
         {
-            if (this.FOutBuffers[0] == null) { this.FOutBuffers[0] = new DX11Resource<DX11Texture2D>(); }
-            if (this.FOutAABuffers[0] == null) { this.FOutAABuffers[0] = new DX11Resource<DX11Texture2D>(); }
+            if (this.FOutBuffers[0] == null) { this.FOutBuffers[0] = new DX11Resource<DX11RenderTarget2D>(); }
+            if (this.FOutAABuffers[0] == null) { this.FOutAABuffers[0] = new DX11Resource<DX11RenderTarget2D>(); }
 
             if (this.FInAASamplesPerPixel.IsChanged
               || this.FInDoMipMaps.IsChanged
               || this.FInMipLevel.IsChanged
-              || this.FInSharedTex.IsChanged)
+              || this.FInSharedTex.IsChanged
+              || this.rtm.FInTextureSize.IOObject.IsChanged
+              || this.rtm.FInTextureScale.IOObject.IsChanged)
+
             {
                 this.sd.Count = Convert.ToInt32(this.FInAASamplesPerPixel[0].Name);
                 this.sd.Quality = 0;
@@ -80,6 +83,11 @@ namespace VVVV.DX11
                 this.mipmaplevel = Math.Max(FInMipLevel[0], 0);
                 this.depthmanager.NeedReset = true;
                 this.invalidate = true;
+
+                this.FOutBuffers.SafeUnlock();
+                this.FOutAABuffers.SafeUnlock();
+                this.targets.Clear();
+                this.targetresolve.Clear();
             }
 
             this.FOutBufferSize[0] = new Vector2D(this.width, this.height);          

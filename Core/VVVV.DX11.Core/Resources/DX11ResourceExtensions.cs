@@ -46,6 +46,19 @@ namespace VVVV.DX11
             }
         }
 
+        public static void SafeUnlock(this ISpread<DX11Resource<DX11RenderTarget2D>> spread)
+        {
+            for (int i = 0; i < spread.SliceCount; i++)
+            {
+                foreach (var key in spread[i].Data.Keys)
+                {
+                    var value = spread[i][key];
+                    key.ResourcePool.Unlock(value);
+                }
+                spread[i].Data.Clear();
+            }
+        }
+
         public static void SafeDispose<T>(this ISpread<DX11Resource<T>> spread, int index) where T : IDX11Resource
         {
             if (spread.SliceCount > 0 && spread[index] != null)

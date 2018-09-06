@@ -44,10 +44,10 @@ namespace VVVV.DX11.Lib.Rendering
 
         //Manual Size
         [Input("Texture Size", Order = 8, AsInt =true, DefaultValues = new double[] { 400, 300 },CheckIfChanged=true)]
-        IIOContainer<IDiffSpread<Vector2D>> FInTextureSize;
+        public IIOContainer<IDiffSpread<Vector2D>> FInTextureSize;
 
         [Input("Scale", Order = 9, DefaultValues = new double[] { 1,1 }, CheckIfChanged = true)]
-        IIOContainer<IDiffSpread<Vector2D>> FInTextureScale;
+        public IIOContainer<IDiffSpread<Vector2D>> FInTextureScale;
 
         public RenderTargetManager(IPluginHost host, IIOFactory iofactory)
         {
