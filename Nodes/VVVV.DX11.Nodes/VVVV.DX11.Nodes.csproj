@@ -41,6 +41,7 @@
     <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
+    <Compile Include="Nodes\Buffers\ReadbackCounterNode.cs" />
     <Compile Include="Nodes\Buffers\ReadBackRawBufferStreamNode.cs" />
     <Compile Include="Nodes\Buffers\ToSharedBufferNode.cs" />
     <Compile Include="Nodes\Generics\SampleHoldNodes.cs" />
