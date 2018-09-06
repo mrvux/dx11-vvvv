@@ -79,6 +79,8 @@ namespace VVVV.DX11.Lib.RenderGraph
             }
         }
 
+        public DX11RenderContext PreferredDataContext { get; set; }
+
         public void Reset()
         {
             
@@ -115,11 +117,21 @@ namespace VVVV.DX11.Lib.RenderGraph
 
             this.gb.Flush();
 
-            //TODO : Allocate new device after
             if (this.RenderGraphs.Count > 0)
             {
-                DX11RenderContext onDevice = this.RenderGraphs.Keys.First();
-                this.RenderGraphs[onDevice].Render(sender, host);
+                DX11RenderContext dataRenderContext;
+                //Check if we have a preffered device for that task (and check that we have render graph for it
+                if (this.PreferredDataContext != null && this.RenderGraphs.ContainsKey(this.PreferredDataContext))
+                {
+                    dataRenderContext = this.PreferredDataContext;
+                }
+                else
+                {
+                    dataRenderContext = this.RenderGraphs.Keys.First();
+                }
+
+
+                this.RenderGraphs[dataRenderContext].Render(sender, host);
             }
             else
             {
