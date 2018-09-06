@@ -37,6 +37,7 @@
     <Compile Include="Nodes\Buffers\FromSharedBufferNode.cs" />
     <Compile Include="Nodes\Buffers\ImmutableRawBufferNode.cs" />
     <Compile Include="Nodes\Buffers\DynamicRawBufferNode.cs" />
+    <Compile Include="Nodes\Buffers\InfoBufferNode.cs" />
     <Compile Include="Nodes\Buffers\Lights\DirectionalLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\PointLightBuffer.cs" />
     <Compile Include="Nodes\Buffers\Lights\SpotLightBuffer.cs" />
