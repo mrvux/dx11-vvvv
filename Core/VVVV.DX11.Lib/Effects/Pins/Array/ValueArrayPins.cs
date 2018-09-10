@@ -119,7 +119,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public override Action<int> CreateAction(DX11ShaderInstance instance)
         {
             var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
-            return (i) => { };
+            return (i) => { this.UpdateArray(i); sv.Set(this.array); };
         }
     }
 
@@ -138,7 +138,7 @@ namespace VVVV.DX11.Internals.Effects.Pins
         public override Action<int> CreateAction(DX11ShaderInstance instance)
         {
             var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
-            return (i) => { };
+            return (i) => { this.UpdateArray(i); sv.Set(this.array); };
         }
     }
 
@@ -153,8 +153,8 @@ namespace VVVV.DX11.Internals.Effects.Pins
 
         public override Action<int> CreateAction(DX11ShaderInstance instance)
         {
-            var sv = instance.Effect.GetVariableByName(this.Name).AsVector();
-            return (i) => { };
+            var sv = instance.Effect.GetVariableByName(this.Name).AsMatrix();
+            return (i) => { this.UpdateArray(i); sv.SetMatrixArray(this.array); };
         }
     }
 }
