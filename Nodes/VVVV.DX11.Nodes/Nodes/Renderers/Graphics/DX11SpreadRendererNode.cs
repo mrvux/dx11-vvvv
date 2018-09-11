@@ -217,24 +217,32 @@ namespace VVVV.DX11.Nodes
                 for (int i = 0; i < sliceCount; i++)
                 {
                     DX11RenderTarget2D target = this.FOutTexture[i][context];
+                    DX11DepthStencil depth = null;
 
                     bool viewportpop = this.FInViewPort.IsConnected;
+
+                    if (this.FInDepthBuffer[0])
+                    {
+                        depth = this.FOutDepthTexture[i][context];
+                    }
+
+                    if (depth != null && this.FInClearDepth[i])
+                    {
+                        context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
+                    }
 
                     if (this.FInClear[i])
                     {
                         context.CurrentDeviceContext.ClearRenderTargetView(target.RTV, this.FInBgColor[i]);
+                    }
 
-                        if (this.FInDepthBuffer[0])
-                        {
-                            DX11DepthStencil depth = this.FOutDepthTexture[i][context];
-                            context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
-                            context.RenderTargetStack.Push(depth, false, target);
-                        }
-                        else
-                        {
-                            context.RenderTargetStack.Push(target);
-                        }
-
+                    if (depth != null)
+                    {
+                        context.RenderTargetStack.Push(depth, false, target);
+                    }
+                    else
+                    {
+                        context.RenderTargetStack.Push(target);
                     }
 
                     if (this.FInLayer.IsConnected)
