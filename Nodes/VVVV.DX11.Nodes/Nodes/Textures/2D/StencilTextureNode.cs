@@ -16,10 +16,10 @@ namespace VVVV.DX11.Nodes
         Warnings = "")]
     public class StencilTextureNode : IPluginEvaluate, IDX11ResourceHost
     {
-        [Input("Depth Stencil In", IsSingle = true)]
+        [Input("Depth Stencil In")]
         protected Pin<DX11Resource<DX11DepthStencil>> FTextureInput;
 
-        [Output("Texture Out", IsSingle = true)]
+        [Output("Texture Out")]
         protected Pin<DX11Resource<DX11Texture2D>> FTextureOutput;
 
         [ImportingConstructor()]
@@ -30,21 +30,29 @@ namespace VVVV.DX11.Nodes
 
         public void Evaluate(int SpreadMax)
         {
-            if (this.FTextureOutput[0] == null)
+            this.FTextureOutput.SliceCount = SpreadMax;
+
+            for (int i = 0; i < this.FTextureOutput.SliceCount; i++)
             {
-                this.FTextureOutput[0] = new DX11Resource<DX11Texture2D>();
+                if (this.FTextureOutput[i] == null)
+                {
+                    this.FTextureOutput[i] = new DX11Resource<DX11Texture2D>();
+                }
             }
         }
 
         public void Update(DX11RenderContext context)
         {
-            if (this.FTextureInput.IsConnected)
+            for (int i = 0; i < this.FTextureOutput.SliceCount; i++)
             {
-                this.FTextureOutput[0][context] = this.FTextureInput[0][context].Stencil;
-            }
-            else
-            {
-                this.FTextureOutput[0].Remove(context);
+                if (this.FTextureInput[i].Contains(context) && this.FTextureInput[i][context] != null)
+                {
+                    this.FTextureOutput[i][context] = this.FTextureInput[i][context].Stencil;
+                }
+                else
+                {
+                    this.FTextureOutput[i].Remove(context);
+                }
             }
         }
 
