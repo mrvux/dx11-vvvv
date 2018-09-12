@@ -26,6 +26,7 @@ namespace VVVV.DX11.Nodes
         protected IPluginHost FHost;
 
         IDiffSpread<EnumEntry> FInFormat;
+        private IDiffSpread<EnumEntry> depthformatpin;
 
         [Input("Layer", Order = 1)]
         protected Pin<DX11Resource<DX11Layer>> FInLayer;
@@ -108,7 +109,13 @@ namespace VVVV.DX11.Nodes
 
             this.FInFormat = iofactory.CreateDiffSpread<EnumEntry>(tattr);
 
-            //this.depthmanager = new DepthBufferManager(FHost,iofactory);
+            ConfigAttribute dfAttr = new ConfigAttribute("Depth Buffer Format");
+            dfAttr.EnumName = DX11EnumFormatHelper.NullDeviceFormats.GetEnumName(FormatSupport.DepthStencil);
+            dfAttr.DefaultEnumEntry = "D32_Float";
+            dfAttr.IsSingle = true;
+
+            this.depthformatpin = iofactory.CreateDiffSpread<EnumEntry>(dfAttr);
+            this.depthformatpin[0] = new EnumEntry(dfAttr.EnumName, 1);
         }
         #endregion
 
@@ -126,7 +133,8 @@ namespace VVVV.DX11.Nodes
                 || this.FInSize.IsChanged
                 || this.FInElementCount.IsChanged
                 || this.FInMips.IsChanged
-                || this.FInAllowUAV.IsChanged)
+                || this.FInAllowUAV.IsChanged
+                || this.depthformatpin.IsChanged)
             {
                 this.FOutTexture[0].Dispose();
                 this.FOutDepthTexture[0].Dispose();
@@ -151,9 +159,11 @@ namespace VVVV.DX11.Nodes
 
             if (!this.FOutTexture[0].Contains(context))
             {
+                Format depthfmt = DeviceFormatHelper.GetFormat(this.depthformatpin[0].Name);
+
                 var result = new DX11RenderTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], DeviceFormatHelper.GetFormat(this.FInFormat[0]), true, this.FInMips[0] ? 0 : 1, this.FInAllowUAV[0]);
                 this.FOutTexture[0][context] = result;
-                this.FOutDepthTexture[0][context] = new DX11DepthTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], Format.R32_Float, true);
+                this.FOutDepthTexture[0][context] = new DX11DepthTextureArray(context, (int)this.FInSize[0].X, (int)this.FInSize[0].Y, this.FInElementCount[0], depthfmt, true);
                 for (int i = 0; i < this.FInElementCount[0]; i++)
                 {
                     DX11Texture2D slice = DX11Texture2D.FromTextureAndSRV(context, result.Resource, result.SliceRTV[i].SRV);
@@ -192,7 +202,7 @@ namespace VVVV.DX11.Nodes
 
                     if (this.FInDepthBuffer[0])
                     {
-                        context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
+                        context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
                     }
                 }
 

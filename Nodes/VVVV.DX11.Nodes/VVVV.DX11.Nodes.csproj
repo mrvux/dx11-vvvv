@@ -107,6 +107,7 @@
     <Compile Include="Nodes\Textures\1D\WriterTexture1dNode.cs" />
     <Compile Include="Nodes\Textures\2D\AsTextureNode.cs" />
     <Compile Include="Nodes\Textures\2D\PixelData.cs" />
+    <Compile Include="Nodes\Textures\2D\StencilTextureArrayNode.cs" />
     <Compile Include="Nodes\Textures\3D\FrameDelayTexture3dNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetArraysNode.cs" />
     <Compile Include="Nodes\Textures\Array\GetArrayNode.cs" />
