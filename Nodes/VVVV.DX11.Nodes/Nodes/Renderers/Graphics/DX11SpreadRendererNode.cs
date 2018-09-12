@@ -228,7 +228,7 @@ namespace VVVV.DX11.Nodes
 
                     if (depth != null && this.FInClearDepth[i])
                     {
-                        context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth, 1.0f, 0);
+                        context.CurrentDeviceContext.ClearDepthStencilView(depth.DSV, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, 1.0f, 0);
                     }
 
                     if (this.FInClear[i])
