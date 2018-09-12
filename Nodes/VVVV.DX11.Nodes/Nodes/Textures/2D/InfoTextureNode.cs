@@ -32,6 +32,9 @@ namespace VVVV.DX11.Nodes
         [Output("Format")]
         protected ISpread<SlimDX.DXGI.Format> FOutFormat;
 
+        [Output("View Format")]
+        protected ISpread<SlimDX.DXGI.Format> FOutViewFormat;
+
         [Output("Samples Count")]
         protected ISpread<int> FOutSampleCount;
 
@@ -73,12 +76,14 @@ namespace VVVV.DX11.Nodes
                 this.FOutHeight.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutMipLevels.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutFormat.SliceCount = this.FTextureIn.SliceCount;
+                this.FOutViewFormat.SliceCount = this.FTextureIn.SliceCount;
+
                 this.FOutSampleCount.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutAAQuality.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutArraySize.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutPointer.SliceCount = this.FTextureIn.SliceCount;
                 this.FOutCreationTime.SliceCount = this.FTextureIn.SliceCount;
-
+                
                 for (int i = 0; i < this.FTextureIn.SliceCount; i++)
                 {
                     try
@@ -87,10 +92,12 @@ namespace VVVV.DX11.Nodes
                         {
                             if (this.FTextureIn[i][this.AssignedContext] != null)
                             {
-                                Texture2DDescription tdesc = this.FTextureIn[i][this.AssignedContext].Resource.Description;
+                                var tex = this.FTextureIn[i][this.AssignedContext];
+                                Texture2DDescription tdesc = tex.Resource.Description;
                                 this.FOutHeight[i] = tdesc.Height;
                                 this.FOutWidth[i] = tdesc.Width;
                                 this.FOutFormat[i] = tdesc.Format;
+                                this.FOutViewFormat[i] = tex.SRV.Description.Format;
                                 this.FOutMipLevels[i] = tdesc.MipLevels;
                                 this.FOutSampleCount[i] = tdesc.SampleDescription.Count;
                                 this.FOutAAQuality[i] = tdesc.SampleDescription.Quality;
@@ -127,12 +134,14 @@ namespace VVVV.DX11.Nodes
             this.FOutHeight.SliceCount = 0;
             this.FOutWidth.SliceCount = 0;
             this.FOutFormat.SliceCount = 0;
+            this.FOutViewFormat.SliceCount = 0;
             this.FOutMipLevels.SliceCount = 0;
             this.FOutSampleCount.SliceCount = 0;
             this.FOutAAQuality.SliceCount = 0;
             this.FOutArraySize.SliceCount = 0;
             this.FOutPointer.SliceCount = 0;
             this.FOutCreationTime.SliceCount = 0;
+
         }
 
         private void SetDefault(int i)
@@ -140,6 +149,7 @@ namespace VVVV.DX11.Nodes
             this.FOutHeight[i] = -1;
             this.FOutWidth[i] = -1;
             this.FOutFormat[i] = SlimDX.DXGI.Format.Unknown;
+            this.FOutViewFormat[i] = SlimDX.DXGI.Format.Unknown;
             this.FOutMipLevels[i] = -1;
             this.FOutSampleCount[i] = -1;
             this.FOutAAQuality[i] = -1;
