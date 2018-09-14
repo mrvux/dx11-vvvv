@@ -27,7 +27,6 @@ namespace VVVV.DX11.Lib.Effects
         public bool Clear { get; private set; }
         public bool Absolute { get; private set; }
 
-        public int IterationCount { get; private set; }
 
         public Vector2 ScaleVector { get; private set; }
 
@@ -55,7 +54,6 @@ namespace VVVV.DX11.Lib.Effects
             this.HasState = false;
             this.KeepTarget = false;
             this.Absolute = false;
-            this.IterationCount = 1;
 
             this.ComputeData = new ImagePassComputeInfo(pd);
 
@@ -102,21 +100,6 @@ namespace VVVV.DX11.Lib.Effects
             {
                 bool b = var.AsScalar().GetFloat() > 0.5f;
                 this.Reference = b ? eImageScaleReference.Initial : eImageScaleReference.Previous;
-            }
-
-            var = pd.GetAnnotationByName("iterations");
-            if (var.IsValid)
-            {
-                try
-                {
-                    int i = var.AsScalar().GetInt();
-
-                    this.IterationCount = Math.Max(1, i);
-                }
-                catch
-                {
-
-                }
             }
 
             this.Clear = pd.GetBoolPassAnnotationByName("clear", this.Clear);

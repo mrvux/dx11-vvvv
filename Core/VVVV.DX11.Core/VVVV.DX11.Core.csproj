@@ -48,6 +48,7 @@
     <Compile Include="Rendering\Layer\IDX11ObjectValidator.cs" />
     <Compile Include="Rendering\Layer\DX11ObjectRenderSettings.cs" />
     <Compile Include="Rendering\Layer\IDX11RenderSemantic.cs" />
+    <Compile Include="Rendering\TextureFX\IDX11TextureFXPassListener.cs" />
     <Compile Include="Resources\DX11Resource.cs" />
     <Compile Include="Resources\DX11ResourceExtensions.cs" />
     <Compile Include="Resources\IDX11ResourceDataProvider.cs" />
