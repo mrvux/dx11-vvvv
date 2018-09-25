@@ -27,13 +27,17 @@ namespace VVVV.DX11.Nodes
         [Input("Enabled", DefaultValue = 1, IsSingle = true)]
         protected ISpread<bool> FInEnabled;
 
+        [Input("Double Buffer", Visibility =PinVisibility.OnlyInspector)]
+        protected ISpread<bool> FInDoubleBuffer;
+
         [Output("Output")]
         protected ISpread<T> FOutput;
 
         [Import()]
         protected IPluginHost FHost;
 
-        private DX11StagingStructuredBuffer staging;
+        private DX11StagingStructuredBuffer stagingWrite;
+        private DX11StagingStructuredBuffer stagingRead;
 
         public DX11RenderContext AssignedContext
         {
@@ -72,18 +76,23 @@ namespace VVVV.DX11.Nodes
                         return;
                     }
 
-                    if (this.staging != null && this.staging.ElementCount != b.ElementCount) { this.staging.Dispose(); this.staging = null; }
-
-                    if (this.staging == null)
+                    if (this.stagingWrite != null && this.stagingWrite.ElementCount != b.ElementCount)
                     {
-                        staging = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, b.Stride);
+                        this.stagingWrite.Dispose(); this.stagingWrite = null;
+                        this.stagingRead.Dispose(); this.stagingRead = null;
                     }
 
-                    this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
+                    if (this.stagingWrite == null)
+                    {
+                        stagingWrite = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, b.Stride);
+                        stagingRead = new DX11StagingStructuredBuffer(this.AssignedContext.Device, b.ElementCount, b.Stride);
+                    }
+
+                    this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, stagingWrite.Buffer);
 
                     this.FOutput.SliceCount = b.ElementCount;
 
-                    DataStream ds = staging.MapForRead(this.AssignedContext.CurrentDeviceContext);
+                    DataStream ds = stagingRead.MapForRead(this.AssignedContext.CurrentDeviceContext);
                     try
                     {
                         
@@ -97,8 +106,10 @@ namespace VVVV.DX11.Nodes
                     }
                     finally
                     {
-                        staging.UnMap(this.AssignedContext.CurrentDeviceContext);
+                        stagingRead.UnMap(this.AssignedContext.CurrentDeviceContext);
                     }
+
+                    SharpDX.Utilities.Swap(ref stagingWrite, ref stagingRead);
 
                 }
                 else
