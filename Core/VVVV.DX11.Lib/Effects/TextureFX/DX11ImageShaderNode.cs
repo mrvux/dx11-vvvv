@@ -29,13 +29,15 @@ namespace VVVV.DX11.Nodes.Layers
         //private List<DX11ResourcePoolEntry<DX11RenderTarget2D>> lastframetargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
         private RenderTargetView[] nullrtvs = new RenderTargetView[8];
 
-        private DX11ObjectRenderSettings objectsettings = new DX11ObjectRenderSettings();
         private DX11ImageShaderVariableManager varmanager;
         private DX11ContextElement<DX11ShaderVariableCache> shaderVariableCache = new DX11ContextElement<DX11ShaderVariableCache>();
         private DX11ContextElement<DX11ShaderData> deviceshaderdata = new DX11ContextElement<DX11ShaderData>();
         private DX11ContextElement<ImageShaderInfo> imageShaderInfo = new DX11ContextElement<ImageShaderInfo>();
 
         private Spread<DX11ResourcePoolEntry<DX11RenderTarget2D>> previousFrameResults = new Spread<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
+
+        private DX11RenderSettings renderSettings = new DX11RenderSettings();
+        private DX11ObjectRenderSettings objectSettings = new DX11ObjectRenderSettings();
 
         #region Default Input Pins
         [Input("Depth In",Visibility=PinVisibility.OnlyInspector)]
@@ -240,11 +242,22 @@ namespace VVVV.DX11.Nodes.Layers
                 }
             }
 
-            DX11ObjectRenderSettings or = new DX11ObjectRenderSettings();
 
             int wi, he;
             DX11ResourcePoolEntry<DX11RenderTarget2D> preservedtarget = null;
-            
+
+            renderSettings.CustomSemantics.Clear();
+            renderSettings.ResourceSemantics.Clear();
+
+            if (this.FInSemantics.IsConnected)
+            {
+                renderSettings.CustomSemantics.AddRange(this.FInSemantics.ToArray());
+            }
+            if (this.FInResSemantics.IsConnected)
+            {
+                renderSettings.ResourceSemantics.AddRange(this.FInResSemantics.ToArray());
+            }
+
             for (int textureIndex = 0; textureIndex < this.spmax; textureIndex++)
             {
                 int passcounter = 0;
@@ -294,21 +307,13 @@ namespace VVVV.DX11.Nodes.Layers
                     }
                     #endregion
 
-                    DX11RenderSettings r = new DX11RenderSettings();
-                    r.RenderWidth = wi;
-                    r.RenderHeight = he;
-                    if (this.FInSemantics.IsConnected)
-                    {
-                        r.CustomSemantics.AddRange(this.FInSemantics.ToArray());
-                    }
-                    if (this.FInResSemantics.IsConnected)
-                    {
-                        r.ResourceSemantics.AddRange(this.FInResSemantics.ToArray());
-                    }
+                    renderSettings.RenderWidth = wi;
+                    renderSettings.RenderHeight = he;
 
-                    this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, r);
+
+                    this.varmanager.SetGlobalSettings(shaderdata.ShaderInstance, renderSettings);
                     var variableCache = this.shaderVariableCache[context];
-                    variableCache.ApplyGlobals(r);
+                    variableCache.ApplyGlobals(renderSettings);
 
                     
                     DX11ResourcePoolEntry<DX11RenderTarget2D> lasttmp = null;
@@ -480,13 +485,13 @@ namespace VVVV.DX11.Nodes.Layers
                             context.RenderStateStack.Push(state);
                         }
 
-                        r.RenderWidth = w;
-                        r.RenderHeight = h;
-                        r.BackBuffer = elem.Element;
+                        renderSettings.RenderWidth = w;
+                        renderSettings.RenderHeight = h;
+                        renderSettings.BackBuffer = elem.Element;
 
                         //Apply settings (we do both here, as texture size semantic might ahve 
-                        variableCache.ApplyGlobals(r);
-                        variableCache.ApplySlice(or, textureIndex);
+                        variableCache.ApplyGlobals(renderSettings);
+                        variableCache.ApplySlice(objectSettings, textureIndex);
                         //Bind last render target
 
                         shaderInfo.ApplyPrevious(lastrt.SRV);
