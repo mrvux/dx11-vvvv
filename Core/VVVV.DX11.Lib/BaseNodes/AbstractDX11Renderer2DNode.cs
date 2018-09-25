@@ -96,6 +96,8 @@ namespace VVVV.DX11
         protected abstract void OnDispose();
 
 
+        private DX11RenderSettings settings = new DX11RenderSettings();
+
         protected virtual IDX11RWResource GetMainTarget(DX11RenderContext device) { return null; }
 
         public bool IsEnabled
@@ -194,7 +196,6 @@ namespace VVVV.DX11
                         int rtmax = Math.Max(this.FInProjection.SliceCount, this.FInView.SliceCount);
                         rtmax = Math.Max(rtmax, this.FInViewPort.SliceCount);
 
-                        DX11RenderSettings settings = new DX11RenderSettings();
                         settings.ViewportCount = rtmax;
 
                         bool viewportpop = this.FInViewPort.IsConnected;
