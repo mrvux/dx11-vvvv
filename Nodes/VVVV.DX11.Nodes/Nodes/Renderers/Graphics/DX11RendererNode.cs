@@ -355,7 +355,10 @@ namespace VVVV.DX11.Nodes
 
             this.FOutKState[0] = new KeyboardState(this.FKeys);
             this.FOutMouseState[0] = MouseState.Create(this.FMousePos.x, this.FMousePos.y, this.FMouseButtons.x > 0.5f, this.FMouseButtons.y > 0.5f, this.FMouseButtons.z > 0.5f, false, false, this.wheel);
-            this.FOutBackBufferSize[0] = new Vector2D(this.Width, this.Height);
+
+            int outw = Math.Min(8, this.Width);
+            int outh = Math.Min(8, this.Height);
+            this.FOutBackBufferSize[0] = new Vector2D(outw, outh);
 
             this.FOutTouchSupport[0] = this.touchsupport;
 
