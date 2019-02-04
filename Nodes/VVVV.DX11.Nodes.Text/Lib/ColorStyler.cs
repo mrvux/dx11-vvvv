@@ -21,16 +21,23 @@ namespace VVVV.DX11.Nodes.Text
         {
             if (Enabled)
             {
-                var factory = FontWrapperFactory.GetFactory();
 
                 var sc = this.Color;
                 SharpDX.Color4 c = *(SharpDX.Color4*)&sc;
 
-                colorStyle = factory.CreateColor(c);
+                if (colorStyle == null)
+                {
+                    var factory = FontWrapperFactory.GetFactory();
+                    colorStyle = factory.CreateColor(c);
+                }
+                else
+                {
+                    colorStyle.SetColor(c.Red, c.Green, c.Blue, c.Alpha);
+                }
+                               
 
                 SharpDX.DirectWrite.TextLayout tl = new SharpDX.DirectWrite.TextLayout(layout.ComPointer);
                 tl.SetDrawingEffect(colorStyle.NativePointer, new SharpDX.DirectWrite.TextRange(Range.StartPosition, Range.Length));
-                Marshal.Release(colorStyle.NativePointer);
             }
         }
 
