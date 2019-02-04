@@ -141,7 +141,9 @@ namespace VVVV.DX11.Nodes
                     settings.RenderHeight = this.cnt;
                     settings.RenderDepth = this.cnt;
                     settings.BackBuffer = this.FOutBuffers[0][context];
-                    
+                    settings.CustomSemantics.Clear();
+                    settings.ResourceSemantics.Clear();
+
 
                     if (this.FInResetCounter[0])
                     {

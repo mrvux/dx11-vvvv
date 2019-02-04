@@ -148,6 +148,8 @@ namespace VVVV.DX11.Nodes
                     settings.RenderHeight = 1;
                     settings.RenderDepth = 1;
                     settings.BackBuffer = null;
+                    settings.CustomSemantics.Clear();
+                    settings.ResourceSemantics.Clear();
 
                     this.FInLayer.RenderAll(context, settings);
                 }
