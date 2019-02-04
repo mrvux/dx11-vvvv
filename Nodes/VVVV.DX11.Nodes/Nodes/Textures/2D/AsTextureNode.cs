@@ -115,7 +115,7 @@ namespace VVVV.DX11.Nodes
                     stride = stride <= 0 ? pixelSize * width : stride;
 
                     //Normally spread implementation, afaik , doesn't downsize the buffer
-                    byteSpread.SliceCount = stride * pixelSize;
+                    byteSpread.SliceCount = stride * pixelSize * height;
 
                     data.Position = this.FInDataLocation[0];
                     data.Read(byteSpread.Stream.Buffer, 0, stride * height);
