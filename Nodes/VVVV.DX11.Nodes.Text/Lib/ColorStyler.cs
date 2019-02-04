@@ -13,7 +13,6 @@ namespace VVVV.DX11.Nodes.Text
     {
         private SharpFontWrapper.ColorRGBA colorStyle;
 
-        public IntPtr pointer;
         public bool Enabled;
         public SlimDX.Color4 Color;
         public SlimDX.DirectWrite.TextRange Range;
