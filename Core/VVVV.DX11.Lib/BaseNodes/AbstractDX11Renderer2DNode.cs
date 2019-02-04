@@ -105,8 +105,17 @@ namespace VVVV.DX11
             get { return this.FInEnabled[0]; }
         }
 
+        private int currentSpreadMax = 0;
+
         public void Evaluate(int SpreadMax)
         {
+            this.currentSpreadMax = SpreadMax;
+
+            //Nothing to do on 0 spread
+            if (this.currentSpreadMax == 0)
+                return;
+
+
             if (this.FOutQueryable[0] == null) { this.FOutQueryable[0] = this; }
             if (!this.depthmanager.FormatChanged) // do not clear reset if format changed
             {
@@ -125,6 +134,9 @@ namespace VVVV.DX11
 
         public void Update(DX11RenderContext context)
         {
+            if (this.currentSpreadMax == 0)
+                return;
+
             Device device = context.Device;
 
             if (this.updateddevices.Contains(context)) { return; }
@@ -155,6 +167,9 @@ namespace VVVV.DX11
         #region Render
         public void Render(DX11RenderContext context)
         {
+            if (this.currentSpreadMax == 0)
+                return;
+
             Device device = context.Device;
 
             //Just in case
