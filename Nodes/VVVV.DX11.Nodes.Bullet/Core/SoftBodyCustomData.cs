@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VVVV.DataTypes.Bullet;
 
 namespace VVVV.Bullet.Core
 {
@@ -26,5 +27,7 @@ namespace VVVV.Bullet.Core
         /// Uvs set for object
         /// </summary>
         public float[] UV { get; set; }
+
+        public AbstractSoftShapeDefinition Definition;
     }
 }
