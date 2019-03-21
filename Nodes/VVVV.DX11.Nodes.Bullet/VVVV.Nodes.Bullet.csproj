@@ -126,6 +126,7 @@
     <Compile Include="Nodes\Bodies\Rigid\BulletRigidBodyPairNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyIdNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletGetRigidBodyTransformNode.cs" />
+    <Compile Include="Nodes\Bodies\Rigid\BulletSetRigidCustomNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\AggregateRigidBodyFilterNodes.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\BulletBoxContainmentNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\BulletSphereContainmentNode.cs" />
