@@ -19,7 +19,7 @@ namespace VVVV.Bullet.Nodes.Bodies.Interactions.Rigid
         [Input("Custom String")]
         protected ISpread<string> FString;
 
-        [Input("Set")]
+        [Input("Set", IsBang =true)]
         protected IDiffSpread<bool> FSet;
 
         public void Evaluate(int SpreadMax)
