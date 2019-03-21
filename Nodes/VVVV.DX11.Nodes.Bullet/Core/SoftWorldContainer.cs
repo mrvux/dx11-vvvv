@@ -247,7 +247,26 @@ namespace VVVV.Bullet.Core
 		{
             this.dynamicsWorld.DeleteAndDisposeAllConstraints();
 
-            this.dynamicsWorld.DeleteAndDisposeAllRigidBodies();
+            //this.dynamicsWorld.DeleteAndDisposeAllRigidBodies();
+
+            for (int i = 0; i < this.dynamicsWorld.NumCollisionObjects; i++)
+            {
+                CollisionObject obj = dynamicsWorld.CollisionObjectArray[i];
+
+                if (obj is RigidBody)
+                {
+                    RigidBody body = obj as RigidBody;
+                    dynamicsWorld.DeleteAndDisposeBody(body);
+                }
+                else if (obj is SoftBody)
+                {
+                    SoftBody body = obj as SoftBody;
+                    dynamicsWorld.RemoveSoftBody(body);
+                    body.Dispose();
+                    body.CollisionShape.Dispose();
+                }
+                
+            }
 
             dynamicsWorld.Dispose();
 			solver.Dispose();
