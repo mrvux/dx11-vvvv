@@ -23,10 +23,10 @@ namespace VVVV.DataTypes.Bullet
 		
 		protected override SoftBody CreateSoftBody(SoftBodyWorldInfo si)
 		{
+            
 			si.SparseSdf.Reset();
 			SoftBody sb = SoftBodyHelpers.CreateRope(si, from, to, res,fix);
 			this.SetConfig(sb);
-
 			return sb;
 		}
 
