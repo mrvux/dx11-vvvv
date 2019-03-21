@@ -41,7 +41,7 @@ namespace VVVV.Nodes.Bullet
 		protected override AbstractSoftShapeDefinition GetShapeDefinition(int slice)
 		{
             Vector3Array p = new Vector3Array(FPosition.SliceCount);
-            ScalarArray m = new ScalarArray(FMass.SliceCount);
+            ScalarArray m = new ScalarArray(FPosition.SliceCount);
 
             for (int i = 0; i < FPosition.SliceCount; i++)
             {
