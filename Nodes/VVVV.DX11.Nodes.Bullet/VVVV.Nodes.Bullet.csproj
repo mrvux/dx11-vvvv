@@ -113,12 +113,14 @@
     <Compile Include="Nodes\Bodies\Interactions\BulletDestroyBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\AbstractBodyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletActivateBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletAppendAnchorNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetPoseRigidBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetVelocityNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyImpulseNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyTorqueNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Soft\BulletSoftApplyForceNode.cs" />
+    <Compile Include="Nodes\Bodies\Interactions\Soft\BulletSoftSetNodeMassNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreateDynamicBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedKinematicBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedDynamicBodyNode.cs" />
@@ -141,6 +143,8 @@
     <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Soft\BulletCreateSoftBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyDetailsNode.cs" />
+    <Compile Include="Nodes\Bodies\Soft\BulletGetSoftBodyIdNode.cs" />
     <Compile Include="Nodes\Constraints\GetConstrainDetailsNode.cs" />
     <Compile Include="Nodes\Constraints\SetPointToPointPivoteNode.cs" />
     <Compile Include="Nodes\Constraints\Single\CreateSliderSingleConstraintNode.cs" />
@@ -166,6 +170,10 @@
     </Compile>
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletHeightfieldNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletSphereShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Soft\AbstractSoftShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Soft\BulletEllipsoidShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Soft\BulletPatchShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Soft\BulletRopeShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
     <Compile Include="Nodes\Vehicle\BulletGetWheelInfoNode.cs" />
     <Compile Include="Nodes\Vehicle\BuletGetWheelTransformNode.cs" />
@@ -192,7 +200,6 @@
     <Folder Include="DataTypes\Constraints\" />
     <Folder Include="Nodes\Constraints\Single\Create\" />
     <Folder Include="Nodes\Shapes\Create\Compound\" />
-    <Folder Include="Nodes\Shapes\Create\Soft\" />
     <Folder Include="Nodes\Shapes\Create\Vehicle\" />
   </ItemGroup>
   <ItemGroup>

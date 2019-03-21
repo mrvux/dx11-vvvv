@@ -73,6 +73,12 @@ namespace VVVV.Nodes.Bullet
 				
 						this.FWorld[0].Register(body);
 						bodies.Add(body);
+
+                        //Attach if to all nodes
+                        for (int j = 0; j < body.Nodes.Count; j++)
+                        {
+                            body.Nodes[j].Tag = (IntPtr)j;
+                        }
 					}
 				}
 
