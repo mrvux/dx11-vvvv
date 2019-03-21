@@ -68,6 +68,7 @@ namespace VVVV.Nodes.Bullet
 						bd.Custom = this.FCustom[i];
 						bd.HasUV = shapedef.HasUV;
 						bd.UV = shapedef.GetUV(body);
+                        bd.Definition = shapedef;
 						body.UserObject = bd;
 
 				

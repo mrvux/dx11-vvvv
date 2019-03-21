@@ -4,42 +4,37 @@ using System.Text;
 using BulletSharp.SoftBody;
 using BulletSharp;
 
-namespace VVVV.Bullet.Internals.Shapes.Soft
+namespace VVVV.DataTypes.Bullet
 {
 	public class GenericSoftShapeDefinition : AbstractSoftShapeDefinition
 	{
-		private Vector3[] nodes;
+		private Vector3Array vertices;
 		private int[] indices;
-		private bool randomizeContraints;
+        private ScalarArray mass;
 
-		public GenericSoftShapeDefinition(Vector3[] nodes, int[] indices, bool randomizeContraints)
+		public GenericSoftShapeDefinition(Vector3Array vertices, int[] indices, ScalarArray mass)
 		{
 			this.vertices = vertices;
 			this.indices = indices;
-			this.randomizeContraints = randomizeContraints;
+            this.mass = mass;
 		}
 
 		protected override SoftBody CreateSoftBody(SoftBodyWorldInfo si)
 		{
-			SoftBody sb = new SoftBody(si,
-			sb.Nodes.
-				sb.Cfg.AeroModel = this.AeroModel;
-			sb.Cfg.DF = this.DynamicFrictionCoefficient;
-			sb.Cfg.DP = this.DampingCoefficient;
-			sb.Cfg.PR = this.PressureCoefficient;
-			sb.Cfg.LF = this.LiftCoefficient;
-			sb.SetTotalMass(this.Mass, true);
-			sb.Cfg.Collisions |= FCollisions.VFSS;// | FCollisions.CLRS | FCollisions.
-			sb.Cfg.Chr = this.RigidContactHardness;
-			sb.Cfg.DG = this.DragCoefficient;
-			sb.Cfg.Ahr = this.AnchorHardness;
-			if (this.GenerateBendingConstraints)
-			{
-				sb.GenerateBendingConstraints(this.BendingDistance);
-			}
+            si.SparseSdf.Reset();
 
-			return sb;
-		}
+            SoftBody sb = new SoftBody(si, vertices, mass);
+
+            int pairs = this.indices.Length / 2;
+            for (int i = 0; i < pairs; i++)
+            {
+                sb.AppendLink(indices[i * 2], indices[i * 2 + 1]);
+            }
+            sb.RandomizeConstraints();
+            this.SetConfig(sb);
+
+            return sb;
+        }
 
 	}
 }

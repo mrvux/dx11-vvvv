@@ -264,6 +264,7 @@ namespace VVVV.Bullet.Core
                     dynamicsWorld.RemoveSoftBody(body);
                     body.Dispose();
                     body.CollisionShape.Dispose();
+                    body.Tag = null;
                 }
                 
             }

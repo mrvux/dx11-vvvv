@@ -25,6 +25,15 @@ namespace VVVV.Nodes.Bullet
 		[Input("Air Density", DefaultValue = 1.2, IsSingle = true)]
         protected IDiffSpread<float> FAirDensity;
 
+        [Input("Water Density", DefaultValue = 0, IsSingle = true)]
+        protected IDiffSpread<float> FWaterDensity;
+
+        [Input("Water Offset", DefaultValue = 0, IsSingle = true)]
+        protected IDiffSpread<float> FWaterOffset;
+
+        [Input("Water Normal", IsSingle = true)]
+        protected IDiffSpread<SlimDX.Vector3> FWaterNormal;
+
 		[Input("TimeStep", DefaultValue = 0.01, IsSingle = true)]
         protected IDiffSpread<float> FTimeStep;
 
@@ -74,13 +83,19 @@ namespace VVVV.Nodes.Bullet
 
 			if (this.FGravity.IsChanged
 				|| this.FAirDensity.IsChanged
+                || this.FWaterDensity.IsChanged
+                || this.FWaterNormal.IsChanged
+                || this.FWaterOffset.IsChanged
 				|| hasreset)
 			{
-				Vector3D g = this.FGravity[0];
-				this.internalworld.SetGravity((float)g.x, (float)g.y, (float)g.z);
-				this.internalworld.WorldInfo.Gravity = new BulletSharp.Vector3((float)g.x, (float)g.y, (float)g.z);
+                var g = this.FGravity[0].ToBulletVector();
+                this.internalworld.SetGravity(g.X, g.Y, g.Z);
+                this.internalworld.WorldInfo.Gravity = g;
 				this.internalworld.WorldInfo.AirDensity = this.FAirDensity[0];
-			}
+                this.internalworld.WorldInfo.WaterDensity = this.FWaterDensity[0];
+                this.internalworld.WorldInfo.WaterNormal = this.FWaterNormal[0].ToBulletVector();
+                this.internalworld.WorldInfo.WaterOffset = this.FWaterOffset[0];
+            }
 
 			if (this.FEnabled.IsChanged || hasreset)
 			{

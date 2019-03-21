@@ -67,6 +67,7 @@
     <Compile Include="DataTypes\Shapes\Rigid\BvhShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\CapsuleShapeDefinition.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\ConvexHullShapeDefinition.cs" />
+    <Compile Include="DataTypes\Shapes\Soft\GenericSoftShapeDefinition.cs" />
     <Compile Include="Direct3D11\BulletImmediateWorldDebugRenderer.cs" />
     <Compile Include="Core\RigidBodyExtensionMethods.cs" />
     <Compile Include="DataTypes\Shapes\Rigid\PlaneShapeDefinition.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletSphereShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Soft\AbstractSoftShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Soft\BulletEllipsoidShapeNode.cs" />
+    <Compile Include="Nodes\Shapes\Create\Soft\BulletGenerivSoftShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Soft\BulletPatchShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Soft\BulletRopeShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Retrieve\Rigid\GetRigidShapeDetailsNode.cs" />
