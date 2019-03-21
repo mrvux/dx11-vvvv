@@ -34,7 +34,7 @@ namespace VVVV.Bullet.Core
                 return new SoftBodyProperties()
                 {
                     AeroModel = AeroModel.VPoint,
-                    IsVolumeMass = true,
+                    IsVolumeMass = false,
                     Mass = 1.0f,
                     DampingCoefficient = 0.0f,
                     DragCoefficient = 0.0f,
