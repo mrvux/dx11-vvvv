@@ -40,12 +40,15 @@
     <Compile Include="Core\IConstraintCollection.cs" />
     <Compile Include="Core\IRigidBodyCollection.cs" />
     <Compile Include="Core\IConstraintContainer.cs" />
+    <Compile Include="Core\ISoftBulletWorld.cs" />
+    <Compile Include="Core\ISoftBodyContainer.cs" />
     <Compile Include="Core\IRigidBodyContainer.cs" />
     <Compile Include="Core\IRigidBodyFilter.cs" />
     <Compile Include="Core\IRigidBulletWorld.cs" />
     <Compile Include="Core\ISoftBodyCollection.cs" />
     <Compile Include="Core\ObjectCustomData.cs" />
     <Compile Include="Core\ObjectLifetimeContainer.cs" />
+    <Compile Include="Core\SoftBodyProperties.cs" />
     <Compile Include="Core\RigidBodyCCDProperties.cs" />
     <Compile Include="Core\RigidBodyCustomData.cs" />
     <Compile Include="Core\ConstraintListener.cs" />
@@ -103,6 +106,7 @@
     <Compile Include="Internals\Shapes\SoftShapeCustomData.cs" />
     <Compile Include="Nodes\Base\RigidBodyMotionPropertiesJoinNode.cs" />
     <Compile Include="Nodes\Base\RigidBodyCCDPropertiesJoinNode.cs" />
+    <Compile Include="Nodes\Base\SoftBodyPropertiesJoinNode.cs" />
     <Compile Include="Nodes\Base\RigidBodyPropertiesJoinNode.cs" />
     <Compile Include="Nodes\Base\RigidBodyPoseJoinNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\AbstractBodyInteractionNode.cs" />
@@ -114,6 +118,7 @@
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyImpulseNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyTorqueNode.cs" />
+    <Compile Include="Nodes\Bodies\Interactions\Soft\BulletSoftApplyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreateDynamicBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedKinematicBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\BulletCreatePersistedDynamicBodyNode.cs" />
@@ -135,6 +140,7 @@
     <Compile Include="Nodes\Bodies\Rigid\Filters\IsOfShapeRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\IdEqualsRigidbodyFilterNode.cs" />
     <Compile Include="Nodes\Bodies\Rigid\Filters\OlderThanRigidBodyFilterNode.cs" />
+    <Compile Include="Nodes\Bodies\Soft\BulletCreateSoftBodyNode.cs" />
     <Compile Include="Nodes\Constraints\GetConstrainDetailsNode.cs" />
     <Compile Include="Nodes\Constraints\SetPointToPointPivoteNode.cs" />
     <Compile Include="Nodes\Constraints\Single\CreateSliderSingleConstraintNode.cs" />
@@ -142,6 +148,7 @@
     <Compile Include="Nodes\Constraints\Single\CreatePointToPointSingleConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\Dual\CreatePointToPointDualConstraintNode.cs" />
     <Compile Include="Nodes\Constraints\DestroyConstraintNode.cs" />
+    <Compile Include="Nodes\Direct3D11\BulletGetSoftBodyMesh.cs" />
     <Compile Include="Nodes\Direct3D11\RigidDynamicBufferNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\AbstractBulletRigidDynamicShapeNode.cs" />
     <Compile Include="Nodes\Shapes\Create\Rigid\BulletBvhAssimpShapeNode.cs" />
@@ -174,6 +181,7 @@
     <Compile Include="Nodes\World\Retrieve\BulletGetRigidBodiesNode.cs" />
     <Compile Include="Nodes\World\BulletSoftWorldNode.cs" />
     <Compile Include="Nodes\Direct3D11\BulletWorldDebugLayerNode.cs" />
+    <Compile Include="Nodes\World\Retrieve\BulletGetSoftBodiesNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ArrayMax.cs" />
     <Compile Include="Utils\BulletExtensionMethods.cs" />
@@ -182,7 +190,6 @@
   <ItemGroup>
     <Folder Include="Core\Constraints\" />
     <Folder Include="DataTypes\Constraints\" />
-    <Folder Include="Nodes\Bodies\Soft\" />
     <Folder Include="Nodes\Constraints\Single\Create\" />
     <Folder Include="Nodes\Shapes\Create\Compound\" />
     <Folder Include="Nodes\Shapes\Create\Soft\" />

@@ -11,7 +11,7 @@ namespace VVVV.Bullet.Core
 {
 	//Just to make it easier to manage than having million of stuff in
 	//World node. Can also easily switch broadphases
-	public class BulletSoftWorldContainer : IRigidBulletWorld, ISoftBodyCollection, IConstraintContainer
+	public class BulletSoftWorldContainer : IRigidBulletWorld, ISoftBulletWorld, IConstraintContainer
     {
 		private DefaultCollisionConfiguration collisionConfiguration;
 		private CollisionDispatcher dispatcher;
@@ -20,7 +20,8 @@ namespace VVVV.Bullet.Core
 		private SoftRigidDynamicsWorld dynamicsWorld;
 		private SoftBodyWorldInfo worldInfo;
 
-		private int bodyindex;
+        private int softbodyindex;
+        private int bodyindex;
 		private int cstindex;
 
 		protected bool enabled;
@@ -50,7 +51,13 @@ namespace VVVV.Bullet.Core
         }
 
         #region Rigid Registry
-		public void Register(RigidBody body)
+        public int GetNewRigidBodyId()
+        {
+            this.bodyindex++;
+            return this.bodyindex;
+        }
+
+        public void Register(RigidBody body)
 		{
 			this.World.AddRigidBody(body);
             this.bodyContainer.RegisterObject(body);
@@ -70,10 +77,16 @@ namespace VVVV.Bullet.Core
 		{
 			get { return this.bodyContainer.ObjectList; }
 		}
-		#endregion
+        #endregion
 
-		#region Soft Registry
-		public void Register(SoftBody body)
+        #region Soft Registry
+        public int GetNewSoftBodyId()
+        {
+            this.softbodyindex++;
+            return this.bodyindex;
+        }
+
+        public void Register(SoftBody body)
 		{
 			this.dynamicsWorld.AddSoftBody(body);
 			this.softBodyContainer.RegisterObject(body);
@@ -94,10 +107,16 @@ namespace VVVV.Bullet.Core
 		{
 			get { return this.softBodyContainer.ObjectList; }
 		}
-		#endregion
+        #endregion
 
-		#region Contraints Registry
-		public void Register(TypedConstraint cst, bool collideconnected)
+        #region Contraints Registry
+        public int GetNewConstraintId()
+        {
+            this.cstindex++;
+            return this.cstindex;
+        }
+
+        public void Register(TypedConstraint cst, bool collideconnected)
 		{
 			this.World.AddConstraint(cst, !collideconnected);
             this.constraintContainer.RegisterObject(cst);
@@ -137,6 +156,7 @@ namespace VVVV.Bullet.Core
 
 			this.bodyindex = 0;
 			this.cstindex = 0;
+            this.softbodyindex = 0;
 
 			collisionConfiguration = new SoftBodyRigidBodyCollisionConfiguration();
 			dispatcher = new CollisionDispatcher(collisionConfiguration);
@@ -157,17 +177,9 @@ namespace VVVV.Bullet.Core
 		}
 		#endregion
 
-		public int GetNewBodyId()
-		{
-			this.bodyindex++;
-			return this.bodyindex;
-		}
 
-		public int GetNewConstraintId()
-		{
-			this.cstindex++;
-			return this.cstindex;
-		}
+
+
 
 		#region Process Deletion
 		internal void ProcessDelete(double dt)

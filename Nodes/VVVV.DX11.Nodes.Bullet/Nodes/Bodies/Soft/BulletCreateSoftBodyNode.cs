@@ -18,20 +18,16 @@ namespace VVVV.Nodes.Bullet
 	public class BulletCreateSoftBodyNode : IPluginEvaluate
 	{
 		[Input("World", IsSingle = true)]
-        protected Pin<BulletSoftWorldContainer> FWorld;
+        protected Pin<ISoftBulletWorld> FWorld;
 
 		[Input("Shapes")]
         protected Pin<AbstractSoftShapeDefinition> FShapes;
 
-		[Input("Position")]
-        protected ISpread<Vector3D> FPosition;
+        [Input("Initial Pose")]
+        protected Pin<RigidBodyPose> initialPoseInput;
 
-		[Input("Scale", DefaultValues = new double[] { 1, 1, 1 })]
+        [Input("Scale", DefaultValues = new double[] { 1, 1, 1 })]
         protected ISpread<Vector3D> FScale;
-
-		[Input("Rotate", DefaultValues = new double[] { 0,0,0,1 })]
-        protected ISpread<Vector4D> FRotate;
-
 
 		[Input("Friction")]
         protected ISpread<float> FFriction;
@@ -60,15 +56,15 @@ namespace VVVV.Nodes.Bullet
 						AbstractSoftShapeDefinition shapedef = this.FShapes[i];
 
 						SoftBody body = shapedef.GetSoftBody(this.FWorld[0].WorldInfo);
+                        RigidBodyPose pose = this.initialPoseInput.IsConnected ? this.initialPoseInput[i] : RigidBodyPose.Default;
 
-						body.Translate(this.FPosition[i].ToBulletVector());
+                        body.Translate(pose.Position);
 						body.Scale(this.FScale[i].ToBulletVector());
-						body.Rotate(this.FRotate[i].ToBulletQuaternion());
-
+                        body.Rotate(pose.Orientation);
 						body.Friction = this.FFriction[i];
 						body.Restitution = this.FRestitution[i];
 
-						SoftBodyCustomData bd = new SoftBodyCustomData(this.FWorld[0].GetNewBodyId());
+                        SoftBodyCustomData bd = new SoftBodyCustomData(this.FWorld[0].GetNewSoftBodyId());
 						bd.Custom = this.FCustom[i];
 						bd.HasUV = shapedef.HasUV;
 						bd.UV = shapedef.GetUV(body);
