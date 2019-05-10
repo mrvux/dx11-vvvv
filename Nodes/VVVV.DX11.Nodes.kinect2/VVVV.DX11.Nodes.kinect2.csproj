@@ -51,7 +51,9 @@
     <Compile Include="KinectBaseTextureNode.cs" />
     <Compile Include="KinectBodyIndexRawTextureNode.cs" />
     <Compile Include="KinectCameraIntrinsics.cs" />
+    <Compile Include="KinectDepthPipetNode.cs" />
     <Compile Include="KinectDepthTextureNodeRaw.cs" />
+    <Compile Include="KinectIRPipetNode.cs" />
     <Compile Include="KinectPreposeGestureStatusNode.cs" />
     <Compile Include="KinectPreposeGestureNode.cs" />
     <Compile Include="KinectHdFaceBufferNode.cs" />
