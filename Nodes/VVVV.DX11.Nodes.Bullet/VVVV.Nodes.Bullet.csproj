@@ -109,6 +109,7 @@
     <Compile Include="Nodes\Bodies\Interactions\BulletDestroyBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\AbstractBodyForceNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletActivateBodyNode.cs" />
+    <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetCustomNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetPoseRigidBodyNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletSetVelocityNode.cs" />
     <Compile Include="Nodes\Bodies\Interactions\Rigid\BulletApplyForceNode.cs" />
