@@ -22,11 +22,19 @@ namespace VVVV.MSKinect.Nodes
         [Input("Kinect Runtime")]
         protected Pin<KinectRuntime> FInRuntime;
 
+        [Input("Update RayTable")]
+        public ISpread<bool> FUpdateRayTable;
+
         [Input("Pixel")]
         public ISpread<Vector2> FInPixelPos;
 
         [Output("Value")]
         protected ISpread<double> FOutValue;
+
+        [Output("RayTable")]
+        protected ISpread<Vector2> FRayTable;
+
+       
 
         private bool FInvalidateConnect = false;
 
@@ -36,10 +44,21 @@ namespace VVVV.MSKinect.Nodes
 
         private Body[] lastframe = new Body[6];
         private object m_lock = new object();
+        private PointF[] dataRayTable;
+
+
+
+      
 
 
         public void Evaluate(int SpreadMax)
         {
+            if (this.FUpdateRayTable[0] && runtime != null)
+            {
+                this.dataRayTable = this.runtime.Runtime.CoordinateMapper.GetDepthFrameToCameraSpaceTable();           
+            }
+
+
             if (this.FInvalidateConnect)
             {
                 if (runtime != null)
@@ -57,6 +76,8 @@ namespace VVVV.MSKinect.Nodes
                     {
                         this.FInRuntime[0].DepthFrameReady += DepthFrameReady;
                     }
+
+                    
                 }
 
                 this.FInvalidateConnect = false;
@@ -67,7 +88,7 @@ namespace VVVV.MSKinect.Nodes
                 if (this.lastframe != null)
                 {
 
-
+                   
 
 
                 }
@@ -88,6 +109,7 @@ namespace VVVV.MSKinect.Nodes
                         {
                             short* data = (short*)buffer.UnderlyingBuffer;
                             FOutValue.SliceCount = 0;
+                            FRayTable.SliceCount = 0;
 
                             int pixelX = 10;
                             int pixelY = 10;
@@ -106,6 +128,13 @@ namespace VVVV.MSKinect.Nodes
                                 double pixel = data[pixelY * 512 + pixelX];
                                 FOutValue.Add(pixel);
 
+                                if (dataRayTable != null)
+                                {
+                                    PointF mypoint = dataRayTable[pixelY * 512 + pixelX];
+                                    
+                                    FRayTable.Add(new Vector2(mypoint.X,mypoint.Y));
+                                }
+                                
                             }
 
                         }
