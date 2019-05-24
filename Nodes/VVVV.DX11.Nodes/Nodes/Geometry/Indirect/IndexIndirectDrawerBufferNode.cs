@@ -39,7 +39,7 @@ namespace VVVV.DX11.Nodes
         [Output("Geometry Out")]
         protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutGeom;
 
-        bool invalidate = false;
+        bool invalidate;
 
         public void Evaluate(int SpreadMax)
         {
@@ -82,8 +82,6 @@ namespace VVVV.DX11.Nodes
                     geom.AssignDrawer(ind);
 
                     ind.Update(context, this.FInCnt[i]);
-
-                    this.invalidate = false;
                 }
                 else
                 {
@@ -110,6 +108,8 @@ namespace VVVV.DX11.Nodes
 
                 this.FOutGeom[i][context] = geom;
             }
+
+            this.invalidate = false;
 
         }
 
