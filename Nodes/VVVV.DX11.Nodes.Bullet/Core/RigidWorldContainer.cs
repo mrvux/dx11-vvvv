@@ -122,7 +122,7 @@ namespace VVVV.Bullet.Core
 		}
 		#endregion
 
-		public int GetNewBodyId()
+		public int GetNewRigidBodyId()
 		{
 			this.bodyindex++;
 			return this.bodyindex;

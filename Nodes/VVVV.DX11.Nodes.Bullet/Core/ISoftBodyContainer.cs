@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.SoftBody;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace VVVV.Bullet.Core
 {
-    public interface IRigidBodyContainer : IRigidBodyCollection
+    public interface ISoftBodyContainer : ISoftBodyCollection
     {
-        int GetNewRigidBodyId();
-        void Register(RigidBody body);
-        event RigidBodyDeletedDelegate RigidBodyDeleted;
+        int GetNewSoftBodyId();
+        void Register(SoftBody body);
+        event SoftBodyDeletedDelegate SoftBodyDeleted;
         event WorldResetDelegate WorldHasReset;
     }
 }

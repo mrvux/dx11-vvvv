@@ -24,7 +24,10 @@ namespace VVVV.DX11.Nodes.Bullet
 		[Input("Bodies")]
         protected ISpread<SoftBody> FBodies;
 
-		IPluginHost FHost;
+        [Input("Links As Line List")]
+        protected ISpread<bool> FLinkAsLineList;
+
+        IPluginHost FHost;
 
         [Output("Output", Order = 5)]
         protected ISpread<DX11Resource<DX11IndexedGeometry>> FOutput;
@@ -46,7 +49,7 @@ namespace VVVV.DX11.Nodes.Bullet
 			int validcnt = 0;
 			for (int i = 0; i < SpreadMax; i++)
 			{
-				FValid[i] = this.FBodies[i].Faces.Count > 0 || this.FBodies[i].Tetras.Count > 0;
+                FValid[i] = this.FBodies[i] != null;
 				if (FValid[i]) { validcnt++; }
 			}
 
@@ -80,7 +83,40 @@ namespace VVVV.DX11.Nodes.Bullet
 
                     if (FValid[i])
                     {
-                        if (body.Faces.Count > 0)
+                        if (body.Faces.Count == 0 || this.FLinkAsLineList[i] == true) //Build line list
+                        {
+                            DX11IndexedGeometry geom = new DX11IndexedGeometry(context);
+
+                            var links = body.Links;
+                            var nodes = body.Nodes;
+
+                            geom.VerticesCount = nodes.Count;
+                            geom.InputLayout = Pos3Vertex.Layout;
+                            geom.VertexSize = Pos3Vertex.VertexSize;
+
+                            SlimDX.DataStream verts = new SlimDX.DataStream(geom.VerticesCount * geom.VertexSize, false, true);
+                            SlimDX.DataStream indices = new SlimDX.DataStream(links.Count * sizeof(int) * 2, false, true);
+
+                            for(int j = 0; j < nodes.Count; j++)
+                            {
+                                verts.Write(nodes[j].X);
+                            }
+
+                            for (int j = 0; j < links.Count; j++)
+                            {
+                                indices.Write((int)links[j].Nodes[0].Tag);
+                                indices.Write((int)links[j].Nodes[1].Tag);
+                            }
+
+                            geom.VertexBuffer = BufferHelper.CreateVertexBuffer(context, verts, false, true);
+
+                            geom.HasBoundingBox = false;
+                            geom.Topology = SlimDX.Direct3D11.PrimitiveTopology.LineList;
+                            DX11IndexBuffer ibo = new DX11IndexBuffer(context, indices, false, true);
+                            geom.IndexBuffer = ibo;
+                            this.FOutput[i][context] = geom;
+                        }
+                        else //Triangles
                         {
                             #region Build from Faces
                             DX11IndexedGeometry geom = new DX11IndexedGeometry(context);

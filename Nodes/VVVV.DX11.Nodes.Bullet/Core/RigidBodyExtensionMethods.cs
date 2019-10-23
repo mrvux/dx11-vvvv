@@ -68,7 +68,7 @@ namespace VVVV.Bullet.Core
             rigidBody.CollisionFlags = CollisionFlags.None;
             rigidBody.ApplyProperties(ref bodyProperties);
 
-            BodyCustomData customData = new BodyCustomData(world.GetNewBodyId());
+            BodyCustomData customData = new BodyCustomData(world.GetNewRigidBodyId());
             customData.Custom = customString;
 
             rigidBody.UserObject = customData;

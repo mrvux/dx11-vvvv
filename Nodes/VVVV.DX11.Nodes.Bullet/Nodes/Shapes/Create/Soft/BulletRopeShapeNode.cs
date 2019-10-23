@@ -20,10 +20,10 @@ namespace VVVV.Nodes.Bullet
 		//Need to declare 4d toggle
 		private IPluginHost FHost;
 
-		[Input("From")]
+		[Input("From", DefaultValues = new double[] { -5, 5, 0 })]
         protected IDiffSpread<Vector3D> FFrom;
 
-		[Input("To")]
+		[Input("To", DefaultValues = new double[] { 5, 5, 0 })]
         protected IDiffSpread<Vector3D> FTo;
 
 		[Input("Resolution",DefaultValue=5)]

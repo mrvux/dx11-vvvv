@@ -12,7 +12,8 @@ public unsafe static class BulletExtensions
 		return new Vector3D(Math.Abs(vec.x), Math.Abs(vec.y), Math.Abs(vec.z));
 	}
 
-	public static BulletSharp.Vector3 ToBulletVector(this Vector3D vec)
+
+    public static BulletSharp.Vector3 ToBulletVector(this Vector3D vec)
 	{
 		return new BulletSharp.Vector3((float)vec.x, (float)vec.y, (float)vec.z);
 	}

@@ -4,65 +4,18 @@ using System.Text;
 using BulletSharp;
 using SlimDX.Direct3D9;
 using BulletSharp.SoftBody;
+using VVVV.Bullet.Core;
 
 namespace VVVV.DataTypes.Bullet
 {
 	public abstract class AbstractSoftShapeDefinition
 	{
-		private float mass;
-		private float dp;
-		private float pr;
-		private float df;
-		private float lf;
-		private AeroModel aeroModel;
 		private bool genbend;
 		private int benddist;
-		//private float chr;
 
-		public AeroModel AeroModel
-		{
-			get { return this.aeroModel; }
-			set { this.aeroModel = value; }
-		}
+        public SoftBodyProperties Properties { get; set; }
 
-		public float Mass
-		{
-			get { return mass; }
-			set { mass = value; }
-		}
-
-		public bool IsVolumeMass { get; set; }
-
-		public float PressureCoefficient
-		{
-			get { return pr; }
-			set { pr = value; }
-		}
-
-		public float DampingCoefficient
-		{
-			get { return dp; }
-			set { dp = value; }
-		}
-
-		public float DragCoefficient { get; set; }
-		public float AnchorHardness { get; set; }
-
-		public float LiftCoefficient
-		{
-			get { return lf; }
-			set { lf = value; }
-		}
-
-		public float DynamicFrictionCoefficient
-		{
-			get { return df; }
-			set { df = value; }
-		}
-
-		public float VolumeConservation { get; set; }
-
-		public bool GenerateBendingConstraints
+        public bool GenerateBendingConstraints
 		{
 			get { return this.genbend; }
 			set { this.genbend = value; }
@@ -74,8 +27,7 @@ namespace VVVV.DataTypes.Bullet
 			set { this.benddist = value; }
 		}
 
-		public float RigidContactHardness { get; set; }
-		public float SoftContactHardness { get; set; }
+
 
 		public SoftBody GetSoftBody(SoftBodyWorldInfo si)
 		{
@@ -90,27 +42,27 @@ namespace VVVV.DataTypes.Bullet
 
 		protected void SetConfig(SoftBody sb)
 		{
-			sb.Cfg.AeroModel = this.AeroModel;
-			sb.Cfg.DF = this.DynamicFrictionCoefficient;
-			sb.Cfg.DP = this.DampingCoefficient;
-			sb.Cfg.PR = this.PressureCoefficient;
-			sb.Cfg.LF = this.LiftCoefficient;
-			sb.Cfg.VC = this.VolumeConservation;
+			sb.Cfg.AeroModel = this.Properties.AeroModel;
+			sb.Cfg.DF = this.Properties.DynamicFrictionCoefficient;
+			sb.Cfg.DP = this.Properties.DampingCoefficient;
+			sb.Cfg.PR = this.Properties.PressureCoefficient;
+			sb.Cfg.LF = this.Properties.LiftCoefficient;
+			sb.Cfg.VC = this.Properties.VolumeConservationCoefficient;
 			sb.Cfg.Collisions |= FCollisions.VFSS;
 
-			sb.Cfg.Chr = this.RigidContactHardness;
-			sb.Cfg.Shr = this.SoftContactHardness;
+			sb.Cfg.Chr = this.Properties.RigidContactHardness;
+			sb.Cfg.Shr = this.Properties.SoftContactHardness;
 
 
-			sb.Cfg.DG = this.DragCoefficient;
-			sb.Cfg.Ahr = this.AnchorHardness;
-			if (this.IsVolumeMass)
+			sb.Cfg.DG = this.Properties.DragCoefficient;
+			sb.Cfg.Ahr = this.Properties.AnchorHardness;
+			if (this.Properties.IsVolumeMass)
 			{
-				sb.SetVolumeMass(this.Mass);
+				sb.SetVolumeMass(this.Properties.Mass);
 			}
 			else
 			{
-				sb.SetTotalMass(this.Mass, false);
+				sb.SetTotalMass(this.Properties.Mass, false);
 			}
 
 			if (this.GenerateBendingConstraints)
@@ -118,9 +70,5 @@ namespace VVVV.DataTypes.Bullet
 				sb.GenerateBendingConstraints(this.BendingDistance);
 			}
 		}
-
-
-
-		
 	}
 }
