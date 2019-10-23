@@ -74,6 +74,11 @@ namespace VVVV.DX11.Factories
             FProjects = new Dictionary<string, FXProject>();
             FProjectNodeInfo = new Dictionary<FXProject, INodeInfo>();
             FIncludeHandler = new DX11ShaderInclude();
+
+            string arch = Environment.Is64BitProcess ? "x64" : "x86";
+            string userpath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vvvv\\beta_" + arch);
+            FIncludeHandler.FolderIncludeHandler.AdditionalSystemPath = userpath;
+
             FParentContainer = parentContainer;
         }
 

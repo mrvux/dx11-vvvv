@@ -38,6 +38,8 @@ namespace VVVV.DX11.Lib.Effects
             set;
         }
 
+        public FolderIncludeHandler FolderIncludeHandler => this.sysHandler;
+
         public void Close(Stream stream)
         {
             if (stream != null)
