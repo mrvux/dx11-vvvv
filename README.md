@@ -51,4 +51,4 @@ Now, if you hit the Rebuild Solution button and you will gain a brand new lib an
 
 Copy the content of vvvv core build under Deploy/Debug (recommended by mrvux if you want to build multiple times) or viceversa, copy lib and packs folders inside your vvvv folder.
 
-
+  
