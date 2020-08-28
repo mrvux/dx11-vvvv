@@ -23,6 +23,9 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Output("Output")]
         protected Pin<DX11Resource<DX11IndexedGeometry>> FOutGeom;
 
+        [Output("Name")]
+        protected ISpread<string> FOutName;
+
         [Output("Bone Names")]
         protected ISpread<ISpread<string>> FOutBoneNames;
 
@@ -72,6 +75,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                     this.FOutValid.SliceCount = meshcnt;
                     this.FOutBoundingMin.SliceCount = meshcnt;
                     this.FOutBoundingMax.SliceCount = meshcnt;
+                    this.FOutName.SliceCount = meshcnt;
 
                     for (int i = 0; i < meshcnt; i++)
                     {
@@ -90,6 +94,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                         this.FOutValid[i] = assimpmesh.Indices.Count > 0 && assimpmesh.VerticesCount > 0;
                         this.FOutBoundingMin[i] = assimpmesh.BoundingBox.Minimum;
                         this.FOutBoundingMax[i] = assimpmesh.BoundingBox.Maximum;
+                        this.FOutName[i] = assimpmesh.Name;
                     }
                 }
                 else
@@ -101,6 +106,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                     this.FOutValid.SliceCount = 0;
                     this.FOutBoundingMin.SliceCount = 0;
                     this.FOutBoundingMax.SliceCount = 0;
+                    this.FOutName.SliceCount = 0;
                 }
                 this.FInvalidate = true;
             }

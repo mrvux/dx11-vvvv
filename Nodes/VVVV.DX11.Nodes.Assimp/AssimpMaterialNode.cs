@@ -15,6 +15,9 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Input("Scene", IsSingle = true)]
         protected IDiffSpread<AssimpScene> FInScene;
 
+        [Output("Name")]
+        protected ISpread<string> FOutName;
+
         [Output("Ambient Color")]
         protected ISpread<RGBAColor> FOutAmbient;
 
@@ -52,6 +55,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                     this.FOutSpecular.SliceCount = matcount;
                     this.FOutDiffuse.SliceCount = matcount;
                     this.FOutPower.SliceCount = matcount;
+                    this.FOutName.SliceCount = matcount;
 
                     List<eAssimpTextureType> types = new List<eAssimpTextureType>();
                     List<eAssimpTextureMapMode> mapmodes = new List<eAssimpTextureMapMode>();
@@ -67,6 +71,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                         this.FOutPower[i] = mat.SpecularPower;
 
                         this.FOutTexPath[i].SliceCount = mat.TexturePath.Count;
+                        this.FOutName[i] = mat.Name;
                         
                         types.AddRange(mat.TextureType);
                         mapmodes.AddRange(mat.TextureMapMode);
@@ -82,6 +87,7 @@ namespace VVVV.DX11.Nodes.AssetImport
                 }
                 else
                 {
+                    this.FOutName.SliceCount = 0;
                     this.FOutTexPath.SliceCount = 0;
                     this.FOutTexType.SliceCount = 0;
                     this.FOutTexMapMode.SliceCount = 0;

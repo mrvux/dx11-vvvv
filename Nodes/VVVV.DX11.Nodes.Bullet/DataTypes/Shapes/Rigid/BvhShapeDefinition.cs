@@ -25,7 +25,7 @@ namespace VVVV.Bullet.DataTypes.Shapes.Rigid
             this.vertices = new Vector3[mesh.VerticesCount];
             this.indices = mesh.Indices.ToArray();
 
-            Vector3* v = (Vector3*)mesh.Positions();
+            Vector3* v = (Vector3*)mesh.PositionPointer;
 
             for (int i = 0; i < mesh.VerticesCount; i++)
             {
