@@ -39,6 +39,8 @@ namespace VVVV.DX11.Nodes.Layers
         private DX11RenderSettings renderSettings = new DX11RenderSettings();
         private DX11ObjectRenderSettings objectSettings = new DX11ObjectRenderSettings();
 
+        private Boolean isevaluated = false;
+
         #region Default Input Pins
         [Input("Depth In",Visibility=PinVisibility.OnlyInspector)]
         protected Pin<DX11Resource<DX11DepthStencil>> FDepthIn;
@@ -157,7 +159,6 @@ namespace VVVV.DX11.Nodes.Layers
 
             this.previousFrameResults.Resize(this.spmax, () => null, rt => rt?.UnLock());
 
-
             if (this.FInvalidate)
             {
                 if (this.FShader.IsCompiled)
@@ -181,6 +182,7 @@ namespace VVVV.DX11.Nodes.Layers
             this.varmanager.ApplyUpdates();
 
             this.FOut.Stream.IsChanged = true;
+            this.isevaluated = true;
         }
         #endregion
 
@@ -206,6 +208,20 @@ namespace VVVV.DX11.Nodes.Layers
         #region Update
         public void Update(DX11RenderContext context)
         {
+            List<bool> enable = new List<bool>();
+
+            for (int slise = 0; slise < this.spmax; slise++)
+            {
+                if (this.FInEnabled != null && this.FInEnabled.SliceCount > 0 && this.isevaluated)
+                {
+                    enable.Add(this.FInEnabled[slise]);
+                }
+                else
+                {
+                    enable.Add(false);
+                }
+            }
+
             Device device = context.Device;
             DeviceContext ctx = context.CurrentDeviceContext;
 
@@ -235,7 +251,7 @@ namespace VVVV.DX11.Nodes.Layers
 
             for (int i = 0; i < this.previousFrameResults.SliceCount; i++)
             {
-                if (this.FInEnabled[i] || this.FInPreserveOnDisable[i] == false)
+                if (enable[i] || this.FInPreserveOnDisable[i] == false)
                 {
                     this.previousFrameResults[i]?.UnLock();
                     this.previousFrameResults[i] = null;
@@ -262,7 +278,7 @@ namespace VVVV.DX11.Nodes.Layers
             {
                 int passcounter = 0;
 
-                if (this.FInEnabled[textureIndex])
+                if (enable[textureIndex])
                 {
                     List<DX11ResourcePoolEntry<DX11RenderTarget2D>> locktargets = new List<DX11ResourcePoolEntry<DX11RenderTarget2D>>();
 
@@ -590,10 +606,12 @@ namespace VVVV.DX11.Nodes.Layers
                     if (this.FInPreserveOnDisable[textureIndex])
                     {
                         //We kept it locked on top
+                        if (this.FOut[textureIndex] == null) this.FOut[textureIndex] = new DX11Resource<DX11Texture2D>();
                         this.FOut[textureIndex][context] = this.previousFrameResults[textureIndex] != null ? this.previousFrameResults[textureIndex].Element : null;
                     }
                     else
                     {
+                        if (this.FOut[textureIndex] == null) this.FOut[textureIndex] = new DX11Resource<DX11Texture2D>();
                         this.FOut[textureIndex][context] = this.FIn[textureIndex][context];
                     }
                     
@@ -603,6 +621,7 @@ namespace VVVV.DX11.Nodes.Layers
             context.RenderStateStack.Pop();
 
             this.OnEndQuery(context);
+            this.isevaluated = false;
         }
         
         #endregion
@@ -633,6 +652,7 @@ namespace VVVV.DX11.Nodes.Layers
                 }
             }
             this.previousFrameResults.SliceCount = 0;
+            this.isevaluated = false;
         }
         #endregion
 
