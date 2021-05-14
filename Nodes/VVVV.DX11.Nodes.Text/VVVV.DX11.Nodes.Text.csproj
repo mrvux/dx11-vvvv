@@ -7,8 +7,8 @@
     <ProjectGuid>{597DA607-77EA-4009-9EA0-DB96F71F8077}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VVVV.DX11.Nodes.Text</RootNamespace>
-    <AssemblyName>VVVV.DX11.Nodes.Text</AssemblyName>
+    <RootNamespace>VVVV.DX11.Nodes.Text.Format</RootNamespace>
+    <AssemblyName>VVVV.DX11.Nodes.Text.Format</AssemblyName>
     <OutputPath>$(OutputPath)\nodes\plugins\text</OutputPath>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile />
@@ -48,8 +48,9 @@
     <Compile Include="Lib\FontWrapperFactory.cs" />
     <Compile Include="Lib\TextFontRenderer.cs" />
     <Compile Include="Nodes\ColorStylerNode.cs" />
-    <Compile Include="Nodes\DX11TextLayerCacheNode.cs" />
     <Compile Include="Nodes\DX11TextLayerAdvancedNode.cs" />
+    <Compile Include="Nodes\DX11TextLayerCacheNode.cs" />
+    <Compile Include="Nodes\DX11TextLayerFormatNode.cs" />
     <Compile Include="Nodes\DX11TextLayerNode.cs" />
     <Compile Include="Nodes\DX11TextSettingsNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

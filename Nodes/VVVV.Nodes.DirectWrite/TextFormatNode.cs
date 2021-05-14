@@ -39,6 +39,9 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         [Input("Baseline", DefaultValue = 12)]
         protected IDiffSpread<int> FBaseLine;
 
+        [Input("Reading Direction")]
+        protected IDiffSpread<ReadingDirection> FReadingDirection;
+
         [Output("Output")]
         protected ISpread<TextFormat> FOutput;
 
@@ -57,7 +60,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
         {
             if (this.FSize.IsChanged || this.FFontInput.IsChanged || this.FWeight.IsChanged 
                 || this.FStretch.IsChanged || this.FStyle.IsChanged || this.FWordWrap.IsChanged
-                || this.FLineSpacing.IsChanged || this.FMethod.IsChanged || this.FBaseLine.IsChanged)
+                || this.FLineSpacing.IsChanged || this.FMethod.IsChanged || this.FBaseLine.IsChanged || this.FReadingDirection.IsChanged)
             {
                 for (int i = 0; i < this.FOutput.SliceCount; i++)
                 {
@@ -79,6 +82,7 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                         TextFormat format = new TextFormat(this.dwFactory, this.FFontInput[i].Name, this.FWeight[i], this.FStyle[i], this.FStretch[i], FSize[i], "");
                         format.WordWrapping = this.FWordWrap[i];
                         format.SetLineSpacing(this.FMethod[i], this.FLineSpacing[i], this.FBaseLine[i]);
+                        format.ReadingDirection = this.FReadingDirection[i];
                         this.FOutput[i] = format;
                         this.FValid[i] = true;
                     }
@@ -86,6 +90,9 @@ namespace VVVV.DX11.Nodes.Nodes.Text
                     {
                         //Set default format
                         TextFormat format = new TextFormat(this.dwFactory, "Arial", FontWeight.Normal, FontStyle.Normal, FontStretch.Normal, 16, "");
+                        format.WordWrapping = this.FWordWrap[i];
+                        format.SetLineSpacing(this.FMethod[i], this.FLineSpacing[i], this.FBaseLine[i]);
+                        format.ReadingDirection = this.FReadingDirection[i];
                         this.FOutput[i] = format;
                         this.FValid[i] = false;
                     }
