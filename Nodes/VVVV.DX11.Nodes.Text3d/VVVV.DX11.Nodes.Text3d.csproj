@@ -26,6 +26,7 @@
     <Compile Include="ExtrudingSink.cs" />
     <Compile Include="OutlineRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Text3dNodeAdvanced.cs" />
     <Compile Include="Text3dNode.cs" />
     <Compile Include="VertexLayout.cs" />
   </ItemGroup>
