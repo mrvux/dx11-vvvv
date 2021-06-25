@@ -25,7 +25,7 @@ namespace VVVV.DX11.Nodes
         protected Pin<int> FInStride;
 
         [Input("Input")]
-        protected Pin<DX11Resource<DX11RawBuffer>> FInput;
+        protected Pin<DX11Resource<IDX11Buffer>> FInput;
 
         List<IIOContainer> outspreads = new List<IIOContainer>();
         string[] layout;
@@ -52,14 +52,14 @@ namespace VVVV.DX11.Nodes
             {
                 if (this.RenderRequest != null) { this.RenderRequest(this, this.FHost); }
 
-                DX11RawBuffer b = this.FInput[0][this.AssignedContext];
+                IDX11Buffer b = this.FInput[0][this.AssignedContext];
 
                 if (b != null)
                 {
-                    DX11StagingRawBuffer staging = new DX11StagingRawBuffer(this.AssignedContext.Device, b.Size);
+                    DX11StagingRawBuffer staging = new DX11StagingRawBuffer(this.AssignedContext.Device, b.Buffer.Description.SizeInBytes);
 
                     this.AssignedContext.CurrentDeviceContext.CopyResource(b.Buffer, staging.Buffer);
-                    int elem = b.Size / this.FInStride[0];
+                    int elem = b.Buffer.Description.SizeInBytes / this.FInStride[0];
                     foreach (IIOContainer sp in this.outspreads)
                     {
                         ISpread s = (ISpread)sp.RawIOObject;
