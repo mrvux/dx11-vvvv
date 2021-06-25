@@ -12,6 +12,8 @@ using SlimDX.Direct3D11;
 using SlimDX;
 using FeralTic.DX11.Resources;
 using FeralTic.DX11;
+using System.ComponentModel.Composition;
+using VVVV.Core.Logging;
 
 namespace VVVV.DX11.Nodes.AssetImport
 {
@@ -30,8 +32,8 @@ namespace VVVV.DX11.Nodes.AssetImport
         [Output("Output", Order = 1)]
         protected ISpread<ISpread<DX11Resource<DX11IndexedGeometry>>> FOutGeom;
 
-        //[Output("Mesh Count", IsSingle = true)]
-        //ISpread<int> FOutMeshCount;
+        [Import()]
+        protected ILogger FLogger;
 
         [Output("Is Valid", Order=5)]
         protected ISpread<bool> FOutValid;
@@ -67,8 +69,9 @@ namespace VVVV.DX11.Nodes.AssetImport
                         }
                         this.scenes.Add(scene);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        this.FLogger.Log(ex);
                         this.scenes.Add(null);
                         this.FOutGeom[i].SliceCount = 0;
                     }
