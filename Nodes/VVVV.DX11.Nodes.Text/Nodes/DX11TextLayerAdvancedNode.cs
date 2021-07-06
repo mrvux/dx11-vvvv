@@ -114,6 +114,9 @@ namespace VVVV.DX11.Nodes.Text
                 SharpDX.Matrix view = *(SharpDX.Matrix*)&sView;
                 SharpDX.Matrix projection = *(SharpDX.Matrix*)&sProj;
 
+                var sWorld = settings.WorldTransform;
+                SharpDX.Matrix layerWorld = *(SharpDX.Matrix*)&sWorld;
+
                 var objectsettings = this.objectSettings[context];
                 var orderedobjectsettings = this.orderedObjectSettings[context];
                 objectsettings.IterationCount = 1;
@@ -150,6 +153,7 @@ namespace VVVV.DX11.Nodes.Text
                     SharpDX.Matrix sm = matrixPointer[idx % transformCount];
 
                     SharpDX.Matrix mat = SharpDX.Matrix.Multiply(preScale, sm);
+                    mat = SharpDX.Matrix.Multiply(mat, layerWorld);
                     mat = SharpDX.Matrix.Multiply(mat, view);
                     mat = SharpDX.Matrix.Multiply(mat, projection);
 
@@ -159,6 +163,7 @@ namespace VVVV.DX11.Nodes.Text
 
                     objectsettings.DrawCallIndex = idx;
                     objectsettings.WorldTransform = *(SlimDX.Matrix*)&mat;
+                    objectsettings.WorldTransform *= settings.WorldTransform;
 
                     if (settings.ValidateObject(objectsettings))
                     {
