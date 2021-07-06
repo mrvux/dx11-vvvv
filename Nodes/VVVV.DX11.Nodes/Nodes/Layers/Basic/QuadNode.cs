@@ -391,6 +391,7 @@ namespace VVVV.DX11.Nodes
                     context.CleanShaderStages();
                     QuadShaderDeviceData qd = quaddata[context];
                     qd.quadshader.SetBySemantic("VIEWPROJECTION", settings.ViewProjection);
+                    qd.quadshader.SetBySemantic("LAYERWORLD", settings.WorldTransform);
 
                     if (this.BeginQuery != null)
                     {

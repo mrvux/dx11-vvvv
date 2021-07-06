@@ -1,4 +1,4 @@
-﻿Texture2D InputTexture : INPUTTEXTURE;
+Texture2D InputTexture : INPUTTEXTURE;
 
 cbuffer cbPerDraw : register(b0)
 {
@@ -17,6 +17,7 @@ cbuffer cbPerBatch : register(b1)
 
 cbuffer cbPerLayer : register(b2)
 {
+	float4x4 tLW : LAYERWORLD;
     float layerOpacity : LAYEROPACITY;
 };
 
@@ -83,7 +84,7 @@ psIn VS(vsIn input)
 {
 	psIn output;
 
-	float4x4 wvp = mul(tW,tVP);
+	float4x4 wvp = mul(mul(tW, tLW),tVP);
 	output.pos =  mul(input.pos,wvp);
     return output;
 }
@@ -92,7 +93,7 @@ psInTextured VS_Textured(vsInTextured input)
 {
     psInTextured output;
 	
-	float4x4 wvp = mul(tW,tVP);
+	float4x4 wvp = mul(mul(tW, tLW),tVP);
 	output.pos =  mul(input.pos,wvp);
 
 	float4 uv = input.uv;
@@ -111,7 +112,7 @@ psInColor VS_Instanced(vsInInstancedTex input)
 	psInColor output;
 
 	float4x4 w = transpose(WorldBuffer[input.ii % WorldCount]);
-	float4x4 wvp = mul(w,tVP);
+	float4x4 wvp = mul(mul(w, tLW),tVP);
 
 	output.pos =  mul(input.pos,wvp);
 	output.color = ColorBuffer[input.ii % ColorCount];
@@ -123,7 +124,7 @@ psInColorTextured VS_Instanced_Textured(vsInInstancedTex input)
     psInColorTextured output;
 	
 	float4x4 w = transpose(WorldBuffer[input.ii % WorldCount]);
-	float4x4 wvp = mul(w,tVP);
+	float4x4 wvp = mul(mul(w, tLW),tVP);
 
 	float4x4 tt = transpose(TextureMatrixBuffer[input.ii % TextureMatrixCount]);
 
