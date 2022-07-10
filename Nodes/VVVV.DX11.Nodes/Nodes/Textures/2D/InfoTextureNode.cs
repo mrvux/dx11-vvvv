@@ -45,7 +45,7 @@ namespace VVVV.DX11.Nodes
         protected ISpread<int> FOutMipLevels;
 
         [Output("Resource Pointer", Visibility=PinVisibility.OnlyInspector)]
-        protected ISpread<int> FOutPointer;
+        protected ISpread<long> FOutPointer;
 
         [Output("Creation Time", Visibility = PinVisibility.OnlyInspector)]
         protected ISpread<int> FOutCreationTime;
@@ -102,7 +102,7 @@ namespace VVVV.DX11.Nodes
                                 this.FOutSampleCount[i] = tdesc.SampleDescription.Count;
                                 this.FOutAAQuality[i] = tdesc.SampleDescription.Quality;
                                 this.FOutArraySize[i] = tdesc.ArraySize;
-                                this.FOutPointer[i] = this.FTextureIn[i][this.AssignedContext].Resource.ComPointer.ToInt32();
+                                this.FOutPointer[i] = this.FTextureIn[i][this.AssignedContext].Resource.ComPointer.ToInt64();
                                 this.FOutCreationTime[i] = this.FTextureIn[i][this.AssignedContext].Resource.CreationTime;
                             }
                             else
